@@ -1,0 +1,3881 @@
+{
+  "code": "041201",
+  "name": "WipEout Pure PSP World 0.10",
+  "wads": [
+    {
+      "path": "PSP_GAME/USRDIR/Data.wad",
+      "files": [
+        {
+          "hash": 109366755,
+          "filename": "Data/0684CDE3.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 236483684,
+          "filename": "Data/Plugins/0E187464.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1292903447,
+          "filename": "Data/4D102417.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1282737355,
+          "filename": "Data/Plugins/PI001/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3789168474,
+          "filename": "Data/Plugins/E1DA1F5A.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2636218764,
+          "filename": "Data/Plugins/9D21818C.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3793589594,
+          "filename": "Data/Plugins/PI000/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2653403891,
+          "filename": "Data/Plugins/9E27BAF3.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3895574304,
+          "filename": "Data/Plugins/E831BF20.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 908909021,
+          "filename": "Data/Plugins/PI004/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 133420062,
+          "filename": "Data/Plugins/07F3D41E.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2554611788,
+          "filename": "Data/Plugins/PI005/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 92468892,
+          "filename": "Data/Plugins/0582F69C.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 288594663,
+          "filename": "Data/ClassicsNS/04_Mandrashee/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2454347439,
+          "filename": "Data/ClassicsNS/04_Mandrashee/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1261240760,
+          "filename": "Data/ClassicsNS/04_Mandrashee/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2795153406,
+          "filename": "Data/ClassicsNS/04_Mandrashee/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 622264098,
+          "filename": "Data/ClassicsNS/04_Mandrashee/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 410441362,
+          "filename": "Data/ClassicsNS/04_Mandrashee/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1607904322,
+          "filename": "Data/ClassicsNS/04_Mandrashee/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 55092225,
+          "filename": "Data/ClassicsNS/03_Manor_Top/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3229875381,
+          "filename": "Data/ClassicsNS/03_Manor_Top/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3055366496,
+          "filename": "Data/ClassicsNS/03_Manor_Top/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4099081700,
+          "filename": "Data/ClassicsNS/03_Manor_Top/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3964904600,
+          "filename": "Data/ClassicsNS/03_Manor_Top/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3509816616,
+          "filename": "Data/ClassicsNS/03_Manor_Top/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2526279672,
+          "filename": "Data/ClassicsNS/03_Manor_Top/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2905770135,
+          "filename": "Data/ClassicsNS/02_Sagarmartha/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3842264371,
+          "filename": "Data/ClassicsNS/02_Sagarmartha/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3001258180,
+          "filename": "Data/ClassicsNS/02_Sagarmartha/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3520377954,
+          "filename": "Data/ClassicsNS/02_Sagarmartha/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4186983325,
+          "filename": "Data/ClassicsNS/02_Sagarmartha/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3304088109,
+          "filename": "Data/ClassicsNS/02_Sagarmartha/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2203064573,
+          "filename": "Data/ClassicsNS/02_Sagarmartha/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3227568442,
+          "filename": "Data/ClassicsNS/01_Karbonis/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 523303087,
+          "filename": "Data/ClassicsNS/01_Karbonis/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1631205109,
+          "filename": "Data/ClassicsNS/01_Karbonis/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1441451940,
+          "filename": "Data/ClassicsNS/01_Karbonis/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3188339800,
+          "filename": "Data/ClassicsNS/01_Karbonis/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2204769768,
+          "filename": "Data/ClassicsNS/01_Karbonis/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3301599032,
+          "filename": "Data/ClassicsNS/01_Karbonis/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 582933208,
+          "filename": "Data/Gallery/TisNotReadyYet.tga",
+          "confidence": 9
+        },
+        {
+          "hash": 1082795872,
+          "filename": "Data/Gallery/408A2760.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2827604234,
+          "filename": "Data/Gallery/A889D10A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2515138746,
+          "filename": "Data/Gallery/95E9F8BA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 977957888,
+          "filename": "Data/Gallery/3A4A7400.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3528032874,
+          "filename": "Data/Gallery/D249826A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2288691216,
+          "filename": "Data/Gallery/886AA810.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4012485594,
+          "filename": "Data/Gallery/EF29ABDA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3037364640,
+          "filename": "Data/Gallery/B50A81A0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 694491662,
+          "filename": "Data/Gallery/29651A0E.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3219405417,
+          "filename": "Data/Gallery/BFE43A69.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 335885246,
+          "filename": "Data/Gallery/140533BE.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3486175936,
+          "filename": "Data/Gallery/CFCAD2C0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2522195055,
+          "filename": "Data/Gallery/9655A46F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3755966473,
+          "filename": "Data/Gallery/DFDF8009.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2872413663,
+          "filename": "Data/Gallery/AB358DDF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3804211641,
+          "filename": "Data/Gallery/E2BFA9B9.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3969251087,
+          "filename": "Data/Gallery/EC95F70F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1626291816,
+          "filename": "Data/Gallery/60EF3E68.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3522551487,
+          "filename": "Data/Gallery/D1F5DEBF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1569658840,
+          "filename": "Data/Gallery/5D8F17D8.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1674904239,
+          "filename": "Data/Gallery/63D502AF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 439315720,
+          "filename": "Data/Gallery/1A2F6D08.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1588931359,
+          "filename": "Data/Gallery/5EB52B1F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 659506360,
+          "filename": "Data/Gallery/274F44B8.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 420827599,
+          "filename": "Data/Gallery/191551CF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 878717622,
+          "filename": "Data/Gallery/34602AB6.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 611678335,
+          "filename": "Data/Gallery/2475787F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2880695757,
+          "filename": "Data/Gallery/ABB3EDCD.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2951833760,
+          "filename": "Data/Gallery/AFF168A0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2458992912,
+          "filename": "Data/Gallery/92914110.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3536839288,
+          "filename": "Data/Gallery/D2CFE278.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 281138881,
+          "filename": "Data/Gallery/10C1D6C1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 344150956,
+          "filename": "Data/Gallery/148353AC.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 765591409,
+          "filename": "Data/Gallery/2DA1FF71.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 702773788,
+          "filename": "Data/Gallery/29E37A1C.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1466018833,
+          "filename": "Data/Gallery/5761AC11.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2530460797,
+          "filename": "Data/Gallery/96D3C47D.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3846270977,
+          "filename": "Data/Gallery/E5417001.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3626064305,
+          "filename": "Data/Gallery/D82159B1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3960706845,
+          "filename": "Data/Gallery/EC13971D.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2676040545,
+          "filename": "Data/Gallery/9F812361.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1580419853,
+          "filename": "Data/Gallery/5E334B0D.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2732657361,
+          "filename": "Data/Gallery/A2E10AD1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1666409149,
+          "filename": "Data/Gallery/635362BD.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1689107205,
+          "filename": "Data/Gallery/64ADBB05.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 619911277,
+          "filename": "Data/Gallery/24F3186D.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 429076957,
+          "filename": "Data/Gallery/199331DD.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2450989314,
+          "filename": "Data/Gallery/92172102.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3875351764,
+          "filename": "Data/Gallery/E6FD2CD4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2943813810,
+          "filename": "Data/Gallery/AF7708B2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 757571427,
+          "filename": "Data/Gallery/2D279F63.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 273135315,
+          "filename": "Data/Gallery/1047B6D3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1474808835,
+          "filename": "Data/Gallery/57E7CC03.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1787291059,
+          "filename": "Data/Gallery/6A87E5B3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3634837923,
+          "filename": "Data/Gallery/D8A739A3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3855028243,
+          "filename": "Data/Gallery/E5C71013.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2724686531,
+          "filename": "Data/Gallery/A2676AC3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2668053363,
+          "filename": "Data/Gallery/9F074373.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1498149543,
+          "filename": "Data/Gallery/594BF2A7.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1680595735,
+          "filename": "Data/Gallery/642BDB17.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3866840262,
+          "filename": "Data/Gallery/E67B4CC6.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3676005750,
+          "filename": "Data/Gallery/DB1B6576.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2629509030,
+          "filename": "Data/Gallery/9CBB1FA6.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2715498006,
+          "filename": "Data/Gallery/A1DB3616.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 335276550,
+          "filename": "Data/Gallery/13FBEA06.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 781960118,
+          "filename": "Data/Gallery/2E9BC3B6.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1765521766,
+          "filename": "Data/Gallery/693BB966.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1415286998,
+          "filename": "Data/Gallery/545B90D6.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3847455083,
+          "filename": "Data/Gallery/E553816B.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1728255674,
+          "filename": "Data/Gallery/670316BA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1516453642,
+          "filename": "Data/Gallery/5A633F0A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 499336666,
+          "filename": "Data/Gallery/1DC345DA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 547581034,
+          "filename": "Data/Gallery/20A36C6A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2950928842,
+          "filename": "Data/Gallery/AFE399CA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3896763162,
+          "filename": "Data/Gallery/E843E31A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 150995718,
+          "filename": "Data/Gallery/09000306.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3575892650,
+          "filename": "Data/Gallery/D523CAAA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2337314007,
+          "filename": "Data/Gallery/8B5094D7.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 326073214,
+          "filename": "Data/Gallery/136F7B7E.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3056647527,
+          "filename": "Data/Gallery/B630BD67.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 772756174,
+          "filename": "Data/Gallery/2E0F52CE.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2891957535,
+          "filename": "Data/Gallery/AC5FC51F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3438341639,
+          "filename": "Data/Gallery/CCF0EE07.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2436885679,
+          "filename": "Data/Gallery/913FECAF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2127573527,
+          "filename": "Data/Gallery/7ED03217.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3600782975,
+          "filename": "Data/Gallery/D69F967F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1135614887,
+          "filename": "Data/Gallery/43B01BA7.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3959406543,
+          "filename": "Data/Gallery/EBFFBFCF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 963659975,
+          "filename": "Data/Gallery/397048C7.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3260862627,
+          "filename": "Data/Gallery/C25CD0A3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 511645967,
+          "filename": "Data/Gallery/1E7F190F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3795437995,
+          "filename": "Data/Gallery/E239C9AB.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2104258242,
+          "filename": "Data/Gallery/7D6C6EC2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3747209243,
+          "filename": "Data/Gallery/DF59E01B.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 986453010,
+          "filename": "Data/Gallery/3ACC1412.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1560901578,
+          "filename": "Data/Gallery/5D0977CA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 128728482,
+          "filename": "Data/Gallery/07AC3DA2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1617518202,
+          "filename": "Data/Gallery/60695E7A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 667493546,
+          "filename": "Data/Gallery/27C924AA.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2297219074,
+          "filename": "Data/Gallery/88ECC802.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3477910226,
+          "filename": "Data/Gallery/CF4CB2D2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 120217008,
+          "filename": "Data/Gallery/072A5DB0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4071291760,
+          "filename": "Data/Gallery/F2AAFB70.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2507118760,
+          "filename": "Data/Gallery/956F98A8.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2819600664,
+          "filename": "Data/Gallery/A80FB118.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4021275592,
+          "filename": "Data/Gallery/EFAFCBC8.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3514023597,
+          "filename": "Data/Gallery/D173BEAD.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3627264219,
+          "filename": "Data/Gallery/D833A8DB.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2458103930,
+          "filename": "Data/Gallery/9283B07A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1507812319,
+          "filename": "Data/Gallery/59DF63DF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1690258031,
+          "filename": "Data/Gallery/64BF4A6F.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 589246655,
+          "filename": "Data/Gallery/231F30BF.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 447286554,
+          "filename": "Data/Gallery/1AA90D1A.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1778484641,
+          "filename": "Data/Gallery/6A0185A1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1506644661,
+          "filename": "Data/Gallery/59CD92B5.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3684500836,
+          "filename": "Data/Gallery/DB9D0564.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2707248644,
+          "filename": "Data/Gallery/A15D5604.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 773694372,
+          "filename": "Data/Gallery/2E1DA3A4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1423831236,
+          "filename": "Data/Gallery/54DDF0C4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1774049652,
+          "filename": "Data/Gallery/69BDD974.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2041088957,
+          "filename": "Data/Gallery/79A88BBD.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1153999373,
+          "filename": "Data/Gallery/44C8A20D.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3159910076,
+          "filename": "Data/Gallery/BC5866BC.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2167951116,
+          "filename": "Data/Gallery/81384F0C.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2408870312,
+          "filename": "Data/Gallery/8F9471A8.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4052797367,
+          "filename": "Data/Gallery/F190C7B7.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 68182391,
+          "filename": "Data/Gallery/04106177.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4282186003,
+          "filename": "Data/Gallery/FF3CF913.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1074546546,
+          "filename": "Data/Gallery/400C4772.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3045908914,
+          "filename": "Data/Gallery/B58CE1B2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2621276084,
+          "filename": "Data/Gallery/9C3D7FB4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 326994452,
+          "filename": "Data/Gallery/137D8A14.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3331864028,
+          "filename": "Data/Gallery/C69835DC.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4227341420,
+          "filename": "Data/Gallery/FBF81C6C.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 857248540,
+          "filename": "Data/Gallery/3318931C.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 242793132,
+          "filename": "Data/Gallery/0E78BAAC.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1238941820,
+          "filename": "Data/Gallery/49D8C07C.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1958275532,
+          "filename": "Data/Gallery/74B8E9CC.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3002357784,
+          "filename": "Data/Gallery/B2F45818.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 231007865,
+          "filename": "Data/Gallery/0DC4E679.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 816107465,
+          "filename": "Data/Gallery/30A4CFC9.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1996797209,
+          "filename": "Data/Gallery/7704B519.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1248107689,
+          "filename": "Data/Gallery/4A649CA9.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4165222585,
+          "filename": "Data/Gallery/F84440B9.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3307497737,
+          "filename": "Data/Gallery/C5246909.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2189693913,
+          "filename": "Data/Gallery/828413D9.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3266145328,
+          "filename": "Data/PRX/videocodec.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 4200941893,
+          "filename": "Data/PRX/mpegbase.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 3631430770,
+          "filename": "Data/PRX/mpeg.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 3852242944,
+          "filename": "Data/PRX/pspnet_adhocctl.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 2387887545,
+          "filename": "Data/PRX/pspnet_adhoc_auth.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 2631455170,
+          "filename": "Data/PRX/pspnet_adhoc.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 1705098953,
+          "filename": "Data/PRX/pspnet.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 2891454119,
+          "filename": "Data/PRX/memab.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 1693604565,
+          "filename": "Data/PRX/libatrac3plus.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 3469935662,
+          "filename": "Data/PRX/ifhandle.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 3849680762,
+          "filename": "Data/PRX/audiocodec.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 698027021,
+          "filename": "Data/PRX/sc_sascore.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 2068206539,
+          "filename": "Data/PRX/pspnet_resolver.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 3745112810,
+          "filename": "Data/PRX/pspnet_inet.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 2372919136,
+          "filename": "Data/PRX/pspnet_apctl.prx",
+          "confidence": 9
+        },
+        {
+          "hash": 3328189158,
+          "filename": "Data/Movies/WoFMVNew.pmf",
+          "confidence": 9
+        },
+        {
+          "hash": 1714318229,
+          "filename": "Data/Movies/FEIntroMovie.pmf",
+          "confidence": 9
+        },
+        {
+          "hash": 2568003230,
+          "filename": "Data/HUD/Bar_outline_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4059929851,
+          "filename": "Data/HUD/grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1648396573,
+          "filename": "Data/HUD/Bar_3.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1595973805,
+          "filename": "Data/HUD/Bar_2.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 411097725,
+          "filename": "Data/HUD/Bar_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1834676670,
+          "filename": "Data/HUD/Weapon_disruptor.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4235870570,
+          "filename": "Data/HUD/Weapon_turbo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 16788758,
+          "filename": "Data/HUD/Weapon_shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1653073312,
+          "filename": "Data/HUD/Weapon_rockets.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2372193055,
+          "filename": "Data/HUD/Weapon_quake.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1670130061,
+          "filename": "Data/HUD/Weapon_plasma.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 96506019,
+          "filename": "Data/HUD/Weapon_missiles.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3479580069,
+          "filename": "Data/HUD/Weapon_mines.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 79118460,
+          "filename": "Data/HUD/Weapon_bomb.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1881060685,
+          "filename": "Data/HUD/Weapon_autopilot.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 235156828,
+          "filename": "Data/HUD/missile_sight_outer.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2673975851,
+          "filename": "Data/HUD/missile_sight_inner.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1331500578,
+          "filename": "Data/HUD/Zone_outline_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1927267409,
+          "filename": "Data/HUD/Zone_Bar_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 136288049,
+          "filename": "Data/HUD/Zone_Bar_3.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 500977550,
+          "filename": "Data/Music/frontend.at3",
+          "confidence": 9
+        },
+        {
+          "hash": 3816314673,
+          "filename": "Data/Music/Plump05/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3260013152,
+          "filename": "Data/C24FDA60",
+          "confidence": 0
+        },
+        {
+          "hash": 1419865565,
+          "filename": "Data/54A16DDD",
+          "confidence": 0
+        },
+        {
+          "hash": 2934222176,
+          "filename": "Data/Billboards/logo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 444331685,
+          "filename": "Data/Billboards/cone.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2920805726,
+          "filename": "Data/Billboards/cube.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3124408327,
+          "filename": "Data/Billboards/cylinder.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 475217775,
+          "filename": "Data/Billboards/darts.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 963626640,
+          "filename": "Data/Billboards/kitty.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1850064009,
+          "filename": "Data/Billboards/torus.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 471371199,
+          "filename": "Data/Billboards/earth.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3382019627,
+          "filename": "Data/Billboards/Adverts/advert_001.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3297109082,
+          "filename": "Data/Billboards/Adverts/advert_008.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3391740670,
+          "filename": "Data/Billboards/Adverts/advert_014.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2013857518,
+          "filename": "Data/Billboards/Adverts/advert_013.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2385902843,
+          "filename": "Data/Billboards/Adverts/advert_002.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3008746827,
+          "filename": "Data/Billboards/Adverts/advert_003.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4192587242,
+          "filename": "Data/Billboards/Adverts/advert_009.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1008017643,
+          "filename": "Data/Billboards/Adverts/advert_005.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4148818766,
+          "filename": "Data/Billboards/Adverts/advert_015.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 24447323,
+          "filename": "Data/Billboards/Adverts/advert_004.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 46749070,
+          "filename": "Data/Billboards/Adverts/advert_011.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2075482683,
+          "filename": "Data/Billboards/Adverts/advert_006.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1164521310,
+          "filename": "Data/Billboards/Adverts/advert_012.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1188393867,
+          "filename": "Data/Billboards/Adverts/advert_007.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1068071998,
+          "filename": "Data/Billboards/Adverts/advert_010.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 628464311,
+          "filename": "Data/Billboards/2DVexWindow/Qirex/Q.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 995468791,
+          "filename": "Data/Billboards/2DVexWindow/Assegai/gold.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2868993035,
+          "filename": "Data/Billboards/2DVexWindow/Assegai/hope.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3299622602,
+          "filename": "Data/Billboards/2DVexWindow/Agsystems1/people.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2501005856,
+          "filename": "Data/Billboards/2DVexWindow/Triakis/hardcore.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1068428483,
+          "filename": "Data/Billboards/2DVexWindow/Triakis/danger.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2601678052,
+          "filename": "Data/Billboards/3DVexWindow/Harimau/logo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1636109933,
+          "filename": "Data/Billboards/3DVexWindow/Harimau/logo2.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4056642967,
+          "filename": "Data/Billboards/3DVexWindow/Agsystems2/mankind.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2039016559,
+          "filename": "Data/Billboards/3DVexWindow/Agsystems2/logo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 979871181,
+          "filename": "Data/Billboards/3DVexWindow/Piranha/blinds.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1780801069,
+          "filename": "Data/Billboards/3DVexWindow/Piranha/3DPiranaha.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3462458776,
+          "filename": "Data/Billboards/3DVexWindow/Feisar/coin.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 271235060,
+          "filename": "Data/Billboards/3DVexWindow/Feisar/logo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 122272018,
+          "filename": "Data/Billboards/3DVexWindow/Auricom/logo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1095243675,
+          "filename": "Data/Billboards/3DVexWindow/Auricom/flag.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 205177294,
+          "filename": "Data/Billboards/3DVexWindow/Qirex/logo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1014873645,
+          "filename": "Data/Billboards/3DVexWindow/Qirex/purple.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1938517307,
+          "filename": "Data/Billboards/3DVexWindow/Triakis/mega.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4104465036,
+          "filename": "Data/Billboards/3DVexWindow/Assegai/logo01.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 470717841,
+          "filename": "Data/Billboards/2D/Animated/billboard1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3186690270,
+          "filename": "Data/Weapons/electric_halo2.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 185710700,
+          "filename": "Data/Weapons/shield_cockpit.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1191419029,
+          "filename": "Data/Weapons/shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3168059877,
+          "filename": "Data/Weapons/disruptor_cockpit.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3717112393,
+          "filename": "Data/Weapons/disruptor_effect.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 896736790,
+          "filename": "Data/Weapons/bomb_shockwave.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2090945310,
+          "filename": "Data/Weapons/disruptor_head.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 274820911,
+          "filename": "Data/Weapons/explosion_hemisphere.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 891917381,
+          "filename": "Data/Weapons/Mine.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3144490349,
+          "filename": "Data/Weapons/Bomb.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1253063613,
+          "filename": "Data/Weapons/rocket.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1566821144,
+          "filename": "Data/Weapons/plasma_shockwave.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 956002388,
+          "filename": "Data/Weapons/plasma_hemisphere.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 739924375,
+          "filename": "Data/Weapons/missile_wave.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1084787173,
+          "filename": "Data/Weapons/shockwave_002.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 118027061,
+          "filename": "Data/Weapons/shockwave_001.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1356353534,
+          "filename": "Data/Weapons/explosion_hemisphere3.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1840801358,
+          "filename": "Data/Weapons/explosion_hemisphere2.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1140203759,
+          "filename": "Data/Weapons/vr_shield_cockpit.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3062742783,
+          "filename": "Data/Weapons/vr_shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4041105083,
+          "filename": "Data/Weapons/vr_Mine.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2124076947,
+          "filename": "Data/Weapons/vr_Bomb.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 971681218,
+          "filename": "Data/Weapons/Textures/rocket_scorch.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 513659405,
+          "filename": "Data/Weapons/Textures/rocket_trail01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3608497789,
+          "filename": "Data/Skins/Default/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2890654132,
+          "filename": "Data/Skins/Default/AC4BE1B4.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1796697756,
+          "filename": "Data/Skins/Default/definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2570601358,
+          "filename": "Data/Skins/Default/Images/yesno.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3920771340,
+          "filename": "Data/Skins/Default/Images/classgraph.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 231833990,
+          "filename": "Data/Skins/Default/Images/venomgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 816949302,
+          "filename": "Data/Skins/Default/Images/venomgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 168066053,
+          "filename": "Data/Skins/Default/Images/vectorgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 929322421,
+          "filename": "Data/Skins/Default/Images/vectorgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1468424851,
+          "filename": "Data/Skins/Default/Images/rapiergraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1793477411,
+          "filename": "Data/Skins/Default/Images/rapiergraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 951577486,
+          "filename": "Data/Skins/Default/Images/phantomgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 98026046,
+          "filename": "Data/Skins/Default/Images/phantomgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3100653699,
+          "filename": "Data/Skins/Default/Images/flashgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2242908467,
+          "filename": "Data/Skins/Default/Images/flashgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2057537716,
+          "filename": "Data/Tournaments/Images/classicleague.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2719591218,
+          "filename": "Data/Tournaments/Images/championship.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4045603499,
+          "filename": "Data/Tournaments/Images/betaleague.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1154952344,
+          "filename": "Data/Tournaments/Images/alphaleague.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2147413349,
+          "filename": "Data/Tournaments/Championship/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 900727783,
+          "filename": "Data/Tournaments/Alpha/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3036921947,
+          "filename": "Data/Tournaments/Beta/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 811277463,
+          "filename": "Data/Tournaments/Classic/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 220881058,
+          "filename": "Data/0D2A60A2.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4229104620,
+          "filename": "Data/FC1303EC.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1627141387,
+          "filename": "Data/60FC350B.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1350133080,
+          "filename": "Data/Sound/speech.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 3419879032,
+          "filename": "Data/Sound/ship.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 481194202,
+          "filename": "Data/Sound/generaltrack.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 104172243,
+          "filename": "Data/Sound/envsinucit.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 358821515,
+          "filename": "Data/Sound/hud.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1974015553,
+          "filename": "Data/Sound/frontend.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 3202923597,
+          "filename": "Data/Sound/envvinetta.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 29280292,
+          "filename": "Data/Sound/weapons.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1725673270,
+          "filename": "Data/Sound/envsebencoclimb.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1310978563,
+          "filename": "Data/Sound/envblueridge.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 881876461,
+          "filename": "Data/Sound/envcittanuova.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2904364982,
+          "filename": "Data/Sound/envchenghou.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 3516433908,
+          "filename": "Data/Sound/envmodesto.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1790178451,
+          "filename": "Data/Sound/envsol.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 848984960,
+          "filename": "Data/Tex/vr_fxgrid2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1966735696,
+          "filename": "Data/Tex/vr_fxgrid1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2858457496,
+          "filename": "Data/Tex/circle.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1547084535,
+          "filename": "Data/Tex/phil.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 278295125,
+          "filename": "Data/Tex/darts.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2373849714,
+          "filename": "Data/Tex/kitten.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 100374713,
+          "filename": "Data/Tex/reflect.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 578326723,
+          "filename": "Data/Tex/squares.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 342482664,
+          "filename": "Data/Tex/staticglow.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1602309581,
+          "filename": "Data/Tex/static.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3717699345,
+          "filename": "Data/Tex/Choppy.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 10114074,
+          "filename": "Data/Tex/watersun.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3889014949,
+          "filename": "Data/Tex/LensFlare/LensflareComponents.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2521410555,
+          "filename": "Data/Tex/Cloud/Clouds.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2982745352,
+          "filename": "Data/Tex/ScreenFX/mist.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1880712396,
+          "filename": "Data/Tex/Weapons/absorb_surface.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 318478728,
+          "filename": "Data/Tex/Weapons/animfizzle.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2101200031,
+          "filename": "Data/Tex/Weapons/plasma_fizzle.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 582620316,
+          "filename": "Data/Tex/22BA149C.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 587741299,
+          "filename": "Data/Tex/noisemattvr.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1688748707,
+          "filename": "Data/Tex/noisematt.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 632092266,
+          "filename": "Data/Tex/EngineFlare/vr_engine_noise.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2702078813,
+          "filename": "Data/Tex/EngineFlare/A10E735D.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 725596025,
+          "filename": "Data/Tex/EngineFlare/MissileTrail.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 458089482,
+          "filename": "Data/Tex/EngineFlare/MissileTrail2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 640535994,
+          "filename": "Data/Tex/EngineFlare/MissileTrail3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2483884458,
+          "filename": "Data/Tex/EngineFlare/MissileTrail4.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2842507290,
+          "filename": "Data/Tex/EngineFlare/MissileTrail5.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4006429386,
+          "filename": "Data/Tex/EngineFlare/MissileTrail6.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4137022307,
+          "filename": "Data/Tex/F695F363.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 812502664,
+          "filename": "Data/Tex/306DCE88.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3935637573,
+          "filename": "Data/Tex/EA951045.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 655809227,
+          "filename": "Data/Tex/2716DACB.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3623172597,
+          "filename": "Data/Tex/D7F539F5.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1131919106,
+          "filename": "Data/Tex/4377B702.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1708516837,
+          "filename": "Data/Tex/65D5E5E5.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1410114369,
+          "filename": "Data/Tex/540CA341.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1488309333,
+          "filename": "Data/Tex/58B5CC55.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1837211524,
+          "filename": "Data/Tex/6D819F84.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 521516677,
+          "filename": "Data/Tex/1F15B685.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 571519951,
+          "filename": "Data/Tex/EngineFlare/DC_grad_08.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2135119113,
+          "filename": "Data/Tex/7F435509.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3445852441,
+          "filename": "Data/Tex/CD638919.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4026769577,
+          "filename": "Data/Tex/F003A0A9.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2688558110,
+          "filename": "Data/Tex/EngineFlare/DC_grad_07.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2636123566,
+          "filename": "Data/Tex/EngineFlare/DC_grad_06.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3665852286,
+          "filename": "Data/Tex/EngineFlare/DC_grad_05.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3890241230,
+          "filename": "Data/Tex/EngineFlare/DC_grad_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1438679774,
+          "filename": "Data/Tex/EngineFlare/DC_grad_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1755360110,
+          "filename": "Data/Tex/EngineFlare/DC_grad_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 788582846,
+          "filename": "Data/Tex/EngineFlare/DC_grad_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 803207793,
+          "filename": "Data/Tex/2FDFFA71.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 314561473,
+          "filename": "Data/Tex/12BFD3C1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1428138257,
+          "filename": "Data/Tex/551FA911.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1753186465,
+          "filename": "Data/Tex/687F80A1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3663682737,
+          "filename": "Data/Tex/DA5F5CB1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3879695617,
+          "filename": "Data/Tex/E73F7501.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2694778833,
+          "filename": "Data/Tex/A09F0FD1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3692997902,
+          "filename": "Data/Tex/DC1EAD0E.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1319742619,
+          "filename": "Data/Tex/4EA9AC9B.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3438885706,
+          "filename": "Data/Tex/CCF93B4A.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4053340922,
+          "filename": "Data/Tex/F19912FA.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3057215530,
+          "filename": "Data/Tex/B639682A.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2337882522,
+          "filename": "Data/Tex/8B59419A.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 964271498,
+          "filename": "Data/Tex/39799D8A.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 68793402,
+          "filename": "Data/Tex/0419B43A.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1136250602,
+          "filename": "Data/Tex/43B9CEEA.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2023100886,
+          "filename": "Data/Tex/789611D6.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2821507146,
+          "filename": "Data/FE/Trophies/bronze.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3022770342,
+          "filename": "Data/FE/Trophies/silver.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1524586335,
+          "filename": "Data/FE/Trophies/gold.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3915386041,
+          "filename": "Data/FE/Trophies/textures/trophy.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3825410771,
+          "filename": "Data/FE/Images/dotline.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1737480213,
+          "filename": "Data/FE/Images/League_logo_small.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2060054584,
+          "filename": "Data/FE/Images/FE_Elements.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2868387909,
+          "filename": "Data/FE/Images/class_background.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3973150710,
+          "filename": "Data/FE/Images/bloke.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3197111796,
+          "filename": "Data/FE/Images/Logo.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2428208587,
+          "filename": "Data/FE/Images/90BB85CB.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1550848426,
+          "filename": "Data/FE/Images/carrow.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2190260255,
+          "filename": "Data/FE/Images/828CB81F.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1694155321,
+          "filename": "Data/FE/Images/64FAC239.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3528437192,
+          "filename": "Data/FE/Images/loading_screen_DEMO.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3470902692,
+          "filename": "Data/FE/Images/FEtextures.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 140903567,
+          "filename": "Data/FE/Images/background.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2372625962,
+          "filename": "Data/FE/Fonts/8D6B662A.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 2337299334,
+          "filename": "Data/FE/Fonts/8B505B86.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 3540416062,
+          "filename": "Data/FE/Fonts/small.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 2450431377,
+          "filename": "Data/FE/Fonts/920E9D91.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 2796700066,
+          "filename": "Data/FE/Fonts/A6B241A2.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 3325164080,
+          "filename": "Data/FE/Fonts/C631FA30.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 2970633509,
+          "filename": "Data/FE/Fonts/B1104525.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 2772414830,
+          "filename": "Data/FE/Fonts/LTe50325.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 911922225,
+          "filename": "Data/FE/Fonts/FX300ANG.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 2831082317,
+          "filename": "Data/FE/Fonts/A8BEE34D.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 827102645,
+          "filename": "Data/FE/Fonts/jap_default.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 85223538,
+          "filename": "Data/Psys/WO_SHIP_FXNODE_BIGEXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 622707533,
+          "filename": "Data/Psys/WO_SHIP_EXPLO_SMOKE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3440294577,
+          "filename": "Data/Psys/WO_SHIP_FXNODE_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3509970558,
+          "filename": "Data/Psys/WO_MINE_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3889628256,
+          "filename": "Data/Psys/WO_DISRUPTOR_LAUNCH.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4043118065,
+          "filename": "Data/Psys/WO_BOMB_GLOW.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 3686779612,
+          "filename": "Data/Psys/WO_BOMB_SMOKERING.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 513973956,
+          "filename": "Data/Psys/WO_DISRUPTOR_EXPLO.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 1066524727,
+          "filename": "Data/Psys/WO_DISRUPTOR_HEAD.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 1070252636,
+          "filename": "Data/Psys/WO_MISSILE_BOUNCE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 560818449,
+          "filename": "Data/Psys/WO_MISSILE_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 1163978897,
+          "filename": "Data/Psys/WO_MISSILE_HEAD.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2955006814,
+          "filename": "Data/Psys/WO_MODESTO_STEAM_A.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4152469902,
+          "filename": "Data/Psys/WO_MODESTO_STEAM_B.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 1903202044,
+          "filename": "Data/Psys/WO_PLASMA_CHARGE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2417581140,
+          "filename": "Data/Psys/WO_PLASMA_EXPLO.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4175151650,
+          "filename": "Data/Psys/WO_PLASMA_FIZZLE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 985434538,
+          "filename": "Data/Psys/WO_PLASMA_HEAD.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4166816898,
+          "filename": "Data/Psys/WO_QUAKE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 1666660544,
+          "filename": "Data/Psys/WO_QUAKE_NEW_ROCKS.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 3489905699,
+          "filename": "Data/Psys/WO_ROCKET_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2746897159,
+          "filename": "Data/Psys/WO_ROCKET_FLARE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 642971463,
+          "filename": "Data/Psys/WO_SHIP_COLL_SPARK.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2961336339,
+          "filename": "Data/Psys/WO_SHIP_COLL_SPARK_TRAIL.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2048661889,
+          "filename": "Data/Psys/WO_SHIP_COLL_SPARK_TRAIL_SMOKE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 184451482,
+          "filename": "Data/Psys/WO_SHIP_ENGINEFLARE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 275440006,
+          "filename": "Data/Psys/WO_SNOW.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2145807167,
+          "filename": "Data/Psys/WO_TRACK_ROCK_DEBRIS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3157281989,
+          "filename": "Data/Psys/WO_UNDERWATER_DEBRIS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4021267230,
+          "filename": "Data/Psys/WO_VR_ENV_SPARK.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2856791371,
+          "filename": "Data/Psys/WO_WEAPON_ABSORB.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3274201640,
+          "filename": "Data/Psys/WO_SHIP_NEWFIRE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4004113119,
+          "filename": "Data/Psys/WO_SHIP_EXPLOSION_DEBRIS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 284971323,
+          "filename": "Data/Psys/WO_ENGINE_FIRE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 1424338484,
+          "filename": "Data/Psys/WO_SHIP_ENGINESMOKE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4043366361,
+          "filename": "Data/Psys/WO_RAIN_LENS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2434893599,
+          "filename": "Data/Psys/WO_RAIN.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4133900128,
+          "filename": "Data/Psys/WO_BLUE_WELDER.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 618182727,
+          "filename": "Data/Zone/04_Zone/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3615768697,
+          "filename": "Data/Zone/04_Zone/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3813980456,
+          "filename": "Data/Zone/04_Zone/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3901594497,
+          "filename": "Data/Zone/04_Zone/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3589124657,
+          "filename": "Data/Zone/04_Zone/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2454571233,
+          "filename": "Data/Zone/04_Zone/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 72008716,
+          "filename": "Data/Zone/03_Zone/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 712882188,
+          "filename": "Data/Zone/03_Zone/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1823123816,
+          "filename": "Data/Zone/03_Zone/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 514670941,
+          "filename": "Data/Zone/03_Zone/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 652044073,
+          "filename": "Data/Zone/03_Zone/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 465391257,
+          "filename": "Data/Zone/03_Zone/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1545417801,
+          "filename": "Data/Zone/03_Zone/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2213285711,
+          "filename": "Data/Zone/02_Zone/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2215979421,
+          "filename": "Data/Zone/02_Zone/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2965754060,
+          "filename": "Data/Zone/02_Zone/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2203514663,
+          "filename": "Data/Zone/02_Zone/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3191266967,
+          "filename": "Data/Zone/02_Zone/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4187399239,
+          "filename": "Data/Zone/02_Zone/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3497415883,
+          "filename": "Data/Zone/01_Zone/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2916982127,
+          "filename": "Data/Zone/01_Zone/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2567791678,
+          "filename": "Data/Zone/01_Zone/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3065725300,
+          "filename": "Data/Zone/01_Zone/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2346412228,
+          "filename": "Data/Zone/01_Zone/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3430617620,
+          "filename": "Data/Zone/01_Zone/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3829388496,
+          "filename": "Data/Defaults/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2065979395,
+          "filename": "Data/Defaults/skycube.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2416636316,
+          "filename": "Data/Defaults/LoadingGrid.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2060621598,
+          "filename": "Data/Defaults/LoadingStart1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1030942158,
+          "filename": "Data/Defaults/LoadingStart2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 289498087,
+          "filename": "Data/Defaults/LoadingFullScreenZone.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4101773710,
+          "filename": "Data/Defaults/LoadingFullScreen.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1681106315,
+          "filename": "Data/XML/songlist.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 691280274,
+          "filename": "Data/XML/DevFE.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3328417148,
+          "filename": "Data/XML/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3340415619,
+          "filename": "Data/XML/AIRaceStats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2893302413,
+          "filename": "Data/XML/WeaponAIStats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 606432381,
+          "filename": "Data/XML/AIControlStats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3892144804,
+          "filename": "Data/XML/weaponstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 54256113,
+          "filename": "Data/XML/Arcade_HUD.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1468075989,
+          "filename": "Data/XML/TimeTrial_HUD.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3437272105,
+          "filename": "Data/XML/Zone_HUD.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 460601576,
+          "filename": "Data/Ships/Zone_01/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 108375016,
+          "filename": "Data/Ships/Zone_01/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2530624477,
+          "filename": "Data/Ships/Zone_01/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2309377746,
+          "filename": "Data/Ships/Harimau/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 447502666,
+          "filename": "Data/Ships/Harimau/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1687220794,
+          "filename": "Data/Ships/Harimau/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 584550156,
+          "filename": "Data/Ships/Harimau/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2609596104,
+          "filename": "Data/Ships/Harimau/Images/harimautop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3707419796,
+          "filename": "Data/Ships/Harimau/Images/harimauside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3697943967,
+          "filename": "Data/Ships/Harimau/Images/harimau3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3516715586,
+          "filename": "Data/Ships/Harimau/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 635412772,
+          "filename": "Data/Ships/Triakis/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3793700227,
+          "filename": "Data/Ships/Triakis/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4094941245,
+          "filename": "Data/Ships/Triakis/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1791984760,
+          "filename": "Data/Ships/Triakis/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 558756273,
+          "filename": "Data/Ships/Triakis/Images/triakistop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4120490939,
+          "filename": "Data/Ships/Triakis/Images/triakisside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3404421483,
+          "filename": "Data/Ships/Triakis/Images/triakis3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2260500324,
+          "filename": "Data/Ships/Triakis/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4213418176,
+          "filename": "Data/Ships/Assegai/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 124534275,
+          "filename": "Data/Ships/Assegai/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3777366323,
+          "filename": "Data/Ships/Assegai/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 687985864,
+          "filename": "Data/Ships/Assegai/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 892044864,
+          "filename": "Data/Ships/Assegai/Images/assegaitop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1060575046,
+          "filename": "Data/Ships/Assegai/Images/assegaiside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2915100535,
+          "filename": "Data/Ships/Assegai/Images/assegai3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1302201016,
+          "filename": "Data/Ships/Assegai/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 948185750,
+          "filename": "Data/Ships/Piranha/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 767918720,
+          "filename": "Data/Ships/Piranha/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 38405538,
+          "filename": "Data/Ships/Piranha/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3327528881,
+          "filename": "Data/Ships/Piranha/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2260476373,
+          "filename": "Data/Ships/Piranha/Images/piranhatop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3219253034,
+          "filename": "Data/Ships/Piranha/Images/piranhaside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1545428111,
+          "filename": "Data/Ships/Piranha/Images/piranha3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1688771835,
+          "filename": "Data/Ships/Piranha/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2372670011,
+          "filename": "Data/Ships/AG_Systems/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2621034625,
+          "filename": "Data/Ships/AG_Systems/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 54479368,
+          "filename": "Data/Ships/AG_Systems/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1680274118,
+          "filename": "Data/Ships/AG_Systems/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1695043076,
+          "filename": "Data/Ships/AG_Systems/Images/agstop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1322692871,
+          "filename": "Data/Ships/AG_Systems/Images/agsside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2340003591,
+          "filename": "Data/Ships/AG_Systems/Images/ags3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2859141273,
+          "filename": "Data/Ships/AG_Systems/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 953849540,
+          "filename": "Data/Ships/Qirex/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2891791696,
+          "filename": "Data/Ships/Qirex/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1586556083,
+          "filename": "Data/Ships/Qirex/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2349649822,
+          "filename": "Data/Ships/Qirex/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3491502275,
+          "filename": "Data/Ships/Qirex/Images/qirextop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1264841282,
+          "filename": "Data/Ships/Qirex/Images/qirexside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1340107194,
+          "filename": "Data/Ships/Qirex/Images/qirex3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3476290402,
+          "filename": "Data/Ships/Qirex/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2264372412,
+          "filename": "Data/Ships/Auricom/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2011748787,
+          "filename": "Data/Ships/Auricom/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 732524985,
+          "filename": "Data/Ships/Auricom/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2246370145,
+          "filename": "Data/Ships/Auricom/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3427719628,
+          "filename": "Data/Ships/Auricom/Images/auricomtop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3686841618,
+          "filename": "Data/Ships/Auricom/Images/auricomside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1900020971,
+          "filename": "Data/Ships/Auricom/Images/auricom3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3795385539,
+          "filename": "Data/Ships/Auricom/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2471398717,
+          "filename": "Data/Ships/Feisar/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 725973775,
+          "filename": "Data/Ships/Feisar/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3750090478,
+          "filename": "Data/Ships/Feisar/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3273127698,
+          "filename": "Data/Ships/Feisar/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3527405378,
+          "filename": "Data/Ships/Feisar/Images/feisartop.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3521012227,
+          "filename": "Data/Ships/Feisar/Images/feisarside.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 25485945,
+          "filename": "Data/Ships/Feisar/Images/feisar3D.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 728903505,
+          "filename": "Data/Ships/Feisar/VR/Ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3972861901,
+          "filename": "Data/Environments/12_Sol_2/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 358763083,
+          "filename": "Data/Environments/12_Sol_2/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4288983593,
+          "filename": "Data/Environments/12_Sol_2/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 565359386,
+          "filename": "Data/Environments/12_Sol_2/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1171932047,
+          "filename": "Data/Environments/12_Sol_2/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2025482815,
+          "filename": "Data/Environments/12_Sol_2/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1058672879,
+          "filename": "Data/Environments/12_Sol_2/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3313966167,
+          "filename": "Data/Environments/10_Sebenco_Climb/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2260224050,
+          "filename": "Data/Environments/10_Sebenco_Climb/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2804723560,
+          "filename": "Data/Environments/10_Sebenco_Climb/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2993205603,
+          "filename": "Data/Environments/10_Sebenco_Climb/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3485338010,
+          "filename": "Data/Environments/10_Sebenco_Climb/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4074643498,
+          "filename": "Data/Environments/10_Sebenco_Climb/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3044956922,
+          "filename": "Data/Environments/10_Sebenco_Climb/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3974711132,
+          "filename": "Data/Environments/09_Citta_Nuova_V/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 824892235,
+          "filename": "Data/Environments/09_Citta_Nuova_V/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1850563630,
+          "filename": "Data/Environments/09_Citta_Nuova_V/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 100278810,
+          "filename": "Data/Environments/09_Citta_Nuova_V/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1294568414,
+          "filename": "Data/Environments/09_Citta_Nuova_V/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1883873902,
+          "filename": "Data/Environments/09_Citta_Nuova_V/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 938072254,
+          "filename": "Data/Environments/09_Citta_Nuova_V/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3275922638,
+          "filename": "Data/Environments/08_Sinucit/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4119711351,
+          "filename": "Data/Environments/08_Sinucit/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1774009079,
+          "filename": "Data/Environments/08_Sinucit/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3244111654,
+          "filename": "Data/Environments/08_Sinucit/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3103929877,
+          "filename": "Data/Environments/08_Sinucit/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2221023141,
+          "filename": "Data/Environments/08_Sinucit/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3284297077,
+          "filename": "Data/Environments/08_Sinucit/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2186582111,
+          "filename": "Data/Environments/07_Blue_Ridge/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3891478492,
+          "filename": "Data/Environments/07_Blue_Ridge/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1311618661,
+          "filename": "Data/Environments/07_Blue_Ridge/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3542337165,
+          "filename": "Data/Environments/07_Blue_Ridge/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 511391254,
+          "filename": "Data/Environments/07_Blue_Ridge/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 588980134,
+          "filename": "Data/Environments/07_Blue_Ridge/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1690002806,
+          "filename": "Data/Environments/07_Blue_Ridge/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1861112420,
+          "filename": "Data/Environments/04_Chenghou_Project/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1053499933,
+          "filename": "Data/Environments/04_Chenghou_Project/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1359099467,
+          "filename": "Data/Environments/04_Chenghou_Project/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 169597772,
+          "filename": "Data/Environments/04_Chenghou_Project/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4173636405,
+          "filename": "Data/Environments/04_Chenghou_Project/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3315894917,
+          "filename": "Data/Environments/04_Chenghou_Project/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2181361749,
+          "filename": "Data/Environments/04_Chenghou_Project/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 188722318,
+          "filename": "Data/Environments/03_Modesto_Heights/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1609305669,
+          "filename": "Data/Environments/03_Modesto_Heights/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3240966052,
+          "filename": "Data/Environments/03_Modesto_Heights/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1799157524,
+          "filename": "Data/Environments/03_Modesto_Heights/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1445325999,
+          "filename": "Data/Environments/03_Modesto_Heights/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1799734559,
+          "filename": "Data/Environments/03_Modesto_Heights/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 753254351,
+          "filename": "Data/Environments/03_Modesto_Heights/Images/Track_1.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1142925446,
+          "filename": "Data/Environments/01_Vineta_K/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2686080230,
+          "filename": "Data/Environments/01_Vineta_K/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 51017418,
+          "filename": "Data/Environments/01_Vineta_K/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2496310711,
+          "filename": "Data/Environments/01_Vineta_K/track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2894076327,
+          "filename": "Data/Environments/01_Vineta_K/Images/Track_3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2447388695,
+          "filename": "Data/Environments/01_Vineta_K/Images/Track_2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3594537671,
+          "filename": "Data/Environments/01_Vineta_K/Images/Track_1.mip",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PSP_GAME/USRDIR/FE.wad",
+      "files": [
+        {
+          "hash": 3789168474,
+          "filename": "Data/Plugins/E1DA1F5A.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3793589594,
+          "filename": "Data/Plugins/PI000/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1282737355,
+          "filename": "Data/Plugins/PI001/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 236483684,
+          "filename": "Data/Plugins/0E187464.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3895574304,
+          "filename": "Data/Plugins/E831BF20.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 908909021,
+          "filename": "Data/Plugins/PI004/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 133420062,
+          "filename": "Data/Plugins/07F3D41E.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2554611788,
+          "filename": "Data/Plugins/PI005/Definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1796697756,
+          "filename": "Data/Skins/Default/definition.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2570601358,
+          "filename": "Data/Skins/Default/Images/yesno.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3920771340,
+          "filename": "Data/Skins/Default/Images/classgraph.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 231833990,
+          "filename": "Data/Skins/Default/Images/venomgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 816949302,
+          "filename": "Data/Skins/Default/Images/venomgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 168066053,
+          "filename": "Data/Skins/Default/Images/vectorgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 929322421,
+          "filename": "Data/Skins/Default/Images/vectorgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1468424851,
+          "filename": "Data/Skins/Default/Images/rapiergraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1793477411,
+          "filename": "Data/Skins/Default/Images/rapiergraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 951577486,
+          "filename": "Data/Skins/Default/Images/phantomgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 98026046,
+          "filename": "Data/Skins/Default/Images/phantomgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3100653699,
+          "filename": "Data/Skins/Default/Images/flashgraph3.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2242908467,
+          "filename": "Data/Skins/Default/Images/flashgraph2.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1974015553,
+          "filename": "Data/Sound/frontend.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 3419879032,
+          "filename": "Data/Sound/ship.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 481194202,
+          "filename": "Data/Sound/generaltrack.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 358821515,
+          "filename": "Data/Sound/hud.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 29280292,
+          "filename": "Data/Sound/weapons.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1350133080,
+          "filename": "Data/Sound/speech.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2821507146,
+          "filename": "Data/FE/Trophies/bronze.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3022770342,
+          "filename": "Data/FE/Trophies/silver.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1524586335,
+          "filename": "Data/FE/Trophies/gold.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3915386041,
+          "filename": "Data/FE/Trophies/textures/trophy.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1461155193,
+          "filename": "Data/57177579",
+          "confidence": 0
+        },
+        {
+          "hash": 4101773710,
+          "filename": "Data/Defaults/LoadingFullScreen.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 289498087,
+          "filename": "Data/Defaults/LoadingFullScreenZone.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3825410771,
+          "filename": "Data/FE/Images/dotline.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1737480213,
+          "filename": "Data/FE/Images/League_logo_small.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2060054584,
+          "filename": "Data/FE/Images/FE_Elements.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3470902692,
+          "filename": "Data/FE/Images/FEtextures.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2868387909,
+          "filename": "Data/FE/Images/class_background.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 140903567,
+          "filename": "Data/FE/Images/background.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3197111796,
+          "filename": "Data/FE/Images/Logo.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2428208587,
+          "filename": "Data/FE/Images/90BB85CB.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1550848426,
+          "filename": "Data/FE/Images/carrow.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2190260255,
+          "filename": "Data/FE/Images/828CB81F.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2372625962,
+          "filename": "Data/FE/Fonts/8D6B662A.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 2337299334,
+          "filename": "Data/FE/Fonts/8B505B86.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 3540416062,
+          "filename": "Data/FE/Fonts/small.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 827102645,
+          "filename": "Data/FE/Fonts/jap_default.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 2450431377,
+          "filename": "Data/FE/Fonts/920E9D91.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 2796700066,
+          "filename": "Data/FE/Fonts/A6B241A2.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 3325164080,
+          "filename": "Data/FE/Fonts/C631FA30.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 2772414830,
+          "filename": "Data/FE/Fonts/LTe50325.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 2970633509,
+          "filename": "Data/FE/Fonts/B1104525.fnt",
+          "confidence": 0
+        },
+        {
+          "hash": 911922225,
+          "filename": "Data/FE/Fonts/FX300ANG.fnt",
+          "confidence": 9
+        },
+        {
+          "hash": 3829388496,
+          "filename": "Data/Defaults/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3144490349,
+          "filename": "Data/Weapons/Bomb.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 891917381,
+          "filename": "Data/Weapons/Mine.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2124076947,
+          "filename": "Data/Weapons/vr_Bomb.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4041105083,
+          "filename": "Data/Weapons/vr_Mine.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1253063613,
+          "filename": "Data/Weapons/rocket.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 274820911,
+          "filename": "Data/Weapons/explosion_hemisphere.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 896736790,
+          "filename": "Data/Weapons/bomb_shockwave.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3717112393,
+          "filename": "Data/Weapons/disruptor_effect.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3168059877,
+          "filename": "Data/Weapons/disruptor_cockpit.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3186690270,
+          "filename": "Data/Weapons/electric_halo2.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1191419029,
+          "filename": "Data/Weapons/shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 185710700,
+          "filename": "Data/Weapons/shield_cockpit.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3062742783,
+          "filename": "Data/Weapons/vr_shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1140203759,
+          "filename": "Data/Weapons/vr_shield_cockpit.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2688558110,
+          "filename": "Data/Tex/EngineFlare/DC_grad_07.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 513659405,
+          "filename": "Data/Weapons/Textures/rocket_trail01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4006429386,
+          "filename": "Data/Tex/EngineFlare/MissileTrail6.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 318478728,
+          "filename": "Data/Tex/Weapons/animfizzle.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 971681218,
+          "filename": "Data/Weapons/Textures/rocket_scorch.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2858457496,
+          "filename": "Data/Tex/circle.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3717699345,
+          "filename": "Data/Tex/Choppy.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1880712396,
+          "filename": "Data/Tex/Weapons/absorb_surface.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 606432381,
+          "filename": "Data/XML/AIControlStats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3340415619,
+          "filename": "Data/XML/AIRaceStats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 85223538,
+          "filename": "Data/Psys/WO_SHIP_FXNODE_BIGEXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 622707533,
+          "filename": "Data/Psys/WO_SHIP_EXPLO_SMOKE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3440294577,
+          "filename": "Data/Psys/WO_SHIP_FXNODE_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3509970558,
+          "filename": "Data/Psys/WO_MINE_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3889628256,
+          "filename": "Data/Psys/WO_DISRUPTOR_LAUNCH.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4043118065,
+          "filename": "Data/Psys/WO_BOMB_GLOW.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 3686779612,
+          "filename": "Data/Psys/WO_BOMB_SMOKERING.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 513973956,
+          "filename": "Data/Psys/WO_DISRUPTOR_EXPLO.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 1066524727,
+          "filename": "Data/Psys/WO_DISRUPTOR_HEAD.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 1070252636,
+          "filename": "Data/Psys/WO_MISSILE_BOUNCE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 560818449,
+          "filename": "Data/Psys/WO_MISSILE_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 1163978897,
+          "filename": "Data/Psys/WO_MISSILE_HEAD.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2955006814,
+          "filename": "Data/Psys/WO_MODESTO_STEAM_A.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4152469902,
+          "filename": "Data/Psys/WO_MODESTO_STEAM_B.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 1903202044,
+          "filename": "Data/Psys/WO_PLASMA_CHARGE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2417581140,
+          "filename": "Data/Psys/WO_PLASMA_EXPLO.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4175151650,
+          "filename": "Data/Psys/WO_PLASMA_FIZZLE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 985434538,
+          "filename": "Data/Psys/WO_PLASMA_HEAD.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4166816898,
+          "filename": "Data/Psys/WO_QUAKE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 1666660544,
+          "filename": "Data/Psys/WO_QUAKE_NEW_ROCKS.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 3489905699,
+          "filename": "Data/Psys/WO_ROCKET_EXPLO.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2746897159,
+          "filename": "Data/Psys/WO_ROCKET_FLARE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 642971463,
+          "filename": "Data/Psys/WO_SHIP_COLL_SPARK.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2961336339,
+          "filename": "Data/Psys/WO_SHIP_COLL_SPARK_TRAIL.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2048661889,
+          "filename": "Data/Psys/WO_SHIP_COLL_SPARK_TRAIL_SMOKE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 184451482,
+          "filename": "Data/Psys/WO_SHIP_ENGINEFLARE.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 275440006,
+          "filename": "Data/Psys/WO_SNOW.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2145807167,
+          "filename": "Data/Psys/WO_TRACK_ROCK_DEBRIS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3157281989,
+          "filename": "Data/Psys/WO_UNDERWATER_DEBRIS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4021267230,
+          "filename": "Data/Psys/WO_VR_ENV_SPARK.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 2856791371,
+          "filename": "Data/Psys/WO_WEAPON_ABSORB.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 3274201640,
+          "filename": "Data/Psys/WO_SHIP_NEWFIRE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4004113119,
+          "filename": "Data/Psys/WO_SHIP_EXPLOSION_DEBRIS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 284971323,
+          "filename": "Data/Psys/WO_ENGINE_FIRE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 1424338484,
+          "filename": "Data/Psys/WO_SHIP_ENGINESMOKE.POB",
+          "confidence": 9
+        },
+        {
+          "hash": 4043366361,
+          "filename": "Data/Psys/WO_RAIN_LENS.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2434893599,
+          "filename": "Data/Psys/WO_RAIN.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 4133900128,
+          "filename": "Data/Psys/WO_BLUE_WELDER.pob",
+          "confidence": 9
+        },
+        {
+          "hash": 2568003230,
+          "filename": "Data/HUD/Bar_outline_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4059929851,
+          "filename": "Data/HUD/grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1648396573,
+          "filename": "Data/HUD/Bar_3.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1595973805,
+          "filename": "Data/HUD/Bar_2.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 411097725,
+          "filename": "Data/HUD/Bar_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1834676670,
+          "filename": "Data/HUD/Weapon_disruptor.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4235870570,
+          "filename": "Data/HUD/Weapon_turbo.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 16788758,
+          "filename": "Data/HUD/Weapon_shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1653073312,
+          "filename": "Data/HUD/Weapon_rockets.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2372193055,
+          "filename": "Data/HUD/Weapon_quake.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1670130061,
+          "filename": "Data/HUD/Weapon_plasma.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 96506019,
+          "filename": "Data/HUD/Weapon_missiles.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3479580069,
+          "filename": "Data/HUD/Weapon_mines.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 79118460,
+          "filename": "Data/HUD/Weapon_bomb.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1881060685,
+          "filename": "Data/HUD/Weapon_autopilot.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 235156828,
+          "filename": "Data/HUD/missile_sight_outer.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2673975851,
+          "filename": "Data/HUD/missile_sight_inner.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1331500578,
+          "filename": "Data/HUD/Zone_outline_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1927267409,
+          "filename": "Data/HUD/Zone_Bar_1.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 136288049,
+          "filename": "Data/HUD/Zone_Bar_3.vex",
+          "confidence": 9
+        }
+      ]
+    }
+  ]
+}

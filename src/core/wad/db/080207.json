@@ -1,0 +1,1536 @@
+{
+  "code": "080207",
+  "name": "WipEout Pulse Mirage Pack PSP Europe 1.00",
+  "wads": [
+    {
+      "path": "PSP_GAME/USRDIR/FEData.wad",
+      "files": [
+        {
+          "hash": 2002769021,
+          "filename": "Data/FE/Images/profile_frame.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4078473479,
+          "filename": "Data/FE/Profile/icon1.pmf",
+          "confidence": 9
+        },
+        {
+          "hash": 1421985499,
+          "filename": "Data/FE/Profile/SND0.AT3",
+          "confidence": 9
+        },
+        {
+          "hash": 1233828614,
+          "filename": "Data/FE/Profile/bkgrd.PNG",
+          "confidence": 9
+        },
+        {
+          "hash": 822135943,
+          "filename": "Data/FE/Profile/profile_EMPTY.PNG",
+          "confidence": 9
+        },
+        {
+          "hash": 41378012,
+          "filename": "Data/FE/Profile/profile_FULL.PNG",
+          "confidence": 9
+        },
+        {
+          "hash": 3982447691,
+          "filename": "Data/FE/Profile/profile_movie.pmf",
+          "confidence": 9
+        },
+        {
+          "hash": 4120419446,
+          "filename": "Data/FE/Profile/grid_FULL.PNG",
+          "confidence": 9
+        },
+        {
+          "hash": 133458317,
+          "filename": "Data/FE/Profile/grid_EMPTY.PNG",
+          "confidence": 9
+        },
+        {
+          "hash": 3685478721,
+          "filename": "Data/FE/Profile/grid_movie.pmf",
+          "confidence": 9
+        },
+        {
+          "hash": 4025641671,
+          "filename": "Data/FE/Profile/customShip_FULL.png",
+          "confidence": 9
+        },
+        {
+          "hash": 3146285153,
+          "filename": "Data/FE/Profile/customShip_EMPTY.png",
+          "confidence": 9
+        },
+        {
+          "hash": 1742149805,
+          "filename": "Data/FE/Profile/customShip_movie.pmf",
+          "confidence": 9
+        },
+        {
+          "hash": 1352104546,
+          "filename": "Data/FE/Images/track_sel_shadow.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1758646397,
+          "filename": "Data/Ships/AG_Systems/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 77122421,
+          "filename": "Data/Ships/Assegai/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3527550824,
+          "filename": "Data/Ships/EGX/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3472603465,
+          "filename": "Data/Ships/Feisar/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3586238304,
+          "filename": "Data/Ships/Goteki/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3363520710,
+          "filename": "Data/Ships/Piranha/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3140366069,
+          "filename": "Data/Ships/Qirex/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 128026565,
+          "filename": "Data/Ships/Triakis/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 199626234,
+          "filename": "Data/Ships/AG_Systems/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1198057646,
+          "filename": "Data/Ships/Assegai/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1260854542,
+          "filename": "Data/Ships/EGX/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2664980063,
+          "filename": "Data/Ships/Feisar/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2774731786,
+          "filename": "Data/Ships/Goteki/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2828324378,
+          "filename": "Data/Ships/Piranha/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 569147037,
+          "filename": "Data/Ships/Qirex/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3368440876,
+          "filename": "Data/Ships/Triakis/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3942636564,
+          "filename": "Data/Ships/AG_Systems/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2767745783,
+          "filename": "Data/Ships/Assegai/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 913922323,
+          "filename": "Data/Ships/EGX/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 3791212021,
+          "filename": "Data/Ships/Feisar/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2439996604,
+          "filename": "Data/Ships/Goteki/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2733577053,
+          "filename": "Data/Ships/Piranha/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2892465899,
+          "filename": "Data/Ships/Qirex/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2891242936,
+          "filename": "Data/Ships/Triakis/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1900524601,
+          "filename": "Data/Ships/AG_Systems/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2304464625,
+          "filename": "Data/Ships/Assegai/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 4154369485,
+          "filename": "Data/Ships/EGX/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 3778441996,
+          "filename": "Data/Ships/Feisar/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2803228252,
+          "filename": "Data/Ships/Goteki/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1258083495,
+          "filename": "Data/Ships/Piranha/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1252157685,
+          "filename": "Data/Ships/Qirex/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1470586645,
+          "filename": "Data/Ships/Triakis/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 898534933,
+          "filename": "Data/Ships/AG_Systems/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3531310132,
+          "filename": "Data/Ships/Assegai/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 731192575,
+          "filename": "Data/Ships/EGX/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3029838301,
+          "filename": "Data/Ships/Feisar/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1642411261,
+          "filename": "Data/Ships/Goteki/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4216134263,
+          "filename": "Data/Ships/Piranha/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1356234222,
+          "filename": "Data/Ships/Qirex/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 425327080,
+          "filename": "Data/Ships/Triakis/zone_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1558929366,
+          "filename": "Data/Ships/AG_Systems/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 275102338,
+          "filename": "Data/Ships/Assegai/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 472534818,
+          "filename": "Data/Ships/EGX/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 3386182771,
+          "filename": "Data/Ships/Feisar/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 4067319334,
+          "filename": "Data/Ships/Goteki/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 4288257078,
+          "filename": "Data/Ships/Piranha/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1994468529,
+          "filename": "Data/Ships/Qirex/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2680882688,
+          "filename": "Data/Ships/Triakis/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 4230347119,
+          "filename": "Data/Ships/AG_Systems/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 466678606,
+          "filename": "Data/Ships/Assegai/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3795741573,
+          "filename": "Data/Ships/EGX/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2101141159,
+          "filename": "Data/Ships/Feisar/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2823701383,
+          "filename": "Data/Ships/Goteki/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 853961997,
+          "filename": "Data/Ships/Piranha/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2575108756,
+          "filename": "Data/Ships/Qirex/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3505557138,
+          "filename": "Data/Ships/Triakis/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1680274118,
+          "filename": "Data/Ships/AG_Systems/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 687985864,
+          "filename": "Data/Ships/Assegai/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2118545492,
+          "filename": "Data/Ships/EGX/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3273127698,
+          "filename": "Data/Ships/Feisar/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3519755056,
+          "filename": "Data/Ships/Goteki/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3327528881,
+          "filename": "Data/Ships/Piranha/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2349649822,
+          "filename": "Data/Ships/Qirex/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1791984760,
+          "filename": "Data/Ships/Triakis/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 534184915,
+          "filename": "Data/Environments/01_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4115783345,
+          "filename": "Data/Environments/02_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 436430928,
+          "filename": "Data/Environments/03_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4214055476,
+          "filename": "Data/Environments/04_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 343921877,
+          "filename": "Data/Environments/05_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4277733815,
+          "filename": "Data/Environments/06_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 296468310,
+          "filename": "Data/Environments/07_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 143044063,
+          "filename": "Data/Environments/09_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 661075306,
+          "filename": "Data/Environments/10_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3454134280,
+          "filename": "Data/Environments/13_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 751821420,
+          "filename": "Data/Environments/14_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 689670639,
+          "filename": "Data/Environments/16_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4286460377,
+          "filename": "Data/Environments/01_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2308638948,
+          "filename": "Data/Environments/02_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 317252144,
+          "filename": "Data/Environments/03_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1683061406,
+          "filename": "Data/Environments/04_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4280455242,
+          "filename": "Data/Environments/05_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2311563639,
+          "filename": "Data/Environments/06_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 313803683,
+          "filename": "Data/Environments/07_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4291261183,
+          "filename": "Data/Environments/09_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3844652586,
+          "filename": "Data/Environments/10_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2479720215,
+          "filename": "Data/Environments/13_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3849592761,
+          "filename": "Data/Environments/14_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 149081168,
+          "filename": "Data/Environments/16_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 143222518,
+          "filename": "Data/Environments/01_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1939334165,
+          "filename": "Data/Environments/02_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3964495755,
+          "filename": "Data/Environments/03_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2242568659,
+          "filename": "Data/Environments/04_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 443572813,
+          "filename": "Data/Environments/05_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1634656430,
+          "filename": "Data/Environments/06_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4273234736,
+          "filename": "Data/Environments/07_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 763064192,
+          "filename": "Data/Environments/09_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2155577768,
+          "filename": "Data/Environments/10_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4217701195,
+          "filename": "Data/Environments/13_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2458027283,
+          "filename": "Data/Environments/14_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1984332910,
+          "filename": "Data/Environments/16_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1553783024,
+          "filename": "Data/Environments/01_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2042357678,
+          "filename": "Data/Environments/01_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1041997182,
+          "filename": "Data/Environments/01_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 58438862,
+          "filename": "Data/Environments/01_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2975557854,
+          "filename": "Data/Environments/01_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2531910764,
+          "filename": "Data/Environments/01_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1949874099,
+          "filename": "Data/Environments/01_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 865652067,
+          "filename": "Data/Environments/01_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 251192531,
+          "filename": "Data/Environments/01_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3168286915,
+          "filename": "Data/Environments/01_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1709471152,
+          "filename": "Data/Environments/02_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 257875603,
+          "filename": "Data/Environments/02_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1224647747,
+          "filename": "Data/Environments/02_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1973325299,
+          "filename": "Data/Environments/02_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3351138787,
+          "filename": "Data/Environments/02_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2945534252,
+          "filename": "Data/Environments/02_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1925976432,
+          "filename": "Data/Environments/03_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2485990471,
+          "filename": "Data/Environments/03_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3549253271,
+          "filename": "Data/Environments/03_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4008535847,
+          "filename": "Data/Environments/03_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1556986679,
+          "filename": "Data/Environments/03_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3099143660,
+          "filename": "Data/Environments/03_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1516797491,
+          "filename": "Data/Environments/03_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 499647715,
+          "filename": "Data/Environments/03_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 547892563,
+          "filename": "Data/Environments/03_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2458448195,
+          "filename": "Data/Environments/03_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 387264304,
+          "filename": "Data/Environments/04_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3801394409,
+          "filename": "Data/Environments/04_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2771703353,
+          "filename": "Data/Environments/04_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2555707273,
+          "filename": "Data/Environments/04_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 712254361,
+          "filename": "Data/Environments/04_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3714061228,
+          "filename": "Data/Environments/04_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1068580979,
+          "filename": "Data/Environments/04_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2014395043,
+          "filename": "Data/Environments/04_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1165038355,
+          "filename": "Data/Environments/04_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4149333763,
+          "filename": "Data/Environments/04_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4017136,
+          "filename": "Data/Environments/05_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2045199933,
+          "filename": "Data/Environments/05_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1044856045,
+          "filename": "Data/Environments/05_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 52893021,
+          "filename": "Data/Environments/05_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2970077517,
+          "filename": "Data/Environments/05_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3393746796,
+          "filename": "Data/Environments/05_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 681125043,
+          "filename": "Data/Environments/05_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1866030691,
+          "filename": "Data/Environments/05_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1381595091,
+          "filename": "Data/Environments/05_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3766070211,
+          "filename": "Data/Environments/05_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 960882352,
+          "filename": "Data/Environments/06_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 251821824,
+          "filename": "Data/Environments/06_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1218577872,
+          "filename": "Data/Environments/06_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1975659616,
+          "filename": "Data/Environments/06_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3353538672,
+          "filename": "Data/Environments/06_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4080065068,
+          "filename": "Data/Environments/06_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 778928752,
+          "filename": "Data/Environments/07_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2490471892,
+          "filename": "Data/Environments/07_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3553750788,
+          "filename": "Data/Environments/07_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4004628148,
+          "filename": "Data/Environments/07_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1553013412,
+          "filename": "Data/Environments/07_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3826826988,
+          "filename": "Data/Environments/07_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3856662256,
+          "filename": "Data/Environments/09_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2030216328,
+          "filename": "Data/Environments/09_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1050861144,
+          "filename": "Data/Environments/09_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 63109096,
+          "filename": "Data/Environments/09_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2984389624,
+          "filename": "Data/Environments/09_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 799720044,
+          "filename": "Data/Environments/09_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3502724836,
+          "filename": "Data/Environments/10_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1676503133,
+          "filename": "Data/Environments/10_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 609030797,
+          "filename": "Data/Environments/10_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 422394685,
+          "filename": "Data/Environments/10_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2869815085,
+          "filename": "Data/Environments/10_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 447900280,
+          "filename": "Data/Environments/10_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4167252391,
+          "filename": "Data/Environments/10_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3217245047,
+          "filename": "Data/Environments/10_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2191747783,
+          "filename": "Data/Environments/10_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 813938391,
+          "filename": "Data/Environments/10_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3921673124,
+          "filename": "Data/Environments/13_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 352866656,
+          "filename": "Data/Environments/13_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1386752944,
+          "filename": "Data/Environments/13_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1875378688,
+          "filename": "Data/Environments/13_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3723025936,
+          "filename": "Data/Environments/13_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 600491832,
+          "filename": "Data/Environments/13_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3239810279,
+          "filename": "Data/Environments/13_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2260463159,
+          "filename": "Data/Environments/13_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3151742855,
+          "filename": "Data/Environments/13_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 167451543,
+          "filename": "Data/Environments/13_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2355545572,
+          "filename": "Data/Environments/14_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1672595918,
+          "filename": "Data/Environments/14_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 605139742,
+          "filename": "Data/Environments/14_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 426875566,
+          "filename": "Data/Environments/14_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2874230462,
+          "filename": "Data/Environments/14_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1175714168,
+          "filename": "Data/Environments/14_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2764221095,
+          "filename": "Data/Environments/14_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3814903927,
+          "filename": "Data/Environments/14_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3724736967,
+          "filename": "Data/Environments/14_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1814177239,
+          "filename": "Data/Environments/14_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2721451108,
+          "filename": "Data/Environments/16_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2384927271,
+          "filename": "Data/Environments/16_Track/FE/image_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3381092599,
+          "filename": "Data/Environments/16_Track/FE/image_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4108798279,
+          "filename": "Data/Environments/16_Track/FE/image_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1187485015,
+          "filename": "Data/Environments/16_Track/FE/image_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1749233912,
+          "filename": "Data/Environments/16_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2324849447,
+          "filename": "Data/Environments/16_Track/FE/zone_01.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 3442612727,
+          "filename": "Data/Environments/16_Track/FE/zone_02.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 4031918151,
+          "filename": "Data/Environments/16_Track/FE/zone_03.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1114827863,
+          "filename": "Data/Environments/16_Track/FE/zone_04.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 2044712691,
+          "filename": "Data/Environments/16_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1617823843,
+          "filename": "Data/Environments/16_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 611747324,
+          "filename": "Data/Environments/02_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3850717149,
+          "filename": "Data/Environments/02_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1646496926,
+          "filename": "Data/Environments/03_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3278578539,
+          "filename": "Data/Environments/03_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3739967995,
+          "filename": "Data/Environments/10_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1605424594,
+          "filename": "Data/Environments/10_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4239785690,
+          "filename": "Data/Environments/05_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3306634134,
+          "filename": "Data/Environments/05_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1118957781,
+          "filename": "Data/Environments/04_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 464017485,
+          "filename": "Data/Environments/04_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2198357432,
+          "filename": "Data/Environments/09_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1343181767,
+          "filename": "Data/Environments/09_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1965310732,
+          "filename": "Data/Environments/14_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2917353012,
+          "filename": "Data/Environments/14_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3592513540,
+          "filename": "Data/Environments/01_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3055492185,
+          "filename": "Data/Environments/01_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2373007999,
+          "filename": "Data/Environments/13_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2917611562,
+          "filename": "Data/Environments/13_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2525847570,
+          "filename": "Data/Environments/06_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 249697058,
+          "filename": "Data/Environments/06_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 288074577,
+          "filename": "Data/Environments/07_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3925849525,
+          "filename": "Data/Environments/07_Track/stats_reversed.xml",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK1.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 749144156,
+          "filename": "Data/2CA7085C",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "Data/484CCF45",
+          "confidence": 0
+        },
+        {
+          "hash": 101355602,
+          "filename": "Data/Ships/Mantis/extra.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2903388624,
+          "filename": "Data/Ships/Mantis/extraboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1992129388,
+          "filename": "Data/Ships/Mantis/extrashield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3924905874,
+          "filename": "Data/Ships/Mantis/extrawreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1317650840,
+          "filename": "Data/Ships/Mantis/livery.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 150782324,
+          "filename": "Data/Ships/Mantis/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3220480351,
+          "filename": "Data/Ships/Mantis/shipboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 195567437,
+          "filename": "Data/Ships/Mantis/shipshield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4211859229,
+          "filename": "Data/Ships/Mantis/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1729219739,
+          "filename": "Data/Ships/Mantis/zone.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2456738764,
+          "filename": "Data/Ships/Mantis/zone01.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3588119423,
+          "filename": "Data/Ships/Mantis/zone01boost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 816584063,
+          "filename": "Data/Ships/Mantis/zone01shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2434868541,
+          "filename": "Data/Ships/Mantis/zone01wreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2755992855,
+          "filename": "Data/Ships/Mantis/zoneboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3770311509,
+          "filename": "Data/Ships/Mantis/zonewreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1328234174,
+          "filename": "Data/Environments/11_Track/EDGEWINTER_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2355169965,
+          "filename": "Data/Environments/11_Track/ON_EDGEWINTER_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1686017558,
+          "filename": "Data/Environments/11_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1498262200,
+          "filename": "Data/Environments/11_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1839027177,
+          "filename": "Data/Environments/11_Track/Track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 774231743,
+          "filename": "Data/Environments/11_Track/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2583746532,
+          "filename": "Data/Environments/11_Track/zone_track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2758677102,
+          "filename": "Data/Environments/08_Track/VOSTOK_REEF_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2270772362,
+          "filename": "Data/Environments/08_Track/ON_VOSTOK_REEF_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1365655042,
+          "filename": "Data/Environments/08_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3618216068,
+          "filename": "Data/Environments/08_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3816382933,
+          "filename": "Data/Environments/08_Track/Track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3632668456,
+          "filename": "Data/Environments/08_Track/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2937618416,
+          "filename": "Data/Environments/08_Track/zone_track.vex",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK1_UI1.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 1953656419,
+          "filename": "Data/Ships/Mantis/extra.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2959784890,
+          "filename": "Data/Ships/Mantis/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 332205081,
+          "filename": "Data/Ships/Mantis/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2647037271,
+          "filename": "Data/Ships/Mantis/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2055487301,
+          "filename": "Data/Ships/Mantis/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2077539034,
+          "filename": "Data/Ships/Mantis/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3882346902,
+          "filename": "Data/Ships/Mantis/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 3691171085,
+          "filename": "Data/Ships/Mantis/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1825432426,
+          "filename": "Data/Ships/Mantis/zone01_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 515186011,
+          "filename": "Data/Ships/Mantis/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3221697425,
+          "filename": "Data/Ships/Mantis/zone_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2994720160,
+          "filename": "Data/Ships/Mantis/zone_FE.vex",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK1_UI2.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3889437502,
+          "filename": "Data/Environments/08_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1689557035,
+          "filename": "Data/Environments/08_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2996956190,
+          "filename": "Data/Environments/08_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4076313136,
+          "filename": "Data/Environments/08_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 948086444,
+          "filename": "Data/Environments/08_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3799076444,
+          "filename": "Data/E2714E5C",
+          "confidence": 0
+        },
+        {
+          "hash": 2781951116,
+          "filename": "Data/A5D1348C",
+          "confidence": 0
+        },
+        {
+          "hash": 2561744188,
+          "filename": "Data/98B11D3C",
+          "confidence": 0
+        },
+        {
+          "hash": 714195244,
+          "filename": "Data/2A91C12C",
+          "confidence": 0
+        },
+        {
+          "hash": 3662935411,
+          "filename": "Data/DA53F573",
+          "confidence": 0
+        },
+        {
+          "hash": 2649984931,
+          "filename": "Data/9DF38FA3",
+          "confidence": 0
+        },
+        {
+          "hash": 2694030867,
+          "filename": "Data/A093A613",
+          "confidence": 0
+        },
+        {
+          "hash": 313752067,
+          "filename": "Data/12B37A03",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,396 @@
+{
+  "code": "080228",
+  "name": "WipEout Pulse Auricom Pack PSP Europe 1.00",
+  "wads": [
+    {
+      "path": "PACK3_UI3.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3281867917,
+          "filename": "Data/Environments/15_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2114450797,
+          "filename": "Data/Environments/15_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 223872653,
+          "filename": "Data/Environments/15_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2605621540,
+          "filename": "Data/Environments/15_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1362861496,
+          "filename": "Data/Environments/15_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4173472538,
+          "filename": "Data/F8C2231A",
+          "confidence": 0
+        },
+        {
+          "hash": 3210893770,
+          "filename": "Data/BF6259CA",
+          "confidence": 0
+        },
+        {
+          "hash": 2181197946,
+          "filename": "Data/8202707A",
+          "confidence": 0
+        },
+        {
+          "hash": 807578730,
+          "filename": "Data/3022AC6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3018509927,
+          "filename": "Data/B3EACE67",
+          "confidence": 0
+        },
+        {
+          "hash": 4098536631,
+          "filename": "Data/F44AB4B7",
+          "confidence": 0
+        },
+        {
+          "hash": 3375013127,
+          "filename": "Data/C92A9D07",
+          "confidence": 0
+        },
+        {
+          "hash": 2064269591,
+          "filename": "Data/7B0A4117",
+          "confidence": 0
+        }
+      ]
+    },
+    {
+      "path": "PACK4.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3829892908,
+          "filename": "Data/E447872C",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "Data/484CCF45",
+          "confidence": 0
+        },
+        {
+          "hash": 2470171013,
+          "filename": "Data/Ships/Auricom/extra.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2632735801,
+          "filename": "Data/Ships/Auricom/extraboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2941961181,
+          "filename": "Data/Ships/Auricom/extrashield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3625132667,
+          "filename": "Data/Ships/Auricom/extrawreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1454094254,
+          "filename": "Data/Ships/Auricom/livery.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2264372412,
+          "filename": "Data/Ships/Auricom/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 857188337,
+          "filename": "Data/Ships/Auricom/shipboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 977957540,
+          "filename": "Data/Ships/Auricom/shipshield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2011748787,
+          "filename": "Data/Ships/Auricom/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3910834515,
+          "filename": "Data/Ships/Auricom/zone.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2320281082,
+          "filename": "Data/Ships/Auricom/zone01.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 205120462,
+          "filename": "Data/Ships/Auricom/zone01boost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2350084573,
+          "filename": "Data/Ships/Auricom/zone01shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1220976012,
+          "filename": "Data/Ships/Auricom/zone01wreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 681974713,
+          "filename": "Data/Ships/Auricom/zoneboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1817798139,
+          "filename": "Data/Ships/Auricom/zonewreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4266491253,
+          "filename": "Data/Environments/15_Track/ORCUS_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 3011499531,
+          "filename": "Data/Environments/15_Track/ON_ORCUS_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 954139926,
+          "filename": "Data/Environments/15_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2453267867,
+          "filename": "Data/Environments/15_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1193494752,
+          "filename": "Data/Environments/15_Track/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2251725191,
+          "filename": "Data/Environments/15_Track/track_reversed.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 931921463,
+          "filename": "Data/Environments/15_Track/zone_track_reversed.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2758677102,
+          "filename": "Data/Environments/08_Track/VOSTOK_REEF_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2270772362,
+          "filename": "Data/Environments/08_Track/ON_VOSTOK_REEF_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1365655042,
+          "filename": "Data/Environments/08_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1679156015,
+          "filename": "Data/Environments/08_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1880792883,
+          "filename": "Data/Environments/08_Track/track_reversed.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3632668456,
+          "filename": "Data/Environments/08_Track/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2216097408,
+          "filename": "Data/Environments/08_Track/zone_track_reversed.vex",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK4_UI1.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3779276724,
+          "filename": "Data/Ships/Auricom/extra.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2148591332,
+          "filename": "Data/Ships/Auricom/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 732524985,
+          "filename": "Data/Ships/Auricom/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2246370145,
+          "filename": "Data/Ships/Auricom/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4103039629,
+          "filename": "Data/Ships/Auricom/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 3027635509,
+          "filename": "Data/Ships/Auricom/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3609048264,
+          "filename": "Data/Ships/Auricom/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1555121153,
+          "filename": "Data/Ships/Auricom/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 3761169860,
+          "filename": "Data/Ships/Auricom/zone01_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2455116789,
+          "filename": "Data/Ships/Auricom/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 262505598,
+          "filename": "Data/Ships/Auricom/zone_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2111666767,
+          "filename": "Data/Ships/Auricom/zone_FE.vex",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK4_UI2.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3281867917,
+          "filename": "Data/Environments/15_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2114450797,
+          "filename": "Data/Environments/15_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 223872653,
+          "filename": "Data/Environments/15_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1362861496,
+          "filename": "Data/Environments/15_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2605621540,
+          "filename": "Data/Environments/15_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4173472538,
+          "filename": "Data/F8C2231A",
+          "confidence": 0
+        },
+        {
+          "hash": 3210893770,
+          "filename": "Data/BF6259CA",
+          "confidence": 0
+        },
+        {
+          "hash": 2181197946,
+          "filename": "Data/8202707A",
+          "confidence": 0
+        },
+        {
+          "hash": 807578730,
+          "filename": "Data/3022AC6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3018509927,
+          "filename": "Data/B3EACE67",
+          "confidence": 0
+        },
+        {
+          "hash": 4098536631,
+          "filename": "Data/F44AB4B7",
+          "confidence": 0
+        },
+        {
+          "hash": 3375013127,
+          "filename": "Data/C92A9D07",
+          "confidence": 0
+        },
+        {
+          "hash": 2064269591,
+          "filename": "Data/7B0A4117",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

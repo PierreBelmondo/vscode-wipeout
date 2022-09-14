@@ -1,0 +1,341 @@
+{
+  "code": "080221",
+  "name": "WipEout Pulse Harimau Pack PSP Europe 1.00",
+  "wads": [
+    {
+      "path": "PACK2_UI3.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 582180585,
+          "filename": "Data/Environments/12_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1690271957,
+          "filename": "Data/Environments/12_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 887268344,
+          "filename": "Data/Environments/12_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4271349604,
+          "filename": "Data/Environments/12_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2390473652,
+          "filename": "Data/8E7BBBB4",
+          "confidence": 0
+        },
+        {
+          "hash": 3386622308,
+          "filename": "Data/C9DBC164",
+          "confidence": 0
+        },
+        {
+          "hash": 4105955540,
+          "filename": "Data/F4BBE8D4",
+          "confidence": 0
+        },
+        {
+          "hash": 1184576708,
+          "filename": "Data/469B34C4",
+          "confidence": 0
+        }
+      ]
+    },
+    {
+      "path": "PACK3.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 1449614140,
+          "filename": "Data/56675B3C",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "Data/484CCF45",
+          "confidence": 0
+        },
+        {
+          "hash": 3346652513,
+          "filename": "Data/Ships/Harimau/extra.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2795979616,
+          "filename": "Data/Ships/Harimau/extraboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3185009042,
+          "filename": "Data/Ships/Harimau/extrashield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3797433634,
+          "filename": "Data/Ships/Harimau/extrawreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4053324739,
+          "filename": "Data/Ships/Harimau/livery.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 447502666,
+          "filename": "Data/Ships/Harimau/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3445174416,
+          "filename": "Data/Ships/Harimau/shipboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 93693,
+          "filename": "Data/Ships/Harimau/shipshield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2309377746,
+          "filename": "Data/Ships/Harimau/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1967215781,
+          "filename": "Data/Ships/Harimau/zone.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 763349399,
+          "filename": "Data/Ships/Harimau/zone01.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 515129729,
+          "filename": "Data/Ships/Harimau/zone01boost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1784848510,
+          "filename": "Data/Ships/Harimau/zone01shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1514880963,
+          "filename": "Data/Ships/Harimau/zone01wreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3605564632,
+          "filename": "Data/Ships/Harimau/zoneboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2451042970,
+          "filename": "Data/Ships/Harimau/zonewreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 491008024,
+          "filename": "Data/Environments/12_Track/GEMINI_DAM_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2303820447,
+          "filename": "Data/Environments/12_Track/ON_GEMINI_DAM_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1560689494,
+          "filename": "Data/Environments/12_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 181924156,
+          "filename": "Data/Environments/12_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1040648301,
+          "filename": "Data/Environments/12_Track/Track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1983610775,
+          "filename": "Data/Environments/12_Track/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4266491253,
+          "filename": "Data/Environments/15_Track/ORCUS_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 3011499531,
+          "filename": "Data/Environments/15_Track/ON_ORCUS_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 954139926,
+          "filename": "Data/Environments/15_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 709201271,
+          "filename": "Data/Environments/15_Track/stats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 513111078,
+          "filename": "Data/Environments/15_Track/Track.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1193494752,
+          "filename": "Data/Environments/15_Track/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3332457700,
+          "filename": "Data/Environments/15_Track/zone_track.vex",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK3_UI1.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3036750672,
+          "filename": "Data/Ships/Harimau/extra.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 446493052,
+          "filename": "Data/Ships/Harimau/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1687220794,
+          "filename": "Data/Ships/Harimau/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 584550156,
+          "filename": "Data/Ships/Harimau/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1758766971,
+          "filename": "Data/Ships/Harimau/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 2278695860,
+          "filename": "Data/Ships/Harimau/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1301390160,
+          "filename": "Data/Ships/Harimau/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 950932010,
+          "filename": "Data/Ships/Harimau/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 509637285,
+          "filename": "Data/Ships/Harimau/zone01_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1813548180,
+          "filename": "Data/Ships/Harimau/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1006742271,
+          "filename": "Data/Ships/Harimau/zone_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1316574414,
+          "filename": "Data/Ships/Harimau/zone_FE.vex",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK3_UI2.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 582180585,
+          "filename": "Data/Environments/12_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1690271957,
+          "filename": "Data/Environments/12_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 4271349604,
+          "filename": "Data/Environments/12_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 887268344,
+          "filename": "Data/Environments/12_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2390473652,
+          "filename": "Data/8E7BBBB4",
+          "confidence": 0
+        },
+        {
+          "hash": 3386622308,
+          "filename": "Data/C9DBC164",
+          "confidence": 0
+        },
+        {
+          "hash": 4105955540,
+          "filename": "Data/F4BBE8D4",
+          "confidence": 0
+        },
+        {
+          "hash": 1184576708,
+          "filename": "Data/469B34C4",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

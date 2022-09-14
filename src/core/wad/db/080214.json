@@ -1,0 +1,391 @@
+{
+  "code": "080214",
+  "name": "WipEout Pulse Icaras Pack PSP Europe 1.00",
+  "wads": [
+    {
+      "path": "PACK1_UI3.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3358950283,
+          "filename": "Data/Environments/11_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2119914750,
+          "filename": "Data/Environments/11_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 530645558,
+          "filename": "Data/Environments/11_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3354341924,
+          "filename": "Data/Environments/11_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 228200120,
+          "filename": "Data/Environments/11_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4171137673,
+          "filename": "Data/F89E8289",
+          "confidence": 0
+        },
+        {
+          "hash": 3208575065,
+          "filename": "Data/BF3EF859",
+          "confidence": 0
+        },
+        {
+          "hash": 2187252201,
+          "filename": "Data/825ED1E9",
+          "confidence": 0
+        },
+        {
+          "hash": 813567481,
+          "filename": "Data/307E0DF9",
+          "confidence": 0
+        },
+        {
+          "hash": 4014693735,
+          "filename": "Data/EF4B5D67",
+          "confidence": 0
+        },
+        {
+          "hash": 2833983415,
+          "filename": "Data/A8EB27B7",
+          "confidence": 0
+        },
+        {
+          "hash": 2508918279,
+          "filename": "Data/958B0E07",
+          "confidence": 0
+        },
+        {
+          "hash": 665571863,
+          "filename": "Data/27ABD217",
+          "confidence": 0
+        }
+      ]
+    },
+    {
+      "path": "PACK2.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 1795650188,
+          "filename": "Data/6B07728C",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "Data/484CCF45",
+          "confidence": 0
+        },
+        {
+          "hash": 2327867537,
+          "filename": "Data/Ships/Icaras/extra.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3737790002,
+          "filename": "Data/Ships/Icaras/extraboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 952777775,
+          "filename": "Data/Ships/Icaras/extrashield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2587187312,
+          "filename": "Data/Ships/Icaras/extrawreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1281923186,
+          "filename": "Data/Ships/Icaras/livery.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 291565866,
+          "filename": "Data/Ships/Icaras/ship.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2817900760,
+          "filename": "Data/Ships/Icaras/shipboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2020346031,
+          "filename": "Data/Ships/Icaras/shipshield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3809132186,
+          "filename": "Data/Ships/Icaras/shipwreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2123234501,
+          "filename": "Data/Ships/Icaras/zone.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2425324070,
+          "filename": "Data/Ships/Icaras/zone01.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2611551292,
+          "filename": "Data/Ships/Icaras/zone01boost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3744952850,
+          "filename": "Data/Ships/Icaras/zone01shield.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3746980478,
+          "filename": "Data/Ships/Icaras/zone01wreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3158604944,
+          "filename": "Data/Ships/Icaras/zoneboost.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4173005522,
+          "filename": "Data/Ships/Icaras/zonewreck.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1328234174,
+          "filename": "Data/Environments/11_Track/EDGEWINTER_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2355169965,
+          "filename": "Data/Environments/11_Track/ON_EDGEWINTER_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1686017558,
+          "filename": "Data/Environments/11_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3098374981,
+          "filename": "Data/Environments/11_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2896301913,
+          "filename": "Data/Environments/11_Track/track_reversed.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 774231743,
+          "filename": "Data/Environments/11_Track/TrackStartup.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 202661235,
+          "filename": "Data/Environments/11_Track/zone_track_reversed.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 491008024,
+          "filename": "Data/Environments/12_Track/GEMINI_DAM_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 2303820447,
+          "filename": "Data/Environments/12_Track/ON_GEMINI_DAM_ENV.bnk",
+          "confidence": 9
+        },
+        {
+          "hash": 1560689494,
+          "filename": "Data/Environments/12_Track/start_grid.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1257938621,
+          "filename": "Data/Environments/12_Track/stats_reversed.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1593172641,
+          "filename": "Data/Environments/12_Track/track_reversed.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1983610775,
+          "filename": "Data/Environments/12_Track/TrackStartup.xml",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK2_UI1.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 4172844704,
+          "filename": "Data/Ships/Icaras/extra.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 105663341,
+          "filename": "Data/Ships/Icaras/extra_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 539069083,
+          "filename": "Data/Ships/Icaras/handlingstats.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2670185661,
+          "filename": "Data/Ships/Icaras/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1662521115,
+          "filename": "Data/Ships/Icaras/ship.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 990466277,
+          "filename": "Data/Ships/Icaras/ship_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 1363220801,
+          "filename": "Data/Ships/Icaras/ship_alt.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 3513524797,
+          "filename": "Data/Ships/Icaras/ship_eliminator.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 1959559917,
+          "filename": "Data/Ships/Icaras/zone01_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 112491740,
+          "filename": "Data/Ships/Icaras/zone01_FE.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 2161826222,
+          "filename": "Data/Ships/Icaras/zone_FE.dat",
+          "confidence": 9
+        },
+        {
+          "hash": 4070713247,
+          "filename": "Data/Ships/Icaras/zone_FE.vex",
+          "confidence": 9
+        }
+      ]
+    },
+    {
+      "path": "PACK2_UI2.EDAT",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "Data/CD86CF6A",
+          "confidence": 0
+        },
+        {
+          "hash": 3358950283,
+          "filename": "Data/Environments/11_Track/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2119914750,
+          "filename": "Data/Environments/11_Track/screen_zone.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 530645558,
+          "filename": "Data/Environments/11_Track/MP_Screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 228200120,
+          "filename": "Data/Environments/11_Track/FE/reverse.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 3354341924,
+          "filename": "Data/Environments/11_Track/FE/forward.vex",
+          "confidence": 9
+        },
+        {
+          "hash": 4171137673,
+          "filename": "Data/F89E8289",
+          "confidence": 0
+        },
+        {
+          "hash": 3208575065,
+          "filename": "Data/BF3EF859",
+          "confidence": 0
+        },
+        {
+          "hash": 2187252201,
+          "filename": "Data/825ED1E9",
+          "confidence": 0
+        },
+        {
+          "hash": 813567481,
+          "filename": "Data/307E0DF9",
+          "confidence": 0
+        },
+        {
+          "hash": 4014693735,
+          "filename": "Data/EF4B5D67",
+          "confidence": 0
+        },
+        {
+          "hash": 2833983415,
+          "filename": "Data/A8EB27B7",
+          "confidence": 0
+        },
+        {
+          "hash": 2508918279,
+          "filename": "Data/958B0E07",
+          "confidence": 0
+        },
+        {
+          "hash": 665571863,
+          "filename": "Data/27ABD217",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}
