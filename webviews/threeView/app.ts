@@ -82,33 +82,6 @@ class Editor {
     this.gui.onChange(() => {
       this.render();
     });
-
-    /*
-    const layers = {
-      "Toggle control points": () => {
-        this.camera.layers.toggle(1);
-        this.render();
-      },
-      "Toggle collisions": () => {
-        this.camera.layers.toggle(2);
-        this.render();
-      },
-      "Enable all": () => {
-        this.camera.layers.enableAll();
-        this.render();
-      },
-      "Disable all": () => {
-        this.camera.layers.disableAll();
-        this.camera.layers.toggle(0);
-        this.render();
-      },
-    };
-
-    this.gui.add(layers, "Toggle control points");
-    this.gui.add(layers, "Toggle collisions");
-    this.gui.add(layers, "Enable all");
-    this.gui.add(layers, "Disable all");
-    */
   }
 
   loadVEXX(node: any) {
