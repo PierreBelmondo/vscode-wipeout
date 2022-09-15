@@ -24,6 +24,7 @@ class Editor {
   gui: GUI;
   settings = {
     layers: {},
+    airbrakes: {},
   };
 
   constructor(canvas: HTMLCanvasElement) {
@@ -108,6 +109,22 @@ class Editor {
           .onChange((value: boolean) => {
             if (value) this.camera.layers.enable(layerInfo.id);
             else this.camera.layers.disable(layerInfo.id);
+            this.render();
+          });
+      }
+    }
+
+    this.settings.airbrakes = {};
+    if ("airbrakes" in world.settings) {
+      const folder = this.gui.addFolder("Airbrakes");
+      for (const airbrake of world.settings.airbrakes) {
+        this.settings.airbrakes[airbrake.name] = 0;
+        folder
+          .add(this.settings.airbrakes, airbrake.name, 0.0, 1.0)
+          .onChange((value: number) => {
+            const object = airbrake.object as THREE.Object3D;
+            const euler = new THREE.Euler(value, 0, 0);
+            object.setRotationFromEuler(euler);
             this.render();
           });
       }

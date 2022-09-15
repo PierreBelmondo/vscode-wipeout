@@ -57,7 +57,7 @@ export class VEXXLoader extends Loader {
   }
 
   private readonly mapping: Mapping = {
-    AIRBRAKE: { fn: this.loadNodeGeneric },
+    AIRBRAKE: { fn: this.loadAirbrake },
     AMBIENT_LIGHT: { fn: this.loadNodeGeneric },
     ANIMATION_TRIGGER: {
       fn: this.loadNodeGeneric,
@@ -282,7 +282,19 @@ export class VEXXLoader extends Loader {
     return this.createControlPoint(node.name);
   }
 
-  private loadControlPoint(world: World, node: any): THREE.Object3D {
+  private loadAirbrake(world: World, node: any): THREE.Object3D {
+    const object = this.loadNodeGeneric(world, node);
+
+    if (!("airbrakes" in world.settings)) world.settings["airbrakes"] = [];
+    const airbrake = {
+      name: node.name,
+      object,
+    }
+    world.settings["airbrakes"].push(airbrake);
+
+    return object;
+  }
+
     const matrix = new THREE.Matrix4();
     matrix.fromArray(node.matrix);
     const obj = this.createControlPoint(node.name);

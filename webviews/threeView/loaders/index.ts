@@ -7,11 +7,14 @@ export class World {
   
   private _layers: { [id: string]: number };
   private _layerIndex = 8;
+  
+  private _settings: any = {};
 
   constructor() {
     this.scene = new THREE.Scene();
     this.materials = {};
     this._layers = {};
+    this._settings = {};
   }
 
   getLayer(name: string): number {
@@ -31,6 +34,10 @@ export class World {
       });
 
     return ret;
+  }
+
+  get settings() {
+    return this._settings;
   }
 }
 
