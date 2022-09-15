@@ -84,7 +84,7 @@ export namespace Flat {
         rgba: number[];
       }
     | {
-        type: "SHIP_COLLISION_FX" | "SHIP_MUZZLE" | "ENGINE_FLARE" | "ENGINE_FIRE";
+        type: "SHIP_COLLISION_FX" | "SHIP_MUZZLE" | "ENGINE_FLARE" | "ENGINE_FIRE" | "TRAIL";
         name: string;
         matrix: number[];
       }
