@@ -71,8 +71,11 @@ export class VEXXLoader extends Loader {
     CURVE_SHAPE: { fn: this.loadNodeGeneric, layer: "Clouds" },
     DIRECTIONAL_LIGHT: { fn: this.loadNodeGeneric, layer: "Lights" },
     DYNAMIC_SHADOW_OCCLUDER: { fn: this.loadNodeGeneric },
-    ENGINE_FIRE: { fn: this.loadControlPoint, layer: "Ship engine fire" },
-    ENGINE_FLARE: { fn: this.loadControlPoint, layer: "Ship engine flare" },
+    ENGINE_FIRE: { fn: this.loadControlPointMatrix, layer: "Ship engine fire" },
+    ENGINE_FLARE: {
+      fn: this.loadControlPointMatrix,
+      layer: "Ship engine flare",
+    },
     EXIT_GLOW: { fn: this.loadNodeGeneric },
     FLOOR_COLLISION: {
       fn: this.loadCollision,
@@ -90,27 +93,30 @@ export class VEXXLoader extends Loader {
       layer: "Reset collisions",
     },
     SEA: { fn: this.loadMesh, layer: "Sea" },
-    SEAWEED: { fn: this.loadNodeGeneric, layer: "Seaweed" },
+    SEAWEED: { fn: this.loadControlPoint, layer: "Seaweed" },
     SEA_REFLECT: { fn: this.loadMesh, layer: "Sea reflect" },
     SECTION: { fn: this.loadNodeGeneric },
     SHADOW: { fn: this.loadNodeGeneric },
-    SHIP_COLLISION_FX: { fn: this.loadControlPoint, layer: "Ship collisions"  },
-    SHIP_MUZZLE: { fn: this.loadControlPoint, layer: "Ship muzzle" },
+    SHIP_COLLISION_FX: {
+      fn: this.loadControlPointMatrix,
+      layer: "Ship collisions",
+    },
+    SHIP_MUZZLE: { fn: this.loadControlPointMatrix, layer: "Ship muzzle" },
     SKYCUBE: { fn: this.loadMesh, layer: "Skybox" },
     SOUND: { fn: this.loadSound, layer: "Sounds" },
     SPEEDUP_PAD: { fn: this.loadMesh, layer: "Pads" },
     START_POSITION: {
-      fn: this.loadControlPoint,
+      fn: this.loadControlPointMatrix,
       layer: "Start position",
     },
     TEXTURE: { fn: this.loadNodeGeneric },
-    TRAIL: { fn: this.loadControlPoint },
+    TRAIL: { fn: this.loadControlPointMatrix },
     TRANSFORM: { fn: this.loadTransform },
     WALL_COLLISION: { fn: this.loadCollision, layer: "Wall collisions" },
     WEAPON_PAD: { fn: this.loadMesh, layer: "Pads" },
     WEATHER_POSITION: { fn: this.loadNodeGeneric },
     WORLD: { fn: this.loadNodeGeneric },
-    WO_POINT: { fn: this.loadNodeGeneric, layer: "WO Points" },
+    WO_POINT: { fn: this.loadControlPoint, layer: "WO Points" },
     WO_SPOT: { fn: this.loadNodeGeneric, layer: "WO Spots" },
     WO_TRACK: { fn: this.loadNodeGeneric, layer: "WO Tracks" },
   };
@@ -295,10 +301,15 @@ export class VEXXLoader extends Loader {
     return object;
   }
 
+  private loadControlPointMatrix(world: World, node: any): THREE.Object3D {
     const matrix = new THREE.Matrix4();
     matrix.fromArray(node.matrix);
     const obj = this.createControlPoint(node.name);
     obj.applyMatrix4(matrix);
     return obj;
+  }
+
+  private loadControlPoint(world: World, node: any): THREE.Object3D {
+    return this.createControlPoint(node.name);
   }
 }
