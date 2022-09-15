@@ -5,7 +5,6 @@ import { FlyControls } from "./controls/FlyControls";
 import { CSS2DRenderer } from "./renderers/CSS2DRenderer";
 import { VEXXLoader } from "./loaders/VEXXLoader";
 import { vscode } from "../vscode";
-import { Box3 } from "three";
 import { World } from "./loaders";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
 
