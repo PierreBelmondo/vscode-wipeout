@@ -341,6 +341,7 @@ export class VEXXLoader extends Loader {
       }
 
       const mesh = new THREE.Mesh(geometry, material);
+      mesh.renderOrder = node.type == "SKYCUBE" ? 0 : 1;
       mesh.layers.set(0);
       group.add(mesh);
     }
@@ -364,6 +365,7 @@ export class VEXXLoader extends Loader {
 
       const material = world.materials["_defaultCollision"];
       const mesh = new THREE.Mesh(geometry, material);
+      mesh.renderOrder = 2;
       mesh.layers.set(2);
       group.add(mesh);
     }
