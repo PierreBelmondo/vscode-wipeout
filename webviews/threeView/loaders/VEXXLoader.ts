@@ -173,6 +173,14 @@ export class VEXXLoader extends Loader {
     return group;
   }
 
+  private loadAmbientLight(world: World, node: any): THREE.AmbientLight {
+    const value =
+      ((255.0 * node.rgba.r) << 16) +
+      ((255.0 * node.rgba.g) << 8) +
+      255.0 * node.rgba.b;
+    return new THREE.AmbientLight(value);
+  }
+
   private loadMesh(world: World, node: any): THREE.Object3D {
     const group = new THREE.Group();
 

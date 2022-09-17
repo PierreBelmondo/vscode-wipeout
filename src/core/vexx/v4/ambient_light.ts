@@ -2,9 +2,10 @@ import { BufferRange } from "../../../core/range";
 import { vec4 } from "gl-matrix";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
+import { Flat } from "../flat";
 
 export class VexxNodeAmbientLight extends VexxNode {
-  rgba = vec4.fromValues(0.3,0.3,0.3,1.0);
+  rgba = vec4.fromValues(0.3, 0.3, 0.3, 1.0);
 
   constructor() {
     super(Vexx4NodeType.AMBIENT_LIGHT);
@@ -14,12 +15,16 @@ export class VexxNodeAmbientLight extends VexxNode {
     this.rgba = range.getFloat32Array(0, 4);
   }
 
-  /*
-  glDraw(engine: Engine): void {
-    engine.useProgram("default");
-    engine.setUniform4f("color", 1.0, 1.0, 0.2, 0.5);
-    engine.setUniformMatrix4fv("model", engine.modelMatrix);
-    engine.drawMesh("cube");
+  export(): Flat.Node {
+    return {
+      type: "AMBIENT_LIGHT",
+      name: this.name,
+      rgba: {
+        r: this.rgba[0],
+        g: this.rgba[1],
+        b: this.rgba[2],
+        a: this.rgba[3],
+      },
+    };
   }
-  */
 }

@@ -84,6 +84,11 @@ export namespace Flat {
         rgba: number[];
       }
     | {
+        type: "AMBIENT_LIGHT";
+        name: string;
+        rgba: RGBA;
+      }
+    | {
         type:
           | "SHIP_COLLISION_FX"
           | "SHIP_MUZZLE"
@@ -101,5 +106,5 @@ export namespace Flat {
         type: "START_POSITION";
         name: string;
         matrix: number[];
-      }
+      };
 }
