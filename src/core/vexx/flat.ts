@@ -54,7 +54,7 @@ export namespace Flat {
         children: Node[];
       }
     | {
-        type: "MESH";
+        type: "MESH" | "SKYCUBE";
         name: string;
         aabb: AABB;
         chunks: MeshChunk[];

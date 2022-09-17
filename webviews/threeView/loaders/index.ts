@@ -3,15 +3,17 @@ import { CSS2DObject } from "../renderers/CSS2DRenderer";
 
 export class World {
   scene: THREE.Scene;
-  materials: { [id: number]: THREE.Material };
-  
+  textures: { [id: number | string]: THREE.Texture };
+  materials: { [id: number | string]: THREE.Material };
+
   private _layers: { [id: string]: number };
   private _layerIndex = 8;
-  
+
   private _settings: any = {};
 
   constructor() {
     this.scene = new THREE.Scene();
+    this.textures = {};
     this.materials = {};
     this._layers = {};
     this._settings = {};

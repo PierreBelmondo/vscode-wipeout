@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Loader, World } from ".";
 import { Flat } from "../../../src/core/vexx/flat";
 import { vscode } from "../../vscode";
+import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
 
 type LoaderCallback = (world: World, node: any) => THREE.Object3D;
 
@@ -10,32 +11,36 @@ type Mapping = { [id: string]: { fn: LoaderCallback; layer?: string } };
 export class VEXXLoader extends Loader {
   load(node: Flat.Node): World {
     const world = new World();
-    this.loadMaterials(world, node);
+    this.loadTextures(world, node);
     this.loadScene(world, node);
     return world;
   }
 
-  private loadMaterials(world: World, node: any) {
+  private loadTextures(world: World, node: any) {
+    world.materials["default"] = new THREE.MeshPhongMaterial({
+      specular: 0x003000,
+      flatShading: true,
+      side: THREE.DoubleSide,
+    });
+
     const textureNodes = node.children.filter((x) => x.type === "TEXTURE");
-    for (const textureNode of textureNodes) {
-      const object1 = new THREE.DataTexture(
-        new Uint8Array(textureNode.rgba),
-        textureNode.width,
-        textureNode.height,
+    for (const textureNode of textureNodes)
+      this.loadTexture(world, textureNode);
+  }
+
+  private loadTexture(world: World, node: any) {
+    const texture = new THREE.DataTexture(
+      new Uint8Array(node.rgba),
+      node.width,
+      node.height,
         THREE.RGBAFormat
       );
-      object1.magFilter = THREE.LinearFilter;
-      object1.minFilter = THREE.LinearFilter;
-      object1.wrapS = THREE.RepeatWrapping;
-      object1.wrapT = THREE.RepeatWrapping;
-      object1.needsUpdate = true;
-
-      const material = new THREE.MeshPhongMaterial({ map: object1 });
-      if (textureNode.alphaMode != 1) material.alphaTest = 0.0;
-      else material.alphaTest = textureNode.alphaTest;
-
-      world.materials[textureNode.id] = material;
-    }
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearFilter;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.needsUpdate = true;
+    world.textures[node.id] = texture;
   }
 
   private loadScene(world: World, node: any) {
@@ -190,13 +195,9 @@ export class VEXXLoader extends Loader {
         );
       }
 
-      let material: THREE.Material = new THREE.MeshPhongMaterial({
-        specular: 0x003000,
-        flatShading: true,
-        side: THREE.DoubleSide,
-      });
+      let material = world.materials["default"];
 
-      if ("uvs" in chunk && chunk.texture in world.materials) {
+      if ("uvs" in chunk && chunk.texture in world.textures) {
         let attr: THREE.BufferAttribute | null = null;
         const size = chunk.uvs.size;
         const data = chunk.uvs.data;
@@ -216,7 +217,14 @@ export class VEXXLoader extends Loader {
 
         if (attr !== null) {
           geometry.setAttribute("uv", attr);
-          material = world.materials[chunk.texture];
+
+          const map = world.textures[chunk.texture];
+
+          if (node.type == "MESH")
+            material = new THREE.MeshPhongMaterial({ map });
+          else if (node.type == "SKYCUBE") {
+            material = new MeshSkyMaterial(map);
+          }
         }
       }
 
