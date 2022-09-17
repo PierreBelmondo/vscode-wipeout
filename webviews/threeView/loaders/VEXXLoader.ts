@@ -6,7 +6,7 @@ import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
 
 type LoaderCallback = (world: World, node: any) => THREE.Object3D;
 
-type Mapping = { [id: string]: { fn: LoaderCallback; layer?: string } };
+type Mapping = { [id: string]: { callback: LoaderCallback; layer?: string } };
 
 export class VEXXLoader extends Loader {
   load(node: Flat.Node): World {
@@ -44,12 +44,6 @@ export class VEXXLoader extends Loader {
   }
 
   private loadScene(world: World, node: any) {
-    /*
-    const axesHelper = new THREE.AxesHelper(10);
-    world.scene.add(axesHelper);
-    this.gui.add(axesHelper, "visible").name("Show origin");
-    */
-
     const hemiLight = new THREE.HemisphereLight(0xe0e0e0, 0x080808, 1);
     world.scene.add(hemiLight);
 
@@ -61,68 +55,161 @@ export class VEXXLoader extends Loader {
   }
 
   private readonly mapping: Mapping = {
-    AIRBRAKE: { fn: this.loadAirbrake },
-    AMBIENT_LIGHT: { fn: this.loadNodeGeneric },
-    ANIMATION_TRIGGER: {
-      fn: this.loadNodeGeneric,
-      layer: "Animation triggers",
+    AIRBRAKE: {
+      callback: this.loadAirbrake,
     },
-    ANIM_TRANSFORM: { fn: this.loadNodeGeneric },
-    BLOB: { fn: this.loadControlPoint, layer: "Blobs" },
-    CAMERA: { fn: this.loadCamera, layer: "Cameras" },
-    CLOUD_CUBE: { fn: this.loadNodeGeneric, layer: "Clouds" },
-    CLOUD_GROUP: { fn: this.loadNodeGeneric, layer: "Clouds" },
-    CURVE_SHAPE: { fn: this.loadNodeGeneric, layer: "Clouds" },
-    DIRECTIONAL_LIGHT: { fn: this.loadNodeGeneric, layer: "Lights" },
-    DYNAMIC_SHADOW_OCCLUDER: { fn: this.loadNodeGeneric },
-    ENGINE_FIRE: { fn: this.loadControlPointMatrix, layer: "Ship engine fire" },
+    AMBIENT_LIGHT: {
+      callback: this.loadAmbientLight,
+    },
+    ANIMATION_TRIGGER: {
+      callback: this.loadControlPoint, // TODO
+      layer: "Animations",
+    },
+    ANIM_TRANSFORM: {
+      callback: this.loadControlPoint, // TODO
+      layer: "Animations",
+    },
+    BLOB: {
+      callback: this.loadControlPoint, // TODO
+      layer: "Blobs",
+    },
+    CAMERA: {
+      callback: this.loadCamera, // TODO
+      layer: "Cameras",
+    },
+    CLOUD_CUBE: {
+      callback: this.loadNodeGeneric, // TODO
+      layer: "Clouds",
+    },
+    CLOUD_GROUP: {
+      callback: this.loadNodeGeneric, // TODO
+      layer: "Clouds",
+    },
+    CURVE_SHAPE: {
+      callback: this.loadNodeGeneric, // TODO
+      layer: "Clouds",
+    },
+    DIRECTIONAL_LIGHT: {
+      callback: this.loadNodeGeneric, // TODO
+      layer: "Lights",
+    },
+    DYNAMIC_SHADOW_OCCLUDER: {
+      callback: this.loadNodeGeneric, // TODO
+    },
+    ENGINE_FIRE: {
+      callback: this.loadControlPointMatrix, // TODO
+      layer: "Ship engine fire",
+    },
     ENGINE_FLARE: {
-      fn: this.loadControlPointMatrix,
+      callback: this.loadControlPointMatrix,
       layer: "Ship engine flare",
     },
-    EXIT_GLOW: { fn: this.loadNodeGeneric },
+    EXIT_GLOW: {
+      callback: this.loadNodeGeneric, // TODO
+    },
     FLOOR_COLLISION: {
-      fn: this.loadCollision,
+      callback: this.loadCollision,
       layer: "Floor collisions",
     },
-    FOG_CUBE: { fn: this.loadNodeGeneric },
-    GROUP: { fn: this.loadNodeGeneric },
-    LENS_FLARE: { fn: this.loadNodeGeneric },
-    LOD_GROUP: { fn: this.loadLodGroup },
-    MESH: { fn: this.loadMesh /*, layer: "Meshes" */ },
-    PARTICLE_SYSTEM: { fn: this.loadNodeGeneric },
-    QUAKE: { fn: this.loadNodeGeneric },
+    FOG_CUBE: {
+      callback: this.loadNodeGeneric, // TODO
+    },
+    GROUP: {
+      callback: this.loadNodeGeneric,
+    },
+    LENS_FLARE: {
+      callback: this.loadNodeGeneric, // TODO
+    },
+    LOD_GROUP: {
+      callback: this.loadLodGroup,
+    },
+    MESH: {
+      callback: this.loadMesh /*, layer: "Meshes" */,
+    },
+    PARTICLE_SYSTEM: {
+      callback: this.loadNodeGeneric, // TODO
+    },
+    QUAKE: {
+      callback: this.loadNodeGeneric, // TODO
+    },
     RESET_COLLISION: {
-      fn: this.loadCollision,
+      callback: this.loadCollision,
       layer: "Reset collisions",
     },
-    SEA: { fn: this.loadMesh, layer: "Sea" },
-    SEAWEED: { fn: this.loadControlPoint, layer: "Seaweed" },
-    SEA_REFLECT: { fn: this.loadMesh, layer: "Sea reflect" },
-    SECTION: { fn: this.loadNodeGeneric },
-    SHADOW: { fn: this.loadNodeGeneric },
+    SEA: {
+      callback: this.loadMesh, // TODO
+      layer: "Sea",
+    },
+    SEAWEED: {
+      callback: this.loadControlPoint, // TODO
+      layer: "Seaweed",
+    },
+    SEA_REFLECT: {
+      callback: this.loadMesh, // TODO
+      layer: "Sea reflect",
+    },
+    SECTION: {
+      callback: this.loadNodeGeneric, // TODO
+    },
+    SHADOW: {
+      callback: this.loadNodeGeneric, // TODO
+    },
     SHIP_COLLISION_FX: {
-      fn: this.loadControlPointMatrix,
+      callback: this.loadControlPointMatrix,
       layer: "Ship collisions",
     },
-    SHIP_MUZZLE: { fn: this.loadControlPointMatrix, layer: "Ship muzzle" },
-    SKYCUBE: { fn: this.loadMesh, layer: "Skybox" },
-    SOUND: { fn: this.loadSound, layer: "Sounds" },
-    SPEEDUP_PAD: { fn: this.loadMesh, layer: "Pads" },
+    SHIP_MUZZLE: {
+      callback: this.loadControlPointMatrix,
+      layer: "Ship muzzle",
+    },
+    SKYCUBE: {
+      callback: this.loadMesh,
+      layer: "Skybox",
+    },
+    SOUND: {
+      callback: this.loadSound, // TODO
+      layer: "Sounds",
+    },
+    SPEEDUP_PAD: {
+      callback: this.loadMesh, // TODO
+      layer: "Pads",
+    },
     START_POSITION: {
-      fn: this.loadControlPointMatrix,
+      callback: this.loadControlPointMatrix,
       layer: "Start position",
     },
-    TEXTURE: { fn: this.loadNodeGeneric },
-    TRAIL: { fn: this.loadControlPointMatrix },
-    TRANSFORM: { fn: this.loadTransform },
-    WALL_COLLISION: { fn: this.loadCollision, layer: "Wall collisions" },
-    WEAPON_PAD: { fn: this.loadMesh, layer: "Pads" },
-    WEATHER_POSITION: { fn: this.loadNodeGeneric },
-    WORLD: { fn: this.loadNodeGeneric },
-    WO_POINT: { fn: this.loadControlPoint, layer: "WO Points" },
-    WO_SPOT: { fn: this.loadNodeGeneric, layer: "WO Spots" },
-    WO_TRACK: { fn: this.loadNodeGeneric, layer: "WO Tracks" },
+    TRAIL: {
+      callback: this.loadControlPointMatrix, // TODO
+    },
+    TRANSFORM: {
+      callback: this.loadTransform,
+    },
+    WALL_COLLISION: {
+      callback: this.loadCollision,
+      layer: "Wall collisions",
+    },
+    WEAPON_PAD: {
+      callback: this.loadMesh, // TODO
+      layer: "Pads",
+    },
+    WEATHER_POSITION: {
+      callback: this.loadNodeGeneric, // TODO
+    },
+    WORLD: {
+      callback: this.loadNodeGeneric,
+    },
+    WO_POINT: {
+      callback: this.loadControlPoint, // TODO
+      layer: "WO Points",
+    },
+    WO_SPOT: {
+      callback: this.loadNodeGeneric, // TODO
+      layer: "WO Spots",
+    },
+    WO_TRACK: {
+      callback: this.loadNodeGeneric, // TODO
+      layer: "WO Tracks",
+    },
   };
 
   private loadNode(world: World, node: any): THREE.Object3D {
@@ -131,8 +218,8 @@ export class VEXXLoader extends Loader {
       return this.loadNodeGeneric(world, node);
     }
     const item = this.mapping[node.type];
-    const fn = item.fn.bind(this) as LoaderCallback;
-    const obj = fn(world, node);
+    const callback = item.callback.bind(this) as LoaderCallback;
+    const obj = callback(world, node);
     if (item.layer !== undefined) {
       const layer = world.getLayer(item.layer);
       obj.layers.set(layer);
