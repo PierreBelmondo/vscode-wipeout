@@ -17,6 +17,18 @@ export class World {
     this.materials = {};
     this._layers = {};
     this._settings = {};
+
+    this.materials["_default"] = new THREE.MeshBasicMaterial({
+      color: 0xA0A0A0A0,
+      side: THREE.DoubleSide,
+    });
+
+    this.materials["_defaultCollision"] = new THREE.MeshBasicMaterial({
+      color: 0xffff00,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.5,
+    });
   }
 
   getLayer(name: string): number {

@@ -289,7 +289,7 @@ export class VEXXLoader extends Loader {
         );
       }
 
-      let material = world.materials["default"];
+      let material = world.materials["_default"];
 
       if ("uvs" in chunk && chunk.texture in world.textures) {
         let attr: THREE.BufferAttribute | null = null;
@@ -368,13 +368,7 @@ export class VEXXLoader extends Loader {
         new THREE.Float32BufferAttribute(chunk.positions, 3)
       );
 
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xffff00,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.5,
-      });
-
+      const material = world.materials["_defaultCollision"];
       const mesh = new THREE.Mesh(geometry, material);
       mesh.layers.set(2);
       group.add(mesh);
