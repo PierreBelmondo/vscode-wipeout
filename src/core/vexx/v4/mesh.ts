@@ -38,7 +38,7 @@ export class VexxNodeMesh extends VexxNode {
   export(): Flat.Node {
     const ret: Flat.Node = {
       type: "MESH",
-      name: this.typeName,
+      name: this.name,
       aabb: this.meshInfo.aabb.export(),
       chunks: [],
     };
