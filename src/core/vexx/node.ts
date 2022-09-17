@@ -209,8 +209,8 @@ export class VexxNode extends Node {
 
   export(): Flat.Node {
     return {
-      name: this.name,
       type: this.typeName,
+      name: this.name,
       children: this.exportChildren(),
     };
   }

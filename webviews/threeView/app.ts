@@ -74,7 +74,7 @@ class Editor {
     this.controls.update();
     this.controls.addEventListener("change", this.render.bind(this));
 
-    // Scene.
+    // Scene
     this.scene = new THREE.Scene();
     this.materials = {};
 

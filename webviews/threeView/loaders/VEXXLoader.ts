@@ -33,8 +33,8 @@ export class VEXXLoader extends Loader {
       new Uint8Array(node.rgba),
       node.width,
       node.height,
-        THREE.RGBAFormat
-      );
+      THREE.RGBAFormat
+    );
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearFilter;
     texture.wrapS = THREE.RepeatWrapping;
@@ -44,9 +44,8 @@ export class VEXXLoader extends Loader {
   }
 
   private loadScene(world: World, node: any) {
-    const axesHelper = new THREE.AxesHelper(10);
-
     /*
+    const axesHelper = new THREE.AxesHelper(10);
     world.scene.add(axesHelper);
     this.gui.add(axesHelper, "visible").name("Show origin");
     */
@@ -69,7 +68,7 @@ export class VEXXLoader extends Loader {
       layer: "Animation triggers",
     },
     ANIM_TRANSFORM: { fn: this.loadNodeGeneric },
-    BLOB: { fn: this.loadNodeGeneric },
+    BLOB: { fn: this.loadControlPoint, layer: "Blobs" },
     CAMERA: { fn: this.loadCamera, layer: "Cameras" },
     CLOUD_CUBE: { fn: this.loadNodeGeneric, layer: "Clouds" },
     CLOUD_GROUP: { fn: this.loadNodeGeneric, layer: "Clouds" },
@@ -90,7 +89,7 @@ export class VEXXLoader extends Loader {
     GROUP: { fn: this.loadNodeGeneric },
     LENS_FLARE: { fn: this.loadNodeGeneric },
     LOD_GROUP: { fn: this.loadLodGroup },
-    MESH: { fn: this.loadMesh },
+    MESH: { fn: this.loadMesh /*, layer: "Meshes" */ },
     PARTICLE_SYSTEM: { fn: this.loadNodeGeneric },
     QUAKE: { fn: this.loadNodeGeneric },
     RESET_COLLISION: {
@@ -303,7 +302,7 @@ export class VEXXLoader extends Loader {
     const airbrake = {
       name: node.name,
       object,
-    }
+    };
     world.settings["airbrakes"].push(airbrake);
 
     return object;
