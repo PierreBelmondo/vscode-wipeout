@@ -17,12 +17,6 @@ export class VEXXLoader extends Loader {
   }
 
   private loadTextures(world: World, node: any) {
-    world.materials["default"] = new THREE.MeshPhongMaterial({
-      specular: 0x003000,
-      flatShading: true,
-      side: THREE.DoubleSide,
-    });
-
     const textureNodes = node.children.filter((x) => x.type === "TEXTURE");
     for (const textureNode of textureNodes)
       this.loadTexture(world, textureNode);
