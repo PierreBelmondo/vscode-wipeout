@@ -217,12 +217,14 @@ export class Vexx extends Node {
     if (!(node instanceof VexxNodeWorld)) console.warn("root node is not of type World ?");
     ret.root = node;
 
+    if (texturesRange.size > 0) {
     let offset = 0;
     for (const texture of ret.textures) {
       const size = texture.properties.cmapSize + texture.properties.dataSize;
       const textureRange = texturesRange.slice(offset, offset + size);
       texture.loadTexture(textureRange);
       offset += size;
+    }
     }
 
     return ret;
