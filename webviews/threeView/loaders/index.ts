@@ -18,8 +18,8 @@ export class World {
     this._layers = {};
     this._settings = {};
 
-    this.materials["_default"] = new THREE.MeshBasicMaterial({
-      color: 0xA0A0A0A0,
+    this.materials["_default"] = new THREE.MeshPhongMaterial({
+      color: 0xA0A0A0,
       side: THREE.DoubleSide,
     });
 
