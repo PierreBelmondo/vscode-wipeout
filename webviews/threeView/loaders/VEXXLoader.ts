@@ -324,12 +324,14 @@ export class VEXXLoader extends Loader {
         }
       }
 
-      if ("colors" in chunk) {
+      /*
+      if (chunk.colors !== undefined) {
         geometry.setAttribute(
           "color",
           new THREE.Float32BufferAttribute(chunk.colors, 3)
         );
       }
+      */
 
       if (chunk.mode == "TRIANGLE_STRIP") {
         const triangles = chunk.positions.length / 3 - 2;
