@@ -7,6 +7,7 @@ import { VEXXLoader } from "./loaders/VEXXLoader";
 import { vscode } from "../vscode";
 import { World } from "./loaders";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
+import { GLTFExporter } from "./exporters/GLTFExporter";
 
 class Editor {
   ready: boolean;
@@ -82,6 +83,23 @@ class Editor {
     this.gui.onChange(() => {
       this.render();
     });
+
+    // Buttons
+    this.settings["Export to glTF"] = () => {
+      const exporter = new GLTFExporter();
+      exporter.parse(
+        this.scene,
+        (gltf) => {
+          vscode.exportGTLF(gltf);
+        },
+        (error) => {
+          vscode.log("An error happened:");
+          console.log(error);
+        },
+        {}
+      );
+    };
+    this.gui.add(this.settings, "Export to glTF");
   }
 
   loadVEXX(node: any) {

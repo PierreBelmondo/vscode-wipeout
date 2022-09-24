@@ -1,9 +1,11 @@
 import * as vscode from "vscode";
+import * as path from "path";
 
 import { VexxDocument } from "./Document";
 import { WebviewCollection } from "../WebviewCollection";
 import { disposeAll } from "../../dispose";
 import { getNonce } from "../../util";
+import { TextEncoder } from "util";
 
 /**
  * Provider for RCS smodel editors.
@@ -136,6 +138,19 @@ export class VexxEditorProvider
     switch (message.type) {
       case "ready":
         return;
+      case "export.gltf":
+        const gltf = message.body;
+        this.exportGLTF(document, gltf);
+        return;
     }
+  }
+
+  private exportGLTF(document: VexxDocument, gltf: any) {
+    const json = JSON.stringify(gltf, null, "\t");
+    const encoder = new TextEncoder();
+    const array = encoder.encode(json);
+    const filename = path.basename(document.uri.path) + ".gltf";
+    const uri = vscode.Uri.joinPath(document.uri, "..", filename);
+    vscode.workspace.fs.writeFile(uri, array);
   }
 }
