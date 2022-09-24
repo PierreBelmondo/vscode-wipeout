@@ -82,7 +82,7 @@ export class VexxNodeTexture extends VexxNode {
     const height = this.properties.height;
     const is = width * height;
     const bpp = this.properties.bpp == 4 ? 4 : 8;
-    const sizzled = !!(this.properties.format & 1);
+    const swizzled = !!(this.properties.format & 1);
 
     let amin = 255;
     let amax = 0;
@@ -105,7 +105,7 @@ export class VexxNodeTexture extends VexxNode {
     }
 
     //console.log("indices min, max, bpp", amin, amax, bpp);
-    if (sizzled) {
+    if (swizzled) {
       const ch = 8;
       const cw = cmap.size == 64 ? 32 : 16;
       const cs = ch * cw;
