@@ -20,8 +20,7 @@ export class VexxNodeMesh extends VexxNode {
       const chunk = VexxNodeMeshChunk.load(meshesRange, this.typeInfo.version);
 
       if (chunk.header.id >= this.meshInfo.meshes.length) {
-        console.warn("Cannot add chunk with id ", chunk.header.id);
-        console.log(this, chunk);
+        console.warn(`Cannot add chunk with id ${chunk.header.id}`);
         break;
       }
 
@@ -29,7 +28,7 @@ export class VexxNodeMesh extends VexxNode {
       meshesRange = meshesRange.slice(chunk.size);
 
       if (this.chunks.length > 100) {
-        console.error("Mesh loading chunks triggered a failsafe", this.chunks);
+        console.error("Mesh loading chunks triggered a failsafe");
         break; // fail-safe
       }
     }
@@ -64,7 +63,6 @@ class VexxNodeMeshInfo {
   meshCount = 0;
   length = 0;
   aabb = new AABB();
-  numbers = [] as number[];
   meshes: MeshInfo[] = [];
 
   static load(range: BufferRange): VexxNodeMeshInfo {
@@ -77,7 +75,6 @@ class VexxNodeMeshInfo {
 
     if (ret.length == 0) {
       console.error("Failed to load shape info");
-      console.log(range);
       return ret;
     }
 
@@ -211,9 +208,7 @@ class VexxNodeMeshChunkHeader {
     const colorBits = (this.vtxdef & (0x7 << 2)) >> 2;
     const colorSize = colorBits == 0 ? 0 : colorBits == 7 ? 4 : 2;
     let colorPadding = 0;
-    if (colorSize > 1)
-      colorPadding =
-        textureEnd % colorSize == 0 ? 0 : colorSize - (textureEnd % colorSize);
+    if (colorSize > 1) colorPadding = textureEnd % colorSize == 0 ? 0 : colorSize - (textureEnd % colorSize);
     const color = {
       padding: colorPadding,
       type: colorBits,
@@ -226,9 +221,7 @@ class VexxNodeMeshChunkHeader {
     const normalBits = (this.vtxdef & (0x3 << 5)) >> 5;
     const normalSize = normalBits == 0 ? 0 : normalBits == 3 ? 4 : normalBits;
     let normalPadding = 0;
-    if (normalSize > 1)
-      normalPadding =
-        colorEnd % normalSize == 0 ? 0 : normalSize - (colorEnd % normalSize);
+    if (normalSize > 1) normalPadding = colorEnd % normalSize == 0 ? 0 : normalSize - (colorEnd % normalSize);
     const normal = {
       padding: normalPadding,
       type: normalBits,
@@ -242,9 +235,7 @@ class VexxNodeMeshChunkHeader {
     const vertexSize = vertexBits == 0 ? 0 : vertexBits == 3 ? 4 : vertexBits;
     const vertexCount = (this.vtxdef & (0x7 << 18)) >> 18;
     let vertexPadding = 0;
-    if (vertexSize > 1)
-      vertexPadding =
-        normalEnd % vertexSize == 0 ? 0 : vertexSize - (normalEnd % vertexSize);
+    if (vertexSize > 1) vertexPadding = normalEnd % vertexSize == 0 ? 0 : vertexSize - (normalEnd % vertexSize);
     const vertex = {
       padding: vertexPadding,
       type: vertexBits,
@@ -286,15 +277,9 @@ class VexxNodeMeshChunkHeader {
 
   get strideSize(): number {
     const strideInfo = this.strideInfo;
-    let size =
-      strideInfo.vertex.offset +
-      strideInfo.vertex.size * strideInfo.vertex.count;
+    let size = strideInfo.vertex.offset + strideInfo.vertex.size * strideInfo.vertex.count;
     //let size = this.strideInfo.index.offset + this.strideInfo.index.size * this.strideInfo.index.count;
-    if (this.strideAlign > 1)
-      size +=
-        size % this.strideAlign == 0
-          ? 0
-          : this.strideAlign - (size % this.strideAlign);
+    if (this.strideAlign > 1) size += size % this.strideAlign == 0 ? 0 : this.strideAlign - (size % this.strideAlign);
     return size;
   }
 }
@@ -329,10 +314,7 @@ class VexxNodeMeshChunk {
 
     const expectedSize = ret.header.size + 16 * 3 + ret.header.size1;
     if (size != expectedSize) {
-      console.warn(
-        `Cannot load mesh chunk because sizes differ ${size} != ${expectedSize}`
-      );
-      console.log(ret);
+      console.warn(`Cannot load mesh chunk @0x${ret.range.begin.toString(16)} because sizes differ ${size} != ${expectedSize}`);
       return ret;
     }
     ret.loadData();
@@ -350,11 +332,9 @@ class VexxNodeMeshChunk {
       this.unknown = infoRange.getFloat32(4);
       this.aabb = AABB.loadFromInt16(infoRange.slice(8, 24));
       for (let i = 0; i < 8; i++) this.floats.push(infoRange.getUint8(24 + i)); // padding ?
-      for (let i = 0; i < 4; i++)
-        this.floats.push(infoRange.getFloat32(32 + i * 4));
+      for (let i = 0; i < 4; i++) this.floats.push(infoRange.getFloat32(32 + i * 4));
     } else {
       for (let i = 0; i < 16 * 3; i++) this.floats.push(infoRange.getUint8(i));
-      console.log(infoRange);
     }
 
     // Load strides in first section
@@ -364,9 +344,7 @@ class VexxNodeMeshChunk {
     // Load strides in second section
     const offset = infoRange.size + stridesRange.size;
     const pad = offset % 16 == 0 ? 0 : 16 - (offset % 16);
-    const stridesRange2 = stridesRange.slice(
-      this.header.strideCount * this.header.strideSize + pad
-    );
+    const stridesRange2 = stridesRange.slice(this.header.strideCount * this.header.strideSize + pad);
     this.strides2 = this.loadStrides(stridesRange2, this.header.strideCount2);
   }
 
@@ -378,27 +356,11 @@ class VexxNodeMeshChunk {
     const textureGet = (range: BufferRange, index: number, offset: number) => {
       switch (strideInfo.texture.size) {
         case 1:
-          return (
-            range.getInt8(
-              index * strideSize +
-                strideInfo.texture.offset +
-                strideInfo.texture.size * offset
-            ) + 128
-          );
+          return range.getInt8(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset);
         case 2:
-          return (
-            range.getInt16(
-              index * strideSize +
-                strideInfo.texture.offset +
-                strideInfo.texture.size * offset
-            ) + 32768
-          );
+          return range.getInt16(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset);
         case 4:
-          return range.getFloat32(
-            index * strideSize +
-              strideInfo.texture.offset +
-              strideInfo.texture.size * offset
-          );
+          return range.getFloat32(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset);
       }
       return 0;
     };
@@ -406,17 +368,9 @@ class VexxNodeMeshChunk {
     const colorGet = (range: BufferRange, index: number, offset: number) => {
       switch (strideInfo.color.size) {
         case 1:
-          return range.getUint16(
-            index * strideSize +
-              strideInfo.color.offset +
-              strideInfo.color.size * offset
-          );
+          return range.getUint16(index * strideSize + strideInfo.color.offset + strideInfo.color.size * offset);
         case 2:
-          return range.getUint32(
-            index * strideSize +
-              strideInfo.color.offset +
-              strideInfo.color.size * offset
-          );
+          return range.getUint32(index * strideSize + strideInfo.color.offset + strideInfo.color.size * offset);
       }
       return 0;
     };
@@ -424,23 +378,11 @@ class VexxNodeMeshChunk {
     const normalGet = (range: BufferRange, index: number, offset: number) => {
       switch (strideInfo.normal.size) {
         case 1:
-          return range.getInt8(
-            index * strideSize +
-              strideInfo.normal.offset +
-              strideInfo.normal.size * offset
-          );
+          return range.getInt8(index * strideSize + strideInfo.normal.offset + strideInfo.normal.size * offset);
         case 2:
-          return range.getInt16(
-            index * strideSize +
-              strideInfo.normal.offset +
-              strideInfo.normal.size * offset
-          );
+          return range.getInt16(index * strideSize + strideInfo.normal.offset + strideInfo.normal.size * offset);
         case 4:
-          return range.getFloat32(
-            index * strideSize +
-              strideInfo.normal.offset +
-              strideInfo.normal.size * offset
-          );
+          return range.getFloat32(index * strideSize + strideInfo.normal.offset + strideInfo.normal.size * offset);
       }
       return 0;
     };
@@ -448,29 +390,11 @@ class VexxNodeMeshChunk {
     const vertexGet = (range: BufferRange, index: number, offset: number) => {
       switch (strideInfo.vertex.size) {
         case 1:
-          return (
-            range.getInt8(
-              index * strideSize +
-                strideInfo.vertex.offset +
-                strideInfo.vertex.size * offset
-            ) + 128
-          );
+          return range.getInt8(index * strideSize + strideInfo.vertex.offset + strideInfo.vertex.size * offset) + 128;
         case 2:
-          return (
-            (range.getInt16(
-              index * strideSize +
-                strideInfo.vertex.offset +
-                strideInfo.vertex.size * offset
-            ) *
-              this.scaling) /
-            32767.0
-          );
+          return (range.getInt16(index * strideSize + strideInfo.vertex.offset + strideInfo.vertex.size * offset) * this.scaling) / 32767.0;
         case 4:
-          return range.getFloat32(
-            index * strideSize +
-              strideInfo.vertex.offset +
-              strideInfo.vertex.size * offset
-          );
+          return range.getFloat32(index * strideSize + strideInfo.vertex.offset + strideInfo.vertex.size * offset);
       }
       return 0;
     };

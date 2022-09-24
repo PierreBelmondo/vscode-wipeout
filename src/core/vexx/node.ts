@@ -139,10 +139,7 @@ export class VexxNode extends Node {
         prototype: VexxNode,
       };
       instance.header = header;
-      instance.range = range.slice(
-        0,
-        instance.header.size + instance.header.dataLength
-      );
+      instance.range = range.slice(0, instance.header.size + instance.header.dataLength);
       instance.load(instance.dataRange);
       return instance;
     }
@@ -150,10 +147,7 @@ export class VexxNode extends Node {
     const instance = new typeInfo.prototype();
     instance.typeInfo = typeInfo;
     instance.header = header;
-    instance.range = range.slice(
-      0,
-      instance.header.size + instance.header.dataLength
-    );
+    instance.range = range.slice(0, instance.header.size + instance.header.dataLength);
     instance.load(instance.dataRange);
     return instance;
   }

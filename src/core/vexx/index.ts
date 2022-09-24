@@ -196,7 +196,7 @@ export class Vexx extends Node {
   header = new VexxHeader();
   root: VexxNode = new VexxNodeWorld();
 
-  get name() :string {
+  get name(): string {
     return "VEXX";
   }
 
@@ -210,9 +210,7 @@ export class Vexx extends Node {
 
     // Check endianess of file
     const tmpMagic = ret.range.slice(12, 16).getString();
-    console.log(tmpMagic);
-    if (tmpMagic == "XXEV")
-      ret.range.le = false;
+    if (tmpMagic == "XXEV") ret.range.le = false;
 
     ret.header = VexxHeader.load(ret.range);
 
@@ -227,13 +225,13 @@ export class Vexx extends Node {
     ret.root = node;
 
     if (texturesRange.size > 0) {
-    let offset = 0;
-    for (const texture of ret.textures) {
-      const size = texture.properties.cmapSize + texture.properties.dataSize;
-      const textureRange = texturesRange.slice(offset, offset + size);
-      texture.loadTexture(textureRange);
-      offset += size;
-    }
+      let offset = 0;
+      for (const texture of ret.textures) {
+        const size = texture.properties.cmapSize + texture.properties.dataSize;
+        const textureRange = texturesRange.slice(offset, offset + size);
+        texture.loadTexture(textureRange);
+        offset += size;
+      }
     }
 
     return ret;
