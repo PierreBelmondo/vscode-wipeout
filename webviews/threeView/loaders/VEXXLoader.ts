@@ -226,6 +226,7 @@ export class VEXXLoader extends Loader {
 
   private loadNodeGeneric(world: World, node: any): THREE.Object3D {
     const group = new THREE.Group();
+    group.name = node.name;
     for (const child of node.children) {
       const object = this.loadNode(world, child);
       if (object === null) continue;
@@ -239,12 +240,14 @@ export class VEXXLoader extends Loader {
     matrix.fromArray(node.matrix);
 
     const obj = this.loadNodeGeneric(world, node);
+    obj.name = node.name;
     obj.applyMatrix4(matrix);
     return obj;
   }
 
   private loadLodGroup(world: World, node: any): THREE.Object3D {
     const group = new THREE.Group();
+    group.name = node.name;
     for (const child of node.children) {
       const object = this.loadNode(world, child);
       if (object === null) continue;
@@ -264,6 +267,7 @@ export class VEXXLoader extends Loader {
 
   private loadMesh(world: World, node: any): THREE.Object3D {
     const group = new THREE.Group();
+    group.name = node.name;
 
     for (let i = 0; i < node.chunks.length; i++) {
       const chunk = node.chunks[i];
@@ -351,6 +355,7 @@ export class VEXXLoader extends Loader {
 
   private loadCollision(world: World, node: any): THREE.Object3D {
     const group = new THREE.Group();
+    group.name = node.name;
 
     for (let i = 0; i < node.chunks.length; i++) {
       const chunk = node.chunks[i];
@@ -382,6 +387,7 @@ export class VEXXLoader extends Loader {
 
   private loadAirbrake(world: World, node: any): THREE.Object3D {
     const object = this.loadNodeGeneric(world, node);
+    object.name = node.name;
 
     if (!("airbrakes" in world.settings)) world.settings["airbrakes"] = [];
     const airbrake = {
@@ -397,6 +403,7 @@ export class VEXXLoader extends Loader {
     const matrix = new THREE.Matrix4();
     matrix.fromArray(node.matrix);
     const obj = this.createControlPoint(node.name);
+    obj.name = node.name;
     obj.applyMatrix4(matrix);
     return obj;
   }
