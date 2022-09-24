@@ -79,7 +79,7 @@ export namespace Flat {
         height: number;
         bpp: number;
         format: number;
-        alphaMode: number;
+        mipmaps: number;
         alphaTest: number;
         diffuse: RGBA;
         rgba: number[];

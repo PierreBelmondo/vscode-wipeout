@@ -8,7 +8,7 @@ export class VexxNodeTexture extends VexxNode {
     width: 128,
     height: 128,
     bpp: 1,
-    alphaMode: 0, // not sure
+    mipmaps: 0,
     format: 1,
     id: 0,
     cmapSize: 0,
@@ -21,6 +21,7 @@ export class VexxNodeTexture extends VexxNode {
       b: 0,
       a: 0,
     },
+    external: false
   };
 
   rgba = new Uint8ClampedArray(this.properties.width * this.properties.height);
@@ -33,7 +34,7 @@ export class VexxNodeTexture extends VexxNode {
     this.properties.width = range.getUint16(0);
     this.properties.height = range.getUint16(2);
     this.properties.bpp = range.getUint8(4);
-    this.properties.alphaMode = range.getUint8(5);
+    this.properties.mipmaps = range.getUint8(5);
     this.properties.format = range.getUint8(6);
     this.properties.id = range.getUint8(7);
     this.properties.cmapSize = range.getUint32(8);
@@ -45,8 +46,11 @@ export class VexxNodeTexture extends VexxNode {
       b: range.getUint8(30),
       a: range.getUint8(31),
     };
-    // 56 bytes ?
-    this.properties.name = range.slice(16 + 40).getString();
+    // unknown: 8 bytes (32 -> 40)
+    // unknown: 8 bytes (40 -> 48)
+    // unknown: 8 bytes (48 -> 56)
+    this.properties.external = range.getUint32(48) == 0xFFFFFFFF;
+    this.properties.name = range.slice(56).getString();
   }
 
   loadColormap(range: BufferRange) {
@@ -98,7 +102,6 @@ export class VexxNodeTexture extends VexxNode {
       rgba[i * 4 + 1] = cmap.getUint8(ci * 4 + 1);
       rgba[i * 4 + 2] = cmap.getUint8(ci * 4 + 2);
       rgba[i * 4 + 3] = cmap.getUint8(ci + 4 + 3);
-        //this.properties.alphaMode != 1 ? 255 : cmap.getUint8(ci + 4 + 3);
     }
 
     //console.log("indices min, max, bpp", amin, amax, bpp);
@@ -139,7 +142,7 @@ export class VexxNodeTexture extends VexxNode {
       height: this.properties.height,
       bpp: this.properties.bpp,
       format: this.properties.format,
-      alphaMode: this.properties.alphaMode,
+      mipmaps: this.properties.mipmaps,
       alphaTest: this.properties.alphaTest,
       diffuse: this.properties.diffuse,
       rgba: Array.from(this.rgba),
