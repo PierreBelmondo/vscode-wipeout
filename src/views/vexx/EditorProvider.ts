@@ -73,19 +73,19 @@ export class VexxEditorProvider
         } else {
           console.log("sending scene to webview", document.scene, 2);
           this.postMessage(webviewPanel, "load.vexx", {
-            "scene": document.scene,
+            scene: document.scene,
           });
         }
       }
       if (e.type == "clipboard") {
-        console.log(e.body)
+        console.log(e.body);
         /*
         const item = new ClipboardItem(e.body);
         clipboard.write([item]);
         */
       }
       if (e.type === "log") {
-        console.log(e.message)
+        console.log(e.message);
       }
     });
   }
