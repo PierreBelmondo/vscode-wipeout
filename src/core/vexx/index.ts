@@ -270,9 +270,12 @@ export class Vexx extends Node {
     return ret;
   }
 
-  cleanup(node?: VexxNode) : boolean {
-    if (node === undefined)
-      node = this.root;
+  traverse(callback: (node: VexxNode) => void) {
+    this.root.traverse(callback);
+  }
+
+  cleanup(node?: VexxNode): boolean {
+    if (node === undefined) node = this.root;
 
     for (let i = 0; i < node.children.length; i++) {
       if (this.cleanup(node.children[i])) {

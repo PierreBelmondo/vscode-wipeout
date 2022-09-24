@@ -201,6 +201,11 @@ export class VexxNode extends Node {
     }
   }
 
+  traverse(callback: (node: VexxNode) => void) {
+    callback(this);
+    this.forEach(callback);
+  }
+
   dump(): any {
     const ret = { header: this.header.dump() } as any;
     if (this.children.length > 0) ret["children"] = this.dumpChildren();
