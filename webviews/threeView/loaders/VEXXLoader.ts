@@ -71,6 +71,9 @@ export class VEXXLoader extends Loader {
       callback: this.loadCamera, // TODO
       layer: "Cameras",
     },
+    CANON_FLASH: {
+      callback: this.loadNodeGeneric, // TODO
+    },
     CLOUD_CUBE: {
       callback: this.loadNodeGeneric, // TODO
       layer: "Clouds",
