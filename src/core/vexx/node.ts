@@ -91,7 +91,7 @@ export class VexxNode extends Node {
   header = new VexxNodeHeader();
   children: VexxNode[] = [];
 
-  constructor(type = Vexx4NodeType._UNKNOWN) {
+  constructor(type: Vexx4NodeType | Vexx6NodeType | number = Vexx4NodeType._UNKNOWN) {
     super();
     this.header = new VexxNodeHeader(type);
   }

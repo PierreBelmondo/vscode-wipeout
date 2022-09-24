@@ -270,17 +270,17 @@ export class VEXXLoader extends Loader {
     group.name = node.name;
 
     for (let i = 0; i < node.chunks.length; i++) {
-      const chunk = node.chunks[i];
+      const chunk = node.chunks[i] as Flat.MeshChunk;
       const geometry = new THREE.BufferGeometry();
 
-      if (!("positions" in chunk)) continue;
+      if (chunk.positions === undefined) continue;
 
       geometry.setAttribute(
         "position",
         new THREE.Float32BufferAttribute(chunk.positions, 3)
       );
 
-      if ("normals" in chunk) {
+      if (chunk.normals !== undefined) {
         geometry.setAttribute(
           "normal",
           new THREE.Float32BufferAttribute(chunk.normals, 3)
@@ -289,7 +289,7 @@ export class VEXXLoader extends Loader {
 
       let material = world.materials["_default"];
 
-      if ("uvs" in chunk && chunk.texture in world.textures) {
+      if (chunk.uvs !== undefined && chunk.texture in world.textures) {
         let attr: THREE.BufferAttribute | null = null;
         const size = chunk.uvs.size;
         const data = chunk.uvs.data;
