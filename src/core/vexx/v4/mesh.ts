@@ -6,7 +6,7 @@ import { GU } from "../../utils/pspgu";
 import { Flat } from "../flat";
 
 export class VexxNodeMesh extends VexxNode {
-  meshInfo = new VexxNodeMeshInfo();
+  info = new VexxNodeiMeshHeader();
   chunks: VexxNodeMeshChunk[] = [];
 
   constructor(type = Vexx4NodeType.MESH) {
@@ -14,13 +14,13 @@ export class VexxNodeMesh extends VexxNode {
   }
 
   override load(range: BufferRange): void {
-    this.meshInfo = VexxNodeMeshInfo.load(range);
+    this.info = VexxNodeiMeshHeader.load(range);
 
-    let meshesRange = range.slice(this.meshInfo.size);
+    let meshesRange = range.slice(this.info.size);
     while (meshesRange.size > 64) {
       const chunk = VexxNodeMeshChunk.load(meshesRange, this.typeInfo.version);
 
-      if (chunk.header.id >= this.meshInfo.materials.length) {
+      if (chunk.header.id >= this.info.materials.length) {
         console.warn(`Cannot add chunk with id ${chunk.header.id}`);
         break;
       }
@@ -39,13 +39,13 @@ export class VexxNodeMesh extends VexxNode {
     const ret: Flat.Node = {
       type: "MESH",
       name: this.name,
-      aabb: this.meshInfo.aabb.export(),
+      aabb: this.info.aabb.export(),
       chunks: [],
     };
     for (let i = 0; i < this.chunks.length; i++) {
       const chunk = this.chunks[i];
       const chunkHeader = chunk.header;
-      const textureId = this.meshInfo.materials[chunkHeader.id].textureId;
+      const textureId = this.info.materials[chunkHeader.id].textureId;
       const flatChunk = chunk.export(textureId);
       ret.chunks.push(flatChunk);
     }
@@ -53,12 +53,7 @@ export class VexxNodeMesh extends VexxNode {
   }
 }
 
-type VexxNodeMeshMaterial = {
-  range: BufferRange;
-  textureId: number;
-};
-
-class VexxNodeMeshInfo {
+class VexxNodeiMeshHeader {
   range = new BufferRange();
   type = 0;
   meshCount = 0;
@@ -67,8 +62,8 @@ class VexxNodeMeshInfo {
   aabb = new AABB();
   materials: VexxNodeMeshMaterial[] = [];
 
-  static load(range: BufferRange): VexxNodeMeshInfo {
-    const ret = new VexxNodeMeshInfo();
+  static load(range: BufferRange): VexxNodeiMeshHeader {
+    const ret = new VexxNodeiMeshHeader();
     ret.type = range.getUint16(0);
     ret.meshCount = range.getUint16(2);
     ret.length1 = range.getUint32(4);
@@ -80,18 +75,32 @@ class VexxNodeMeshInfo {
       return ret;
     }
 
-    range = ret.range;
-
-    const aabbRange = range.slice(16, 16 + 32);
+    const aabbRange = ret.range.slice(16, 16 + 32);
     ret.aabb = AABB.loadFromFloat32(aabbRange);
 
-    const dataRange = range.slice(48);
+    let materialsRange =  ret.range.slice(48);
     for (let i = 0; i < ret.meshCount; i++) {
-      const meshRange = dataRange.slice(i * 20, (i + 1) * 20);
-      const meshinfo = { range: meshRange, textureId: meshRange.getUint32(4) };
-      ret.materials.push(meshinfo);
+      const material = VexxNodeMeshMaterial.load(materialsRange);
+      ret.materials.push(material);
+      materialsRange = materialsRange.slice(material.size);
     }
 
+    return ret;
+  }
+
+  get size(): number {
+    return this.range.size;
+  }
+}
+
+class VexxNodeMeshMaterial {
+  range = new BufferRange();
+  textureId = 0;
+
+  static load(range: BufferRange): VexxNodeMeshMaterial {
+    const ret = new VexxNodeMeshMaterial();
+    ret.range = range.slice(0, 20);
+    ret.textureId = ret.range.getUint32(4);
     return ret;
   }
 
@@ -106,16 +115,16 @@ type Vertex3 = {
   z: number;
 };
 
+type UV = {
+  u: number;
+  v: number;
+};
+
 type Stride = {
-  uv?: {
-    u: number;
-    v: number;
-  };
+  uv?: UV;
   color?: number;
   normal?: Vertex3;
   vertex?: Vertex3;
-  weight?: number;
-  index?: number;
 };
 
 class VexxNodeMeshChunkHeader {
@@ -155,7 +164,7 @@ class VexxNodeMeshChunkHeader {
     return this.range.size;
   }
 
-  get strideAlign():number {
+  get strideAlign(): number {
     return this.version == 4 ? 4 : 1;
   }
 
@@ -284,30 +293,6 @@ class VexxNodeMeshChunk {
       return 0;
     };
 
-    /*
-    const weightGet = (range: BufferRange, index: number, offset: number) => {
-      switch (strideInfo.weight.size) {
-        case 1:
-          return range.getInt8(index * strideSize + strideInfo.weight.offset + strideInfo.weight.size * offset);
-        case 2:
-          return range.getInt16(index * strideSize + strideInfo.weight.offset + strideInfo.weight.size * offset);
-        case 4:
-          return range.getFloat32(index * strideSize + strideInfo.weight.offset + strideInfo.weight.size * offset);
-      }
-      return 0;
-    };
-
-    const indexGet = (range: BufferRange, index: number, offset: number) => {
-      switch (strideInfo.index.size) {
-        case 1:
-          return range.getUint8(index * strideSize + strideInfo.index.offset + strideInfo.index.size * offset);
-        case 2:
-          return range.getUint16(index * strideSize + strideInfo.index.offset + strideInfo.index.size * offset);
-      }
-      return 0;
-    };
-    */
-
     for (let i = 0; i < count; i++) {
       const stride: Stride = {};
       if (strideInfo.texture.size > 0)
@@ -328,10 +313,6 @@ class VexxNodeMeshChunk {
           y: vertexGet(range, i, 1),
           z: vertexGet(range, i, 2),
         };
-      /*
-      if (strideInfo.weight.size > 0) stride.weight = weightGet(range, i, 0);
-      if (strideInfo.index.size > 0) stride.index = indexGet(range, i, 0);
-      */
       strides.push(stride);
     }
     return strides;
