@@ -296,15 +296,16 @@ export class VEXXLoader extends Loader {
         let attr: THREE.BufferAttribute | null = null;
         const size = chunk.uvs.size;
         const data = chunk.uvs.data;
+        const normalized = chunk.uvs.normalized;
         switch (chunk.uvs.type) {
           case "Int8":
-            attr = new THREE.Int8BufferAttribute(data, size, true);
+            attr = new THREE.Int8BufferAttribute(data, size, normalized);
             break;
           case "Int16":
-            attr = new THREE.Int16BufferAttribute(data, size, true);
+            attr = new THREE.Int16BufferAttribute(data, size, normalized);
             break;
           case "Float32":
-            attr = new THREE.Float32BufferAttribute(data, size, false);
+            attr = new THREE.Float32BufferAttribute(data, size, normalized);
             break;
           default:
             break;

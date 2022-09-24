@@ -494,18 +494,21 @@ class VexxNodeMeshChunk {
           type: "Int8",
           size: 2,
           data: uvs,
+          normalized: true,
         };
       } else if (strideInfo.texture.size == 2) {
         ret.uvs = {
           type: "Int16",
           size: 2,
           data: uvs,
+          normalized: true,
         };
       } else if (strideInfo.texture.size == 4) {
         ret.uvs = {
           type: "Float32",
           size: 2,
           data: uvs,
+          normalized: false,
         };
       }
     }

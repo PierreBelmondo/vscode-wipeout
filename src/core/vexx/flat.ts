@@ -28,6 +28,7 @@ export namespace Flat {
       | "Float32";
     size: 1 | 2 | 3 | 4;
     data: number[];
+    normalized: boolean;
   };
 
   export type MeshChunk = {
