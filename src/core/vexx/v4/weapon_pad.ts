@@ -7,7 +7,7 @@ export class VexxNodeWeaponPad extends VexxNodeMesh {
     super(Vexx4NodeType.WEAPON_PAD);
   }
 
-  export() : Flat.Node {
+  override export() : Flat.Node {
     const ret = super.export();
     ret.type = "WEAPON_PAD";
     return ret;

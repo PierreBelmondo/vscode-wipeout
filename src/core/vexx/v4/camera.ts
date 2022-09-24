@@ -21,7 +21,7 @@ export class VexxNodeCamera extends VexxNode {
     super(Vexx4NodeType.CAMERA);
   }
 
-  load(range: BufferRange): void {
+  override load(range: BufferRange): void {
     //console.log("VexxNodeCamera.load =>", range);
     this.properties.unknown1 = range.getUint32(0);
     this.properties.unknown2 = range.getUint32(4);
@@ -35,7 +35,7 @@ export class VexxNodeCamera extends VexxNode {
     this.properties.unknown10 = range.getUint16(34);
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     return {
       type: "CAMERA",
       name: this.name,

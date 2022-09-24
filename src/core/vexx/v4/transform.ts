@@ -11,11 +11,11 @@ export class VexxNodeTransform extends VexxNode {
     super(Vexx4NodeType.TRANSFORM);
   }
 
-  load(data: BufferRange): void {
+  override load(data: BufferRange): void {
     if (data.size >= 64) this.matrix = data.getFloat32Array(0, 16);
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     return {
       type: "TRANSFORM",
       name: this.name,

@@ -7,7 +7,7 @@ export class VexxNodeSkycube extends VexxNodeMesh {
     super(Vexx4NodeType.SKYCUBE);
   }
 
-  export() : Flat.Node {
+  override export() : Flat.Node {
     const node = super.export();
     node.type = "SKYCUBE";
     return node;

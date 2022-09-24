@@ -13,7 +13,7 @@ export class VexxNodeLensFlare extends VexxNode {
     super(Vexx4NodeType.LENS_FLARE);
   }
 
-  load(range: BufferRange): void {
+  override load(range: BufferRange): void {
     this.properties.matrix = range.getFloat32Array(0, 16);
     this.properties.unknown = range.slice(64).buffer;
   }

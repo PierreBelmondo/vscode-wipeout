@@ -3,8 +3,6 @@ import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
 export class VexxNodeWorld extends VexxNode {
-  static readonly type = Vexx4NodeType.WORLD;
-
   source = "world";
 
   constructor() {
@@ -12,7 +10,7 @@ export class VexxNodeWorld extends VexxNode {
     this.header.name = "world";
   }
 
-  load(data: BufferRange): void {
+  override load(data: BufferRange): void {
     this.source = data.getString();
   }
 }

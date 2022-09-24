@@ -1,5 +1,4 @@
 import { BufferRange } from "../../../core/range";
-import { mat4, vec3 } from "gl-matrix";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
@@ -24,7 +23,7 @@ export class VexxNodeAnimTransform extends VexxNode {
     super(Vexx4NodeType.ANIM_TRANSFORM);
   }
 
-  load(range: BufferRange): void {
+  override load(range: BufferRange): void {
     this.unk1 = range.getUint16(0);
     this.unk2 = range.getUint16(2);
     this.unk3 = range.getUint16(4);
@@ -55,17 +54,4 @@ export class VexxNodeAnimTransform extends VexxNode {
       this.points.push({ x, y, z });
     }
   }
-
-  /*
-  glDraw(engine: Engine): void {
-    const v = vec3.fromValues(this.x, this.y, this.z);
-
-    engine.pushModelMatrix();
-    mat4.translate(engine.modelMatrix, engine.modelMatrix, v);
-
-    if (this.name == "pSphere2") super.glDraw(engine);
-
-    engine.popModelMatrix();
-  }
-  */
 }

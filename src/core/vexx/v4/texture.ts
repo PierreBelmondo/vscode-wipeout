@@ -29,7 +29,7 @@ export class VexxNodeTexture extends VexxNode {
     super(Vexx4NodeType.TEXTURE);
   }
 
-  load(range: BufferRange): void {
+  override load(range: BufferRange): void {
     this.properties.width = range.getUint16(0);
     this.properties.height = range.getUint16(2);
     this.properties.bpp = range.getUint8(4);
@@ -130,7 +130,7 @@ export class VexxNodeTexture extends VexxNode {
     this.rgba = rgba;
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     const ret: Flat.Node = {
       type: "TEXTURE",
       name: this.name,

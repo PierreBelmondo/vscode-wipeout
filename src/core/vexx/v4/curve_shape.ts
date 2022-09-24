@@ -3,6 +3,6 @@ import { Vexx4NodeType } from "./type";
 
 export class VexxNodeCurveShape extends VexxNode {
   constructor() {
-    super(Vexx4NodeType.ENGINE_FLARE);
+    super(Vexx4NodeType.CURVE_SHAPE);
   }
 }

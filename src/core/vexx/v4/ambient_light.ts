@@ -11,11 +11,11 @@ export class VexxNodeAmbientLight extends VexxNode {
     super(Vexx4NodeType.AMBIENT_LIGHT);
   }
 
-  load(range: BufferRange): void {
+  override load(range: BufferRange): void {
     this.rgba = range.getFloat32Array(0, 4);
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     return {
       type: "AMBIENT_LIGHT",
       name: this.name,

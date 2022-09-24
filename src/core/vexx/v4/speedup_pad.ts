@@ -7,7 +7,7 @@ export class VexxNodeSpeedupPad extends VexxNodeMesh {
     super(Vexx4NodeType.SPEEDUP_PAD);
   }
 
-  export() : Flat.Node {
+  override export() : Flat.Node {
     const ret = super.export();
     ret.type = "SPEEDUP_PAD";
     return ret;

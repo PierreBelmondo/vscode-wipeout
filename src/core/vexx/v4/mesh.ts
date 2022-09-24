@@ -12,7 +12,7 @@ export class VexxNodeMesh extends VexxNode {
     super(type);
   }
 
-  load(range: BufferRange): void {
+  override load(range: BufferRange): void {
     this.meshInfo = VexxNodeMeshInfo.load(range);
 
     let meshesRange = range.slice(this.meshInfo.size);
@@ -34,7 +34,7 @@ export class VexxNodeMesh extends VexxNode {
     }
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     const ret: Flat.Node = {
       type: "MESH",
       name: this.name,

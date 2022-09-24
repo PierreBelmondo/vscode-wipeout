@@ -1,4 +1,3 @@
-import { mat4 } from "gl-matrix";
 import { BufferRange } from "../../../core/range";
 import { Flat } from "../flat";
 import { VexxNode } from "../node";
@@ -17,7 +16,7 @@ export class VexxNodeSound extends VexxNode {
     super(Vexx4NodeType.SOUND);
   }
 
-  load(range: BufferRange): void {
+  override load(range: BufferRange): void {
     this.properties.unknown1 = range.getFloat32(0);
     this.properties.unknown2 = range.getFloat32(4);
     this.properties.name1 = range.slice(8, 16).getString();
@@ -25,7 +24,7 @@ export class VexxNodeSound extends VexxNode {
     this.properties.unknown3 = range.slice(32,64).buffer;
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     return {
       type: "SOUND",
       name: this.name,

@@ -93,7 +93,7 @@ abstract class VexxNodeCollision extends VexxNode {
 
   blocks: Block[] = [];
 
-  load(range: BufferRange) {
+  override load(range: BufferRange) {
     this.signature = range.getUint32(0);
     this.blockCount = range.getUint32(4);
 
@@ -106,9 +106,7 @@ abstract class VexxNodeCollision extends VexxNode {
     }
   }
 
-  protected genericExport(
-    name: "FLOOR_COLLISION" | "WALL_COLLISION" | "RESET_COLLISION"
-  ): Flat.Node {
+  protected genericExport(name: "FLOOR_COLLISION" | "WALL_COLLISION" | "RESET_COLLISION"): Flat.Node {
     const node: Flat.Node = {
       type: name,
       name: this.name,
@@ -129,7 +127,7 @@ export class VexxNodeFloorCollision extends VexxNodeCollision {
     super(Vexx4NodeType.FLOOR_COLLISION);
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     return this.genericExport("FLOOR_COLLISION");
   }
 }
@@ -139,7 +137,7 @@ export class VexxNodeWallCollision extends VexxNodeCollision {
     super(Vexx4NodeType.WALL_COLLISION);
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     return this.genericExport("WALL_COLLISION");
   }
 }
@@ -149,7 +147,7 @@ export class VexxNodeResetCollision extends VexxNodeCollision {
     super(Vexx4NodeType.RESET_COLLISION);
   }
 
-  export(): Flat.Node {
+  override export(): Flat.Node {
     return this.genericExport("RESET_COLLISION");
   }
 }
