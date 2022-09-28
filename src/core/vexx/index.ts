@@ -195,10 +195,9 @@ class VexxHeader {
   }
 }
 
-import { Node } from "./node";
 import { Flat } from "./flat";
 
-export class Vexx extends Node {
+export class Vexx {
   range = new BufferRange();
   header = new VexxHeader();
   root: VexxNode = new VexxNodeWorld();
@@ -207,7 +206,7 @@ export class Vexx extends Node {
     return "VEXX";
   }
 
-  get children(): Node[] {
+  get children(): VexxNode[] {
     return [this.root];
   }
 
@@ -249,6 +248,7 @@ export class Vexx extends Node {
     for (let i = 0; i < node.header.childrenCount; i++) {
       const childrenSlice = range.slice(node.sizeWithChildren);
       const child = Vexx.loadNode(childrenSlice, version);
+      child.parent = node;
       node.children.push(child);
     }
     return node;

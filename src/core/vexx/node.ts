@@ -61,22 +61,7 @@ type VexxNodeTypeInfo = {
   prototype: VexxNodePrototype;
 };
 
-export abstract class Node {
-  abstract readonly name: string;
-  abstract readonly children: Node[];
-
-  get path(): string {
-    let root = "";
-    if (this.parent) root = this.parent.path;
-    return root + "/" + this.name;
-  }
-
-  get parent(): Node | null {
-    return null;
-  }
-}
-
-export class VexxNode extends Node {
+export class VexxNode {
   static prototypes4 = new Map<Vexx4NodeType, VexxNodeTypeInfo>();
   static prototypes6 = new Map<Vexx6NodeType, VexxNodeTypeInfo>();
 
@@ -88,16 +73,23 @@ export class VexxNode extends Node {
     name: "?",
     prototype: VexxNode,
   };
+
   header = new VexxNodeHeader();
   children: VexxNode[] = [];
+  parent?: VexxNode;
 
   constructor(type: Vexx4NodeType | Vexx6NodeType | number = Vexx4NodeType._UNKNOWN) {
-    super();
     this.header = new VexxNodeHeader(type);
   }
 
   get name(): string {
     return this.header.name;
+  }
+
+  get path(): string {
+    let root = "";
+    if (this.parent) root = this.parent.path;
+    return root + "/" + this.name;
   }
 
   static registerV4(type: Vexx4NodeType, prototype: VexxNodePrototype) {
@@ -118,6 +110,7 @@ export class VexxNode extends Node {
     const type = header.type;
 
     switch (version) {
+      case 3:
       case 4:
         typeInfo = this.prototypes4.get(type);
         break;
