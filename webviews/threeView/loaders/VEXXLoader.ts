@@ -384,7 +384,16 @@ export class VEXXLoader extends Loader {
   }
 
   private loadCamera(world: World, node: any): THREE.Object3D {
-    return this.createControlPoint(node.name);
+    const camera = new THREE.PerspectiveCamera(45, 1.33, 32, 34);
+
+    const helper = new THREE.CameraHelper(camera);
+    helper.matrix = new THREE.Matrix4()
+    camera.add(helper);
+
+    const control = this.createControlPoint(node.name);
+    camera.add(control);
+
+    return camera;
   }
 
   private loadSound(world: World, node: any): THREE.Object3D {

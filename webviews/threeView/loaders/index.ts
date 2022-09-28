@@ -71,6 +71,7 @@ export abstract class Loader {
     label.layers.set(1);
 
     const mesh = new THREE.AxesHelper(1);
+    mesh.name = name;
     mesh.add(label);
     mesh.layers.set(1);
     return mesh;
