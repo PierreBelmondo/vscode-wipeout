@@ -8,7 +8,7 @@ export class VexxNodeCamera extends VexxNode {
     unknown1: 0,
     unknown2: 0,
     unknown3: 0,
-    unknown4: 0,
+    frameDuration: 0.01666667, // 1/60 = 60 FPS ?
     unknown5: 0,
     unknown6: 0,
     unknown7: 0,
@@ -26,7 +26,7 @@ export class VexxNodeCamera extends VexxNode {
     this.properties.unknown1 = range.getUint32(0);
     this.properties.unknown2 = range.getUint32(4);
     this.properties.unknown3 = range.getUint32(8);
-    this.properties.unknown4 = range.getFloat32(12);
+    this.properties.frameDuration = range.getFloat32(12);
     this.properties.unknown5 = range.getFloat32(16);
     this.properties.unknown6 = range.getFloat32(20);
     this.properties.unknown7 = range.getFloat32(24);
