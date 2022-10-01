@@ -124,6 +124,14 @@ export class BufferRange {
     return v;
   }
 
+  getUint48(offset: number): number {
+    const i = this._begin + offset;
+    //if (i >= this._end) console.warn("Out of bounds access");
+    let v = this._view.getUint32(i, this._littleEndian);
+    v += this._view.getUint16(i + 4) << 32;
+    return v;
+  }
+
   getFloat16(offset: number): number {
     const i = this._begin + offset;
     //if (i >= this._end) console.warn("Out of bounds access");

@@ -13,7 +13,9 @@
     "onCommand:wipeout.unpack.psarc",
     "onCommand:wipeout.unpack.wad",
     "onCustomEditor:wipeout.view.rcsmodel",
-    "onCustomEditor:wipeout.view.vexx"
+    "onCustomEditor:wipeout.view.vexx",
+    "onCustomEditor:wipeout.view.gtf",
+    "onCustomEditor:wipeout.view.dds"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -58,6 +60,26 @@
         "selector": [
           {
             "filenamePattern": "*.rcsmodel"
+          }
+        ],
+        "priority": "default"
+      },
+      {
+        "viewType": "wipeout.view.gtf",
+        "displayName": "GTF Texture",
+        "selector": [
+          {
+            "filenamePattern": "*.gtf"
+          }
+        ],
+        "priority": "default"
+      },
+      {
+        "viewType": "wipeout.view.dds",
+        "displayName": "DDS Texture",
+        "selector": [
+          {
+            "filenamePattern": "*.dds"
           }
         ],
         "priority": "default"

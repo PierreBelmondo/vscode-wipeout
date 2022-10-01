@@ -413,6 +413,7 @@ module.exports =
       getExtensionConfig("node", mode, env),
       getWebviewConfig(mode, env, {
         "webview-three": "./webviews/threeView/index.ts",
+        "webview-texture": "./webviews/textureView/index.ts",
       }),
     ]);
   };
