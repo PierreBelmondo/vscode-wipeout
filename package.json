@@ -33,12 +33,12 @@
       "explorer/context": [
         {
           "command": "wipeout.unpack.psarc",
-          "when": "resourceExtname == .psarc",
+          "when": "resourceExtname == /\\.psarc/i",
           "group": "wipeout@1"
         },
         {
           "command": "wipeout.unpack.wad",
-          "when": "resourceExtname == .wad",
+          "when": "resourceExtname =~ /\\.wad/i",
           "group": "wipeout@1"
         }
       ]
