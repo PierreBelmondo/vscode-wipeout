@@ -18,6 +18,7 @@ nothing yet.
 ## Known Issues
 
 * DXT5 alpha channel is buggy
+* S3TC/DXT decompression is slow
 * Note all VEXX nodes are parsed
 
 ## Release Notes
