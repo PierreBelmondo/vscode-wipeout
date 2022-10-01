@@ -4,7 +4,7 @@ Wipeout modding tool for Visual Studio Code
 
 ## Features
 
-* Unpack WAD with filenames
+* Unpack WAD with filenames (encrypted DLCs supported)
 * Unpack PSARC with Manifest and filenames
 * Load and render VEXX scenes (version 4 and 6)
 * Load and render RCSMODEL meshes
