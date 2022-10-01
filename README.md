@@ -4,7 +4,12 @@ Wipeout modding tool for Visual Studio Code
 
 ## Features
 
-Can load and display .rcsmodel at the moment
+* Unpack WAD with filenames
+* Unpack PSARC with Manifest and filenames
+* Load and render VEXX scenes (version 4 and 6)
+* Load and render RCSMODEL meshes
+* Load GTF textures (only DXT1 to DXT5, still buggy...)
+* Load DDS textures (experimental)
 
 ## Extension Settings
 
@@ -12,21 +17,12 @@ nothing yet.
 
 ## Known Issues
 
-many issues lol.
+* DXT5 alpha channel is buggy
+* Note all VEXX nodes are parsed
 
 ## Release Notes
 
-nothing yet.
-
-### 1.0.0
-
-nothing yet.
-
-### 1.0.1
-
-nothing yet.
-
-### 1.1.0
+### 0.0.7
 
 nothing yet.
 
