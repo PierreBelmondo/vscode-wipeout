@@ -18,17 +18,11 @@ export class VEXXLoader extends Loader {
 
   private loadTextures(world: World, node: any) {
     const textureNodes = node.children.filter((x) => x.type === "TEXTURE");
-    for (const textureNode of textureNodes)
-      this.loadTexture(world, textureNode);
+    for (const textureNode of textureNodes) this.loadTexture(world, textureNode);
   }
 
   private loadTexture(world: World, node: any) {
-    const texture = new THREE.DataTexture(
-      new Uint8Array(node.rgba),
-      node.width,
-      node.height,
-      THREE.RGBAFormat
-    );
+    const texture = new THREE.DataTexture(new Uint8Array(node.rgba), node.width, node.height, THREE.RGBAFormat);
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearFilter;
     texture.wrapS = THREE.RepeatWrapping;
@@ -261,10 +255,7 @@ export class VEXXLoader extends Loader {
   }
 
   private loadAmbientLight(world: World, node: any): THREE.AmbientLight {
-    const value =
-      ((255.0 * node.rgba.r) << 16) +
-      ((255.0 * node.rgba.g) << 8) +
-      255.0 * node.rgba.b;
+    const value = ((255.0 * node.rgba.r) << 16) + ((255.0 * node.rgba.g) << 8) + 255.0 * node.rgba.b;
     return new THREE.AmbientLight(value);
   }
 
@@ -278,16 +269,10 @@ export class VEXXLoader extends Loader {
 
       if (chunk.positions === undefined) continue;
 
-      geometry.setAttribute(
-        "position",
-        new THREE.Float32BufferAttribute(chunk.positions, 3)
-      );
+      geometry.setAttribute("position", new THREE.Float32BufferAttribute(chunk.positions, 3));
 
       if (chunk.normals !== undefined) {
-        geometry.setAttribute(
-          "normal",
-          new THREE.Float32BufferAttribute(chunk.normals, 3)
-        );
+        geometry.setAttribute("normal", new THREE.Float32BufferAttribute(chunk.normals, 3));
       }
 
       let material = world.materials["_default"];
@@ -316,8 +301,7 @@ export class VEXXLoader extends Loader {
 
           const map = world.textures[chunk.texture];
 
-          if (node.type == "MESH")
-            material = new THREE.MeshPhongMaterial({ map });
+          if (node.type == "MESH") material = new THREE.MeshPhongMaterial({ map });
           else if (node.type == "SKYCUBE") {
             material = new MeshSkyMaterial(map);
           }
@@ -369,10 +353,7 @@ export class VEXXLoader extends Loader {
 
       if (!("positions" in chunk)) continue;
 
-      geometry.setAttribute(
-        "position",
-        new THREE.Float32BufferAttribute(chunk.positions, 3)
-      );
+      geometry.setAttribute("position", new THREE.Float32BufferAttribute(chunk.positions, 3));
 
       const material = world.materials["_defaultCollision"];
       const mesh = new THREE.Mesh(geometry, material);
