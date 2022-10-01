@@ -881,7 +881,7 @@ class GLTFWriter {
     const canvas = getCanvas();
     canvas.width = Math.min(image.width, options.maxTextureSize);
     canvas.height = Math.min(image.height, options.maxTextureSize);
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     if (flipY === true) {
       ctx.translate(0, canvas.height);
@@ -1137,7 +1137,7 @@ class GLTFWriter {
    * @param  {THREE.Mesh} mesh Mesh to process
    * @return {Integer|null} Index of the processed mesh in the "meshes" array
    */
-  processMesh(mesh: THREE.Mesh) {
+  processMesh(mesh: any) {
     const cache = this.cache;
     const json = this.json;
     const meshCacheKeyParts = [mesh.geometry.uuid];
