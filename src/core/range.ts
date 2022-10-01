@@ -159,6 +159,13 @@ export class BufferRange {
     return this._buffer.slice(this._begin + offset, this._begin + offset + length);
   }
 
+  getBuffer(offset?: number, length?: number) : Buffer {
+    if (!offset) offset = 0;
+    if (!length) length = this.size;
+    const arrayBuffer = this.getArrayBuffer(offset, length);
+    return Buffer.from(arrayBuffer);
+  }
+  
   getInt8Array(offset: number, length: number): Int8Array {
     const range = this.slice(offset, offset + length);
     return new Int8Array(range.buffer);

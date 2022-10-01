@@ -1,5 +1,6 @@
 import { BufferRange } from "../range";
 import { hash2filename } from "./db";
+import { xtea8_ctr_bruteforce, xtea8_ctr_decrypt } from "./crypto";
 
 enum WadVersion {
   WAD_PSP = 1,
@@ -25,8 +26,7 @@ export class WadFile {
 
   get filename(): string {
     const filename = hash2filename(this.hash);
-    if (filename !== null)
-      return filename;
+    if (filename !== null) return filename;
     return this.hash.toString(16);
   }
 
@@ -47,8 +47,20 @@ export class Wad {
   static load(buffer: ArrayBuffer): Wad {
     const ret = new Wad();
     ret.range = new BufferRange(buffer);
+
     ret.version = ret.range.getUint32(0);
     ret.count = ret.range.getUint32(4);
+
+    if (ret.version != 1) {
+      console.info("unexpected version for WAD file");
+
+      let buffer = ret.range.getBuffer(0, 8);
+      const dk = xtea8_ctr_bruteforce(buffer);
+      if (dk == null) throw new Error("WAD file is encrypted or has wrong format");
+      buffer = xtea8_ctr_decrypt(ret.range.getBuffer(), dk.key);
+      let ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+      return Wad.load(ab);
+    }
 
     let fileRange = ret.range.slice(8);
     for (let i = 0; i < ret.count; i++) {
