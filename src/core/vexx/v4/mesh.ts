@@ -16,9 +16,10 @@ export class VexxNodeMesh extends VexxNode {
   override load(range: BufferRange): void {
     this.info = VexxNodeiMeshHeader.load(range);
 
-    let meshesRange = range.slice(this.info.size);
-    while (meshesRange.size > 64) {
-      const chunk = VexxNodeMeshChunk.load(meshesRange, this.typeInfo.version);
+    let chunksRange = range.slice(this.info.size);
+
+    while (chunksRange.size > 64) {
+      const chunk = VexxNodeMeshChunk.load(chunksRange, this.typeInfo.version);
 
       if (chunk.header.id >= this.info.materials.length) {
         console.warn(`Cannot add chunk with id ${chunk.header.id}`);
@@ -26,7 +27,7 @@ export class VexxNodeMesh extends VexxNode {
       }
 
       this.chunks.push(chunk);
-      meshesRange = meshesRange.slice(chunk.size);
+      chunksRange = chunksRange.slice(chunk.size);
 
       if (this.chunks.length > 100) {
         console.error("Mesh loading chunks triggered a failsafe");
@@ -68,7 +69,9 @@ class VexxNodeiMeshHeader {
     ret.meshCount = range.getUint16(2);
     ret.length1 = range.getUint32(4);
     ret.length2 = range.getUint32(8);
-    ret.range = range.slice(0, ret.length1 + ret.length2);
+
+    if (ret.length2) ret.range = range.slice(0, ret.length2);
+    else ret.range = range.slice(0, ret.length1);
 
     if (ret.length1 + ret.length2 == 0) {
       console.error("Failed to load shape info");
@@ -78,7 +81,7 @@ class VexxNodeiMeshHeader {
     const aabbRange = ret.range.slice(16, 16 + 32);
     ret.aabb = AABB.loadFromFloat32(aabbRange);
 
-    let materialsRange =  ret.range.slice(48);
+    let materialsRange = ret.range.slice(48);
     for (let i = 0; i < ret.meshCount; i++) {
       const material = VexxNodeMeshMaterial.load(materialsRange);
       ret.materials.push(material);
@@ -193,9 +196,14 @@ class VexxNodeMeshChunk {
 
   static load(range: BufferRange, version: number): VexxNodeMeshChunk {
     const ret = new VexxNodeMeshChunk();
-    ret.header = VexxNodeMeshChunkHeader.load(range, version);
 
-    if (ret.header.vtxdef == 0) return ret;
+    ret.header = VexxNodeMeshChunkHeader.load(range, version);
+    if (ret.header.vtxdef == 0) {
+      console.warn(`Cannot load mesh chunk @0x${ret.range.begin.toString(16)} because vtxdef = 0`);
+      return ret;
+    }
+
+    ret.range = range.slice(0, ret.header.size + 16 * 3 + ret.header.size1);
 
     let size = 0;
     size += ret.header.size;
@@ -203,12 +211,11 @@ class VexxNodeMeshChunk {
     size += ret.header.strideCount1 * ret.header.strideSize;
     size += ret.header.strideCount2 * ret.header.strideSize;
     size += size % 16 == 0 ? 0 : 16 - (size % 16);
-    ret.range = range.slice(0, size);
 
-    const expectedSize = ret.header.size + 16 * 3 + ret.header.size1;
-    if (size != expectedSize) {
-      console.warn(`Cannot load mesh chunk @0x${ret.range.begin.toString(16)} because sizes differ ${size} != ${expectedSize}`);
+    if (size != ret.range.size) {
+      console.warn(`Cannot load mesh chunk @0x${ret.range.begin.toString(16)} because sizes differ ${size} != ${ret.range.size}`);
       console.warn(ret.header.vtxdef, ret.header.strideInfo);
+      ret.range = range.slice(0, ret.header.size1);
       return ret;
     }
     ret.loadData();
@@ -250,9 +257,9 @@ class VexxNodeMeshChunk {
     const textureGet = (range: BufferRange, index: number, offset: number) => {
       switch (strideInfo.texture.size) {
         case 1:
-          return range.getInt8(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset);
+          return range.getInt8(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset) + 128;
         case 2:
-          return range.getInt16(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset);
+          return range.getInt16(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset) + 32768;
         case 4:
           return range.getFloat32(index * strideSize + strideInfo.texture.offset + strideInfo.texture.size * offset);
       }
@@ -321,19 +328,19 @@ class VexxNodeMeshChunk {
   export(texture: number): Flat.MeshChunk {
     const primitiveType = (id: number) => {
       switch (id) {
-        case 0:
+        case GU.PrimitiveType.POINTS:
           return "POINTS";
-        case 1:
+        case GU.PrimitiveType.LINES:
           return "LINES";
-        case 2:
+        case GU.PrimitiveType.LINE_STRIP:
           return "LINE_STRIP";
-        case 3:
+        case GU.PrimitiveType.TRIANGLES:
           return "TRIANGLES";
-        case 4:
+        case GU.PrimitiveType.TRIANGLE_STRIP:
           return "TRIANGLE_STRIP";
-        case 5:
+        case GU.PrimitiveType.TRIANGLE_FAN:
           return "TRIANGLE_FAN";
-        case 6:
+        case GU.PrimitiveType.SPRITES:
           return "SPRITES";
         default:
           return "UNKNOWN";
@@ -347,9 +354,6 @@ class VexxNodeMeshChunk {
 
     const strideInfo = this.header.strideInfo;
     const strides = this.strides;
-
-    //if (this.strides2.length > 0)
-    //  strides = this.strides2;
 
     if (strideInfo.texture.size > 0) {
       const uvs = strides
