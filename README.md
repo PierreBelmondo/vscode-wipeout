@@ -4,7 +4,7 @@ Wipeout modding tool for Visual Studio Code
 
 ## Features
 
-* Unpack WAD with filenames (encrypted DLCs supported)
+* Unpack WAD with filenames (encrypted DLCs supported with Inflate/LZSS compression)
 * Unpack PSARC with Manifest and filenames
 * Load and render VEXX scenes (version 4 and 6)
 * Load and render RCSMODEL meshes
@@ -19,7 +19,7 @@ nothing yet.
 
 * DXT5 alpha channel is buggy
 * S3TC/DXT decompression is slow
-* Note all VEXX nodes are parsed
+* Not all VEXX nodes are parsed
 
 ## Release Notes
 
