@@ -4102,33 +4102,33 @@
         },
         {
           "hash": 4098839240,
-          "filename": "Data/F44F52C8",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 2828556507,
-          "filename": "Data/A89858DB",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/definition.xml",
+          "confidence": 9
         },
         {
           "hash": 4261458545,
-          "filename": "Data/FE00B271",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/VR/ship.vex",
+          "confidence": 9
         },
         {
           "hash": 298020411,
-          "filename": "Data/11C36E3B",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/Images/gotekitop.mip",
+          "confidence": 9
         },
         {
           "hash": 4052433540,
-          "filename": "Data/F18B3A84",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/Images/goteki3d.mip",
+          "confidence": 9
         },
         {
           "hash": 4173616922,
-          "filename": "Data/F8C4571A",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/Images/gotekiside.mip",
+          "confidence": 9
         },
         {
           "hash": 3369414395,
@@ -4532,32 +4532,32 @@
         },
         {
           "hash": 996348253,
-          "filename": "Data/3B63115D",
+          "filename": "Data/Skins/Piranha/definition.xml",
           "confidence": 0
         },
         {
           "hash": 681060560,
-          "filename": "Data/289828D0",
+          "filename": "Data/Skins/Piranha/screen.xml",
           "confidence": 0
         },
         {
           "hash": 4060136936,
-          "filename": "Data/F200C5E8",
+          "filename": "Data/Skins/Piranha/skin.xml",
           "confidence": 0
         },
         {
           "hash": 4162096679,
-          "filename": "Data/F8148E27",
+          "filename": "Data/Skins/Piranha/Images/piranha_texture.mip",
           "confidence": 0
         },
         {
           "hash": 2708018417,
-          "filename": "Data/A16914F1",
+          "filename": "Data/Skins/Piranha/Images/screen.mip",
           "confidence": 0
         },
         {
           "hash": 25054203,
-          "filename": "Data/017E4BFB",
+          "filename": "Data/Skins/Piranha/Images/piranha_background.mip",
           "confidence": 0
         }
       ]

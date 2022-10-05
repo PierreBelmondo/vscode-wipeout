@@ -1,0 +1,201 @@
+{
+  "code": "UCES00001DOMEGAPAKS",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3145231802,
+          "filename": "Data/Ships/123klan/Images/card_123_3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1276035779,
+          "filename": "Data/Ships/123klan/Images/card_123_side.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3504898247,
+          "filename": "Data/Ships/123klan/Images/card_123_top.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2567272552,
+          "filename": "Data/Ships/123klan/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2674027242,
+          "filename": "Data/Ships/123klan/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 962359676,
+          "filename": "Data/Ships/123klan/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1112000409,
+          "filename": "Data/Ships/burgerman/Images/har_burgership_3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3299083883,
+          "filename": "Data/Ships/burgerman/Images/har_burgership_side.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1920388639,
+          "filename": "Data/Ships/burgerman/Images/har_burgership_top.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1780417152,
+          "filename": "Data/Ships/burgerman/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1820694514,
+          "filename": "Data/Ships/burgerman/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2398885662,
+          "filename": "Data/Ships/burgerman/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3777811544,
+          "filename": "Data/Ships/cardboy/Images/card_123_3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2465923793,
+          "filename": "Data/Ships/cardboy/Images/card_123_side.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2662749994,
+          "filename": "Data/Ships/cardboy/Images/card_123_top.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 983093808,
+          "filename": "Data/Ships/cardboy/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2323018665,
+          "filename": "Data/Ships/cardboy/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 663004744,
+          "filename": "Data/Ships/cardboy/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1802594854,
+          "filename": "Data/Ships/haironaut/Images/har_burgership_3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 262029951,
+          "filename": "Data/Ships/haironaut/Images/har_burgership_side.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 696342191,
+          "filename": "Data/Ships/haironaut/Images/har_burgership_top.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1974971296,
+          "filename": "Data/Ships/haironaut/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3161559000,
+          "filename": "Data/Ships/haironaut/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2748662232,
+          "filename": "Data/Ships/haironaut/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1751876615,
+          "filename": "Data/Ships/123klan/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1947347167,
+          "filename": "Data/Ships/123klan/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2554863842,
+          "filename": "Data/Ships/123klan/vr/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 985831551,
+          "filename": "Data/Ships/burgerman/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 4183503567,
+          "filename": "Data/Ships/burgerman/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2346147657,
+          "filename": "Data/Ships/burgerman/vr/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1032144496,
+          "filename": "Data/Ships/cardboy/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2266261046,
+          "filename": "Data/Ships/cardboy/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2005411025,
+          "filename": "Data/Ships/cardboy/vr/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1344600566,
+          "filename": "Data/Ships/haironaut/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 4098514805,
+          "filename": "Data/Ships/haironaut/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1354523271,
+          "filename": "Data/Ships/haironaut/vr/ship.vex",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

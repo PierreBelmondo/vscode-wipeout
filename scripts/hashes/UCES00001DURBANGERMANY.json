@@ -1,0 +1,81 @@
+{
+  "code": "UCES00001DURBANGERMANY",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1672064921,
+          "filename": "Data/Music/Urban_germany_resonator/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 666434556,
+          "filename": "Data/Music/Urban_germany_resonator/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2130837961,
+          "filename": "Data/Music/Urban_germany_resonator/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1878762653,
+          "filename": "Data/Music/Urban_germany_shipper/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 551120366,
+          "filename": "Data/Music/Urban_germany_shipper/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4217195651,
+          "filename": "Data/Music/Urban_germany_shipper/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2042897253,
+          "filename": "Data/Music/Urban_germany_treieer/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2477336647,
+          "filename": "Data/Music/Urban_germany_treieer/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2981727296,
+          "filename": "Data/Music/Urban_germany_treieer/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4115077156,
+          "filename": "Data/Music/Urban_germany_resonator/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 4178907936,
+          "filename": "Data/Music/Urban_germany_shipper/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 4012545240,
+          "filename": "Data/Music/Urban_germany_treieer/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "code": "UCES00001DURBANBENELUX",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1473855053,
+          "filename": "Data/Music/Urban_benelux_biged/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2788335008,
+          "filename": "Data/Music/Urban_benelux_biged/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1385610368,
+          "filename": "Data/Music/Urban_benelux_biged/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1213390349,
+          "filename": "Data/Music/Urban_benelux_ijsman/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3505477584,
+          "filename": "Data/Music/Urban_benelux_ijsman/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1480107076,
+          "filename": "Data/Music/Urban_benelux_ijsman/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1895573563,
+          "filename": "Data/Music/Urban_benelux_missdee/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 527658175,
+          "filename": "Data/Music/Urban_benelux_missdee/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3399696151,
+          "filename": "Data/Music/Urban_benelux_missdee/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3241642480,
+          "filename": "Data/Music/Urban_benelux_biged/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 3736889776,
+          "filename": "Data/Music/Urban_benelux_ijsman/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 3859980166,
+          "filename": "Data/Music/Urban_benelux_missdee/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "code": "UCES00001DURBANUK",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2092947089,
+          "filename": "Data/Music/Urban_uk_slodown/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 696018359,
+          "filename": "Data/Music/Urban_uk_slodown/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 94104852,
+          "filename": "Data/Music/Urban_uk_slodown/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3212008883,
+          "filename": "Data/Music/Urban_uk_ironik/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4242532568,
+          "filename": "Data/Music/Urban_uk_ironik/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 649834765,
+          "filename": "Data/Music/Urban_uk_ironik/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3055932044,
+          "filename": "Data/Music/Urban_uk_bruza/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1253086058,
+          "filename": "Data/Music/Urban_uk_bruza/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 26626247,
+          "filename": "Data/Music/Urban_uk_bruza/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3931201836,
+          "filename": "Data/Music/Urban_uk_slodown/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 698214926,
+          "filename": "Data/Music/Urban_uk_ironik/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 550200625,
+          "filename": "Data/Music/Urban_uk_bruza/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

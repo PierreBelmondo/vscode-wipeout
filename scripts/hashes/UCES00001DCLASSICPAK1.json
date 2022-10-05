@@ -1,0 +1,491 @@
+{
+  "code": "UCES00001DCLASSICPAK1",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 36019535,
+          "filename": "Data/Skins/Tigron/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3835049388,
+          "filename": "Data/Skins/Tigron/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4118444843,
+          "filename": "Data/Skins/Tigron/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 59226192,
+          "filename": "Data/Skins/Tigron/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 527177332,
+          "filename": "Data/Skins/Tigron/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1516148931,
+          "filename": "Data/Skins/Tigron/Images/backgroundlarge.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3057799220,
+          "filename": "Data/Skins/Tigron/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2958421498,
+          "filename": "Data/Skins/Tigron/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4198819311,
+          "filename": "Data/Skins/Tigron/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1322029668,
+          "filename": "Data/Skins/Tigron/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3927837628,
+          "filename": "Data/Skins/Tigron/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1993478868,
+          "filename": "Data/Skins/Tigron/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 502972693,
+          "filename": "Data/Skins/Tigron/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2439788078,
+          "filename": "Data/Skins/Tigron/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3906862414,
+          "filename": "Data/Skins/Tigron/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1682639477,
+          "filename": "Data/Skins/Tigron/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4044045080,
+          "filename": "Data/Skins/Tigron/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1618871864,
+          "filename": "Data/Skins/Tigron/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2338207706,
+          "filename": "Data/Skins/Tigron/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1200923888,
+          "filename": "Data/Skins/Goteki/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 294485554,
+          "filename": "Data/Skins/Goteki/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2079286071,
+          "filename": "Data/Skins/Goteki/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1478272884,
+          "filename": "Data/Skins/Goteki/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1800009459,
+          "filename": "Data/Skins/Goteki/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3399673852,
+          "filename": "Data/Skins/Goteki/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1688040747,
+          "filename": "Data/Skins/Goteki/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 780959038,
+          "filename": "Data/Skins/Goteki/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3217864894,
+          "filename": "Data/Skins/Goteki/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1054249837,
+          "filename": "Data/Skins/Goteki/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2719648261,
+          "filename": "Data/Skins/Goteki/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3375520196,
+          "filename": "Data/Skins/Goteki/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1168420607,
+          "filename": "Data/Skins/Goteki/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1008035231,
+          "filename": "Data/Skins/Goteki/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2961412772,
+          "filename": "Data/Skins/Goteki/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 633578441,
+          "filename": "Data/Skins/Goteki/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2440965346,
+          "filename": "Data/Skins/Goteki/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 513646063,
+          "filename": "Data/Skins/Goteki/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2831069644,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2894695944,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 763460402,
+          "filename": "Data/Tournaments/Classic2/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 98157003,
+          "filename": "Data/Tournaments/Classic2/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 355194845,
+          "filename": "Data/Tournaments/Classic2/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4052433540,
+          "filename": "Data/Ships/Goteki/Images/goteki3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4173616922,
+          "filename": "Data/Ships/Goteki/Images/gotekiside.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 298020411,
+          "filename": "Data/Ships/Goteki/Images/gotekitop.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2828556507,
+          "filename": "Data/Ships/Goteki/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3150688181,
+          "filename": "Data/Ships/Goteki/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3519755056,
+          "filename": "Data/Ships/Goteki/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4098839240,
+          "filename": "Data/Ships/Goteki/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2629966277,
+          "filename": "Data/Classics/06_odessa_keys/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3680658197,
+          "filename": "Data/Classics/06_odessa_keys/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3858909861,
+          "filename": "Data/Classics/06_odessa_keys/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3833814666,
+          "filename": "Data/Classics/06_odessa_keys/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1656879166,
+          "filename": "Data/Classics/06_odessa_keys/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3975125552,
+          "filename": "Data/Classics/06_odessa_keys/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 906895366,
+          "filename": "Data/Classics/06_odessa_keys/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3150738285,
+          "filename": "Data/Classics/06_odessa_keys/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2639401008,
+          "filename": "Data/Classics/06_odessa_keys/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3986733411,
+          "filename": "Data/Classics/05_altima_vii/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2852176819,
+          "filename": "Data/Classics/05_altima_vii/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2539710979,
+          "filename": "Data/Classics/05_altima_vii/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4168113386,
+          "filename": "Data/Classics/05_altima_vii/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3912429126,
+          "filename": "Data/Classics/05_altima_vii/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2998571048,
+          "filename": "Data/Classics/05_altima_vii/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2842501719,
+          "filename": "Data/Classics/05_altima_vii/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3640810623,
+          "filename": "Data/Classics/05_altima_vii/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1854517079,
+          "filename": "Data/Classics/05_altima_vii/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2646465286,
+          "filename": "Data/Classics/05_altima_vii/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 596614030,
+          "filename": "Data/Classics/05_altima_vii/envaltima.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 48159063,
+          "filename": "Data/Classics/06_odessa_keys/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2751446016,
+          "filename": "Data/Classics/06_odessa_keys/envodessakeys.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 1086116869,
+          "filename": "Data/Gallery/altima_vii0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2111634869,
+          "filename": "Data/Gallery/altima_vii1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 981239653,
+          "filename": "Data/Gallery/altima_vii2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 119320277,
+          "filename": "Data/Gallery/altima_vii3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3040637637,
+          "filename": "Data/Gallery/altima_vii4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1057932008,
+          "filename": "Data/Gallery/altima_viit0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 40823640,
+          "filename": "Data/Gallery/altima_viit1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1171165576,
+          "filename": "Data/Gallery/altima_viit2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2024716344,
+          "filename": "Data/Gallery/altima_viit3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3398329384,
+          "filename": "Data/Gallery/altima_viit4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 808634335,
+          "filename": "Data/Gallery/odessa_keys0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 223538799,
+          "filename": "Data/Gallery/odessa_keys1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1257411775,
+          "filename": "Data/Gallery/odessa_keys2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2006105359,
+          "filename": "Data/Gallery/odessa_keys3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3316801823,
+          "filename": "Data/Gallery/odessa_keys4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1501067057,
+          "filename": "Data/Gallery/odessa_keyst0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1679318657,
+          "filename": "Data/Gallery/odessa_keyst1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 599270481,
+          "filename": "Data/Gallery/odessa_keyst2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 517475809,
+          "filename": "Data/Gallery/odessa_keyst3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2901987825,
+          "filename": "Data/Gallery/odessa_keyst4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3580698733,
+          "filename": "Data/Ships/Goteki/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 813655334,
+          "filename": "Data/Ships/Goteki/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 4261458545,
+          "filename": "Data/Ships/Goteki/VR/ship.vex",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "code": "UCES00001DURBANFRANCE",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1050628879,
+          "filename": "Data/Music/Urban_france_dakrishna/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1049230193,
+          "filename": "Data/Music/Urban_france_dakrishna/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2296206165,
+          "filename": "Data/Music/Urban_france_dakrishna/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1842154658,
+          "filename": "Data/Music/Urban_france_earsut/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2528999035,
+          "filename": "Data/Music/Urban_france_earsut/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2564972223,
+          "filename": "Data/Music/Urban_france_earsut/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3191500229,
+          "filename": "Data/Music/Urban_france_tarikndjamel/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1169716705,
+          "filename": "Data/Music/Urban_france_tarikndjamel/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3175062231,
+          "filename": "Data/Music/Urban_france_tarikndjamel/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2826036402,
+          "filename": "Data/Music/Urban_france_dakrishna/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 4213422879,
+          "filename": "Data/Music/Urban_france_earsut/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 685038200,
+          "filename": "Data/Music/Urban_france_tarikndjamel/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

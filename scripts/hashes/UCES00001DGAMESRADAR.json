@@ -1,0 +1,76 @@
+{
+  "code": "UCES00001DGAMESRADAR",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4012394082,
+          "filename": "Data/Skins/Gamesradar/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3914101363,
+          "filename": "Data/Skins/Gamesradar/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1895241,
+          "filename": "Data/Skins/Gamesradar/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 738273472,
+          "filename": "Data/Skins/Gamesradar/images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3743480569,
+          "filename": "Data/Skins/Gamesradar/images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4053641344,
+          "filename": "Data/Skins/Gamesradar/images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3146555541,
+          "filename": "Data/Skins/Gamesradar/images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1546814575,
+          "filename": "Data/Skins/Gamesradar/images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2836772916,
+          "filename": "Data/Skins/Gamesradar/images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2965601890,
+          "filename": "Data/Skins/Gamesradar/images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1860365181,
+          "filename": "Data/Skins/Gamesradar/images/texture.mip",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

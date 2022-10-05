@@ -1,0 +1,61 @@
+{
+  "code": "UCES00001DCLASSICMPAK1",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1997564882,
+          "filename": "Data/Music/Classic1_cairodrome/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3332561440,
+          "filename": "Data/Music/Classic1_cairodrome/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2103295937,
+          "filename": "Data/Music/Classic1_cairodrome/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2028626351,
+          "filename": "Data/Music/Classic2_canada/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3893964203,
+          "filename": "Data/Music/Classic2_canada/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1658194049,
+          "filename": "Data/Music/Classic2_canada/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3791576175,
+          "filename": "Data/Music/Classic1_cairodrome/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 3993294354,
+          "filename": "Data/Music/Classic2_canada/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

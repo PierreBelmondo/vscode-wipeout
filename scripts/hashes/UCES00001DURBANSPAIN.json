@@ -1,0 +1,81 @@
+{
+  "code": "UCES00001DURBANSPAIN",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1525702427,
+          "filename": "Data/Music/Urban_spain_deepologist/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 607600640,
+          "filename": "Data/Music/Urban_spain_deepologist/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4193352304,
+          "filename": "Data/Music/Urban_spain_deepologist/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 673269052,
+          "filename": "Data/Music/Urban_spain_goberna/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2169447537,
+          "filename": "Data/Music/Urban_spain_goberna/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 9806367,
+          "filename": "Data/Music/Urban_spain_goberna/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3081014788,
+          "filename": "Data/Music/Urban_spain_moratalla/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2849118500,
+          "filename": "Data/Music/Urban_spain_moratalla/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1521567697,
+          "filename": "Data/Music/Urban_spain_moratalla/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3424577702,
+          "filename": "Data/Music/Urban_spain_deepologist/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 3201299073,
+          "filename": "Data/Music/Urban_spain_goberna/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 558512569,
+          "filename": "Data/Music/Urban_spain_moratalla/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

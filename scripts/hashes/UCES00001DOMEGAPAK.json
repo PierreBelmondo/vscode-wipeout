@@ -1,0 +1,746 @@
+{
+  "code": "UCES00001DOMEGAPAK",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1907117451,
+          "filename": "Data/Skins/123klan/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2733599609,
+          "filename": "Data/Skins/123klan/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4213693742,
+          "filename": "Data/Skins/123klan/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2301278613,
+          "filename": "Data/Skins/123klan/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2412917395,
+          "filename": "Data/Skins/123klan/Images/default_texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 975595835,
+          "filename": "Data/Skins/123klan/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2975401832,
+          "filename": "Data/Skins/123klan/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4215803773,
+          "filename": "Data/Skins/123klan/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 485895047,
+          "filename": "Data/Skins/123klan/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3922794460,
+          "filename": "Data/Skins/123klan/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4027044234,
+          "filename": "Data/Skins/123klan/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 460148338,
+          "filename": "Data/Skins/123klan/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1689801928,
+          "filename": "Data/Skins/cardboy/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4144081166,
+          "filename": "Data/Skins/cardboy/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3858696730,
+          "filename": "Data/Skins/cardboy/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3628875883,
+          "filename": "Data/Skins/cardboy/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1816288773,
+          "filename": "Data/Skins/cardboy/Images/default_texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2579219299,
+          "filename": "Data/Skins/cardboy/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4278702213,
+          "filename": "Data/Skins/cardboy/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3038173328,
+          "filename": "Data/Skins/cardboy/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1386806378,
+          "filename": "Data/Skins/cardboy/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2811215921,
+          "filename": "Data/Skins/cardboy/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3193505383,
+          "filename": "Data/Skins/cardboy/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2122189342,
+          "filename": "Data/Skins/cardboy/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3752052950,
+          "filename": "Data/Skins/jonburgerman/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4133897876,
+          "filename": "Data/Skins/jonburgerman/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3673900551,
+          "filename": "Data/Skins/jonburgerman/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1515377052,
+          "filename": "Data/Skins/jonburgerman/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2359763002,
+          "filename": "Data/Skins/jonburgerman/Images/default_texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 431857088,
+          "filename": "Data/Skins/jonburgerman/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 603096627,
+          "filename": "Data/Skins/jonburgerman/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1776520742,
+          "filename": "Data/Skins/jonburgerman/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2388503260,
+          "filename": "Data/Skins/jonburgerman/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2071631495,
+          "filename": "Data/Skins/jonburgerman/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1655460049,
+          "filename": "Data/Skins/jonburgerman/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 824311314,
+          "filename": "Data/Skins/jonburgerman/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1241591315,
+          "filename": "Data/Skins/neilmacfarland/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3979471492,
+          "filename": "Data/Skins/neilmacfarland/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3738224665,
+          "filename": "Data/Skins/neilmacfarland/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 492977255,
+          "filename": "Data/Skins/neilmacfarland/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 201712833,
+          "filename": "Data/Skins/neilmacfarland/Images/default_texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3355183123,
+          "filename": "Data/Skins/neilmacfarland/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 167864240,
+          "filename": "Data/Skins/neilmacfarland/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1074818981,
+          "filename": "Data/Skins/neilmacfarland/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2813217631,
+          "filename": "Data/Skins/neilmacfarland/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1384740612,
+          "filename": "Data/Skins/neilmacfarland/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1264562514,
+          "filename": "Data/Skins/neilmacfarland/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 774192361,
+          "filename": "Data/Skins/neilmacfarland/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1593753231,
+          "filename": "Data/Tournaments/Omega/Images/omegaleague.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3881990431,
+          "filename": "Data/Tournaments/Omega/Images/omegaleague_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1772661136,
+          "filename": "Data/Tournaments/Omega/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4046841969,
+          "filename": "Data/Tournaments/Omega/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 806919511,
+          "filename": "Data/Tournaments/Omega/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1794807382,
+          "filename": "Data/Environments/18_jonburgerman/Images/track_burgerman_01.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 760933510,
+          "filename": "Data/Environments/18_jonburgerman/Images/track_burgerman_02.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 272287030,
+          "filename": "Data/Environments/18_jonburgerman/Images/track_burgerman_03.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3612160481,
+          "filename": "Data/Environments/18_jonburgerman/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 969213269,
+          "filename": "Data/Environments/18_jonburgerman/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 919873053,
+          "filename": "Data/Environments/18_jonburgerman/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4219252331,
+          "filename": "Data/Environments/18_jonburgerman/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1496386590,
+          "filename": "Data/Environments/18_jonburgerman/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1421659593,
+          "filename": "Data/Environments/18_jonburgerman/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1969490643,
+          "filename": "Data/Environments/19_markjames/Images/track_markjames_01.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 851734531,
+          "filename": "Data/Environments/19_markjames/Images/track_markjames_02.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 262429107,
+          "filename": "Data/Environments/19_markjames/Images/track_markjames_03.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 270769407,
+          "filename": "Data/Environments/19_markjames/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1172513457,
+          "filename": "Data/Environments/19_markjames/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2446272091,
+          "filename": "Data/Environments/19_markjames/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1115227152,
+          "filename": "Data/Environments/19_markjames/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4279387014,
+          "filename": "Data/Environments/19_markjames/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2865690096,
+          "filename": "Data/Environments/19_markjames/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1038076797,
+          "filename": "Data/Environments/20_neilmcfarland/Images/track_neilmcfarland_01.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2055188909,
+          "filename": "Data/Environments/20_neilmcfarland/Images/track_neilmcfarland_02.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1193252893,
+          "filename": "Data/Environments/20_neilmcfarland/Images/track_neilmcfarland_03.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 265877222,
+          "filename": "Data/Environments/20_neilmcfarland/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1938037780,
+          "filename": "Data/Environments/20_neilmcfarland/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 927274498,
+          "filename": "Data/Environments/20_neilmcfarland/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1670411203,
+          "filename": "Data/Environments/20_neilmcfarland/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2998023101,
+          "filename": "Data/Environments/20_neilmcfarland/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 461946020,
+          "filename": "Data/Environments/20_neilmcfarland/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 462538193,
+          "filename": "Data/Environments/21_123klan/Images/track_123klan_01.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1546764033,
+          "filename": "Data/Environments/21_123klan/Images/track_123klan_02.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1632736945,
+          "filename": "Data/Environments/21_123klan/Images/track_123klan_03.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 491056182,
+          "filename": "Data/Environments/21_123klan/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 266220269,
+          "filename": "Data/Environments/21_123klan/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4082632340,
+          "filename": "Data/Environments/21_123klan/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1214509978,
+          "filename": "Data/Environments/21_123klan/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2283719256,
+          "filename": "Data/Environments/21_123klan/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3419539114,
+          "filename": "Data/Environments/21_123klan/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2741503271,
+          "filename": "Data/Environments/18_jonburgerman/burgerface.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3484178234,
+          "filename": "Data/Environments/18_jonburgerman/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1735835956,
+          "filename": "Data/Environments/18_jonburgerman/envburgerman.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 1990851905,
+          "filename": "Data/Environments/19_markjames/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 275205994,
+          "filename": "Data/Environments/19_markjames/trackt.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1250228857,
+          "filename": "Data/Environments/19_markjames/tv_animation.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3496718728,
+          "filename": "Data/Environments/19_markjames/envjames.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 1463847570,
+          "filename": "Data/Environments/20_neilmcfarland/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 586163935,
+          "filename": "Data/Environments/20_neilmcfarland/envmcfarland.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 2092108491,
+          "filename": "Data/Environments/21_123klan/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3158954213,
+          "filename": "Data/Environments/21_123klan/env123klan.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 185652447,
+          "filename": "Data/Gallery/markjames0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 913374575,
+          "filename": "Data/Gallery/markjames1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1909491647,
+          "filename": "Data/Gallery/markjames2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1286647311,
+          "filename": "Data/Gallery/markjames3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4270879263,
+          "filename": "Data/Gallery/markjames4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1497584930,
+          "filename": "Data/Gallery/markjamest0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1680047250,
+          "filename": "Data/Gallery/markjamest1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 595789378,
+          "filename": "Data/Gallery/markjamest2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 518205426,
+          "filename": "Data/Gallery/markjamest3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2898523106,
+          "filename": "Data/Gallery/markjamest4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 341924312,
+          "filename": "Data/Gallery/123klan0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 687960168,
+          "filename": "Data/Gallery/123klan1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1856047800,
+          "filename": "Data/Gallery/123klan2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1405166344,
+          "filename": "Data/Gallery/123klan3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3789684504,
+          "filename": "Data/Gallery/123klan4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3342381324,
+          "filename": "Data/Gallery/123klant0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4200110268,
+          "filename": "Data/Gallery/123klant1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3187204716,
+          "filename": "Data/Gallery/123klant2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2157497308,
+          "filename": "Data/Gallery/123klant3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 850925516,
+          "filename": "Data/Gallery/123klant4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3877309868,
+          "filename": "Data/Gallery/jonburgerman0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3665503260,
+          "filename": "Data/Gallery/jonburgerman1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2648399564,
+          "filename": "Data/Gallery/jonburgerman2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2696640380,
+          "filename": "Data/Gallery/jonburgerman3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 312191852,
+          "filename": "Data/Gallery/jonburgerman4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2426633853,
+          "filename": "Data/Gallery/jonburgermant0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2915260365,
+          "filename": "Data/Gallery/jonburgermant1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3932368157,
+          "filename": "Data/Gallery/jonburgermant2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3607299245,
+          "filename": "Data/Gallery/jonburgermant3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1696848061,
+          "filename": "Data/Gallery/jonburgermant4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3121013266,
+          "filename": "Data/Gallery/neilmcfarland0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2271660962,
+          "filename": "Data/Gallery/neilmcfarland1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3234247026,
+          "filename": "Data/Gallery/neilmcfarland2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4255553730,
+          "filename": "Data/Gallery/neilmcfarland3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1334199506,
+          "filename": "Data/Gallery/neilmcfarland4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3156737305,
+          "filename": "Data/Gallery/neilmcfarlandt0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2168968361,
+          "filename": "Data/Gallery/neilmcfarlandt1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3337072249,
+          "filename": "Data/Gallery/neilmcfarlandt2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4219963337,
+          "filename": "Data/Gallery/neilmcfarlandt3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1235704793,
+          "filename": "Data/Gallery/neilmcfarlandt4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2536110813,
+          "filename": "Data/Gallery/omega0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2856964973,
+          "filename": "Data/Gallery/omega1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3991513533,
+          "filename": "Data/Gallery/omega2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3498672141,
+          "filename": "Data/Gallery/omega3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1655266333,
+          "filename": "Data/Gallery/omega4.tga",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

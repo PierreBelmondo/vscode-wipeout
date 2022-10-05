@@ -1,0 +1,101 @@
+{
+  "code": "UCES00001DA7MUSIC",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3358045329,
+          "filename": "Data/Music/Fightclub/album.mip",
+          "confidence": 1
+        },
+        {
+          "hash": 701038037,
+          "filename": "Data/Music/Fightclub/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1556764350,
+          "filename": "Data/Music/Fightclub/stringtable.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3368069272,
+          "filename": "Data/Music/InnerMantra/album.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 1343529581,
+          "filename": "Data/Music/InnerMantra/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2507998324,
+          "filename": "Data/Music/InnerMantra/stringtable.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3451123526,
+          "filename": "Data/Music/MachinesWieldingWeapons/album.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 830090977,
+          "filename": "Data/Music/MachinesWieldingWeapons/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 2018241704,
+          "filename": "Data/Music/MachinesWieldingWeapons/stringtable.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3232932537,
+          "filename": "Data/Music/McQueen/album.mip",
+          "confidence": 9
+        },
+        {
+          "hash": 477478969,
+          "filename": "Data/Music/McQueen/screen.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 3692622825,
+          "filename": "Data/Music/McQueen/stringtable.xml",
+          "confidence": 9
+        },
+        {
+          "hash": 1590231852,
+          "filename": "Data/Music/Fightclub/music.at3",
+          "confidence": 1
+        },
+        {
+          "hash": 1580080933,
+          "filename": "Data/Music/InnerMantra/music.at3",
+          "confidence": 9
+        },
+        {
+          "hash": 1532838139,
+          "filename": "Data/Music/MachinesWieldingWeapons/music.at3",
+          "confidence": 9
+        },
+        {
+          "hash": 1448875268,
+          "filename": "Data/Music/McQueen/music.at3",
+          "confidence": 9
+        }
+      ]
+    }
+  ]
+}

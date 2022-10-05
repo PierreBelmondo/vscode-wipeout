@@ -7,7 +7,7 @@
       "files": [
         {
           "hash": 3448164202,
-          "filename": "Data/CD86CF6A",
+          "filename": "definition.xml",
           "confidence": 0
         },
         {
@@ -37,42 +37,42 @@
         },
         {
           "hash": 3799076444,
-          "filename": "Data/E2714E5C",
+          "filename": "Data/Environments/08_Track/FE/image_01.mip",
           "confidence": 0
         },
         {
           "hash": 2781951116,
-          "filename": "Data/A5D1348C",
+          "filename": "Data/Environments/08_Track/FE/image_02.mip",
           "confidence": 0
         },
         {
           "hash": 2561744188,
-          "filename": "Data/98B11D3C",
+          "filename": "Data/Environments/08_Track/FE/image_03.mip",
           "confidence": 0
         },
         {
           "hash": 714195244,
-          "filename": "Data/2A91C12C",
+          "filename": "Data/Environments/08_Track/FE/image_04.mip",
           "confidence": 0
         },
         {
           "hash": 3662935411,
-          "filename": "Data/DA53F573",
+          "filename": "Data/Environments/08_Track/FE/zone_01.mip",
           "confidence": 0
         },
         {
           "hash": 2649984931,
-          "filename": "Data/9DF38FA3",
+          "filename": "Data/Environments/08_Track/FE/zone_02.mip",
           "confidence": 0
         },
         {
           "hash": 2694030867,
-          "filename": "Data/A093A613",
+          "filename": "Data/Environments/08_Track/FE/zone_03.mip",
           "confidence": 0
         },
         {
           "hash": 313752067,
-          "filename": "Data/12B37A03",
+          "filename": "Data/Environments/08_Track/FE/zone_04.mip",
           "confidence": 0
         }
       ]
@@ -11777,12 +11777,12 @@
         },
         {
           "hash": 3020171894,
-          "filename": "Data/Environments/13_Track/B4042A76",
+          "filename": "Data/Environments/14_Track/FE/fe/forward.vex",
           "confidence": 0
         },
         {
           "hash": 2121340650,
-          "filename": "Data/Environments/13_Track/7E7116EA",
+          "filename": "Data/Environments/14_Track/FE/fe/reverse.vex",
           "confidence": 0
         },
         {
@@ -19437,7 +19437,7 @@
         },
         {
           "hash": 3479405311,
-          "filename": "data/Ships/AG_Systems/FE_Tex/ALL_Textures.pct",
+          "filename": "Data/Ships/AG_Systems/FE_Tex/ALL_Textures.pct",
           "confidence": 9
         },
         {
@@ -19457,12 +19457,12 @@
         },
         {
           "hash": 3962876016,
-          "filename": "data/Ships/AG_Systems/FE_Tex/ALL_Textures_Eliminator.pct",
+          "filename": "Data/Ships/AG_Systems/FE_Tex/ALL_Textures_Eliminator.pct",
           "confidence": 9
         },
         {
           "hash": 3355213586,
-          "filename": "data/Ships/AG_Systems/FE_Tex/ALL_Textures_UV.pct",
+          "filename": "Data/Ships/AG_Systems/FE_Tex/ALL_Textures_UV.pct",
           "confidence": 9
         },
         {
@@ -20777,7 +20777,7 @@
         },
         {
           "hash": 107669011,
-          "filename": "data/Ships/Assegai/FE_Tex/ALL_Textures.pct",
+          "filename": "Data/Ships/Assegai/FE_Tex/ALL_Textures.pct",
           "confidence": 9
         },
         {
@@ -20812,12 +20812,12 @@
         },
         {
           "hash": 3495808861,
-          "filename": "data/Ships/Assegai/FE_Tex/ALL_Textures_Eliminator.pct",
+          "filename": "Data/Ships/Assegai/FE_Tex/ALL_Textures_Eliminator.pct",
           "confidence": 9
         },
         {
           "hash": 524894232,
-          "filename": "data/Ships/Assegai/FE_Tex/ALL_Textures_UV.pct",
+          "filename": "Data/Ships/Assegai/FE_Tex/ALL_Textures_UV.pct",
           "confidence": 9
         },
         {
@@ -22042,7 +22042,7 @@
         },
         {
           "hash": 391952424,
-          "filename": "data/Ships/Auricom/FE_Tex/All_Textures.pct",
+          "filename": "Data/Ships/Auricom/FE_Tex/All_Textures.pct",
           "confidence": 9
         },
         {
@@ -22062,12 +22062,12 @@
         },
         {
           "hash": 2448506131,
-          "filename": "data/Ships/Auricom/FE_Tex/ALL_Textures_Eliminator.pct",
+          "filename": "Data/Ships/Auricom/FE_Tex/ALL_Textures_Eliminator.pct",
           "confidence": 9
         },
         {
           "hash": 3707088699,
-          "filename": "data/Ships/Auricom/FE_Tex/All_Textures_UV.pct",
+          "filename": "Data/Ships/Auricom/FE_Tex/All_Textures_UV.pct",
           "confidence": 9
         },
         {
@@ -23287,7 +23287,7 @@
         },
         {
           "hash": 1475789343,
-          "filename": "data/Ships/EGX/FE_Tex/All_Textures.pct",
+          "filename": "Data/Ships/EGX/FE_Tex/All_Textures.pct",
           "confidence": 9
         },
         {
@@ -23307,12 +23307,12 @@
         },
         {
           "hash": 702331970,
-          "filename": "data/Ships/EGX/FE_Tex/All_Textures_Eliminator.pct",
+          "filename": "Data/Ships/EGX/FE_Tex/All_Textures_Eliminator.pct",
           "confidence": 9
         },
         {
           "hash": 503482340,
-          "filename": "data/Ships/EGX/FE_Tex/All_Textures_UV.pct",
+          "filename": "Data/Ships/EGX/FE_Tex/All_Textures_UV.pct",
           "confidence": 9
         },
         {
@@ -25777,7 +25777,7 @@
         },
         {
           "hash": 979844627,
-          "filename": "data/Ships/Goteki/FE_Tex/All_Textures.pct",
+          "filename": "Data/Ships/Goteki/FE_Tex/All_Textures.pct",
           "confidence": 9
         },
         {
@@ -25802,12 +25802,12 @@
         },
         {
           "hash": 3216417157,
-          "filename": "data/Ships/Goteki/FE_Tex/All_Textures_Eliminator.pct",
+          "filename": "Data/Ships/Goteki/FE_Tex/All_Textures_Eliminator.pct",
           "confidence": 9
         },
         {
           "hash": 672756622,
-          "filename": "data/Ships/Goteki/FE_Tex/All_Textures_uv.pct",
+          "filename": "Data/Ships/Goteki/FE_Tex/All_Textures_uv.pct",
           "confidence": 9
         },
         {
@@ -27062,7 +27062,7 @@
         },
         {
           "hash": 2413521354,
-          "filename": "data/Ships/Harimau/FE_Tex/All_textures.pct",
+          "filename": "Data/Ships/Harimau/FE_Tex/All_textures.pct",
           "confidence": 9
         },
         {
@@ -27077,17 +27077,17 @@
         },
         {
           "hash": 1802842562,
-          "filename": "data/Ships/Harimau/FE_Tex/All_textures2.pct",
+          "filename": "Data/Ships/Harimau/FE_Tex/All_textures2.pct",
           "confidence": 9
         },
         {
           "hash": 2687107520,
-          "filename": "data/Ships/Harimau/FE_Tex/All_textures_Eliminator.pct",
+          "filename": "Data/Ships/Harimau/FE_Tex/All_textures_Eliminator.pct",
           "confidence": 9
         },
         {
           "hash": 2641119664,
-          "filename": "data/Ships/Harimau/FE_Tex/All_textures_uv.pct",
+          "filename": "Data/Ships/Harimau/FE_Tex/All_textures_uv.pct",
           "confidence": 9
         },
         {
@@ -28327,7 +28327,7 @@
         },
         {
           "hash": 2082008495,
-          "filename": "data/Ships/Icaras/FE_Tex/all_textures_Eliminator.pct",
+          "filename": "Data/Ships/Icaras/FE_Tex/all_textures_Eliminator.pct",
           "confidence": 9
         },
         {
@@ -37287,7 +37287,7 @@
         },
         {
           "hash": 3448164202,
-          "filename": "Data/CD86CF6A",
+          "filename": "definition.xml",
           "confidence": 0
         },
         {

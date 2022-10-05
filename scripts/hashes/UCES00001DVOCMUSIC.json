@@ -1,0 +1,61 @@
+{
+  "code": "UCES00001DVOCMUSIC",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3989099451,
+          "filename": "Data/Music/Bakelitesatellite/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4065777508,
+          "filename": "Data/Music/Bakelitesatellite/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 732148078,
+          "filename": "Data/Music/Bakelitesatellite/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3038886179,
+          "filename": "Data/Music/Bubblesofnothing/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 215624056,
+          "filename": "Data/Music/Bubblesofnothing/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2316993710,
+          "filename": "Data/Music/Bubblesofnothing/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2066375686,
+          "filename": "Data/Music/Bakelitesatellite/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 600772254,
+          "filename": "Data/Music/Bubblesofnothing/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

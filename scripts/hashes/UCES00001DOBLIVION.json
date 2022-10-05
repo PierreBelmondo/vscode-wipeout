@@ -1,0 +1,81 @@
+{
+  "code": "UCES00001DOBLIVION",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2471884415,
+          "filename": "Data/Music/Oblivion_disconnect/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1847673064,
+          "filename": "Data/Music/Oblivion_disconnect/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4083715619,
+          "filename": "Data/Music/Oblivion_disconnect/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1829365352,
+          "filename": "Data/Music/Oblivion_reminiscence/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3977025855,
+          "filename": "Data/Music/Oblivion_reminiscence/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3017459010,
+          "filename": "Data/Music/Oblivion_reminiscence/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 389045583,
+          "filename": "Data/Music/Oblivion_thebufferflyeffect/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1216091631,
+          "filename": "Data/Music/Oblivion_thebufferflyeffect/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 438408036,
+          "filename": "Data/Music/Oblivion_thebufferflyeffect/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 96158146,
+          "filename": "Data/Music/Oblivion_disconnect/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 4226240981,
+          "filename": "Data/Music/Oblivion_reminiscence/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 2178870002,
+          "filename": "Data/Music/Oblivion_thebufferflyeffect/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@
  */
 
 import { decrypt } from "../utils/xtea";
-import { DLC_KEYS } from "./db/dlc_keys";
+import { DLC_KEYS } from "./dlc_keys";
 
 const SIG_SIZE = 256;
 

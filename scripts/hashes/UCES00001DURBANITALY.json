@@ -1,0 +1,81 @@
+{
+  "code": "UCES00001DURBANITALY",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1090482058,
+          "filename": "Data/Music/Urban_italy_delroy/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2737171682,
+          "filename": "Data/Music/Urban_italy_delroy/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3342348768,
+          "filename": "Data/Music/Urban_italy_delroy/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1049789811,
+          "filename": "Data/Music/Urban_italy_djjungle/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1731906480,
+          "filename": "Data/Music/Urban_italy_djjungle/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 14863563,
+          "filename": "Data/Music/Urban_italy_djjungle/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2001058622,
+          "filename": "Data/Music/Urban_italy_djrumba/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1864245667,
+          "filename": "Data/Music/Urban_italy_djrumba/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1778246897,
+          "filename": "Data/Music/Urban_italy_djrumba/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3591493687,
+          "filename": "Data/Music/Urban_italy_delroy/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 2826711758,
+          "filename": "Data/Music/Urban_italy_djjungle/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 3786083459,
+          "filename": "Data/Music/Urban_italy_djrumba/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

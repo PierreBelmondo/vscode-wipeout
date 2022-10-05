@@ -1,0 +1,166 @@
+{
+  "code": "UCES00001DSCIFIPAK",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2474635848,
+          "filename": "Data/Skins/Scifi/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 208229929,
+          "filename": "Data/Skins/Scifi/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4077128686,
+          "filename": "Data/Skins/Scifi/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 585333936,
+          "filename": "Data/Skins/Scifi/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 351093822,
+          "filename": "Data/Skins/Scifi/Images/default_texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2657927607,
+          "filename": "Data/Skins/Scifi/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2997111417,
+          "filename": "Data/Skins/Scifi/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4172628588,
+          "filename": "Data/Skins/Scifi/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 520840854,
+          "filename": "Data/Skins/Scifi/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3928775373,
+          "filename": "Data/Skins/Scifi/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4093287579,
+          "filename": "Data/Skins/Scifi/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4291283921,
+          "filename": "Data/Skins/Scifi/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2615645812,
+          "filename": "Data/Tournaments/Exclusive/Images/league.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 631188618,
+          "filename": "Data/Tournaments/Exclusive/Images/league_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3056764348,
+          "filename": "Data/Tournaments/Exclusive/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4208734374,
+          "filename": "Data/Tournaments/Exclusive/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 686402338,
+          "filename": "Data/Tournaments/Exclusive/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2026773159,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1064198263,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 34490823,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1798430630,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3243224980,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3662634641,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3776050138,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2430193356,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1017681651,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1637102231,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/scifi_billboard.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3586198155,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2576962646,
+          "filename": "Data/Environments/Brandedtracks/scifi_khara_descent/envkharadescent.bnk",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

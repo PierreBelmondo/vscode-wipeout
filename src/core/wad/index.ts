@@ -1,6 +1,8 @@
 import { BufferRange } from "../range";
-import { hash2filename } from "./db";
+import { filenameFromHash } from "./hashes";
 import { xtea8_ctr_bruteforce, xtea8_ctr_decrypt } from "./crypto";
+import { lzss } from "../utils/lzss";
+import zlib from "zlib";
 
 enum WadVersion {
   WAD_PSP = 1,
@@ -25,13 +27,24 @@ export class WadFile {
   }
 
   get filename(): string {
-    const filename = hash2filename(this.hash);
+    const filename = filenameFromHash(this.hash);
     if (filename !== null) return filename;
-    return this.hash.toString(16);
+    return "Data/" + this.hash.toString(16);
+  }
+
+  get compressed(): boolean {
+    return this.sizeUncompressed != this.sizeCompressed;
   }
 
   get content(): ArrayBuffer {
     const range = this.range.reset(this.offset, this.offset + this.sizeCompressed);
+    if (this.compressed) {
+      if (this.sizeUncompressed & (1 << 31)) {
+        return zlib.inflateSync(range.buffer);
+      } else {
+        return lzss.decompress(range.getBuffer(), this.sizeUncompressed);
+      }
+    }
     return range.buffer;
   }
 }

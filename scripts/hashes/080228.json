@@ -7,7 +7,7 @@
       "files": [
         {
           "hash": 3448164202,
-          "filename": "Data/CD86CF6A",
+          "filename": "definition.xml",
           "confidence": 0
         },
         {
@@ -37,42 +37,42 @@
         },
         {
           "hash": 4173472538,
-          "filename": "Data/F8C2231A",
+          "filename": "Data/Environments/15_Track/FE/image_01.mip",
           "confidence": 0
         },
         {
           "hash": 3210893770,
-          "filename": "Data/BF6259CA",
+          "filename": "Data/Environments/15_Track/FE/image_02.mip",
           "confidence": 0
         },
         {
           "hash": 2181197946,
-          "filename": "Data/8202707A",
+          "filename": "Data/Environments/15_Track/FE/image_03.mip",
           "confidence": 0
         },
         {
           "hash": 807578730,
-          "filename": "Data/3022AC6A",
+          "filename": "Data/Environments/15_Track/FE/image_04.mip",
           "confidence": 0
         },
         {
           "hash": 3018509927,
-          "filename": "Data/B3EACE67",
+          "filename": "Data/Environments/15_Track/FE/zone_01.mip",
           "confidence": 0
         },
         {
           "hash": 4098536631,
-          "filename": "Data/F44AB4B7",
+          "filename": "Data/Environments/15_Track/FE/zone_02.mip",
           "confidence": 0
         },
         {
           "hash": 3375013127,
-          "filename": "Data/C92A9D07",
+          "filename": "Data/Environments/15_Track/FE/zone_03.mip",
           "confidence": 0
         },
         {
           "hash": 2064269591,
-          "filename": "Data/7B0A4117",
+          "filename": "Data/Environments/15_Track/FE/zone_04.mip",
           "confidence": 0
         }
       ]
@@ -82,17 +82,17 @@
       "files": [
         {
           "hash": 3448164202,
-          "filename": "Data/CD86CF6A",
+          "filename": "definition.xml",
           "confidence": 0
         },
         {
           "hash": 3829892908,
-          "filename": "Data/E447872C",
+          "filename": "download04.xml",
           "confidence": 0
         },
         {
           "hash": 1212993349,
-          "filename": "Data/484CCF45",
+          "filename": "stringtable.xml",
           "confidence": 0
         },
         {
@@ -252,7 +252,7 @@
       "files": [
         {
           "hash": 3448164202,
-          "filename": "Data/CD86CF6A",
+          "filename": "definition.xml",
           "confidence": 0
         },
         {
@@ -322,7 +322,7 @@
       "files": [
         {
           "hash": 3448164202,
-          "filename": "Data/CD86CF6A",
+          "filename": "definition.xml",
           "confidence": 0
         },
         {
@@ -352,42 +352,42 @@
         },
         {
           "hash": 4173472538,
-          "filename": "Data/F8C2231A",
+          "filename": "Data/Environments/15_Track/FE/image_01.mip",
           "confidence": 0
         },
         {
           "hash": 3210893770,
-          "filename": "Data/BF6259CA",
+          "filename": "Data/Environments/15_Track/FE/image_02.mip",
           "confidence": 0
         },
         {
           "hash": 2181197946,
-          "filename": "Data/8202707A",
+          "filename": "Data/Environments/15_Track/FE/image_03.mip",
           "confidence": 0
         },
         {
           "hash": 807578730,
-          "filename": "Data/3022AC6A",
+          "filename": "Data/Environments/15_Track/FE/image_04.mip",
           "confidence": 0
         },
         {
           "hash": 3018509927,
-          "filename": "Data/B3EACE67",
+          "filename": "Data/Environments/15_Track/FE/zone_01.mip",
           "confidence": 0
         },
         {
           "hash": 4098536631,
-          "filename": "Data/F44AB4B7",
+          "filename": "Data/Environments/15_Track/FE/zone_02.mip",
           "confidence": 0
         },
         {
           "hash": 3375013127,
-          "filename": "Data/C92A9D07",
+          "filename": "Data/Environments/15_Track/FE/zone_03.mip",
           "confidence": 0
         },
         {
           "hash": 2064269591,
-          "filename": "Data/7B0A4117",
+          "filename": "Data/Environments/15_Track/FE/zone_04.mip",
           "confidence": 0
         }
       ]
