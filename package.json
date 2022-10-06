@@ -2,6 +2,10 @@
   "name": "wipeout",
   "displayName": "wipeout",
   "description": "Wipeout Modding",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PierreBelmondo/vscode-wipeout.git"
+  },
   "version": "0.0.6",
   "engines": {
     "vscode": "^1.71.0"
