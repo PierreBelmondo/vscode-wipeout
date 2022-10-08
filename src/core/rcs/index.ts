@@ -319,6 +319,8 @@ class RcsModelTexture {
   }
 
   get filename(): string {
+    if (this.offset_filename == 0)
+      return "";
     return this.range.reset().getCString(this.offset_filename);
   }
 

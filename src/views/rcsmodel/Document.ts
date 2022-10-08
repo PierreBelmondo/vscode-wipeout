@@ -15,6 +15,8 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
     if (uri.scheme !== "untitled") array = await vscode.workspace.fs.readFile(uri);
     const buffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
 
+    const textureCache: { [id: string]: GTF } = {};
+
     const root = RcsModelDocument.findDataRoot(uri);
     console.log(`Found root of data in ${root.path}`);
 
@@ -28,15 +30,18 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
       RcsMaterial.load(bufferMaterial);
       */
       for (const texture of material.textures) {
-        if (texture.type == 0x8001 && texture.offset_filename != 0) {
-          console.log(`Loading texture (${texture.id.toString(16)}) ${texture.filename}`);
-          const uriTexture = vscode.Uri.joinPath(root, texture.filename);
-          const arrayTexture = await vscode.workspace.fs.readFile(uriTexture);
-          const bufferTexture = arrayTexture.buffer.slice(arrayTexture.byteOffset, arrayTexture.byteOffset + arrayTexture.byteLength);
-          const gtf = await GTF.load(bufferTexture);
-          texture.gtf = gtf;
+        if (texture.type == 0x8001 && texture.filename != "") {
+          if (!(texture.filename in textureCache)) {
+            console.log(`Loading texture (${texture.id.toString(16)}) ${texture.filename}`);
+            const uriTexture = vscode.Uri.joinPath(root, texture.filename);
+            const arrayTexture = await vscode.workspace.fs.readFile(uriTexture);
+            const bufferTexture = arrayTexture.buffer.slice(arrayTexture.byteOffset, arrayTexture.byteOffset + arrayTexture.byteLength);
+            const gtf = await GTF.load(bufferTexture);
+            textureCache[texture.filename] = gtf;
+          }
+          texture.gtf = textureCache[texture.filename];
         } else {
-          console.log(`Loading texture (${texture.id.toString(16)}) failed`)
+          console.log(`Loading texture (${texture.id.toString(16)}) failed`);
         }
       }
     }
