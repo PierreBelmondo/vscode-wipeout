@@ -1,14 +1,16 @@
 import { BufferRange } from "../range";
 import { vec3, vec4, mat4 } from "gl-matrix";
-import { Material, Object, RGBA, Scene, UV, Vertex } from "./types";
+import { Material, Object, RGBA, Scene, Texture, UV, Vertex } from "./types";
+import { GTF } from "../gtf";
+import { Flat } from "../vexx/flat";
 
-class RcsmodelMeshInfo {
+class RcsModelMeshInfo {
   range = new BufferRange();
   count = 0;
   type = 22;
 
-  static load(range: BufferRange): RcsmodelMeshInfo {
-    let ret = new RcsmodelMeshInfo();
+  static load(range: BufferRange): RcsModelMeshInfo {
+    let ret = new RcsModelMeshInfo();
     ret.range = range.clone();
     ret.count = ret.range.getUint8(0);
     ret.type = ret.range.getUint8(1);
@@ -16,7 +18,7 @@ class RcsmodelMeshInfo {
   }
 }
 
-class RcsmodelObjectHeader {
+class RcsModelObjectHeader {
   range = new BufferRange();
   id = 0;
   type = 0;
@@ -24,11 +26,12 @@ class RcsmodelObjectHeader {
   position = { x: 0, y: 0, z: 0 } as Vertex;
   scale = { x: 1.0, y: 1.0, z: 1.0 } as Vertex;
 
-  static load(range: BufferRange): RcsmodelObjectHeader {
-    let ret = new RcsmodelObjectHeader();
+  static load(range: BufferRange): RcsModelObjectHeader {
+    let ret = new RcsModelObjectHeader();
     ret.range = range.slice(0, 80);
 
     ret.id = ret.range.getUint32(0);
+    console.log(`Loading mesh ${ret.id.toString(16)}`)
     ret.type = ret.range.getUint8(6);
     ret.end_offet = ret.range.getUint32(24);
 
@@ -49,23 +52,23 @@ class RcsmodelObjectHeader {
   }
 }
 
-class RcsmodelObject {
+class RcsModelObject {
   range = new BufferRange();
-  header = new RcsmodelObjectHeader();
-  mesh = null as null | RcsmodelMesh1 | RcsmodelMesh5;
+  header = new RcsModelObjectHeader();
+  mesh = null as null | RcsModelMesh1 | RcsModelMesh5;
 
-  static load(range: BufferRange): RcsmodelObject {
-    let ret = new RcsmodelObject();
+  static load(range: BufferRange): RcsModelObject {
+    let ret = new RcsModelObject();
     ret.range = range.clone();
-    ret.header = RcsmodelObjectHeader.load(ret.range);
+    ret.header = RcsModelObjectHeader.load(ret.range);
     ret.range.end = ret.header.end_offet;
 
     switch (ret.header.type) {
       case 1:
-        ret.mesh = RcsmodelMesh1.load(ret.range.slice(80));
+        ret.mesh = RcsModelMesh1.load(ret.range.slice(80));
         break;
       case 5:
-        ret.mesh = RcsmodelMesh5.load(ret.range.slice(80));
+        ret.mesh = RcsModelMesh5.load(ret.range.slice(80));
         break;
       default:
         console.warn(`unexpect object type ${ret.header.type}`);
@@ -92,7 +95,7 @@ class RcsmodelObject {
   }
 }
 
-class RcsmodelMesh1 {
+class RcsModelMesh1 {
   range = new BufferRange();
 
   vbo_count = 0;
@@ -100,11 +103,11 @@ class RcsmodelMesh1 {
   ibo_count = 0;
   ibo_offset = 0;
 
-  vbo = new RcsmodelVBO();
-  ibo = new RcsmodelIBO();
+  vbo = new RcsModelVBO();
+  ibo = new RcsModelIBO();
 
-  static load(range: BufferRange): RcsmodelMesh1 {
-    let ret = new RcsmodelMesh1();
+  static load(range: BufferRange): RcsModelMesh1 {
+    let ret = new RcsModelMesh1();
     ret.range = range.clone();
 
     ret.vbo_count = ret.range.getUint32(0);
@@ -114,8 +117,8 @@ class RcsmodelMesh1 {
 
     ret.vbo_count = Math.round((ret.range.end - ret.vbo_offset) / 10);
 
-    ret.ibo = RcsmodelIBO.load(ret.getVertexIndexRange(), ret.ibo_count);
-    ret.vbo = RcsmodelVBO.load(ret.getVertexBufferRange(), 10, ret.vbo_count);
+    ret.ibo = RcsModelIBO.load(ret.getVertexIndexRange(), ret.ibo_count);
+    ret.vbo = RcsModelVBO.load(ret.getVertexBufferRange(), 10, ret.vbo_count);
 
     return ret;
   }
@@ -142,19 +145,19 @@ class RcsmodelMesh1 {
   }
 }
 
-class RcsmodelMesh5 {
+class RcsModelMesh5 {
   range = new BufferRange();
 
   info_offset = 0;
-  info = new RcsmodelMeshInfo();
+  info = new RcsModelMeshInfo();
   extra_offet = 0;
 
   submesh_count = 0;
   submesh_offset = 0;
-  submeshes = [] as RcsmodelSubmesh[];
+  submeshes = [] as RcsModelSubmesh[];
 
-  static load(range: BufferRange): RcsmodelMesh5 {
-    let ret = new RcsmodelMesh5();
+  static load(range: BufferRange): RcsModelMesh5 {
+    let ret = new RcsModelMesh5();
     ret.range = range.clone();
 
     ret.submesh_count = ret.range.getUint32(0);
@@ -163,11 +166,11 @@ class RcsmodelMesh5 {
     ret.extra_offet = ret.range.getUint32(12);
 
     const tmpRange = ret.range.reset(ret.info_offset);
-    ret.info = RcsmodelMeshInfo.load(tmpRange);
+    ret.info = RcsModelMeshInfo.load(tmpRange);
 
     let subrange = ret.range.reset(ret.submesh_offset);
     for (let i = 0; i < ret.submesh_count; i++) {
-      const submesh = RcsmodelSubmesh.load(subrange, ret.info.type);
+      const submesh = RcsModelSubmesh.load(subrange, ret.info.type);
       ret.submeshes.push(submesh);
       subrange = subrange.slice(8 * 16);
     }
@@ -190,26 +193,26 @@ class RcsmodelMesh5 {
   }
 }
 
-class RcsmodelSubmesh {
+class RcsModelSubmesh {
   range = new BufferRange();
   vbo_count = 0;
   ibo_count = 0;
   ibo_offset = 0;
   vbo_offset = 0;
 
-  vbo = new RcsmodelVBO();
-  ibo = new RcsmodelIBO();
+  vbo = new RcsModelVBO();
+  ibo = new RcsModelIBO();
 
-  static load(range: BufferRange, type: number): RcsmodelSubmesh {
-    let ret = new RcsmodelSubmesh();
+  static load(range: BufferRange, type: number): RcsModelSubmesh {
+    let ret = new RcsModelSubmesh();
     ret.range = range.slice(0, 8 * 16);
     ret.vbo_count = ret.range.getUint16(8);
     ret.ibo_count = ret.range.getUint16(10);
     ret.ibo_offset = ret.range.getUint32(16);
     ret.vbo_offset = ret.range.getUint32(24);
 
-    ret.ibo = RcsmodelIBO.load(ret.getVertexIndexRange(), ret.ibo_count);
-    ret.vbo = RcsmodelVBO.load(ret.getVertexBufferRange(), type, ret.vbo_count);
+    ret.ibo = RcsModelIBO.load(ret.getVertexIndexRange(), ret.ibo_count);
+    ret.vbo = RcsModelVBO.load(ret.getVertexBufferRange(), type, ret.vbo_count);
 
     return ret;
   }
@@ -236,15 +239,15 @@ class RcsmodelSubmesh {
   }
 }
 
-class RcsmodelVBO {
+class RcsModelVBO {
   range = new BufferRange();
   vertices = [] as Vertex[];
   normals = [] as Vertex[];
   rgba = [] as RGBA[];
   uv = [] as UV[];
 
-  static load(range: BufferRange, size: number, count: number): RcsmodelVBO {
-    let ret = new RcsmodelVBO();
+  static load(range: BufferRange, size: number, count: number): RcsModelVBO {
+    let ret = new RcsModelVBO();
     ret.range = range.slice(0, count * size);
 
     for (let i = 0; i < count; i++) {
@@ -281,13 +284,13 @@ class RcsmodelVBO {
   }
 }
 
-class RcsmodelIBO {
+class RcsModelIBO {
   range = new BufferRange();
   indices = [] as number[];
   max = 0;
 
-  static load(range: BufferRange, count: number): RcsmodelIBO {
-    let ret = new RcsmodelIBO();
+  static load(range: BufferRange, count: number): RcsModelIBO {
+    let ret = new RcsModelIBO();
     ret.range = range.slice(0, range.size - (range.size % 6));
     for (let i = 0; i < count; i++) {
       const index = ret.range.getUint16(i * 2);
@@ -298,10 +301,10 @@ class RcsmodelIBO {
   }
 }
 
-class RcsmodelMesh {
-  object = new RcsmodelObject();
-  vbos = [] as RcsmodelVBO[];
-  ibos = [] as RcsmodelIBO[];
+class RcsModelMesh {
+  object = new RcsModelObject();
+  vbos = [] as RcsModelVBO[];
+  ibos = [] as RcsModelIBO[];
   matrix = mat4.create();
 
   glPrepare() {
@@ -411,34 +414,107 @@ class RcsmodelMesh {
   }
 
   get position(): vec3 {
-    return vec3.fromValues(
-      this.object.header.position.x,
-      this.object.header.position.y,
-      this.object.header.position.z
-    );
+    return vec3.fromValues(this.object.header.position.x, this.object.header.position.y, this.object.header.position.z);
   }
 
   get scale(): vec3 {
-    return vec3.fromValues(
-      this.object.header.scale.x,
-      this.object.header.scale.y,
-      this.object.header.scale.z
-    );
+    return vec3.fromValues(this.object.header.scale.x, this.object.header.scale.y, this.object.header.scale.z);
   }
 }
 
-class RcsmodelHeader {
+class RcsModelTexture {
   range = new BufferRange();
-  mesh_table_count = 0;
-  mesh_table_offset = 0;
+  gtf?: GTF;
+
+  id = 0;
+  type = 0;
+  offset_filename = 0;
+
+  static load(range: BufferRange): RcsModelTexture {
+    const ret = new RcsModelTexture();
+    ret.range = range.slice(0, 32);
+    ret.id = ret.range.getUint32(0);
+    ret.type = ret.range.getUint32(4);
+    ret.offset_filename = ret.range.getUint32(24);
+    return ret;
+  }
+
+  get size(): number {
+    return this.range.size;
+  }
+
+  get filename(): string {
+    return this.range.reset().getCString(this.offset_filename);
+  }
+
+  export(): Texture {
+    return {
+      id: this.id,
+      filename: this.filename,
+      mipmaps: !this.gtf ? [] : this.gtf.export()
+    }
+  }
+}
+
+class RcsModelMaterial {
+  range = new BufferRange();
+
+  id = 0;
+  offset_filename = 0;
+  textures_count = 0;
+  textures_offset = 0;
+  textures: RcsModelTexture[] = [];
+
+  static load(range: BufferRange): RcsModelMaterial {
+    const ret = new RcsModelMaterial();
+    ret.range = range.clone();
+    ret.id = ret.range.getUint32(0);
+    ret.offset_filename = ret.range.getUint32(4);
+    ret.textures_count = ret.range.getUint32(48);
+    ret.textures_offset = ret.range.getUint32(52);
+
+    let textureRange = ret.range.reset(ret.textures_offset);
+    for (let i = 0; i < ret.textures_count; i++) {
+      const texture = RcsModelTexture.load(textureRange);
+      ret.textures.push(texture);
+      textureRange = textureRange.slice(texture.size);
+    }
+
+    return ret;
+  }
+
+  get filename(): string {
+    return this.range.reset().getCString(this.offset_filename);
+  }
+
+  export(): Material {
+    let textures: Texture[] = [];
+    for (const texture of this.textures) textures.push(texture.export());
+
+    return {
+      id: this.id,
+      filename: this.filename,
+      textures,
+    };
+  }
+}
+
+class RcsModelHeader {
+  range = new BufferRange();
+  object_table_count = 0;
+  object_table_offset = 0;
+  material_table_count = 0;
+  material_table_offset = 0;
   rotation = [] as vec4[];
 
-  static load(range: BufferRange): RcsmodelHeader {
-    let ret = new RcsmodelHeader();
+  static load(range: BufferRange): RcsModelHeader {
+    let ret = new RcsModelHeader();
     ret.range = range.slice(0, 64);
-    ret.mesh_table_count = ret.range.getUint32(28);
-    ret.mesh_table_offset = ret.range.getUint32(32);
-    for (let i = 0; i < ret.mesh_table_count; i++) {
+    ret.object_table_count = ret.range.getUint32(28);
+    ret.object_table_offset = ret.range.getUint32(32);
+    ret.material_table_count = ret.range.getUint32(44);
+    ret.material_table_offset = ret.range.getUint32(48);
+    for (let i = 0; i < ret.object_table_count; i++) {
       const x = ret.range.getFloat32(64 + i * 16 + 0);
       const y = ret.range.getFloat32(64 + i * 16 + 4);
       const z = ret.range.getFloat32(64 + i * 16 + 8);
@@ -449,20 +525,23 @@ class RcsmodelHeader {
     return ret;
   }
 
-  getObjectTable(): RcsmodelOffsetTable {
-    const range = this.range
-      .reset()
-      .slice(this.mesh_table_offset, this.mesh_table_offset + 64);
-    return RcsmodelOffsetTable.load(range, this.mesh_table_count);
+  getObjectTable(): RcsModelOffsetTable {
+    const range = this.range.reset().slice(this.object_table_offset, this.object_table_offset + 64);
+    return RcsModelOffsetTable.load(range, this.object_table_count);
+  }
+
+  getMaterialTable(): RcsModelOffsetTable {
+    const range = this.range.reset().slice(this.material_table_offset, this.material_table_offset + 64);
+    return RcsModelOffsetTable.load(range, this.material_table_count);
   }
 }
 
-class RcsmodelOffsetTable {
+class RcsModelOffsetTable {
   range = new BufferRange();
   offsets = [] as number[];
 
-  static load(range: BufferRange, count: number): RcsmodelOffsetTable {
-    let ret = new RcsmodelOffsetTable();
+  static load(range: BufferRange, count: number): RcsModelOffsetTable {
+    let ret = new RcsModelOffsetTable();
     ret.range = range.slice(0, count * 4);
     for (let i = 0; i < count; i++) {
       const offset = ret.range.getUint32(i * 4);
@@ -472,36 +551,50 @@ class RcsmodelOffsetTable {
   }
 }
 
-export class Rcsmodel {
+export class RcsModel {
   range = new BufferRange();
 
-  header = new RcsmodelHeader();
-  objects_table = new RcsmodelOffsetTable();
-  objects = [] as RcsmodelObject[];
+  header = new RcsModelHeader();
+  objects_table = new RcsModelOffsetTable();
+  objects = [] as RcsModelObject[];
+  materials_table = new RcsModelOffsetTable();
+  materials = [] as RcsModelMaterial[];
 
-  static load(buffer: ArrayBuffer): Rcsmodel {
-    let ret = new Rcsmodel();
+  static load(buffer: ArrayBuffer): RcsModel {
+    let ret = new RcsModel();
     ret.range = new BufferRange(buffer);
     ret.range.le = false;
 
-    ret.header = RcsmodelHeader.load(ret.range);
+    ret.header = RcsModelHeader.load(ret.range);
     ret.objects_table = ret.header.getObjectTable();
     for (const offset of ret.objects_table.offsets) {
       const range = ret.range.slice(offset);
-      const object = RcsmodelObject.load(range);
+      const object = RcsModelObject.load(range);
       ret.objects.push(object);
     }
 
+    ret.materials_table = ret.header.getMaterialTable();
+    for (const offset of ret.materials_table.offsets) {
+      const range = ret.range.slice(offset);
+      const material = RcsModelMaterial.load(range);
+      ret.materials.push(material);
+    }
+
+    console.log(ret);
     return ret;
   }
 
   export(): Scene {
     const materials = [] as Material[];
+    for (const rcsmaterial of this.materials) {
+      const material = rcsmaterial.export();
+      materials.push(material);
+    }
 
     const objects = [] as Object[];
-    for (const object of this.objects) {
-      const mesh = object.export();
-      objects.push(mesh);
+    for (const rcsobject of this.objects) {
+      const object = rcsobject.export();
+      objects.push(object);
     }
 
     return {

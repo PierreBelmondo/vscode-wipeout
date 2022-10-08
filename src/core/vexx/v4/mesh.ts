@@ -16,8 +16,9 @@ export class VexxNodeMesh extends VexxNode {
   override load(range: BufferRange): void {
     this.info = VexxNodeiMeshHeader.load(range);
 
+    if (this.info.reserved == 0x0000ff00) {
+    } else {
     let chunksRange = range.slice(this.info.size);
-
     while (chunksRange.size > 64) {
       const chunk = VexxNodeMeshChunk.load(chunksRange, this.typeInfo.version);
 
@@ -34,6 +35,7 @@ export class VexxNodeMesh extends VexxNode {
         break; // fail-safe
       }
     }
+  }
   }
 
   override export(): Flat.Node {
@@ -60,6 +62,7 @@ class VexxNodeiMeshHeader {
   meshCount = 0;
   length1 = 0;
   length2 = 0;
+  reserved = 0;
   aabb = new AABB();
   materials: VexxNodeMeshMaterial[] = [];
 
@@ -69,6 +72,7 @@ class VexxNodeiMeshHeader {
     ret.meshCount = range.getUint16(2);
     ret.length1 = range.getUint32(4);
     ret.length2 = range.getUint32(8);
+    ret.reserved = range.getUint32(12);
 
     if (ret.length2) ret.range = range.slice(0, ret.length2);
     else ret.range = range.slice(0, ret.length1);
@@ -81,11 +85,14 @@ class VexxNodeiMeshHeader {
     const aabbRange = ret.range.slice(16, 16 + 32);
     ret.aabb = AABB.loadFromFloat32(aabbRange);
 
+    if (ret.reserved == 0x0000ff00) {
+    } else {
     let materialsRange = ret.range.slice(48);
     for (let i = 0; i < ret.meshCount; i++) {
       const material = VexxNodeMeshMaterial.load(materialsRange);
       ret.materials.push(material);
       materialsRange = materialsRange.slice(material.size);
+      }
     }
 
     return ret;

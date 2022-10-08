@@ -72,6 +72,15 @@ export class BufferRange {
     return decoder.decode(this.buffer).replace(/\0/g, "");
   }
 
+  getCString(offset: number): string {
+    const charArray = new Uint8Array(this.buffer);
+    let i = offset;
+    while (i < this._end) if (charArray[i++] == 0) break;
+    const stringRange = this.slice(offset, i);
+    const decoder = new TextDecoder();
+    return decoder.decode(stringRange.buffer).replace(/\0/g, "");
+  }
+
   getHexadecimal(): string {
     return [...new Uint8Array(this.buffer)].map((x) => x.toString(16).padStart(2, "0")).join("");
   }
@@ -159,13 +168,13 @@ export class BufferRange {
     return this._buffer.slice(this._begin + offset, this._begin + offset + length);
   }
 
-  getBuffer(offset?: number, length?: number) : Buffer {
+  getBuffer(offset?: number, length?: number): Buffer {
     if (!offset) offset = 0;
     if (!length) length = this.size;
     const arrayBuffer = this.getArrayBuffer(offset, length);
     return Buffer.from(arrayBuffer);
   }
-  
+
   getInt8Array(offset: number, length: number): Int8Array {
     const range = this.slice(offset, offset + length);
     return new Int8Array(range.buffer);

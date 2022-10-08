@@ -1,4 +1,20 @@
-export type Material = {};
+export type Mipmap = {
+  width: number;
+  height: number;
+  rgba: number[];
+};
+
+export type Texture = {
+  id: number;
+  filename: string;
+  mipmaps: Mipmap[];
+};
+
+export type Material = {
+  id: number;
+  filename: string;
+  textures: Texture[];
+};
 
 export type Vertex = {
   x: number;

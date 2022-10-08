@@ -19,7 +19,8 @@ export class World {
     this._settings = {};
 
     this.materials["_default"] = new THREE.MeshPhongMaterial({
-      color: 0xA0A0A0,
+      specular: 0x003000,
+      flatShading: true,
       side: THREE.DoubleSide,
     });
 
