@@ -6,7 +6,7 @@ import { GU } from "../../utils/pspgu";
 import { Flat } from "../flat";
 
 export class VexxNodeMesh extends VexxNode {
-  info = new VexxNodeiMeshHeader();
+  info = new VexxNodeMeshHeader();
   chunks: VexxNodeMeshChunk[] = [];
 
   constructor(type = Vexx4NodeType.MESH) {
@@ -14,28 +14,28 @@ export class VexxNodeMesh extends VexxNode {
   }
 
   override load(range: BufferRange): void {
-    this.info = VexxNodeiMeshHeader.load(range);
+    this.info = VexxNodeMeshHeader.load(range);
 
     if (this.info.reserved == 0x0000ff00) {
     } else {
-    let chunksRange = range.slice(this.info.size);
-    while (chunksRange.size > 64) {
-      const chunk = VexxNodeMeshChunk.load(chunksRange, this.typeInfo.version);
+      let chunksRange = range.slice(this.info.size);
+      while (chunksRange.size > 64) {
+        const chunk = VexxNodeMeshChunk.load(chunksRange, this.typeInfo.version);
 
-      if (chunk.header.id >= this.info.materials.length) {
-        console.warn(`Cannot add chunk with id ${chunk.header.id}`);
-        break;
-      }
+        if (chunk.header.id >= this.info.materials.length) {
+          console.warn(`Cannot add chunk with id ${chunk.header.id}`);
+          break;
+        }
 
-      this.chunks.push(chunk);
-      chunksRange = chunksRange.slice(chunk.size);
+        this.chunks.push(chunk);
+        chunksRange = chunksRange.slice(chunk.size);
 
-      if (this.chunks.length > 100) {
-        console.error("Mesh loading chunks triggered a failsafe");
-        break; // fail-safe
+        if (this.chunks.length > 100) {
+          console.error("Mesh loading chunks triggered a failsafe");
+          break; // fail-safe
+        }
       }
     }
-  }
   }
 
   override export(): Flat.Node {
@@ -56,7 +56,7 @@ export class VexxNodeMesh extends VexxNode {
   }
 }
 
-class VexxNodeiMeshHeader {
+class VexxNodeMeshHeader {
   range = new BufferRange();
   type = 0;
   meshCount = 0;
@@ -66,8 +66,8 @@ class VexxNodeiMeshHeader {
   aabb = new AABB();
   materials: VexxNodeMeshMaterial[] = [];
 
-  static load(range: BufferRange): VexxNodeiMeshHeader {
-    const ret = new VexxNodeiMeshHeader();
+  static load(range: BufferRange): VexxNodeMeshHeader {
+    const ret = new VexxNodeMeshHeader();
     ret.type = range.getUint16(0);
     ret.meshCount = range.getUint16(2);
     ret.length1 = range.getUint32(4);
@@ -87,11 +87,11 @@ class VexxNodeiMeshHeader {
 
     if (ret.reserved == 0x0000ff00) {
     } else {
-    let materialsRange = ret.range.slice(48);
-    for (let i = 0; i < ret.meshCount; i++) {
-      const material = VexxNodeMeshMaterial.load(materialsRange);
-      ret.materials.push(material);
-      materialsRange = materialsRange.slice(material.size);
+      let materialsRange = ret.range.slice(48);
+      for (let i = 0; i < ret.meshCount; i++) {
+        const material = VexxNodeMeshMaterial.load(materialsRange);
+        ret.materials.push(material);
+        materialsRange = materialsRange.slice(material.size);
       }
     }
 
