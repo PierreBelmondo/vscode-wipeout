@@ -34,19 +34,18 @@ export type UV = {
   v: number;
 };
 
-export type Object =
-  | {
-      type: "group";
-      position: Vertex;
-      scale: Vertex;
-      objects: Object[];
-    }
-  | {
-      type: "mesh";
-      vertices: Vertex[];
-      indices: number[];
-      uvs: UV[];
-    };
+export type Mesh = {
+  vertices: Vertex[];
+  indices: number[];
+  uvs: UV[];
+};
+
+export type Object = {
+  position: Vertex;
+  scale: Vertex;
+  meshes: Mesh[];
+  material_id: number;
+};
 
 export type Scene = {
   materials: Material[];

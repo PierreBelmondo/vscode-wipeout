@@ -1,6 +1,6 @@
 import { BufferRange } from "../range";
 import { vec3, vec4, mat4 } from "gl-matrix";
-import { Material, Object, RGBA, Scene, Texture, UV, Vertex } from "./types";
+import { Material, Mesh, Object, RGBA, Scene, Texture, UV, Vertex } from "./types";
 import { GTF } from "../gtf";
 import { Flat } from "../vexx/flat";
 
@@ -25,15 +25,17 @@ class RcsModelObjectHeader {
   end_offet = 0;
   position = { x: 0, y: 0, z: 0 } as Vertex;
   scale = { x: 1.0, y: 1.0, z: 1.0 } as Vertex;
+  material_id = 0;
 
   static load(range: BufferRange): RcsModelObjectHeader {
     let ret = new RcsModelObjectHeader();
     ret.range = range.slice(0, 80);
 
     ret.id = ret.range.getUint32(0);
-    console.log(`Loading mesh ${ret.id.toString(16)}`)
+    console.log(`Loading mesh ${ret.id.toString(16)}`);
     ret.type = ret.range.getUint8(6);
     ret.end_offet = ret.range.getUint32(24);
+    ret.material_id = ret.range.getUint32(32);
 
     ret.position.x = ret.range.getFloat32(48);
     ret.position.y = ret.range.getFloat32(52);
@@ -80,15 +82,16 @@ class RcsModelObject {
 
   export(): Object {
     const object: Object = {
-      type: "group",
       position: this.header.position,
       scale: this.header.scale,
-      objects: [],
+      material_id: this.header.material_id,
+      meshes: [],
     };
 
     if (this.mesh !== null) {
       const obj = this.mesh.export();
-      object.objects.push(obj);
+      if (Array.isArray(obj)) object.meshes = object.meshes.concat(obj);
+      else object.meshes.push(obj);
     }
 
     return object;
@@ -135,9 +138,8 @@ class RcsModelMesh1 {
     return this.range.reset().slice(beg, end);
   }
 
-  export(): Object {
+  export(): Mesh {
     return {
-      type: "mesh",
       indices: this.ibo.indices,
       vertices: this.vbo.vertices,
       uvs: [],
@@ -178,18 +180,13 @@ class RcsModelMesh5 {
     return ret;
   }
 
-  export(): Object {
-    const objects = [] as Object[];
+  export(): Mesh[] {
+    const objects = [] as Mesh[];
     for (const submesh of this.submeshes) {
       const mesh = submesh.export();
       objects.push(mesh);
     }
-    return {
-      type: "group",
-      position: { x: 0, y: 0, z: 0 },
-      scale: { x: 1.0, y: 1.0, z: 1.0 },
-      objects,
-    };
+    return objects;
   }
 }
 
@@ -229,9 +226,8 @@ class RcsModelSubmesh {
     return this.range.reset().slice(beg, end);
   }
 
-  export(): Object {
+  export(): Mesh {
     return {
-      type: "mesh",
       indices: this.ibo.indices,
       vertices: this.vbo.vertices,
       uvs: this.vbo.uv,
@@ -301,127 +297,6 @@ class RcsModelIBO {
   }
 }
 
-class RcsModelMesh {
-  object = new RcsModelObject();
-  vbos = [] as RcsModelVBO[];
-  ibos = [] as RcsModelIBO[];
-  matrix = mat4.create();
-
-  glPrepare() {
-    this.matrix = mat4.create();
-    mat4.translate(this.matrix, this.matrix, this.position);
-    mat4.scale(this.matrix, this.matrix, this.scale);
-
-    for (let i = 0; i < this.ibos.length; i++) {
-      const ibo = this.ibos[i];
-      const vbo = this.vbos[i];
-
-      const [r, g, b] = [100 * Math.random() + 127, 255, 255];
-
-      const positions = new Int16Array(vbo.vertices.length * 3);
-      const colors = new Uint8Array(vbo.vertices.length * 3);
-      for (let i = 0; i < vbo.vertices.length; i++) {
-        positions[i * 3 + 0] = vbo.vertices[i].x;
-        positions[i * 3 + 1] = vbo.vertices[i].y;
-        positions[i * 3 + 2] = vbo.vertices[i].z;
-        if (vbo.rgba.length > 0) {
-          colors[i * 3 + 0] = vbo.rgba[i].r;
-          colors[i * 3 + 1] = vbo.rgba[i].g;
-          colors[i * 3 + 2] = vbo.rgba[i].b;
-        } else {
-          colors[i * 3 + 0] = r;
-          colors[i * 3 + 1] = g;
-          colors[i * 3 + 2] = b;
-        }
-      }
-
-      const indices = new Uint16Array(ibo.indices);
-
-      /*
-      const source: MeshSource = {
-        mode: TRIANGLES,
-        positions,
-        colors,
-        indices,
-      };
-      */
-
-      if (vbo.uv.length > 0) {
-        const uvs = new Float32Array(vbo.vertices.length * 2);
-        for (let i = 0; i < vbo.vertices.length; i++) {
-          uvs[i * 2 + 0] = vbo.uv[i].u;
-          uvs[i * 2 + 1] = vbo.uv[i].v;
-        }
-        //source.uvs = uvs;
-      }
-
-      /*
-      if (vbo.uv.length > 0) {
-        const positions = new Int16Array(vbo.vertices.length * 3);
-        for (let i = 0; i < vbo.vertices.length; i++) {
-          positions[i * 3 + 0] = vbo.uv[i].u * 1000;
-          positions[i * 3 + 1] = 0;
-          positions[i * 3 + 2] = vbo.uv[i].v * 1000;
-          colors[i * 3 + 0] = 255;
-          colors[i * 3 + 1] = 0;
-          colors[i * 3 + 2] = 0;
-        }
-        const source: MeshSource = {
-          mode: engine.gl.TRIANGLES,
-          positions,
-          colors,
-          indices,
-        };
-        const mesh = new Mesh(engine.gl);
-        mesh.load(source);
-        this.meshes.push(mesh);
-      }
-      */
-
-      if (vbo.normals.length > 0) {
-        const positions = new Int16Array(vbo.vertices.length * 3 * 2);
-        const colors = new Uint8Array(vbo.vertices.length * 3 * 2);
-        for (let i = 0; i < vbo.vertices.length; i++) {
-          positions[i * 6 + 0] = vbo.vertices[i].x;
-          positions[i * 6 + 1] = vbo.vertices[i].y;
-          positions[i * 6 + 2] = vbo.vertices[i].z;
-          positions[i * 6 + 3] = vbo.vertices[i].x + vbo.normals[i].x;
-          positions[i * 6 + 4] = vbo.vertices[i].y + vbo.normals[i].y;
-          positions[i * 6 + 5] = vbo.vertices[i].z + vbo.normals[i].z;
-          colors[i * 6 + 0] = 150;
-          colors[i * 6 + 1] = 0;
-          colors[i * 6 + 2] = 0;
-          colors[i * 6 + 3] = 255;
-          colors[i * 6 + 4] = 0;
-          colors[i * 6 + 5] = 0;
-        }
-
-        /*
-        const source: MeshSource = {
-          mode:LINES,
-          positions,
-          colors,
-        };
-        */
-
-        /*
-        const mesh = new Mesh();
-        mesh.load(source);
-        this.meshes.push(mesh);
-        */
-      }
-    }
-  }
-
-  get position(): vec3 {
-    return vec3.fromValues(this.object.header.position.x, this.object.header.position.y, this.object.header.position.z);
-  }
-
-  get scale(): vec3 {
-    return vec3.fromValues(this.object.header.scale.x, this.object.header.scale.y, this.object.header.scale.z);
-  }
-}
-
 class RcsModelTexture {
   range = new BufferRange();
   gtf?: GTF;
@@ -451,8 +326,8 @@ class RcsModelTexture {
     return {
       id: this.id,
       filename: this.filename,
-      mipmaps: !this.gtf ? [] : this.gtf.export()
-    }
+      mipmaps: !this.gtf ? [] : this.gtf.export(),
+    };
   }
 }
 

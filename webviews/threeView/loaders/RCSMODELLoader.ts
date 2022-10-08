@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Scene, Object, UV } from "../../../src/core/rcs/types";
+import { Scene, Object, UV, Mesh } from "../../../src/core/rcs/types";
 import { World } from ".";
 
 export class RCSModelLoader {
@@ -11,10 +11,12 @@ export class RCSModelLoader {
   }
 
   private loadMaterials(world: World, data: Scene) {
+    let material_id = 0;
     for (const materialData of data.materials) {
       console.log(`Loading material ${materialData.id}`);
       const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
-      world.materials[material.id] = material;
+      material.name = materialData.filename;
+      world.materials[material_id] = material;
 
       for (const textureData of materialData.textures) {
         console.log(`Loading texture ${textureData.id}`);
@@ -31,13 +33,15 @@ export class RCSModelLoader {
           textures.push(texture);
         }
 
-        material.map = textures[0];
-        //material.map.mipmaps = textures.slice(1);
-        world.textures[textureData.id] = material.map;
+        const texture = textures[0];
+        texture.name = textureData.filename;
+        //texture.mipmaps = textures.slice(1);
+        world.textures[textureData.id] = texture;
+        material.map = texture;
 
         break; // no multi texture atm
       }
-      break; // one material only atm
+      material_id++;
     }
     console.log("Done loading materials");
   }
@@ -54,41 +58,31 @@ export class RCSModelLoader {
   }
 
   private loadObject(world: World, objectData: Object) {
-    switch (objectData.type) {
-      case "group":
-        return this.loadGroup(world, objectData);
-      case "mesh":
-        return this.loadMesh(world, objectData);
-    }
-    return null;
-  }
-
-  private loadGroup(world: World, groupData: { type?: "group"; position: any; scale: any; objects: any }): THREE.Object3D {
     const group = new THREE.Group();
-    group.position.set(groupData.position.x, groupData.position.y, groupData.position.z);
-    group.scale.set(groupData.scale.x, groupData.scale.y, groupData.scale.z);
-    for (const objectData of groupData.objects) {
-      const object = this.loadObject(world, objectData);
-      if (object === null) continue;
-      group.add(object);
+    group.position.set(objectData.position.x, objectData.position.y, objectData.position.z);
+    group.scale.set(objectData.scale.x, objectData.scale.y, objectData.scale.z);
+    for (const meshData of objectData.meshes) {
+      const mesh = this.loadMesh(world, meshData, objectData.material_id);
+      if (mesh === null) continue;
+      group.add(mesh);
     }
     return group;
   }
 
-  private loadMesh(world: World, simpleData: { type?: "mesh"; vertices: any; indices: any; uvs?: UV[] }): THREE.Object3D {
+  private loadMesh(world: World, meshData: Mesh, material_id: number): THREE.Object3D {
     const vertices = [] as number[];
     const s = 2.0 / 65536;
-    for (const vertex of simpleData.vertices) {
+    for (const vertex of meshData.vertices) {
       vertices.push(vertex.x * s, vertex.y * s, vertex.z * s);
     }
 
     const geometry = new THREE.BufferGeometry();
-    geometry.setIndex(simpleData.indices);
+    geometry.setIndex(meshData.indices);
     geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
 
-    if (simpleData.uvs) {
+    if (meshData.uvs) {
       const uvs = [] as number[];
-      for (const uv of simpleData.uvs) {
+      for (const uv of meshData.uvs) {
         uvs.push(uv.u, uv.v);
       }
       geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
@@ -104,13 +98,8 @@ export class RCSModelLoader {
     );
     */
 
-    let material = world.materials["_default"];
-    for (const name in world.materials) {
-      if (name.startsWith("_")) continue;
-      material = world.materials[name];
-      console.log(material);
-      break;
-    }
+    //let material = world.materials["_default"];
+    const material = world.materials[material_id];
 
     return new THREE.Mesh(geometry, material);
   }
