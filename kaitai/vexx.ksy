@@ -8,8 +8,13 @@ seq:
     type: header
   - id: nodes
     size: header.nodes_size
-    type: node
-
+    type:
+      switch-on: header.version
+      cases:
+        "3": node_v4
+        "4": node_v4
+        "6": node_v6
+        
 enums:
   node_type_v4:
     0x000: group 
@@ -65,6 +70,7 @@ enums:
     0x394: ship_muzzle 
     0x396: exit_glow 
     0x397: engine_fire
+    
   node_type_v6:
     0x000: group
     0x06e: transform
@@ -124,6 +130,15 @@ enums:
     0x3e7: cage_collision
     0x3eb: canon_flash
 
+  gu_primitive:
+    0: points
+    1: lines
+    2: line_strip
+    3: triangles
+    4: triangle_strip
+    5: triangle_fan
+    6: sprites
+    
 types:
   header:
     seq:
@@ -137,7 +152,40 @@ types:
         type: str
         size: 4
         encoding: ascii
-  node:
+  
+  node_v4:
+    seq:
+      - id: type
+        type: u4
+        enum: node_type_v4
+      - id: header_size
+        type: u2
+      - id: unknown1
+        type: u2
+      - id: data_size
+        type: u4
+      - id: children_count
+        type: u2
+      - id: unknown2
+        type: u2
+      - id: name
+        type: str
+        encoding: ascii
+        size: header_size - 16
+      - id: data
+        size: data_size
+        type:
+          switch-on: type
+          cases:
+            "node_type_v4::texture": data_texture
+            "node_type_v4::mesh": data_mesh
+      - id: children
+        type: node_v4
+        repeat: expr
+        repeat-expr: children_count
+        if: "children_count > 0"
+        
+  node_v6:
     seq:
       - id: type
         type: u4
@@ -158,12 +206,188 @@ types:
         size: header_size - 16
       - id: data
         size: data_size
+        type:
+          switch-on: type
+          cases:
+            "node_type_v6::texture": data_texture
+            "node_type_v6::mesh": data_mesh
       - id: children
-        type: node
+        type: node_v6
         repeat: expr
         repeat-expr: children_count
+        if: "children_count > 0"
+
+  f4_4:
+    seq:
+      - id: x
+        type: f4
+      - id: y
+        type: f4
+      - id: z
+        type: f4
+      - id: w
+        type: f4
+  
+  mat4:
+    seq:
+      - id: row
+        type: f4_4
+        repeat: expr
+        repeat-expr: 4
         
-      
+  data_aabb:
+    seq:
+      - id: min
+        type: f4_4
+      - id: max
+        type: f4_4
+  
+  data_mesh_info:
+    seq:
+      - id: unknown1
+        type: u1
+      - id: unknown2
+        type: u1
+      - id: unknown3
+        type: u2
+      - id: texture_id
+        type: u4
+      - id: more
+        size: 12
+
+  data_mesh_chunk_header:
+    seq:
+      - id: signature
+        type: u2
+      - id: id
+        type: u1
+      - id: unknown1
+        type: u1
+      - id: stride_count1
+        type: u2
+      - id: stride_count2
+        type: u2
+      - id: primitive_type
+        type: u1
+        enum: gu_primitive
+      - id: unknown2
+        type: u1
+      - id: vtxdef
+        type: u2
+      - id: size1
+        type: u2
+      - id: size2
+        type: u2
+
+  data_mesh_chunk:
+    seq:
+      - id: header
+        type: data_mesh_chunk_header
+      - id: data
+        size: header.size1 + 0x30
+        if: header.size1  + 0x30 < _io.size - _io.pos
         
+  data_mesh_vertices:
+    params:
+      - id: vtxdef
+        type: u2
+      - id: count
+        type: u2
+    seq:
+      - id: vertices319
+        size: 24
+        repeat: expr
+        repeat-expr: count
+        if: vtxdef == 319
         
+      - id: vertices700
+        size: 20
+        repeat: expr
+        repeat-expr: count
+        if: vtxdef == 700
+        
+      - id: vertices2580
+        size: 24
+        repeat: expr
+        repeat-expr: count
+        if: vtxdef == 2580   
+        
+  data_mesh:
+    seq:
+      - id: type
+        type: u2
+      - id: mesh_count
+        type: u2
+      - id: length1
+        type: u4
+      - id: length2
+        type: u4
+      - id: maybe_padding2
+        size: 4
+      - id: aabb
+        type: data_aabb
+      - id: infos
+        type: data_mesh_info
+        repeat: expr
+        repeat-expr: mesh_count
+      - id: padding
+        size: 16 - _io.pos % 16
+        
+      - id: unknown1
+        size: 0x1E0
+        if: type == 0xA293
+      - id: unknown2
+        size: 0x60
+        if: type == 0x1891
+        
+      - id: chunks
+        type: data_mesh_chunk
+        repeat: expr
+        repeat-expr: mesh_count
+  
+  data_tranform:
+    seq:
+      - id: matrix
+        size: 0
+        
+  data_texture:
+    seq:
+      - id: width
+        type: u2
+      - id: height
+        type: u2
+      - id: bbp
+        type: u1
+      - id: unk1
+        type: u1
+      - id: format
+        type: u1
+      - id: id
+        type: u1
+      - id: cmap_size
+        type: u4
+      - id: data_size
+        type: u4
+      - id: padding
+        size: 8
+      - id: unk2
+        type: f4
+      - id: r
+        type: u1
+      - id: g
+        type: u1
+      - id: b
+        type: u1
+      - id: a
+        type: u1
+      - id: unk3
+        size: 8
+      - id: unk4
+        size: 8
+      - id: unk5
+        size: 8
+      - id: name
+        type: str
+        encoding: ascii
+        terminator: 0
         
