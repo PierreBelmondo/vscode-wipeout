@@ -4,7 +4,7 @@ import { xtea8_ctr_bruteforce, xtea8_ctr_decrypt } from "./crypto";
 import { lzss } from "../utils/lzss";
 import zlib from "zlib";
 
-enum WadVersion {
+export enum WadVersion {
   WAD_PSP = 1,
 }
 

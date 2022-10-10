@@ -20,17 +20,12 @@ const webpack = require("webpack");
 
 async function resolveTSConfig(configFile) {
   const data = await new Promise((resolve, reject) => {
-    execFile(
-      "yarn",
-      ["tsc", `-p ${configFile}`, "--showConfig"],
-      { cwd: __dirname, encoding: "utf8", shell: true },
-      function (error, stdout, stderr) {
-        if (error != null) {
-          reject(error);
-        }
-        resolve(stdout);
+    execFile("yarn", ["tsc", `-p ${configFile}`, "--showConfig"], { cwd: __dirname, encoding: "utf8", shell: true }, function (error, stdout, stderr) {
+      if (error != null) {
+        reject(error);
       }
-    );
+      resolve(stdout);
+    });
   });
 
   const index = data.indexOf("{\n");
@@ -112,7 +107,10 @@ async function getWebviewConfig(mode, env, entry) {
       rules: [
         {
           exclude: /node_modules/,
-          include: [basePath, path.join(__dirname, "src")],
+          include: [
+            basePath, path.join(__dirname, "core"),
+            basePath, path.join(__dirname, "src")
+          ],
           test: /\.tsx?$/,
           use: env.esbuild
             ? {
@@ -120,9 +118,7 @@ async function getWebviewConfig(mode, env, entry) {
                 options: {
                   loader: "tsx",
                   target: "es2019",
-                  tsconfigRaw: await resolveTSConfig(
-                    path.join(__dirname, "tsconfig.webviews.json")
-                  ),
+                  tsconfigRaw: await resolveTSConfig(path.join(__dirname, "tsconfig.webviews.json")),
                 },
               }
             : {
@@ -157,12 +153,11 @@ async function getWebviewConfig(mode, env, entry) {
 }
 
 /**
- * @param { 'node' | 'webworker' } target
  * @param { 'production' | 'development' | 'none' } mode
  * @param {{ esbuild?: boolean; }} env
  * @returns { Promise<WebpackConfig> }
  */
-async function getExtensionConfig(target, mode, env) {
+async function getExtensionConfig(mode, env) {
   const basePath = path.join(__dirname, "src");
 
   /**
@@ -188,40 +183,23 @@ async function getExtensionConfig(target, mode, env) {
       */
       formatter: "basic",
       typescript: {
-        configFile: path.join(
-          __dirname,
-          target === "webworker" ? "tsconfig.browser.json" : "tsconfig.json"
-        ),
+        configFile: path.join(__dirname, "tsconfig.json"),
       },
     }),
   ];
 
-  if (target === "webworker") {
-    plugins.push(
-      new webpack.ProvidePlugin({
-        process: path.join(__dirname, "node_modules", "process", "browser.js"),
-      })
-    );
-  }
-
   const entry = {
     extension: "./src/extension.ts",
   };
-  if (target === "webworker") {
-    entry["test/index"] = "./src/test/browser/index.ts";
-  }
 
   return {
-    name: `extension:${target}`,
+    name: `extension:node`,
     entry,
     mode: mode,
-    target: target,
+    target: "node",
     devtool: mode !== "production" ? "source-map" : undefined,
     output: {
-      path:
-        target === "webworker"
-          ? path.join(__dirname, "dist", "browser")
-          : path.join(__dirname, "dist"),
+      path: path.join(__dirname, "dist"),
       libraryTarget: "commonjs2",
       filename: "[name].js",
       chunkFilename: "feature-[name].js",
@@ -254,7 +232,10 @@ async function getExtensionConfig(target, mode, env) {
       rules: [
         {
           exclude: /node_modules/,
-          include: path.join(__dirname, "src"),
+          include: [
+            path.join(__dirname, "core"),
+            path.join(__dirname, "src"),
+          ],
           test: /\.tsx?$/,
           use: env.esbuild
             ? {
@@ -262,113 +243,21 @@ async function getExtensionConfig(target, mode, env) {
                 options: {
                   loader: "ts",
                   target: "es2019",
-                  tsconfigRaw: await resolveTSConfig(
-                    path.join(
-                      __dirname,
-                      target === "webworker"
-                        ? "tsconfig.browser.json"
-                        : "tsconfig.json"
-                    )
-                  ),
+                  tsconfigRaw: await resolveTSConfig(path.join(__dirname, "tsconfig.json")),
                 },
               }
             : {
                 loader: "ts-loader",
                 options: {
-                  configFile: path.join(
-                    __dirname,
-                    target === "webworker"
-                      ? "tsconfig.browser.json"
-                      : "tsconfig.json"
-                  ),
+                  configFile: path.join(__dirname, "tsconfig.json"),
                   experimentalWatchApi: true,
                   transpileOnly: true,
                 },
               },
         },
-        // // FIXME: apollo-client uses .mjs, which imposes hard restrictions
-        // // on imports available from other callers. They probably didn't know
-        // // this. They just used .mjs because it seemed new and hip.
-        // //
-        // // We should either fix or remove that package, then remove this rule,
-        // // which introduces nonstandard behavior for mjs files, which are
-        // // terrible. This is all terrible. Everything is terrible.👇🏾
-        // {
-        // 	test: /\.mjs$/,
-        // 	include: /node_modules/,
-        // 	type: "javascript/auto",
-        // },
-        {
-          exclude: /node_modules/,
-          test: /\.(graphql|gql)$/,
-          loader: "graphql-tag/loader",
-        },
-        // {
-        // 	test: /webview-*\.js/,
-        // 	use: 'raw-loader'
-        // },
       ],
     },
     resolve: {
-      alias:
-        target === "webworker"
-          ? {
-              "universal-user-agent": path.join(
-                __dirname,
-                "node_modules",
-                "universal-user-agent",
-                "dist-web",
-                "index.js"
-              ),
-              "node-fetch": "cross-fetch",
-              "../env/node/net": path.resolve(
-                __dirname,
-                "src",
-                "env",
-                "browser",
-                "net"
-              ),
-              "../env/node/ssh": path.resolve(
-                __dirname,
-                "src",
-                "env",
-                "browser",
-                "ssh"
-              ),
-              "../../env/node/ssh": path.resolve(
-                __dirname,
-                "src",
-                "env",
-                "browser",
-                "ssh"
-              ),
-              "./env/node/gitProviders/api": path.resolve(
-                __dirname,
-                "src",
-                "env",
-                "browser",
-                "gitProviders",
-                "api"
-              ),
-            }
-          : undefined,
-      // : {
-      // 	'universal-user-agent': path.join(__dirname, 'node_modules', 'universal-user-agent', 'dist-node', 'index.js'),
-      // },
-      fallback:
-        target === "webworker"
-          ? {
-              crypto: require.resolve("crypto-browserify"),
-              path: require.resolve("path-browserify"),
-              stream: require.resolve("stream-browserify"),
-              url: false,
-              assert: require.resolve("assert"),
-              os: require.resolve("os-browserify/browser"),
-              constants: require.resolve("constants-browserify"),
-              buffer: require.resolve("buffer"),
-              timers: require.resolve("timers-browserify"),
-            }
-          : undefined,
       extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
       symlinks: false,
     },
@@ -377,8 +266,7 @@ async function getExtensionConfig(target, mode, env) {
       // 'utf-8-validate': 'utf-8-validate',
       // 'bufferutil': 'bufferutil',
       // 'encoding': 'encoding',
-      "applicationinsights-native-metrics":
-        "applicationinsights-native-metrics",
+      "applicationinsights-native-metrics": "applicationinsights-native-metrics",
       "@opentelemetry/tracing": "@opentelemetry/tracing",
       fs: "fs",
     },
@@ -410,7 +298,7 @@ module.exports =
     };
 
     return Promise.all([
-      getExtensionConfig("node", mode, env),
+      getExtensionConfig(mode, env),
       getWebviewConfig(mode, env, {
         "webview-three": "./webviews/threeView/index.ts",
         "webview-texture": "./webviews/textureView/index.ts",

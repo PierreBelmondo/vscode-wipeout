@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { DDS } from "../../core/dds";
+import { DDS } from "../../../core/dds";
 import { TextureModelDocument } from "./TextureModelDocument";
 
 export class DdsModelDocument extends TextureModelDocument implements vscode.CustomDocument {

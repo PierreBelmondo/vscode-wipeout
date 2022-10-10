@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 
-import { Psarc, PsarcFile } from "../core/psarc";
+import { Psarc, PsarcFile } from "../../core/psarc";
 
 export class PsarcUnpackCommandProvider {
   static readonly commandType = "wipeout.unpack.psarc";

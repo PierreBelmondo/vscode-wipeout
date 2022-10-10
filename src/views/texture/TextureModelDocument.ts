@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { Disposable } from "../../dispose";
-import { Textures } from "../../core/utils/image";
+import { Textures } from "../../../core/utils/image";
 
 /**
  * Define the document (the data model) used for paw draw files.

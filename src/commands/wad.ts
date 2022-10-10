@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 
-import { Wad, WadFile } from "../core/wad";
+import { Wad, WadFile } from "../../core/wad";
 
 export class WadUnpackCommandProvider {
   static readonly commandType = "wipeout.unpack.wad";

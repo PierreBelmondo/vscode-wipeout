@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Scene, Object, UV, Mesh } from "../../../src/core/rcs/types";
+import { Scene, Object, UV, Mesh } from "../../../core/rcs/types";
 import { World } from ".";
 
 export class RCSModelLoader {

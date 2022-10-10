@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Loader, World } from ".";
-import { Flat } from "../../../src/core/vexx/flat";
+import { Flat } from "../../../core/vexx/flat";
 import { vscode } from "../../vscode";
 import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
 

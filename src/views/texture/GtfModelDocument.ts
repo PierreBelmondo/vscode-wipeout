@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { GTF } from "../../core/gtf";
+import { GTF } from "../../../core/gtf";
 import { TextureModelDocument } from "./TextureModelDocument";
 
 export class GtfModelDocument extends TextureModelDocument implements vscode.CustomDocument {

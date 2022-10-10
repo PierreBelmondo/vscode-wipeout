@@ -10,15 +10,7 @@ import { BufferRange } from "../range";
 import { DXT5 } from "../utils/dxt";
 import { Textures } from "../utils/image";
 
-function fourCCToInt32(value: string): number {
-  return value.charCodeAt(0) + (value.charCodeAt(1) << 8) + (value.charCodeAt(2) << 16) + (value.charCodeAt(3) << 24);
-}
-
-function int32ToFourCC(value: number): string {
-  return String.fromCharCode(value & 0xff, (value >> 8) & 0xff, (value >> 16) & 0xff, (value >> 24) & 0xff);
-}
-
-type Image = {
+export type Image = {
   offset: number;
   length: number;
   width: number;
@@ -26,14 +18,22 @@ type Image = {
 };
 
 export class DDS {
+  private static fourCCToInt32(value: string): number {
+    return value.charCodeAt(0) + (value.charCodeAt(1) << 8) + (value.charCodeAt(2) << 16) + (value.charCodeAt(3) << 24);
+  }
+  
+  private static int32ToFourCC(value: number): string {
+    return String.fromCharCode(value & 0xff, (value >> 8) & 0xff, (value >> 16) & 0xff, (value >> 24) & 0xff);
+  }
+
   static readonly MAGIC = 0x20534444;
   static readonly DDSD_MIPMAPCOUNT = 0x20000;
   static readonly DDPF_FOURCC = 0x4;
 
-  static readonly FOURCC_DXT1 = fourCCToInt32("DXT1");
-  static readonly FOURCC_DXT3 = fourCCToInt32("DXT3");
-  static readonly FOURCC_DXT5 = fourCCToInt32("DXT5");
-  static readonly FOURCC_DX10 = fourCCToInt32("DX10");
+  static readonly FOURCC_DXT1 = DDS.fourCCToInt32("DXT1");
+  static readonly FOURCC_DXT3 = DDS.fourCCToInt32("DXT3");
+  static readonly FOURCC_DXT5 = DDS.fourCCToInt32("DXT5");
+  static readonly FOURCC_DX10 = DDS.fourCCToInt32("DX10");
   static readonly FOURCC_FP32F = 116; // DXGI_FORMAT_R32G32B32A32_FLOAT
 
   static readonly DDSCAPS2_CUBEMAP = 0x200;
@@ -109,7 +109,7 @@ export class DDS {
           }
           break;
         default:
-          reject(new Error("Unsupported FourCC code: " + int32ToFourCC(fourCC)));
+          reject(new Error("Unsupported FourCC code: " + DDS.int32ToFourCC(fourCC)));
           return;
       }
 

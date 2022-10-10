@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 
 import { Disposable } from "../../dispose";
-import { Scene } from "../../core/rcs/types";
-import { RcsModel } from "../../core/rcs";
-import { RcsMaterial } from "../../core/rcs/material";
-import { GTF } from "../../core/gtf";
+import { Scene } from "../../../core/rcs/types";
+import { RcsModel } from "../../../core/rcs";
+// import { RcsMaterial } from "../../../core/rcs/material";
+import { GTF } from "../../../core/gtf";
 
 /**
  * Define the document (the data model) used for RcsModel files.

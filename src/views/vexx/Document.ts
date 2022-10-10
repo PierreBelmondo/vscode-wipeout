@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 
 import { Disposable } from "../../dispose";
-import { Vexx } from "../../core/vexx";
-import { Flat } from "../../core/vexx/flat";
+import { Vexx } from "../../../core/vexx";
+import { Flat } from "../../../core/vexx/flat";
 
 /**
  * Define the document (the data model) used for paw draw files.

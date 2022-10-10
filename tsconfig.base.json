@@ -22,6 +22,6 @@
     "target": "es2019",
     "useDefineForClassFields": true
   },
-  "include": ["src", "webviews"],
+  "include": ["core", "src", "webviews"],
   "exclude": ["node_modules"]
 }

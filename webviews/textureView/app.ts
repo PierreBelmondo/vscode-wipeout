@@ -1,6 +1,6 @@
 import { vscode } from "../vscode";
 
-import { Textures } from "../../src/core/utils/image";
+import { Textures } from "../../core/utils/image";
 
 class Editor {
   ready: boolean;
