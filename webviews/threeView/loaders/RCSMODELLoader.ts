@@ -21,27 +21,30 @@ export class RCSModelLoader {
       for (const textureData of materialData.textures) {
         console.log(`Loading texture ${textureData.id}`);
 
-        let textures: THREE.Texture[] = [];
+        let mimaps: THREE.Texture[] = [];
         for (const mipmapData of textureData.mipmaps) {
           const array = new Uint8Array(mipmapData.rgba);
           const texture = new THREE.DataTexture(array, mipmapData.width, mipmapData.height, THREE.RGBAFormat);
-          texture.magFilter = THREE.LinearFilter;
-          texture.minFilter = THREE.LinearFilter;
-          texture.wrapS = THREE.RepeatWrapping;
-          texture.wrapT = THREE.RepeatWrapping;
-          texture.needsUpdate = true;
-          textures.push(texture);
+          mimaps.push(texture);
         }
 
-        const texture = textures[0];
+        const texture = mimaps[0];
         texture.name = textureData.filename;
-        //texture.mipmaps = textures.slice(1);
+        //texture.generateMipmaps = false;
+        //texture.mipmaps = mimaps.slice(1); //this does not work... incomplete mipmap chain ?
+        //texture.magFilter = THREE.LinearMipMapNearestFilter;
+        //texture.minFilter = THREE.LinearMipMapNearestFilter;
+        texture.needsUpdate = true;
+
         world.textures[textureData.id] = texture;
         material.map = texture;
 
         break; // no multi texture atm
       }
       material_id++;
+
+      if (material_id > 32)
+        break;
     }
     console.log("Done loading materials");
   }
@@ -98,8 +101,9 @@ export class RCSModelLoader {
     );
     */
 
-    //let material = world.materials["_default"];
-    const material = world.materials[material_id];
+    let material = world.materials["_default"];
+    if (material_id in world.materials)
+      material = world.materials[material_id];
 
     return new THREE.Mesh(geometry, material);
   }
