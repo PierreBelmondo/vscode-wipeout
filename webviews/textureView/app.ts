@@ -1,6 +1,7 @@
 import { vscode } from "../vscode";
-
 import { Textures } from "../../core/utils/image";
+import { GTF } from "../../core/gtf";
+import { DDS } from "../../core/dds";
 
 class Editor {
   ready: boolean;
@@ -11,8 +12,31 @@ class Editor {
     this.app = app;
   }
 
-  load(textures: Textures) {
+  async load(array: Uint8Array, mime: string) {
+    let textures: Textures = [];
+    switch (mime) {
+      case "image/gtf":
+        textures = await this.loadGTF(array);
+        console.log(textures);
+        break;
+      case "image/dds":
+        textures = await this.loadDDS(array);
+        break;
+    }
+    this.render(textures);
+  }
 
+  async loadGTF(array: Uint8Array): Promise<Textures> {
+    const gtf = await GTF.load(array.buffer);
+    return gtf.images;
+  }
+
+  async loadDDS(array: Uint8Array): Promise<Textures> {
+    const dds = await DDS.load(array.buffer);
+    return [];
+  }
+
+  render(textures: Textures) {
     for (const texture of textures) {
       const canvas = document.createElement("canvas");
       if (!canvas) {
@@ -53,9 +77,10 @@ export function main() {
   window.addEventListener("message", async (e) => {
     const { type, body } = e.data;
     switch (type) {
-      case "load.textures": {
-        const textures = body.textures as Textures;
-        editor.load(textures)
+      case "load": {
+        const mime = body.mime;
+        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
+        editor.load(array, mime);
       }
     }
   });

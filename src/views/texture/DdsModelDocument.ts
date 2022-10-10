@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { DDS } from "../../../core/dds";
 import { TextureModelDocument } from "./TextureModelDocument";
 
 export class DdsModelDocument extends TextureModelDocument implements vscode.CustomDocument {
@@ -7,10 +6,7 @@ export class DdsModelDocument extends TextureModelDocument implements vscode.Cus
     let array = new Uint8Array();
     if (uri.scheme !== "untitled")
       array = await vscode.workspace.fs.readFile(uri);
-    const buffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
-    console.log(buffer);
-    const file = await DDS.load(buffer);
-    const textures = file.export();
-    return new DdsModelDocument(uri, buffer, textures);
+    const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
+    return new DdsModelDocument(uri, Buffer.from(arraybuffer), "image/dds");
   }
 }

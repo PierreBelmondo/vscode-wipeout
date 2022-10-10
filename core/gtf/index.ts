@@ -175,7 +175,6 @@ export class GTF {
     let dataOffset = 0;
     for (let i = 0; i < this.header.mipmaps; i++) {
       const dataLength = DXT1.size(width, height);
-      //console.log(`${width}x${height}`);
       const blocks = data.getArrayBuffer(dataOffset, dataLength);
       const rgba = DXT1.decompress(width, height, blocks);
       this.images.push({ width, height, rgba: Array.from(rgba) });
@@ -193,7 +192,6 @@ export class GTF {
     let height = this.header.height;
     let dataOffset = 0;
     for (let i = 0; i < this.header.mipmaps; i++) {
-      //console.log(`${width}x${height}`);
       const dataLength = DXT3.size(width, height);
       const blocks = data.getArrayBuffer(dataOffset, dataLength);
       const rgba = DXT3.decompress(width, height, blocks);

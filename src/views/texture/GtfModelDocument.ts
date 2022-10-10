@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { GTF } from "../../../core/gtf";
 import { TextureModelDocument } from "./TextureModelDocument";
 
 export class GtfModelDocument extends TextureModelDocument implements vscode.CustomDocument {
@@ -7,9 +6,8 @@ export class GtfModelDocument extends TextureModelDocument implements vscode.Cus
     let array = new Uint8Array();
     if (uri.scheme !== "untitled")
       array = await vscode.workspace.fs.readFile(uri);
-    const buffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
-    const file = await GTF.load(buffer);
-    const textures = file.export();
-    return new GtfModelDocument(uri, buffer, textures);
+    const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
+    console.log(arraybuffer.byteLength)
+    return new GtfModelDocument(uri, Buffer.from(arraybuffer), "image/gtf");
   }
 }

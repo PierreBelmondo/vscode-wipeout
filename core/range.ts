@@ -1,5 +1,3 @@
-import { TextDecoder } from "util";
-
 export class BufferRange {
   private _buffer: ArrayBuffer;
   private _begin: number;

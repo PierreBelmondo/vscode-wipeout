@@ -27,10 +27,10 @@ export abstract class TextureModelEditorProvider<TDM extends TextureModelDocumen
         if (document.uri.scheme === "untitled") {
           console.log("empty document");
         } else {
-          console.log("sending textures to webview", document.textures);
-          this.postMessage(webviewPanel, "load.textures", {
-            textures: document.textures,
-          });
+          const buffer = document.buffer.toString('base64')
+          const body = { buffer, mime: document.mime };
+          console.log("sending file content to webview");
+          this.postMessage(webviewPanel, "load", body);
         }
       }
       if (e.type === "log") {

@@ -9,26 +9,26 @@ import { Textures } from "../../../core/utils/image";
 export abstract class TextureModelDocument extends Disposable implements vscode.CustomDocument {
   private readonly _uri: vscode.Uri;
 
-  private _buffer: ArrayBuffer;
-  private _textures: Textures;
+  private _buffer: Buffer;
+  private _mime: string;
 
-  constructor(uri: vscode.Uri, buffer: ArrayBuffer, textures: Textures) {
+  constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
     super();
     this._uri = uri;
     this._buffer = buffer;
-    this._textures = textures;
+    this._mime = mime;
   }
 
   public get uri() {
     return this._uri;
   }
 
-  public get buffer(): ArrayBuffer {
+  public get buffer(): Buffer {
     return this._buffer;
   }
 
-  public get textures(): Textures {
-    return this._textures;
+  public get mime(): string {
+    return this._mime;
   }
 
   private readonly _onDidDispose = this._register(new vscode.EventEmitter<void>());
