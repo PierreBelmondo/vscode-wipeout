@@ -1,4 +1,4 @@
-import { BufferRange } from "../range";
+import { BufferRange } from "../utils/range";
 import { Flat } from "./flat";
 import { Vexx4NodeType as Vexx4NodeType } from "./v4/type";
 import { Vexx6NodeType } from "./v6/type";

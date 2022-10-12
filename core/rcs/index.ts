@@ -1,4 +1,4 @@
-import { BufferRange } from "../range";
+import { BufferRange } from "../utils/range";
 import { vec3, vec4, mat4 } from "gl-matrix";
 import { Material, Mesh, Object, RGBA, Scene, Texture, UV, Vertex } from "./types";
 import { GTF } from "../gtf";

@@ -1,4 +1,4 @@
-import { BufferRange } from "../range";
+import { BufferRange } from "../utils/range";
 import { DXT1, DXT3, DXT5 } from "../utils/dxt";
 import { Textures } from "../utils/image";
 

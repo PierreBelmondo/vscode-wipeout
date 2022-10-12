@@ -6,7 +6,7 @@
 // https://msdn.microsoft.com/en-us/library/windows/desktop/bb943983(v=vs.85).aspx
 // https://github.com/playcanvas/engine/blob/master/src/resources/resources_texture.js
 
-import { BufferRange } from "../range";
+import { BufferRange } from "../utils/range";
 import { DXT5 } from "../utils/dxt";
 import { Textures } from "../utils/image";
 

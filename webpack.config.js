@@ -143,6 +143,7 @@ async function getWebviewConfig(mode, env, entry) {
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".json", ".svg"],
       fallback: {
+        "util": false,
         crypto: require.resolve("crypto-browserify"),
         path: require.resolve("path-browserify"),
         stream: require.resolve("stream-browserify"),

@@ -1,4 +1,4 @@
-import { BufferRange } from "../../../core/range";
+import { BufferRange } from "../../utils/range";
 import { Flat } from "../flat";
 import { vec3 } from "gl-matrix";
 

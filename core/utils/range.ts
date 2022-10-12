@@ -1,3 +1,7 @@
+import { TextDecoder } from "util";
+
+const textDecoder = new TextDecoder();
+
 export class BufferRange {
   private _buffer: ArrayBuffer;
   private _begin: number;
@@ -66,8 +70,7 @@ export class BufferRange {
   }
 
   getString(): string {
-    const decoder = new TextDecoder();
-    return decoder.decode(this.buffer).replace(/\0/g, "");
+    return textDecoder.decode(this.buffer).replace(/\0/g, "");
   }
 
   getCString(offset: number): string {
@@ -75,8 +78,7 @@ export class BufferRange {
     let i = offset;
     while (i < this._end) if (charArray[i++] == 0) break;
     const stringRange = this.slice(offset, i);
-    const decoder = new TextDecoder();
-    return decoder.decode(stringRange.buffer).replace(/\0/g, "");
+    return textDecoder.decode(stringRange.buffer).replace(/\0/g, "");
   }
 
   getHexadecimal(): string {

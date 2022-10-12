@@ -1,4 +1,4 @@
-import { BufferRange } from "../range";
+import { BufferRange } from "../utils/range";
 
 import pako from "pako";
 

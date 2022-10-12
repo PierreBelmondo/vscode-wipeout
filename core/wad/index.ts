@@ -1,4 +1,4 @@
-import { BufferRange } from "../range";
+import { BufferRange } from "../utils/range";
 import { filenameFromHash } from "./hashes";
 import { xtea8_ctr_bruteforce, xtea8_ctr_decrypt } from "./crypto";
 import { lzss } from "../utils/lzss";

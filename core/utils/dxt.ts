@@ -1,4 +1,4 @@
-import { BufferRange } from "../range";
+import { BufferRange } from "./range";
 
 function packRGBA(r: number, g: number, b: number, a: number): number {
   return (r << 24) | (g << 16) | (b << 8) | a;
