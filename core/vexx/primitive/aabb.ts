@@ -1,5 +1,4 @@
 import { BufferRange } from "../../utils/range";
-import { Flat } from "../flat";
 import { vec3 } from "gl-matrix";
 
 export class AABB {
@@ -58,12 +57,5 @@ export class AABB {
     const ret = vec3.create();
     vec3.sub(ret, this.max, this.min);
     return ret;
-  }
-
-  export(): Flat.AABB {
-    return {
-      min: { x: this.min[0], y: this.min[1], z: this.min[2] },
-      max: { x: this.max[0], y: this.max[1], z: this.max[2] },
-    };
   }
 }

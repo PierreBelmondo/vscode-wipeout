@@ -1,12 +1,13 @@
 {
-	"extends": "./tsconfig.base.json",
-	"compilerOptions": {
-		"tsBuildInfoFile": "tsconfig.tsbuildinfo",
-		"strictNullChecks": true
-	},
-	"exclude": [
-		"node_modules",
-		"src/test",
-		"webviews"
-	]
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo",
+    "strictNullChecks": true,
+    "baseUrl": "src",
+    "paths": {
+      "@core/*": ["../core/*"],
+      "@compat/*": ["../compat/node/*"]
+    }
+  },
+  "exclude": ["compat/browser", "node_modules", "src/test", "webviews"]
 }

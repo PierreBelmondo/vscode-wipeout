@@ -1,8 +1,9 @@
 
 export type Texture = {
+    type: "RGBA" | "DXT1" | "DXT3" | "DXT5"
     width: number,
     height: number,
-    rgba: number[],
+    data: Uint8Array,
 };
 
 export type Textures = Texture[];

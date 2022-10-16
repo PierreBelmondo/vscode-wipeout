@@ -1,27 +1,29 @@
 import { vscode } from "../vscode";
 
 import * as THREE from "three";
+
 import { GUI } from "lil-gui";
+
 import { OrbitControls } from "./controls/OrbitControls";
 import { FlyControls } from "./controls/FlyControls";
 import { CSS2DRenderer } from "./renderers/CSS2DRenderer";
-import { VEXXLoader } from "./loaders/VEXXLoader";
-import { World } from "./loaders";
-import { RCSModelLoader } from "./loaders/RCSMODELLoader";
 import { GLTFExporter } from "./exporters/GLTFExporter";
 
+import { Loader, World } from "./loaders";
+import { VEXXLoader } from "./loaders/VEXXLoader";
+import { RCSModelLoader } from "./loaders/RCSMODELLoader";
+
 class Editor {
-  ready: boolean;
-  rendering: boolean;
   canvas: HTMLCanvasElement;
 
-  scene: THREE.Scene;
+  world: World;
+  loader?: Loader;
+
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
+
   labelRenderer: CSS2DRenderer;
   controls: OrbitControls | FlyControls;
-  light: THREE.PointLight;
-  materials: { [id: number]: THREE.Material };
 
   gui: GUI;
   settings = {
@@ -30,9 +32,6 @@ class Editor {
   };
 
   constructor(canvas: HTMLCanvasElement) {
-    this.ready = false;
-    this.rendering = false;
-
     this.canvas = canvas;
     this.canvas.style.position = "absolute";
     this.canvas.style.top = "0";
@@ -62,10 +61,7 @@ class Editor {
     this.labelRenderer.domElement.style.top = "0px";
     document.body.appendChild(this.labelRenderer.domElement);
 
-    this.controls = new OrbitControls(
-      this.camera,
-      this.labelRenderer.domElement
-    );
+    this.controls = new OrbitControls(this.camera, this.labelRenderer.domElement);
     /*
     this.controls = new FlyControls(
       this.camera,
@@ -76,10 +72,6 @@ class Editor {
     this.controls.update();
     this.controls.addEventListener("change", this.render.bind(this));
 
-    // Scene
-    this.scene = new THREE.Scene();
-    this.materials = {};
-
     this.gui = new GUI();
     this.gui.onChange(() => {
       this.render();
@@ -89,11 +81,11 @@ class Editor {
     this.settings["Export to glTF"] = () => {
       const exporter = new GLTFExporter();
       exporter.parse(
-        this.scene,
-        (gltf) => {
+        this.world.scene,
+        (gltf: any) => {
           vscode.exportGTLF(gltf);
         },
-        (error) => {
+        (error: any) => {
           vscode.log("An error happened:");
           console.log(error);
         },
@@ -101,64 +93,73 @@ class Editor {
       );
     };
     this.gui.add(this.settings, "Export to glTF");
+
+    this.world = new World();
   }
 
-  loadVEXX(node: any) {
-    const loader = new VEXXLoader();
-    const world = loader.load(node);
-    this.loadWorld(world);
+  async load(array: Uint8Array, mime: string) {
+    switch (mime) {
+      case "model/vnd.wipeout.vexx":
+        this.loader = new VEXXLoader();
+        this.loader.load(this.world, array.buffer);
+        this.loadWorld();
+        break;
+      case "model/vnd.wipeout.rcsmodel":
+        this.loader = new RCSModelLoader();
+        this.loader.load(this.world, array.buffer);
+        this.loadWorld();
+        break;
+      default:
+        console.error(`Unsupported 3D model: ${mime}`);
+        break;
+    }
   }
 
-  loadRCSMODEL(node: any) {
-    const loader = new RCSModelLoader();
-    const world = loader.load(node);
-    this.loadWorld(world);
+  async import(array: Uint8Array, filename: string) {
+    if (this.loader)
+      this.loader.import(array.buffer, filename);
   }
 
-  loadWorld(world: World) {
-    this.scene = world.scene;
-
+  loadWorld() {
     this.settings.layers = {};
-    if (world.layers.length > 0) {
+    if (this.world.layers.length > 0) {
       const folder = this.gui.addFolder("Layers");
-      for (const layerInfo of world.layers) {
+      for (const layerInfo of this.world.layers) {
         this.settings.layers[layerInfo.name] = false;
-        folder
-          .add(this.settings.layers, layerInfo.name)
-          .onChange((value: boolean) => {
-            if (value) this.camera.layers.enable(layerInfo.id);
-            else this.camera.layers.disable(layerInfo.id);
-            this.render();
-          });
+        folder.add(this.settings.layers, layerInfo.name).onChange((value: boolean) => {
+          if (value) this.camera.layers.enable(layerInfo.id);
+          else this.camera.layers.disable(layerInfo.id);
+          this.render();
+        });
       }
     }
 
     this.settings.airbrakes = {};
-    if ("airbrakes" in world.settings) {
+    if ("airbrakes" in this.world.settings) {
       const folder = this.gui.addFolder("Airbrakes");
-      for (const airbrake of world.settings.airbrakes) {
+      for (const airbrake of this.world.settings.airbrakes) {
         this.settings.airbrakes[airbrake.name] = 0;
-        folder
-          .add(this.settings.airbrakes, airbrake.name, 0.0, 1.0)
-          .onChange((value: number) => {
-            const object = airbrake.object as THREE.Object3D;
-            const euler = new THREE.Euler(value, 0, 0);
-            object.setRotationFromEuler(euler);
-            this.render();
-          });
+        folder.add(this.settings.airbrakes, airbrake.name, 0.0, 1.0).onChange((value: number) => {
+          const object = airbrake.object as THREE.Object3D;
+          const euler = new THREE.Euler(value, 0, 0);
+          object.setRotationFromEuler(euler);
+          this.render();
+        });
       }
     }
 
+    /*
     const aabb = new THREE.Box3();
-    aabb.setFromObject(this.scene);
+    aabb.setFromObject(this.world.scene);
     // todo control camera init
+    */
 
     this.render();
   }
 
   render() {
-    this.renderer.render(this.scene, this.camera);
-    this.labelRenderer.render(this.scene, this.camera);
+    this.renderer.render(this.world.scene, this.camera);
+    this.labelRenderer.render(this.world.scene, this.camera);
   }
 
   resize() {
@@ -190,14 +191,19 @@ export function main() {
   window.addEventListener("message", async (e) => {
     const { type, body } = e.data;
     switch (type) {
-      case "load.vexx": {
-        editor.loadVEXX(body.scene);
-        return;
+      case "load": {
+        const mime = body.mime;
+        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
+        editor.load(array, mime);
+        break;
       }
-      case "load.rcsmodel": {
-        editor.loadRCSMODEL(body.scene);
-        return;
-      }
+      case "import":
+        {
+          const mime = body.filename;
+          const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
+          editor.import(array, mime);
+        }
+        break;
     }
   });
 

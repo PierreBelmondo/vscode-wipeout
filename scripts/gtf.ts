@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-import { GTF } from "../src/core/gtf";
+import { GTF } from "../core/gtf";
 
 function getAllFiles(dirPath: string) {
   const files = fs.readdirSync(dirPath);

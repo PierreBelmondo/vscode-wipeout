@@ -1,5 +1,5 @@
+import { mat4 } from "gl-matrix";
 import { BufferRange } from "../utils/range";
-import { Flat } from "./flat";
 import { Vexx4NodeType as Vexx4NodeType } from "./v4/type";
 import { Vexx6NodeType } from "./v6/type";
 
@@ -198,18 +198,12 @@ export class VexxNode {
     if (this.children.length > 0) ret["children"] = this.dumpChildren();
     return ret;
   }
+}
 
-  export(): Flat.Node {
-    return {
-      type: this.typeName,
-      name: this.name,
-      children: this.exportChildren(),
-    };
-  }
+export abstract class VexxNodeMatrix extends VexxNode {
+  matrix = mat4.create();
 
-  exportChildren(): Flat.Node[] {
-    const ret: Flat.Node[] = [];
-    for (const child of this.children) ret.push(child.export());
-    return ret;
+  override load(data: BufferRange): void {
+    if (data.size >= 64) this.matrix = data.getFloat32Array(0, 16);
   }
 }

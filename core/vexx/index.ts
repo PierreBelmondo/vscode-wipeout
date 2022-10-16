@@ -35,6 +35,7 @@ import { VexxNodeShipColisionFx } from "./v4/ship_colision_fx";
 import { VexxNodeShipMuzzle } from "./v4/ship_muzzle";
 import { VexxNodeSkycube } from "./v4/skycube";
 import { VexxNodeSound } from "./v4/sound";
+import { VexxNodeSpeaker } from "./v4/speaker";
 import { VexxNodeSpeedupPad } from "./v4/speedup_pad";
 import { VexxNodeStartPosition } from "./v4/start_position";
 import { VexxNodeTexture } from "./v4/texture";
@@ -46,7 +47,7 @@ import { VexxNodeWoPoint } from "./v4/wo_point";
 import { VexxNodeWoSpot } from "./v4/wo_spot";
 import { VexxNodeWoTrack } from "./v4/wo_track";
 import { VexxNodeWorld } from "./v4/world";
-import { VexxNodeengineFire } from "./v4/engine_fire";
+import { VexxNodeEngineFire } from "./v4/engine_fire";
 
 import { Vexx6NodeType } from "./v6/type";
 import { VexxNodeCageCollision } from "./v6/cage_collision";
@@ -66,7 +67,7 @@ VexxNode.registerV4(Vexx4NodeType.CLOUD_GROUP, VexxNodeCloudGroup);
 VexxNode.registerV4(Vexx4NodeType.CURVE_SHAPE, VexxNodeCurveShape);
 VexxNode.registerV4(Vexx4NodeType.DIRECTIONAL_LIGHT, VexxNodeDirectionalLight);
 VexxNode.registerV4(Vexx4NodeType.DYNAMIC_SHADOW_OCCLUDER, VexxNodeDynamicShadowOccluder);
-VexxNode.registerV4(Vexx4NodeType.ENGINE_FIRE, VexxNodeengineFire);
+VexxNode.registerV4(Vexx4NodeType.ENGINE_FIRE, VexxNodeEngineFire);
 VexxNode.registerV4(Vexx4NodeType.ENGINE_FLARE, VexxNodeEngineFlare);
 VexxNode.registerV4(Vexx4NodeType.EXIT_GLOW, VexxNodeExitGlow);
 VexxNode.registerV4(Vexx4NodeType.FLOOR_COLLISION, VexxNodeFloorCollision);
@@ -75,6 +76,7 @@ VexxNode.registerV4(Vexx4NodeType.GROUP, VexxNodeGroup);
 VexxNode.registerV4(Vexx4NodeType.GRID_CAMERA, VexxNodeGridCamera);
 VexxNode.registerV4(Vexx4NodeType.LENS_FLARE, VexxNodeLensFlare);
 VexxNode.registerV4(Vexx4NodeType.LOD_GROUP, VexxNodeLodGroup);
+VexxNode.registerV4(Vexx4NodeType.MESH, VexxNodeMesh);
 VexxNode.registerV4(Vexx4NodeType.PARTICLE_SYSTEM, VexxNodeParticleSystem);
 VexxNode.registerV4(Vexx4NodeType.QUAKE, VexxNodeQuake);
 VexxNode.registerV4(Vexx4NodeType.RESET_COLLISION, VexxNodeResetCollision);
@@ -83,12 +85,12 @@ VexxNode.registerV4(Vexx4NodeType.SEAWEED, VexxNodeSeaweed);
 VexxNode.registerV4(Vexx4NodeType.SEA_REFLECT, VexxNodeSeaReflect);
 VexxNode.registerV4(Vexx4NodeType.SECTION, VexxNodeSection);
 VexxNode.registerV4(Vexx4NodeType.SHADOW, VexxNodeDynamicShadowOccluder);
-VexxNode.registerV4(Vexx4NodeType.MESH, VexxNodeMesh);
 VexxNode.registerV4(Vexx4NodeType.SHADOW, VexxNodeShadow);
 VexxNode.registerV4(Vexx4NodeType.SHIP_COLLISION_FX, VexxNodeShipColisionFx);
 VexxNode.registerV4(Vexx4NodeType.SHIP_MUZZLE, VexxNodeShipMuzzle);
 VexxNode.registerV4(Vexx4NodeType.SKYCUBE, VexxNodeSkycube);
 VexxNode.registerV4(Vexx4NodeType.SOUND, VexxNodeSound);
+VexxNode.registerV4(Vexx4NodeType.SPEAKER, VexxNodeSpeaker);
 VexxNode.registerV4(Vexx4NodeType.SPEEDUP_PAD, VexxNodeSpeedupPad);
 VexxNode.registerV4(Vexx4NodeType.START_POSITION, VexxNodeStartPosition);
 VexxNode.registerV4(Vexx4NodeType.TEXTURE, VexxNodeTexture);
@@ -115,7 +117,7 @@ VexxNode.registerV6(Vexx6NodeType.CLOUD_GROUP, VexxNodeCloudGroup);
 VexxNode.registerV6(Vexx6NodeType.CURVE_SHAPE, VexxNodeCurveShape);
 VexxNode.registerV6(Vexx6NodeType.DIRECTIONAL_LIGHT, VexxNodeDirectionalLight);
 VexxNode.registerV6(Vexx6NodeType.DYNAMIC_SHADOW_OCCLUDER, VexxNodeDynamicShadowOccluder);
-VexxNode.registerV6(Vexx6NodeType.ENGINE_FIRE, VexxNodeengineFire);
+VexxNode.registerV6(Vexx6NodeType.ENGINE_FIRE, VexxNodeEngineFire);
 VexxNode.registerV6(Vexx6NodeType.ENGINE_FLARE, VexxNodeEngineFlare);
 VexxNode.registerV6(Vexx6NodeType.EXIT_GLOW, VexxNodeExitGlow);
 VexxNode.registerV6(Vexx6NodeType.FLOOR_COLLISION, VexxNodeFloorCollision);
@@ -195,8 +197,6 @@ class VexxHeader {
   }
 }
 
-import { Flat } from "./flat";
-
 export class Vexx {
   range = new BufferRange();
   header = new VexxHeader();
@@ -204,10 +204,6 @@ export class Vexx {
 
   get name(): string {
     return "VEXX";
-  }
-
-  get children(): VexxNode[] {
-    return [this.root];
   }
 
   static load(buffer: ArrayBuffer): Vexx {
@@ -254,22 +250,9 @@ export class Vexx {
     return node;
   }
 
-  forEach(callback: (node: VexxNode) => void): void {
-    callback(this.root);
-    this.root.forEach(callback);
-  }
-
-  filter(type: VexxNodeType): VexxNode[] {
+  filter(cb: (node: VexxNode) => boolean): VexxNode[] {
     const ret: VexxNode[] = [];
-    this.forEach((node) => {
-      if (node.header.type == type) ret.push(node);
-    });
-    return ret;
-  }
-
-  filtercb(cb: (node: VexxNode) => boolean): VexxNode[] {
-    const ret: VexxNode[] = [];
-    this.forEach((node) => {
+    this.root.forEach((node) => {
       if (cb(node)) ret.push(node);
     });
     return ret;
@@ -303,26 +286,12 @@ export class Vexx {
   get textures(): VexxNodeTexture[] {
     switch (this.header.version) {
       case 4:
-        return this.filter(Vexx4NodeType.TEXTURE) as unknown as VexxNodeTexture[];
+        return this.filter((n) => n.typeInfo.type == Vexx4NodeType.TEXTURE) as unknown as VexxNodeTexture[];
       case 6:
-        return this.filter(Vexx6NodeType.TEXTURE) as unknown as VexxNodeTexture[];
+        return this.filter((n) => n.typeInfo.type == Vexx6NodeType.TEXTURE) as unknown as VexxNodeTexture[];
       default:
         return [];
     }
-  }
-
-  get verts(): VexxNodeAnimTransform[] {
-    const nodes = this.filtercb((node) => node instanceof VexxNodeAnimTransform);
-    return nodes as VexxNodeAnimTransform[];
-  }
-
-  get shapes(): VexxNodeMesh[] {
-    const nodes = this.filtercb((node) => node instanceof VexxNodeMesh);
-    return nodes as VexxNodeMesh[];
-  }
-
-  export(): Flat.Node {
-    return this.root.export();
   }
 
   dumpNode(node: VexxNode, level = 0) {

@@ -1,5 +1,4 @@
 import { BufferRange } from "../../utils/range";
-import { Flat } from "../flat";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
@@ -33,12 +32,5 @@ export class VexxNodeCamera extends VexxNode {
     this.properties.unknown8 = range.getFloat32(28);
     this.properties.unknown9 = range.getUint16(32);
     this.properties.unknown10 = range.getUint16(34);
-  }
-
-  override export(): Flat.Node {
-    return {
-      type: "CAMERA",
-      name: this.name,
-    }
   }
 }

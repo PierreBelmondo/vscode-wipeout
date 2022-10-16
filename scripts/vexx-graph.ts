@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-import { Vexx } from "../src/core/vexx";
+import { Vexx } from "../core/vexx";
 
 function getAllFiles(dirPath: string) {
   const files = fs.readdirSync(dirPath);

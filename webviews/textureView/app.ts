@@ -17,7 +17,6 @@ class Editor {
     switch (mime) {
       case "image/gtf":
         textures = await this.loadGTF(array);
-        console.log(textures);
         break;
       case "image/dds":
         textures = await this.loadDDS(array);
@@ -28,7 +27,7 @@ class Editor {
 
   async loadGTF(array: Uint8Array): Promise<Textures> {
     const gtf = await GTF.load(array.buffer);
-    return gtf.images;
+    return gtf.mipmaps;
   }
 
   async loadDDS(array: Uint8Array): Promise<Textures> {
@@ -58,7 +57,7 @@ class Editor {
       }
 
       const idata = ctx.createImageData(texture.width, texture.height);
-      idata.data.set(texture.rgba);
+      idata.data.set(texture.data);
       ctx.putImageData(idata, 0, 0);
     }
   }

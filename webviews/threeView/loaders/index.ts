@@ -57,7 +57,9 @@ export class World {
 }
 
 export abstract class Loader {
-  abstract load(data: any): World;
+  abstract load(world: World, buffer: ArrayBufferLike);
+
+  async import(buffer: ArrayBufferLike, filename: string) {}
 
   protected createControlPoint(name: string): THREE.Object3D {
     const div = document.createElement("div") as HTMLDivElement;

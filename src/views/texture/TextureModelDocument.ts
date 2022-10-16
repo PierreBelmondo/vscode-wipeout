@@ -1,10 +1,9 @@
 import * as vscode from "vscode";
 
 import { Disposable } from "../../dispose";
-import { Textures } from "../../../core/utils/image";
 
 /**
- * Define the document (the data model) used for paw draw files.
+ * Define the document (the data model) used for texture files.
  */
 export abstract class TextureModelDocument extends Disposable implements vscode.CustomDocument {
   private readonly _uri: vscode.Uri;

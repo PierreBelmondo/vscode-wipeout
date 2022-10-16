@@ -1,5 +1,4 @@
 import { BufferRange } from "../../utils/range";
-import { Flat } from "../flat";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
@@ -28,9 +27,6 @@ class Points {
         this.points = new Float32Array(vs);
         break;
 
-      case 3: // pointSize=4 (normals?)
-        break;
-
       case 2: // pointSize=6 (indices)
         let ps = [] as number[];
         for (let i = 0; i < this.pointsCount * 3; i++) {
@@ -38,6 +34,9 @@ class Points {
           ps.push(p);
         }
         this.points = new Uint16Array(ps);
+        break;
+
+      case 3: // pointSize=4 (normals?)
         break;
     }
   }
@@ -65,29 +64,9 @@ class Block {
 
     this.range = range.slice(0, size);
   }
-
-  export(): null | Flat.MeshChunk {
-    if (this.blocks.length != 3) return null;
-    if (this.blocks[0].points == null) return null;
-    if (this.blocks[2].points == null) return null;
-
-    const positions = [] as number[];
-    for (const index of this.blocks[2].points) {
-      const points = this.blocks[0].points;
-      positions.push(points[index * 3 + 0]);
-      positions.push(points[index * 3 + 1]);
-      positions.push(points[index * 3 + 2]);
-    }
-
-    return {
-      texture: 0,
-      mode: "TRIANGLES",
-      positions,
-    };
-  }
 }
 
-abstract class VexxNodeCollision extends VexxNode {
+export abstract class VexxNodeCollision extends VexxNode {
   signature = 0xffffff;
   blockCount = 0;
 
@@ -105,30 +84,11 @@ abstract class VexxNodeCollision extends VexxNode {
       blockRange = blockRange.slice(block.range.size);
     }
   }
-
-  protected genericExport(name: "FLOOR_COLLISION" | "WALL_COLLISION" | "RESET_COLLISION"): Flat.Node {
-    const node: Flat.Node = {
-      type: name,
-      name: this.name,
-      chunks: [],
-    };
-
-    for (const block of this.blocks) {
-      const chunk = block.export();
-      if (chunk !== null) node.chunks.push(chunk);
-    }
-
-    return node;
-  }
 }
 
 export class VexxNodeFloorCollision extends VexxNodeCollision {
   constructor() {
     super(Vexx4NodeType.FLOOR_COLLISION);
-  }
-
-  override export(): Flat.Node {
-    return this.genericExport("FLOOR_COLLISION");
   }
 }
 
@@ -136,18 +96,10 @@ export class VexxNodeWallCollision extends VexxNodeCollision {
   constructor() {
     super(Vexx4NodeType.WALL_COLLISION);
   }
-
-  override export(): Flat.Node {
-    return this.genericExport("WALL_COLLISION");
-  }
 }
 
 export class VexxNodeResetCollision extends VexxNodeCollision {
   constructor() {
     super(Vexx4NodeType.RESET_COLLISION);
-  }
-
-  override export(): Flat.Node {
-    return this.genericExport("RESET_COLLISION");
   }
 }

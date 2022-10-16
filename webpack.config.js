@@ -43,6 +43,8 @@ async function resolveTSConfig(configFile) {
  */
 async function getWebviewConfig(mode, env, entry) {
   const basePath = path.join(__dirname, "webviews");
+  const corePath = path.join(__dirname, "core");
+  const ts_config = path.join(__dirname, "tsconfig.webviews.json");
 
   /**
    * @type WebpackConfig['plugins'] | any
@@ -65,7 +67,7 @@ async function getWebviewConfig(mode, env, entry) {
       */
       formatter: "basic",
       typescript: {
-        configFile: path.join(__dirname, "tsconfig.webviews.json"),
+        configFile: ts_config,
       },
     }),
   ];
@@ -107,10 +109,7 @@ async function getWebviewConfig(mode, env, entry) {
       rules: [
         {
           exclude: /node_modules/,
-          include: [
-            basePath, path.join(__dirname, "core"),
-            basePath, path.join(__dirname, "src")
-          ],
+          include: [corePath, basePath],
           test: /\.tsx?$/,
           use: env.esbuild
             ? {
@@ -118,13 +117,13 @@ async function getWebviewConfig(mode, env, entry) {
                 options: {
                   loader: "tsx",
                   target: "es2019",
-                  tsconfigRaw: await resolveTSConfig(path.join(__dirname, "tsconfig.webviews.json")),
+                  tsconfigRaw: await resolveTSConfig(ts_config),
                 },
               }
             : {
                 loader: "ts-loader",
                 options: {
-                  configFile: path.join(__dirname, "tsconfig.webviews.json"),
+                  configFile: ts_config,
                   experimentalWatchApi: true,
                   transpileOnly: true,
                 },
@@ -143,11 +142,16 @@ async function getWebviewConfig(mode, env, entry) {
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".json", ".svg"],
       fallback: {
-        "util": false,
+        /*
         crypto: require.resolve("crypto-browserify"),
         path: require.resolve("path-browserify"),
         stream: require.resolve("stream-browserify"),
+        */
       },
+      alias: {
+        "@compat": path.join(__dirname, "compat/browser"),
+        "@core": path.join(__dirname, "core"),
+      }
     },
     plugins: plugins,
   };
@@ -160,6 +164,8 @@ async function getWebviewConfig(mode, env, entry) {
  */
 async function getExtensionConfig(mode, env) {
   const basePath = path.join(__dirname, "src");
+  const corePath = path.join(__dirname, "core");
+  const ts_config = path.join(__dirname, "tsconfig.json");
 
   /**
    * @type WebpackConfig['plugins'] | any
@@ -184,7 +190,7 @@ async function getExtensionConfig(mode, env) {
       */
       formatter: "basic",
       typescript: {
-        configFile: path.join(__dirname, "tsconfig.json"),
+        configFile: ts_config,
       },
     }),
   ];
@@ -213,7 +219,7 @@ async function getExtensionConfig(mode, env) {
               format: "cjs",
               minify: true,
               treeShaking: true,
-              // // Keep the class names
+              // Keep the class names
               // keepNames: true,
               target: "es2019",
             })
@@ -222,7 +228,7 @@ async function getExtensionConfig(mode, env) {
               parallel: true,
               terserOptions: {
                 ecma: 2019,
-                // // Keep the class names
+                // Keep the class names
                 // keep_classnames: true,
                 module: true,
               },
@@ -232,11 +238,8 @@ async function getExtensionConfig(mode, env) {
     module: {
       rules: [
         {
-          exclude: /node_modules/,
-          include: [
-            path.join(__dirname, "core"),
-            path.join(__dirname, "src"),
-          ],
+          exclude: [ /node_modules/ ],
+          include: [basePath, corePath ],
           test: /\.tsx?$/,
           use: env.esbuild
             ? {
@@ -244,13 +247,13 @@ async function getExtensionConfig(mode, env) {
                 options: {
                   loader: "ts",
                   target: "es2019",
-                  tsconfigRaw: await resolveTSConfig(path.join(__dirname, "tsconfig.json")),
+                  tsconfigRaw: await resolveTSConfig(ts_config),
                 },
               }
             : {
                 loader: "ts-loader",
                 options: {
-                  configFile: path.join(__dirname, "tsconfig.json"),
+                  configFile: ts_config,
                   experimentalWatchApi: true,
                   transpileOnly: true,
                 },
@@ -261,6 +264,10 @@ async function getExtensionConfig(mode, env) {
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
       symlinks: false,
+      alias: {
+        "@compat": path.join(__dirname, "compat/node"),
+        "@core": path.join(__dirname, "core"),
+      }
     },
     externals: {
       vscode: "commonjs vscode",

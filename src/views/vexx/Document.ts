@@ -1,57 +1,43 @@
 import * as vscode from "vscode";
 
 import { Disposable } from "../../dispose";
-import { Vexx } from "../../../core/vexx";
-import { Flat } from "../../../core/vexx/flat";
 
 /**
- * Define the document (the data model) used for paw draw files.
+ * Define the document (the data model) used for vexx files.
  */
-export class VexxDocument
-  extends Disposable
-  implements vscode.CustomDocument
-{
+export class VexxDocument extends Disposable implements vscode.CustomDocument {
   static async create(uri: vscode.Uri): Promise<VexxDocument> {
     let array = new Uint8Array();
-    if (uri.scheme !== "untitled")
-      array = await vscode.workspace.fs.readFile(uri);
-    const buffer = array.buffer.slice(
-      array.byteOffset,
-      array.byteOffset + array.byteLength
-    );
-    const vexx = Vexx.load(buffer);
-    const scene = vexx.export();
-    console.log(scene);
-    return new VexxDocument(uri, buffer, scene);
+    if (uri.scheme !== "untitled") array = await vscode.workspace.fs.readFile(uri);
+    const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
+    return new VexxDocument(uri, Buffer.from(arraybuffer), "model/vnd.wipeout.vexx");
   }
 
   private readonly _uri: vscode.Uri;
 
-  private _buffer: ArrayBuffer;
-  private _scene: Flat.Node;
+  private _buffer: Buffer;
+  private _mime: string;
 
-  private constructor(uri: vscode.Uri, buffer: ArrayBuffer, scene: Flat.Node) {
+  constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
     super();
     this._uri = uri;
     this._buffer = buffer;
-    this._scene = scene;
+    this._mime = mime;
   }
 
   public get uri() {
     return this._uri;
   }
 
-  public get buffer(): ArrayBuffer {
+  public get buffer(): Buffer {
     return this._buffer;
   }
 
-  public get scene(): Flat.Node {
-    return this._scene;
+  public get mime(): string {
+    return this._mime;
   }
 
-  private readonly _onDidDispose = this._register(
-    new vscode.EventEmitter<void>()
-  );
+  private readonly _onDidDispose = this._register(new vscode.EventEmitter<void>());
 
   /**
    * Fired when the document is disposed of.

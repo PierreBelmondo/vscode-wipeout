@@ -4,15 +4,19 @@ const _vscode = acquireVsCodeApi();
 
 class VSC {
   // Signal to VS Code that the webview is initialized.
-  ready() {
+  async ready() {
     _vscode.postMessage({ type: "ready" });
   }
 
-  log(message: any) {
+  async require(filename: string) {
+    _vscode.postMessage({ type: "require", filename });
+  }
+
+  async log(message: any) {
     _vscode.postMessage({ type: "log", message });
   }
 
-  exportGTLF(gltf: any) {
+  async exportGTLF(gltf: any) {
     _vscode.postMessage({ type: "export.gltf", body: gltf });
   }
 }

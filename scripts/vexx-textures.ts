@@ -1,10 +1,10 @@
 import * as path from "path";
 import * as fs from "fs";
 
-import { Vexx } from "../src/core/vexx";
-import { Vexx4NodeType } from "../src/core/vexx/v4/type";
-import { VexxNodeTexture } from "../src/core/vexx/v4/texture";
-import { Vexx6NodeType } from "../src/core/vexx/v6/type";
+import { Vexx } from "../core/vexx";
+import { Vexx4NodeType } from "../core/vexx/v4/type";
+import { VexxNodeTexture } from "../core/vexx/v4/texture";
+import { Vexx6NodeType } from "../core/vexx/v6/type";
 
 function getAllFiles(dirPath: string) {
   const files = fs.readdirSync(dirPath);

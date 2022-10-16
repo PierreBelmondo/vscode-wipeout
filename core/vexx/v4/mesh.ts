@@ -3,7 +3,6 @@ import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 import { AABB } from "../primitive/aabb";
 import { GU } from "../../utils/pspgu";
-import { Flat } from "../flat";
 
 export class VexxNodeMesh extends VexxNode {
   info = new VexxNodeMeshHeader();
@@ -36,23 +35,6 @@ export class VexxNodeMesh extends VexxNode {
         }
       }
     }
-  }
-
-  override export(): Flat.Node {
-    const ret: Flat.Node = {
-      type: "MESH",
-      name: this.name,
-      aabb: this.info.aabb.export(),
-      chunks: [],
-    };
-    for (let i = 0; i < this.chunks.length; i++) {
-      const chunk = this.chunks[i];
-      const chunkHeader = chunk.header;
-      const textureId = this.info.materials[chunkHeader.id].textureId;
-      const flatChunk = chunk.export(textureId);
-      ret.chunks.push(flatChunk);
-    }
-    return ret;
   }
 }
 
@@ -330,91 +312,5 @@ class VexxNodeMeshChunk {
       strides.push(stride);
     }
     return strides;
-  }
-
-  export(texture: number): Flat.MeshChunk {
-    const primitiveType = (id: number) => {
-      switch (id) {
-        case GU.PrimitiveType.POINTS:
-          return "POINTS";
-        case GU.PrimitiveType.LINES:
-          return "LINES";
-        case GU.PrimitiveType.LINE_STRIP:
-          return "LINE_STRIP";
-        case GU.PrimitiveType.TRIANGLES:
-          return "TRIANGLES";
-        case GU.PrimitiveType.TRIANGLE_STRIP:
-          return "TRIANGLE_STRIP";
-        case GU.PrimitiveType.TRIANGLE_FAN:
-          return "TRIANGLE_FAN";
-        case GU.PrimitiveType.SPRITES:
-          return "SPRITES";
-        default:
-          return "UNKNOWN";
-      }
-    };
-
-    const ret: Flat.MeshChunk = {
-      texture,
-      mode: primitiveType(this.header.primitiveType),
-    };
-
-    const strideInfo = this.header.strideInfo;
-    const strides = this.strides;
-
-    if (strideInfo.texture.size > 0) {
-      const uvs = strides
-        .map((v) => v.uv as { u: number; v: number }) // force cast
-        .reduce((r, v) => r.concat([v.u, v.v]), [] as number[]);
-      if (strideInfo.texture.size == 1) {
-        ret.uvs = {
-          type: "Int8",
-          size: 2,
-          data: uvs,
-          normalized: true,
-        };
-      } else if (strideInfo.texture.size == 2) {
-        ret.uvs = {
-          type: "Int16",
-          size: 2,
-          data: uvs,
-          normalized: true,
-        };
-      } else if (strideInfo.texture.size == 4) {
-        ret.uvs = {
-          type: "Float32",
-          size: 2,
-          data: uvs,
-          normalized: false,
-        };
-      }
-    }
-
-    if (strideInfo.normal.size > 0) {
-      const normals = strides
-        .map((v) => v.normal as Vertex3) // force cast
-        .reduce((r, v) => r.concat([v.x, v.y, v.z]), [] as number[]);
-      ret.normals = normals;
-    }
-
-    if (strideInfo.vertex.size > 0) {
-      const positions = strides
-        .map((v) => v.vertex as Vertex3) // force cast
-        .reduce((r, v) => r.concat([v.x, v.y, v.z]), [] as number[]);
-      if (strideInfo.vertex.size == 1) {
-        ret.positions = positions;
-      } else if (strideInfo.vertex.size == 2) {
-        ret.positions = positions;
-      } else {
-        ret.positions = positions;
-      }
-    }
-
-    if (strideInfo.color.size > 0) {
-      const colors = strides.map((v) => v.color as number); // force cast
-      ret.colors = new Uint8Array(colors);
-    }
-
-    return ret;
   }
 }

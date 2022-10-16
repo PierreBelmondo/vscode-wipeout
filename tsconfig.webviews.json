@@ -1,6 +1,6 @@
 {
-	"extends": "./tsconfig.browser.json",
-	"compilerOptions": {
-		"tsBuildInfoFile": "tsconfig.webviews.tsbuildinfo"
-	}
+  "extends": "./tsconfig.browser.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "tsconfig.webviews.tsbuildinfo"
+  }
 }

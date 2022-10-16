@@ -1,10 +1,6 @@
 import * as vscode from "vscode";
 
 import { Disposable } from "../../dispose";
-import { Scene } from "../../../core/rcs/types";
-import { RcsModel } from "../../../core/rcs";
-// import { RcsMaterial } from "../../../core/rcs/material";
-import { GTF } from "../../../core/gtf";
 
 /**
  * Define the document (the data model) used for RcsModel files.
@@ -13,41 +9,8 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
   static async create(uri: vscode.Uri): Promise<RcsModelDocument> {
     let array = new Uint8Array();
     if (uri.scheme !== "untitled") array = await vscode.workspace.fs.readFile(uri);
-    const buffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
-
-    const textureCache: { [id: string]: GTF } = {};
-
-    const root = RcsModelDocument.findDataRoot(uri);
-    console.log(`Found root of data in ${root.path}`);
-
-    const model = RcsModel.load(buffer);
-    for (const material of model.materials) {
-      console.log(`Loading material (${material.id.toString(16)}) ${material.filename}`);
-      /*
-      const uriMaterial = vscode.Uri.joinPath(root, material.filename);
-      const arrayMaterial = await vscode.workspace.fs.readFile(uriMaterial);
-      const bufferMaterial = arrayMaterial.buffer.slice(arrayMaterial.byteOffset, arrayMaterial.byteOffset + arrayMaterial.byteLength);
-      RcsMaterial.load(bufferMaterial);
-      */
-      for (const texture of material.textures) {
-        if (texture.type == 0x8001 && texture.filename != "") {
-          if (!(texture.filename in textureCache)) {
-            console.log(`Loading texture (${texture.id.toString(16)}) ${texture.filename}`);
-            const uriTexture = vscode.Uri.joinPath(root, texture.filename);
-            const arrayTexture = await vscode.workspace.fs.readFile(uriTexture);
-            const bufferTexture = arrayTexture.buffer.slice(arrayTexture.byteOffset, arrayTexture.byteOffset + arrayTexture.byteLength);
-            const gtf = await GTF.load(bufferTexture);
-            textureCache[texture.filename] = gtf;
-          }
-          texture.gtf = textureCache[texture.filename];
-        } else {
-          console.log(`Loading texture (${texture.id.toString(16)}) failed`);
-        }
-      }
-    }
-
-    const scene = model.export();
-    return new RcsModelDocument(uri, model, scene);
+    const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
+    return new RcsModelDocument(uri, Buffer.from(arraybuffer), "model/vnd.wipeout.rcsmodel");
   }
 
   static findDataRoot(uri: vscode.Uri) {
@@ -61,26 +24,32 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
 
   private readonly _uri: vscode.Uri;
 
-  private _model: RcsModel;
-  private _scene: Scene;
+  private _root: vscode.Uri;
+  private _buffer: Buffer;
+  private _mime: string;
 
-  private constructor(uri: vscode.Uri, buffer: RcsModel, scene: Scene) {
+  constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
     super();
     this._uri = uri;
-    this._model = buffer;
-    this._scene = scene;
+    this._root = RcsModelDocument.findDataRoot(uri);
+    this._buffer = buffer;
+    this._mime = mime;
   }
 
   public get uri() {
     return this._uri;
   }
 
-  public get model(): RcsModel {
-    return this._model;
+  public get root() {
+    return this._root;
   }
 
-  public get scene(): Scene {
-    return this._scene;
+  public get buffer(): Buffer {
+    return this._buffer;
+  }
+
+  public get mime(): string {
+    return this._mime;
   }
 
   private readonly _onDidDispose = this._register(new vscode.EventEmitter<void>());

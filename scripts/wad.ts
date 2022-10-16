@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-import { Wad } from "../src/core/wad";
+import { Wad } from "../core/wad";
 
 function toArrayBuffer(buffer: Buffer) {
   const ab = new ArrayBuffer(buffer.length);

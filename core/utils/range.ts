@@ -1,4 +1,4 @@
-import { TextDecoder } from "util";
+import { TextDecoder } from "@compat/util";
 
 const textDecoder = new TextDecoder();
 

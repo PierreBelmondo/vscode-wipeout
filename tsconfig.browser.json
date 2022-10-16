@@ -1,7 +1,13 @@
 {
-	"extends": "./tsconfig.base.json",
-	"compilerOptions": {
-		"lib": ["dom", "dom.iterable", "es2019"],
-		"tsBuildInfoFile": "tsconfig.browser.tsbuildinfo"
-	}
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "es2019"],
+    "tsBuildInfoFile": "tsconfig.browser.tsbuildinfo",
+    "baseUrl": "webviews",
+    "paths": {
+      "@core/*": ["../core/*"],
+      "@compat/*": ["../compat/browser/*"]
+    }
+  },
+  "exclude": ["compat/node", "node_modules", "src"]
 }

@@ -7,7 +7,6 @@ export class GtfModelDocument extends TextureModelDocument implements vscode.Cus
     if (uri.scheme !== "untitled")
       array = await vscode.workspace.fs.readFile(uri);
     const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
-    console.log(arraybuffer.byteLength)
     return new GtfModelDocument(uri, Buffer.from(arraybuffer), "image/gtf");
   }
 }

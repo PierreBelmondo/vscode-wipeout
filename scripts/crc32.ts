@@ -1,4 +1,4 @@
-import { crc32 } from "../src/core/utils/crc32";
+import { crc32 } from "../core/utils/crc32";
 
 if (process.argv.length != 3) {
 }

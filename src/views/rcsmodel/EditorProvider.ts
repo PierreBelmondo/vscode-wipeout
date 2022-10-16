@@ -12,20 +12,14 @@ import { TextEncoder } from "util";
  *
  * RCS model editors are used for `.rcsmodel` files.
  */
-export class RcsModelEditorProvider
-  implements vscode.CustomReadonlyEditorProvider<RcsModelDocument>
-{
+export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvider<RcsModelDocument> {
   private static readonly viewType = "wipeout.view.rcsmodel";
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
-    return vscode.window.registerCustomEditorProvider(
-      RcsModelEditorProvider.viewType,
-      new RcsModelEditorProvider(context),
-      {
-        webviewOptions: {},
-        supportsMultipleEditorsPerDocument: false,
-      }
-    );
+    return vscode.window.registerCustomEditorProvider(RcsModelEditorProvider.viewType, new RcsModelEditorProvider(context), {
+      webviewOptions: {},
+      supportsMultipleEditorsPerDocument: false,
+    });
   }
 
   /**
@@ -35,81 +29,61 @@ export class RcsModelEditorProvider
 
   constructor(private readonly _context: vscode.ExtensionContext) {}
 
-  async openCustomDocument(
-    uri: vscode.Uri,
-    openContext: { backupId?: string },
-    _token: vscode.CancellationToken
-  ): Promise<RcsModelDocument> {
+  async openCustomDocument(uri: vscode.Uri, openContext: { backupId?: string }, _token: vscode.CancellationToken): Promise<RcsModelDocument> {
     const document: RcsModelDocument = await RcsModelDocument.create(uri);
-
     const listeners: vscode.Disposable[] = [];
     document.onDidDispose(() => disposeAll(listeners));
     return document;
   }
 
-  async resolveCustomEditor(
-    document: RcsModelDocument,
-    webviewPanel: vscode.WebviewPanel,
-    _token: vscode.CancellationToken
-  ): Promise<void> {
+  async resolveCustomEditor(document: RcsModelDocument, webviewPanel: vscode.WebviewPanel, _token: vscode.CancellationToken): Promise<void> {
     // Add the webview to our internal set of active webviews
     this.webviews.add(document.uri, webviewPanel);
 
     // Setup initial content for the webview
-    webviewPanel.webview.options = {
-      enableScripts: true,
-    };
+    webviewPanel.webview.options = { enableScripts: true };
     webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
 
-    webviewPanel.webview.onDidReceiveMessage((e) =>
-      this.onMessage(document, e)
-    );
-
     // Wait for the webview to be properly ready before we init
-    webviewPanel.webview.onDidReceiveMessage((e) => {
-      if (e.type === "ready") {
-        if (document.uri.scheme === "untitled") {
-          console.log("empty document");
-        } else {
-          console.log("sending scene to webview", document.scene, 2);
-          this.postMessage(webviewPanel, "load.rcsmodel", {
-            scene: document.scene,
-          });
-        }
-      }
-      if (e.type == "clipboard") {
-        console.log(e.body);
-        /*
-        const item = new ClipboardItem(e.body);
-        clipboard.write([item]);
-        */
-      }
-      if (e.type === "log") {
-        console.log(e.message);
+    webviewPanel.webview.onDidReceiveMessage(async (e) => {
+      switch (e.type) {
+        case "ready":
+          if (document.uri.scheme === "untitled") {
+            console.log("empty document");
+          } else {
+            const buffer = document.buffer.toString("base64");
+            const body = { buffer, mime: document.mime };
+            console.log("sending file content to webview");
+            this.postMessage(webviewPanel, "load", body);
+          }
+          break;
+        case "require":
+          const filename = e.filename;
+          console.log(`Document requires external dependency: ${filename}`)
+          const buffer = await this.require(document, filename);
+          const body = { buffer, filename };
+          this.postMessage(webviewPanel, "import", body);
+          break;
+        case "log":
+          console.log(e.message);
+          break;
+        case "export.gltf":
+          const gltf = e.message.body;
+          this.exportGLTF(document, gltf);
+          return;
       }
     });
   }
 
-  private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<
-    vscode.CustomDocumentEditEvent<RcsModelDocument>
-  >();
-  public readonly onDidChangeCustomDocument =
-    this._onDidChangeCustomDocument.event;
+  private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<vscode.CustomDocumentEditEvent<RcsModelDocument>>();
+  public readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
 
   /**
    * Get the static HTML used for in our editor's webviews.
    */
   private getHtmlForWebview(webview: vscode.Webview) {
     const nonce = getNonce();
-
-    const uri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._context.extensionUri,
-        "dist",
-        "webview-three.js"
-      )
-    );
-
+    const uri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "dist", "webview-three.js"));
     return /* html */ `
       <!DOCTYPE html>
       <html lang="en">
@@ -126,23 +100,15 @@ export class RcsModelEditorProvider
       </html>`;
   }
 
-  private postMessage(
-    panel: vscode.WebviewPanel,
-    type: string,
-    body: any
-  ): void {
+  private postMessage(panel: vscode.WebviewPanel, type: string, body: any): void {
     panel.webview.postMessage({ type, body });
   }
 
-  private onMessage(document: RcsModelDocument, message: any) {
-    switch (message.type) {
-      case "ready":
-        return;
-      case "export.gltf":
-        const gltf = message.body;
-        this.exportGLTF(document, gltf);
-        return;
-    }
+  private async require(document: RcsModelDocument, filename: string) {
+    const uriTexture = vscode.Uri.joinPath(document.root, filename);
+    const arrayTmp = await vscode.workspace.fs.readFile(uriTexture);
+    const arrayBuffer = arrayTmp.buffer.slice(arrayTmp.byteOffset, arrayTmp.byteOffset + arrayTmp.byteLength);
+    return Buffer.from(arrayBuffer).toString("base64");
   }
 
   private exportGLTF(document: RcsModelDocument, gltf: any) {

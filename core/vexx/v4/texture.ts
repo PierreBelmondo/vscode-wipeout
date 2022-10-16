@@ -1,5 +1,4 @@
 import { BufferRange } from "../../utils/range";
-import { Flat } from "../flat";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
@@ -131,22 +130,5 @@ export class VexxNodeTexture extends VexxNode {
       rgba = tmp;
     }
     this.rgba = rgba;
-  }
-
-  override export(): Flat.Node {
-    const ret: Flat.Node = {
-      type: "TEXTURE",
-      name: this.name,
-      id: this.properties.id,
-      width: this.properties.width,
-      height: this.properties.height,
-      bpp: this.properties.bpp,
-      format: this.properties.format,
-      mipmaps: this.properties.mipmaps,
-      alphaTest: this.properties.alphaTest,
-      diffuse: this.properties.diffuse,
-      rgba: Array.from(this.rgba),
-    };
-    return ret;
   }
 }

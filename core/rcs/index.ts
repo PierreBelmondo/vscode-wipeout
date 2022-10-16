@@ -1,8 +1,7 @@
 import { BufferRange } from "../utils/range";
-import { vec3, vec4, mat4 } from "gl-matrix";
+import { vec4 } from "gl-matrix";
 import { Material, Mesh, Object, RGBA, Scene, Texture, UV, Vertex } from "./types";
 import { GTF } from "../gtf";
-import { Flat } from "../vexx/flat";
 
 class RcsModelMeshInfo {
   range = new BufferRange();
@@ -32,7 +31,6 @@ class RcsModelObjectHeader {
     ret.range = range.slice(0, 80);
 
     ret.id = ret.range.getUint32(0);
-    console.log(`Loading mesh ${ret.id.toString(16)}`);
     ret.type = ret.range.getUint8(6);
     ret.end_offet = ret.range.getUint32(24);
     ret.material_id = ret.range.getUint32(32);
@@ -54,7 +52,7 @@ class RcsModelObjectHeader {
   }
 }
 
-class RcsModelObject {
+export class RcsModelObject {
   range = new BufferRange();
   header = new RcsModelObjectHeader();
   mesh = null as null | RcsModelMesh1 | RcsModelMesh5;
@@ -79,26 +77,9 @@ class RcsModelObject {
 
     return ret;
   }
-
-  export(): Object {
-    const object: Object = {
-      position: this.header.position,
-      scale: this.header.scale,
-      material_id: this.header.material_id,
-      meshes: [],
-    };
-
-    if (this.mesh !== null) {
-      const obj = this.mesh.export();
-      if (Array.isArray(obj)) object.meshes = object.meshes.concat(obj);
-      else object.meshes.push(obj);
-    }
-
-    return object;
-  }
 }
 
-class RcsModelMesh1 {
+export class RcsModelMesh1 {
   range = new BufferRange();
 
   vbo_count = 0;
@@ -137,17 +118,9 @@ class RcsModelMesh1 {
     const end = this.ibo_offset + this.ibo_offset * 2;
     return this.range.reset().slice(beg, end);
   }
-
-  export(): Mesh {
-    return {
-      indices: this.ibo.indices,
-      vertices: this.vbo.vertices,
-      uvs: [],
-    };
-  }
 }
 
-class RcsModelMesh5 {
+export class RcsModelMesh5 {
   range = new BufferRange();
 
   info_offset = 0;
@@ -179,18 +152,9 @@ class RcsModelMesh5 {
 
     return ret;
   }
-
-  export(): Mesh[] {
-    const objects = [] as Mesh[];
-    for (const submesh of this.submeshes) {
-      const mesh = submesh.export();
-      objects.push(mesh);
-    }
-    return objects;
-  }
 }
 
-class RcsModelSubmesh {
+export class RcsModelSubmesh {
   range = new BufferRange();
   vbo_count = 0;
   ibo_count = 0;
@@ -225,17 +189,9 @@ class RcsModelSubmesh {
     const end = this.ibo_offset + this.ibo_offset * 2;
     return this.range.reset().slice(beg, end);
   }
-
-  export(): Mesh {
-    return {
-      indices: this.ibo.indices,
-      vertices: this.vbo.vertices,
-      uvs: this.vbo.uv,
-    };
-  }
 }
 
-class RcsModelVBO {
+export class RcsModelVBO {
   range = new BufferRange();
   vertices = [] as Vertex[];
   normals = [] as Vertex[];
@@ -280,7 +236,7 @@ class RcsModelVBO {
   }
 }
 
-class RcsModelIBO {
+export class RcsModelIBO {
   range = new BufferRange();
   indices = [] as number[];
   max = 0;
@@ -297,13 +253,14 @@ class RcsModelIBO {
   }
 }
 
-class RcsModelTexture {
+export class RcsModelTexture {
   range = new BufferRange();
   gtf?: GTF;
 
   id = 0;
   type = 0;
   offset_filename = 0;
+  filename = "";
 
   static load(range: BufferRange): RcsModelTexture {
     const ret = new RcsModelTexture();
@@ -311,29 +268,23 @@ class RcsModelTexture {
     ret.id = ret.range.getUint32(0);
     ret.type = ret.range.getUint32(4);
     ret.offset_filename = ret.range.getUint32(24);
+
+    if (ret.offset_filename == 0)
+    ret.filename = "";
+    else {
+      ret.filename = ret.range.reset().getCString(ret.offset_filename);
+      if (!(ret.filename.startsWith('data/')))
+      ret.filename = "";
+    }
     return ret;
   }
 
   get size(): number {
     return this.range.size;
   }
-
-  get filename(): string {
-    if (this.offset_filename == 0)
-      return "";
-    return this.range.reset().getCString(this.offset_filename);
-  }
-
-  export(): Texture {
-    return {
-      id: this.id,
-      filename: this.filename,
-      mipmaps: !this.gtf ? [] : this.gtf.export(),
-    };
-  }
 }
 
-class RcsModelMaterial {
+export class RcsModelMaterial {
   range = new BufferRange();
 
   id = 0;
@@ -362,17 +313,6 @@ class RcsModelMaterial {
 
   get filename(): string {
     return this.range.reset().getCString(this.offset_filename);
-  }
-
-  export(): Material {
-    let textures: Texture[] = [];
-    for (const texture of this.textures) textures.push(texture.export());
-
-    return {
-      id: this.id,
-      filename: this.filename,
-      textures,
-    };
   }
 }
 
@@ -459,24 +399,5 @@ export class RcsModel {
 
     console.log(ret);
     return ret;
-  }
-
-  export(): Scene {
-    const materials = [] as Material[];
-    for (const rcsmaterial of this.materials) {
-      const material = rcsmaterial.export();
-      materials.push(material);
-    }
-
-    const objects = [] as Object[];
-    for (const rcsobject of this.objects) {
-      const object = rcsobject.export();
-      objects.push(object);
-    }
-
-    return {
-      materials,
-      objects,
-    };
   }
 }

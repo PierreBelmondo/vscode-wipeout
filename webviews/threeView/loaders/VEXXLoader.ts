@@ -1,227 +1,279 @@
 import * as THREE from "three";
 import { Loader, World } from ".";
-import { Flat } from "../../../core/vexx/flat";
-import { vscode } from "../../vscode";
 import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
 
-type LoaderCallback = (world: World, node: any) => THREE.Object3D;
-
-type Mapping = { [id: string]: { callback: LoaderCallback; layer?: string } };
+import { Vexx } from "../../../core/vexx";
+import { VexxNode, VexxNodeMatrix } from "../../../core/vexx/node";
+import { VexxNodeAirbrake } from "../../../core/vexx/v4/airbrake";
+import { VexxNodeAmbientLight } from "../../../core/vexx/v4/ambient_light";
+import { VexxNodeCamera } from "../../../core/vexx/v4/camera";
+import { VexxNodeCollision } from "../../../core/vexx/v4/collision";
+import { VexxNodeEngineFire } from "../../../core/vexx/v4/engine_fire";
+import { VexxNodeEngineFlare } from "../../../core/vexx/v4/engine_flare";
+import { VexxNodeLodGroup } from "../../../core/vexx/v4/lod_group";
+import { VexxNodeMesh } from "../../../core/vexx/v4/mesh";
+import { VexxNodeSea } from "../../../core/vexx/v4/sea";
+import { VexxNodeSeaReflect } from "../../../core/vexx/v4/sea_reflect";
+import { VexxNodeShipColisionFx } from "../../../core/vexx/v4/ship_colision_fx";
+import { VexxNodeShipMuzzle } from "../../../core/vexx/v4/ship_muzzle";
+import { VexxNodeSkycube } from "../../../core/vexx/v4/skycube";
+import { VexxNodeSound } from "../../../core/vexx/v4/sound";
+import { VexxNodeSpeaker } from "../../../core/vexx/v4/speaker";
+import { VexxNodeSpeedupPad } from "../../../core/vexx/v4/speedup_pad";
+import { VexxNodeStartPosition } from "../../../core/vexx/v4/start_position";
+import { VexxNodeTrail } from "../../../core/vexx/v4/trail";
+import { VexxNodeTransform } from "../../../core/vexx/v4/transform";
+import { VexxNodeWeaponPad } from "../../../core/vexx/v4/weapon_pad";
+import { Vexx4NodeType } from "../../../core/vexx/v4/type";
+import { GU } from "../../../core/utils/pspgu";
 
 export class VEXXLoader extends Loader {
-  load(node: Flat.Node): World {
-    const world = new World();
-    this.loadTextures(world, node);
-    this.loadScene(world, node);
+  override async load(world: World, buffer: ArrayBufferLike) {
+    const model = Vexx.load(buffer);
+    this.loadTextures(world, model);
+    this.loadScene(world, model);
     return world;
   }
 
-  private loadTextures(world: World, node: any) {
-    const textureNodes = node.children.filter((x) => x.type === "TEXTURE");
-    for (const textureNode of textureNodes) this.loadTexture(world, textureNode);
+  private loadTextures(world: World, vexx: Vexx) {
+    for (const vexxTexture of vexx.textures) {
+      const texture = new THREE.DataTexture(vexxTexture.rgba, vexxTexture.properties.width, vexxTexture.properties.height, THREE.RGBAFormat);
+      texture.magFilter = THREE.LinearFilter;
+      texture.minFilter = THREE.LinearFilter;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.needsUpdate = true;
+      world.textures[vexxTexture.properties.id] = texture;
+    }
   }
 
-  private loadTexture(world: World, node: any) {
-    const texture = new THREE.DataTexture(new Uint8Array(node.rgba), node.width, node.height, THREE.RGBAFormat);
-    texture.magFilter = THREE.LinearFilter;
-    texture.minFilter = THREE.LinearFilter;
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.needsUpdate = true;
-    world.textures[node.id] = texture;
-  }
-
-  private loadScene(world: World, node: any) {
-    const hemiLight = new THREE.HemisphereLight(0xe0e0e0, 0x080808, 1);
+  private loadScene(world: World, vexx: Vexx) {
+    const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x080808, 1);
     world.scene.add(hemiLight);
 
-    const children = node.children.filter((x) => x.type !== "TEXTURE");
+    const children = vexx.filter((n) => n.typeInfo.type != Vexx4NodeType.TEXTURE);
     for (const child of children) {
+      console.log(child);
       const object = this.loadNode(world, child);
-      if (object !== null) world.scene.add(object);
+      world.scene.add(object);
     }
   }
 
-  private readonly mapping: Mapping = {
-    AIRBRAKE: {
-      callback: this.loadAirbrake,
-    },
-    AMBIENT_LIGHT: {
-      callback: this.loadAmbientLight,
-    },
-    ANIMATION_TRIGGER: {
-      callback: this.loadControlPoint, // TODO
-      layer: "Animations",
-    },
-    ANIM_TRANSFORM: {
-      callback: this.loadControlPoint, // TODO
-      layer: "Animations",
-    },
-    BLOB: {
-      callback: this.loadControlPoint, // TODO
-      layer: "Blobs",
-    },
-    CAMERA: {
-      callback: this.loadCamera, // TODO
-      layer: "Cameras",
-    },
-    CANON_FLASH: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    CLOUD_CUBE: {
-      callback: this.loadNodeGeneric, // TODO
-      layer: "Clouds",
-    },
-    CLOUD_GROUP: {
-      callback: this.loadNodeGeneric, // TODO
-      layer: "Clouds",
-    },
-    CURVE_SHAPE: {
-      callback: this.loadNodeGeneric, // TODO
-      layer: "Clouds",
-    },
-    DIRECTIONAL_LIGHT: {
-      callback: this.loadNodeGeneric, // TODO
-      layer: "Lights",
-    },
-    DYNAMIC_SHADOW_OCCLUDER: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    ENGINE_FIRE: {
-      callback: this.loadControlPointMatrix, // TODO
-      layer: "Ship engine fire",
-    },
-    ENGINE_FLARE: {
-      callback: this.loadControlPointMatrix,
-      layer: "Ship engine flare",
-    },
-    EXIT_GLOW: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    FLOOR_COLLISION: {
-      callback: this.loadCollision,
-      layer: "Floor collisions",
-    },
-    FOG_CUBE: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    GROUP: {
-      callback: this.loadNodeGeneric,
-    },
-    LENS_FLARE: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    LOD_GROUP: {
-      callback: this.loadLodGroup,
-    },
-    MESH: {
-      callback: this.loadMesh /*, layer: "Meshes" */,
-    },
-    PARTICLE_SYSTEM: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    QUAKE: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    RESET_COLLISION: {
-      callback: this.loadCollision,
-      layer: "Reset collisions",
-    },
-    SEA: {
-      callback: this.loadMesh, // TODO
-      layer: "Sea",
-    },
-    SEAWEED: {
-      callback: this.loadControlPoint, // TODO
-      layer: "Seaweed",
-    },
-    SEA_REFLECT: {
-      callback: this.loadMesh, // TODO
-      layer: "Sea reflect",
-    },
-    SECTION: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    SHADOW: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    SHIP_COLLISION_FX: {
-      callback: this.loadControlPointMatrix,
-      layer: "Ship collisions",
-    },
-    SHIP_MUZZLE: {
-      callback: this.loadControlPointMatrix,
-      layer: "Ship muzzle",
-    },
-    SKYCUBE: {
-      callback: this.loadMesh,
-      layer: "Skybox",
-    },
-    SOUND: {
-      callback: this.loadSound, // TODO
-      layer: "Sounds",
-    },
-    SPEEDUP_PAD: {
-      callback: this.loadMesh, // TODO
-      layer: "Pads",
-    },
-    START_POSITION: {
-      callback: this.loadControlPointMatrix,
-      layer: "Start position",
-    },
-    TRAIL: {
-      callback: this.loadControlPointMatrix, // TODO
-    },
-    TRANSFORM: {
-      callback: this.loadTransform,
-    },
-    WALL_COLLISION: {
-      callback: this.loadCollision,
-      layer: "Wall collisions",
-    },
-    WEAPON_PAD: {
-      callback: this.loadMesh, // TODO
-      layer: "Pads",
-    },
-    WEATHER_POSITION: {
-      callback: this.loadNodeGeneric, // TODO
-    },
-    WORLD: {
-      callback: this.loadNodeGeneric,
-    },
-    WO_POINT: {
-      callback: this.loadControlPoint, // TODO
-      layer: "WO Points",
-    },
-    WO_SPOT: {
-      callback: this.loadNodeGeneric, // TODO
-      layer: "WO Spots",
-    },
-    WO_TRACK: {
-      callback: this.loadNodeGeneric, // TODO
-      layer: "WO Tracks",
-    },
-  };
+  private loadNode(world: World, node: VexxNode): THREE.Object3D {
+    let object: THREE.Object3D;
+    let layer: string | null = null;
 
-  private loadNode(world: World, node: any): THREE.Object3D {
-    if (!(node.type in this.mapping)) {
-      vscode.log(`Node type "${node.type}" is not supported`);
-      return this.loadNodeGeneric(world, node);
+    switch (node.typeName) {
+      case "AIRBRAKE":
+        object = this.loadAirbrake(world, node as VexxNodeAirbrake);
+        break;
+      case "AMBIENT_LIGHT":
+        object = this.loadAmbientLight(world, node as VexxNodeAmbientLight);
+        break;
+      case "ANIMATION_TRIGGER": // TODO
+        object = this.loadControlPoint(world, node);
+        layer = "Animations";
+        break;
+      case "ANIM_TRANSFORM": // TODO
+        object = this.loadControlPoint(world, node);
+        layer = "Animations";
+        break;
+      case "BLOB": // TODO
+        object = this.loadControlPoint(world, node);
+        layer = "Blobs";
+        break;
+      case "CAMERA":
+        object = this.loadCamera(world, node as VexxNodeCamera);
+        layer = "Cameras";
+        break;
+      case "CANON_FLASH": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "CLOUD_CUBE": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "Clouds";
+        break;
+      case "CLOUD_GROUP": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "Clouds";
+        break;
+      case "CURVE_SHAPE": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "Curve";
+        break;
+      case "DIRECTIONAL_LIGHT": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "Lights";
+        break;
+      case "DYNAMIC_POINT_LIGHT": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "Lights";
+        break;
+      case "DYNAMIC_SHADOW_OCCLUDER": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "ENGINE_FIRE": // TODO
+        object = this.loadControlPointMatrix(world, node as VexxNodeEngineFire);
+        layer = "Ship engine fire";
+        break;
+      case "ENGINE_FLARE": // TODO
+        object = this.loadControlPointMatrix(world, node as VexxNodeEngineFlare);
+        layer = "Ship engine flare";
+        break;
+      case "EXIT_GLOW": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "FLOOR_COLLISION":
+        object = this.loadCollision(world, node as VexxNodeCollision);
+        layer = "Floor collisions";
+        break;
+      case "FOG_CUBE": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "Fog";
+        break;
+      case "GATE": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "GRID_CAMERA":
+        object = this.loadNodeGeneric(world, node);
+        layer = "Cameras";
+        break;
+      case "GROUP":
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "LENS_FLARE": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "LOD_GROUP":
+        object = this.loadLodGroup(world, node as VexxNodeLodGroup);
+        break;
+      case "MESH":
+        object = this.loadMesh(world, node as VexxNodeMesh);
+        break;
+      case "MESH_NODE_GHOST": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "NURBS_SURFACE": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "PARTICLE_SYSTEM": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "POINT_LIGHT": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "Lights";
+        break;
+      case "QUAKE": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "RESET_COLLISION":
+        object = this.loadCollision(world, node as VexxNodeCollision);
+        layer = "Reset collisions";
+        break;
+      case "SEA": // TODO
+        object = this.loadMesh(world, node as VexxNodeSea);
+        layer = "Sea";
+        break;
+      case "SEAWEED":
+        object = this.loadControlPoint(world, node);
+        layer = "Seaweed";
+        break;
+      case "SEA_REFLECT":
+        object = this.loadMesh(world, node as VexxNodeSeaReflect);
+        layer = "Sea reflect";
+        break;
+      case "SECTION": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "SHADOW": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "SHIP_COLLISION_FX": // TODO
+        object = this.loadControlPointMatrix(world, node as VexxNodeShipColisionFx);
+        layer = "Ship collisions";
+        break;
+      case "SHIP_MUZZLE":
+        object = this.loadControlPointMatrix(world, node as VexxNodeShipMuzzle);
+        layer = "Ship muzzle";
+        break;
+      case "SKYCUBE":
+        object = this.loadMesh(world, node as VexxNodeSkycube);
+        layer = "Skybox";
+        break;
+      case "SOUND": // TODO
+        object = this.loadSound(world, node as VexxNodeSound);
+        layer = "Sounds";
+        break;
+      case "SPEAKER": // TODO
+        object = this.loadSpeaker(world, node);
+        layer = "Sounds";
+        break;
+      case "SPEEDUP_PAD":
+        object = this.loadMesh(world, node as VexxNodeSpeedupPad);
+        layer = "Pads";
+        break;
+      case "START_POSITION":
+        object = this.loadControlPointMatrix(world, node as VexxNodeStartPosition);
+        layer = "Start position";
+        break;
+      case "TEXTURE":
+        throw new Error("This should not happen");
+      case "TEXTURE_BLOB": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "TRAIL":
+        object = this.loadControlPointMatrix(world, node as VexxNodeTrail);
+        break;
+      case "TRANSFORM":
+        object = this.loadTransform(world, node as VexxNodeTransform);
+        break;
+      case "UNUSED_1": // TODO ?
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "WALL_COLLISION":
+        object = this.loadCollision(world, node as VexxNodeCollision);
+        layer = "Wall collisions";
+        break;
+      case "WEAPON_PAD":
+        object = this.loadMesh(world, node as VexxNodeWeaponPad);
+        layer = "Pads";
+        break;
+      case "WEATHER_POSITION": // TODO
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "WORLD":
+        object = this.loadNodeGeneric(world, node);
+        break;
+      case "WO_POINT": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "WO Points";
+        break;
+      case "WO_SPOT": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "WO Spots";
+        break;
+      case "WO_TRACK": // TODO
+        object = this.loadNodeGeneric(world, node);
+        layer = "WO Tracks";
+        break;
+      default:
+        console.warn(`Unexpected node type ${node.typeName}`);
+        object = this.loadNodeGeneric(world, node);
+        break;
     }
-    const item = this.mapping[node.type];
-    const callback = item.callback.bind(this) as LoaderCallback;
-    const obj = callback(world, node);
-    if (item.layer !== undefined) {
-      const layer = world.getLayer(item.layer);
-      obj.layers.set(layer);
-      obj.traverse((subobj) => {
-        subobj.layers.set(layer);
+
+    if (layer) {
+      const layerId = world.getLayer(layer);
+      object.layers.set(layerId);
+      object.traverse((subobj) => {
+        subobj.layers.set(layerId);
       });
     }
-    return obj;
+
+    return object;
   }
 
-  private loadNodeGeneric(world: World, node: any): THREE.Object3D {
+  private loadNodeGeneric(world: World, node: VexxNode): THREE.Object3D {
     const group = new THREE.Group();
     group.name = node.name;
     for (const child of node.children) {
@@ -232,7 +284,7 @@ export class VEXXLoader extends Loader {
     return group;
   }
 
-  private loadTransform(world: World, node: any): THREE.Object3D {
+  private loadTransform(world: World, node: VexxNodeTransform): THREE.Object3D {
     const matrix = new THREE.Matrix4();
     matrix.fromArray(node.matrix);
 
@@ -242,7 +294,7 @@ export class VEXXLoader extends Loader {
     return obj;
   }
 
-  private loadLodGroup(world: World, node: any): THREE.Object3D {
+  private loadLodGroup(world: World, node: VexxNodeLodGroup): THREE.Object3D {
     const group = new THREE.Group();
     group.name = node.name;
     for (const child of node.children) {
@@ -254,57 +306,74 @@ export class VEXXLoader extends Loader {
     return group;
   }
 
-  private loadAmbientLight(world: World, node: any): THREE.AmbientLight {
-    const value = ((255.0 * node.rgba.r) << 16) + ((255.0 * node.rgba.g) << 8) + 255.0 * node.rgba.b;
+  private loadAmbientLight(world: World, node: VexxNodeAmbientLight): THREE.AmbientLight {
+    const value = ((255.0 * node.rgba[0]) << 16) + ((255.0 * node.rgba[1]) << 8) + 255.0 * node.rgba[2];
     return new THREE.AmbientLight(value);
   }
 
-  private loadMesh(world: World, node: any): THREE.Object3D {
+  private loadMesh(world: World, node: VexxNodeMesh): THREE.Object3D {
+    const primitiveType = (id: number) => {
+      switch (id) {
+        case GU.PrimitiveType.POINTS:
+          return "POINTS";
+        case GU.PrimitiveType.LINES:
+          return "LINES";
+        case GU.PrimitiveType.LINE_STRIP:
+          return "LINE_STRIP";
+        case GU.PrimitiveType.TRIANGLES:
+          return "TRIANGLES";
+        case GU.PrimitiveType.TRIANGLE_STRIP:
+          return "TRIANGLE_STRIP";
+        case GU.PrimitiveType.TRIANGLE_FAN:
+          return "TRIANGLE_FAN";
+        case GU.PrimitiveType.SPRITES:
+          return "SPRITES";
+        default:
+          return "UNKNOWN";
+      }
+    };
+
     const group = new THREE.Group();
     group.name = node.name;
 
-    for (let i = 0; i < node.chunks.length; i++) {
-      const chunk = node.chunks[i] as Flat.MeshChunk;
+    for (const chunk of node.chunks) {
+      const chunkHeader = chunk.header;
+      const strideInfo = chunkHeader.strideInfo;
+      const strides = chunk.strides;
+
       const geometry = new THREE.BufferGeometry();
 
-      if (chunk.positions === undefined) continue;
+      if (strideInfo.vertex.size == 0) continue;
+      const positions = strides.map((v) => v.vertex as { x: number; y: number; z: number }).reduce((r, v) => r.concat([v.x, v.y, v.z]), [] as number[]);
+      geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
 
-      geometry.setAttribute("position", new THREE.Float32BufferAttribute(chunk.positions, 3));
-
-      if (chunk.normals !== undefined) {
-        geometry.setAttribute("normal", new THREE.Float32BufferAttribute(chunk.normals, 3));
+      if (strideInfo.normal.size > 0) {
+        const normals = strides.map((v) => v.normal as { x: number; y: number; z: number }).reduce((r, v) => r.concat([v.x, v.y, v.z]), [] as number[]);
+        geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
       }
 
       let material = world.materials["_default"];
+      const textureId = node.info.materials[chunkHeader.id].textureId;
+      if (textureId in world.textures) {
+        const map = world.textures[textureId];
+        if (node.typeName == "MESH") material = new THREE.MeshPhongMaterial({ map });
+        else if (node.typeName == "SKYCUBE") material = new MeshSkyMaterial(map);
+      }
 
-      if (chunk.uvs !== undefined && chunk.texture in world.textures) {
-        let attr: THREE.BufferAttribute | null = null;
-        const size = chunk.uvs.size;
-        const data = chunk.uvs.data;
-        const normalized = chunk.uvs.normalized;
-        switch (chunk.uvs.type) {
-          case "Int8":
-            attr = new THREE.Int8BufferAttribute(data, size, normalized);
-            break;
-          case "Int16":
-            attr = new THREE.Int16BufferAttribute(data, size, normalized);
-            break;
-          case "Float32":
-            attr = new THREE.Float32BufferAttribute(data, size, normalized);
-            break;
-          default:
-            break;
-        }
+      if (strideInfo.texture.size > 0) {
+        const uvs = strides
+          .map((v) => v.uv as { u: number; v: number }) // force cast
+          .reduce((r, v) => r.concat([v.u, v.v]), [] as number[]);
 
-        if (attr !== null) {
+        if (strideInfo.texture.size == 1) {
+          const attr = new THREE.Int8BufferAttribute(uvs, 2, true);
           geometry.setAttribute("uv", attr);
-
-          const map = world.textures[chunk.texture];
-
-          if (node.type == "MESH") material = new THREE.MeshPhongMaterial({ map });
-          else if (node.type == "SKYCUBE") {
-            material = new MeshSkyMaterial(map);
-          }
+        } else if (strideInfo.texture.size == 2) {
+          const attr = new THREE.Int16BufferAttribute(uvs, 2, true);
+          geometry.setAttribute("uv", attr);
+        } else if (strideInfo.texture.size == 4) {
+          const attr = new THREE.Float32BufferAttribute(uvs, 2, false);
+          geometry.setAttribute("uv", attr);
         }
       }
 
@@ -317,8 +386,9 @@ export class VEXXLoader extends Loader {
       }
       */
 
-      if (chunk.mode == "TRIANGLE_STRIP") {
-        const triangles = chunk.positions.length / 3 - 2;
+      const mode = primitiveType(chunk.header.primitiveType);
+      if (mode == "TRIANGLE_STRIP") {
+        const triangles = positions.length / 3 - 2;
         const indices: number[] = [];
         for (let j = 0; j < triangles; j++) {
           if (j % 2 == 0) {
@@ -335,7 +405,7 @@ export class VEXXLoader extends Loader {
       }
 
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.renderOrder = node.type == "SKYCUBE" ? 0 : 1;
+      mesh.renderOrder = node.typeName == "SKYCUBE" ? 0 : 1;
       mesh.layers.set(0);
       group.add(mesh);
     }
@@ -343,17 +413,29 @@ export class VEXXLoader extends Loader {
     return group;
   }
 
-  private loadCollision(world: World, node: any): THREE.Object3D {
+  private loadCollision(world: World, node: VexxNodeCollision): THREE.Object3D {
     const group = new THREE.Group();
     group.name = node.name;
 
-    for (let i = 0; i < node.chunks.length; i++) {
-      const chunk = node.chunks[i];
+    for (const block of node.blocks) {
       const geometry = new THREE.BufferGeometry();
 
-      if (!("positions" in chunk)) continue;
+      if (block.blocks.length != 3) {
+        console.log(`Cannot load collision "${node.name}"`);
+        continue;
+      }
+      if (block.blocks[0].points == null) {
+        console.log(`Cannot load collision "${node.name}"`);
+        continue;
+      }
+      if (block.blocks[2].points == null) {
+        console.log(`Cannot load collision "${node.name}"`);
+        continue;
+      }
 
-      geometry.setAttribute("position", new THREE.Float32BufferAttribute(chunk.positions, 3));
+      const attr = new THREE.Float32BufferAttribute(block.blocks[0].points, 3);
+      geometry.setAttribute("position", attr);
+      geometry.setIndex(Array.from(block.blocks[2].points));
 
       const material = world.materials["_defaultCollision"];
       const mesh = new THREE.Mesh(geometry, material);
@@ -361,14 +443,15 @@ export class VEXXLoader extends Loader {
       mesh.layers.set(2);
       group.add(mesh);
     }
+
     return group;
   }
 
-  private loadCamera(world: World, node: any): THREE.Object3D {
+  private loadCamera(world: World, node: VexxNodeCamera): THREE.Object3D {
     const camera = new THREE.PerspectiveCamera(45, 1.33, 32, 34);
 
     const helper = new THREE.CameraHelper(camera);
-    helper.matrix = new THREE.Matrix4()
+    helper.matrix = new THREE.Matrix4();
     camera.add(helper);
 
     const control = this.createControlPoint(node.name);
@@ -377,11 +460,15 @@ export class VEXXLoader extends Loader {
     return camera;
   }
 
-  private loadSound(world: World, node: any): THREE.Object3D {
+  private loadSound(world: World, node: VexxNodeSound): THREE.Object3D {
     return this.createControlPoint(node.name);
   }
 
-  private loadAirbrake(world: World, node: any): THREE.Object3D {
+  private loadSpeaker(world: World, node: VexxNodeSpeaker): THREE.Object3D {
+    return this.createControlPoint(node.name);
+  }
+
+  private loadAirbrake(world: World, node: VexxNodeAirbrake): THREE.Object3D {
     const object = this.loadNodeGeneric(world, node);
     object.name = node.name;
 
@@ -395,7 +482,7 @@ export class VEXXLoader extends Loader {
     return object;
   }
 
-  private loadControlPointMatrix(world: World, node: any): THREE.Object3D {
+  private loadControlPointMatrix(world: World, node: VexxNodeMatrix): THREE.Object3D {
     const matrix = new THREE.Matrix4();
     matrix.fromArray(node.matrix);
     const obj = this.createControlPoint(node.name);
@@ -404,7 +491,7 @@ export class VEXXLoader extends Loader {
     return obj;
   }
 
-  private loadControlPoint(world: World, node: any): THREE.Object3D {
+  private loadControlPoint(world: World, node: VexxNode): THREE.Object3D {
     return this.createControlPoint(node.name);
   }
 }
