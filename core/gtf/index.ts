@@ -1,6 +1,6 @@
 import { BufferRange } from "../utils/range";
 import { DXT1, DXT3, DXT5 } from "../utils/dxt";
-import { Textures } from "../utils/image";
+import { Mipmaps } from "../utils/mipmaps";
 
 enum CellGcmTexture {
   B8 = 0x81,
@@ -108,7 +108,7 @@ class GTFHeader {
 export class GTF {
   range = new BufferRange();
   header = new GTFHeader();
-  mipmaps: Textures = [];
+  mipmaps: Mipmaps = [];
 
   static async load(buffer: ArrayBuffer): Promise<GTF> {
     const ret = new GTF();
@@ -224,7 +224,7 @@ export class GTF {
     }
   }
 
-  export(): Textures {
+  export(): Mipmaps {
     return this.mipmaps;
   }
 }

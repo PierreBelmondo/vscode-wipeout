@@ -1,41 +1,83 @@
 import { vscode } from "../vscode";
-import { Textures } from "../../core/utils/image";
+
+import { Mipmaps } from "../../core/utils/mipmaps";
+import { DXT1, DXT3, DXT5 } from "../../core/utils/dxt";
+
 import { GTF } from "../../core/gtf";
 import { DDS } from "../../core/dds";
 
 class Editor {
-  ready: boolean;
   app: HTMLElement;
 
   constructor(app: HTMLElement) {
-    this.ready = false;
     this.app = app;
   }
 
   async load(array: Uint8Array, mime: string) {
-    let textures: Textures = [];
+    let mipmaps: Mipmaps = [];
     switch (mime) {
       case "image/gtf":
-        textures = await this.loadGTF(array);
+        mipmaps = await this.loadGTF(array);
         break;
       case "image/dds":
-        textures = await this.loadDDS(array);
+        mipmaps = await this.loadDDS(array);
         break;
     }
-    this.render(textures);
+    console.log(mipmaps);
+    mipmaps = this.decompress(mipmaps);
+    this.render(mipmaps);
   }
 
-  async loadGTF(array: Uint8Array): Promise<Textures> {
+  decompress(mipmaps: Mipmaps): Mipmaps {
+    const uncompressedMipmaps: Mipmaps = [];
+    for (const mipmap of mipmaps) {
+      switch (mipmap.type) {
+        case "RGBA":
+          uncompressedMipmaps.push(mipmap);
+          break;
+        case "DXT1":
+          uncompressedMipmaps.push({
+            type: "RGBA",
+            width: mipmap.width,
+            height: mipmap.height,
+            data: DXT1.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+          });
+          break;
+        case "DXT3":
+          uncompressedMipmaps.push({
+            type: "RGBA",
+            width: mipmap.width,
+            height: mipmap.height,
+            data: DXT3.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+          });
+          break;
+        case "DXT5":
+          uncompressedMipmaps.push({
+            type: "RGBA",
+            width: mipmap.width,
+            height: mipmap.height,
+            data: DXT5.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+          });
+          break;
+        default:
+          console.log(`Compression mode ${mipmap.type} is not supported`);
+      }
+    }
+    console.log(uncompressedMipmaps);
+    return uncompressedMipmaps;
+  }
+
+  async loadGTF(array: Uint8Array): Promise<Mipmaps> {
     const gtf = await GTF.load(array.buffer);
     return gtf.mipmaps;
   }
 
-  async loadDDS(array: Uint8Array): Promise<Textures> {
+  async loadDDS(array: Uint8Array): Promise<Mipmaps> {
     const dds = await DDS.load(array.buffer);
     return [];
   }
 
-  render(textures: Textures) {
+  render(textures: Mipmaps) {
     for (const texture of textures) {
       const canvas = document.createElement("canvas");
       if (!canvas) {

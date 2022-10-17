@@ -1,12 +1,12 @@
 
-export type Texture = {
+export type Mipmap = {
     type: "RGBA" | "DXT1" | "DXT3" | "DXT5"
     width: number,
     height: number,
-    data: Uint8Array,
+    data: Uint8Array | Uint8ClampedArray,
 };
 
-export type Textures = Texture[];
+export type Mipmaps = Mipmap[];
 
 /*
 export function createImageElement(width: number, height: number, rgba: Uint8ClampedArray): HTMLImageElement {

@@ -8,7 +8,7 @@
 
 import { BufferRange } from "../utils/range";
 import { DXT5 } from "../utils/dxt";
-import { Textures } from "../utils/image";
+import { Mipmaps } from "../utils/mipmaps";
 
 export type Image = {
   offset: number;
@@ -194,7 +194,7 @@ export class DDS {
   }
   */
 
-  export(): Textures {
+  export(): Mipmaps {
     return [];
   }
 }
