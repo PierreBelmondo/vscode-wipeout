@@ -53,7 +53,6 @@ export class VEXXLoader extends Loader {
 
     const children = vexx.filter((n) => n.typeInfo.type != Vexx4NodeType.TEXTURE);
     for (const child of children) {
-      console.log(child);
       const object = this.loadNode(world, child);
       world.scene.add(object);
     }
@@ -295,15 +294,15 @@ export class VEXXLoader extends Loader {
   }
 
   private loadLodGroup(world: World, node: VexxNodeLodGroup): THREE.Object3D {
-    const group = new THREE.Group();
-    group.name = node.name;
-    for (const child of node.children) {
+    const lod = new THREE.LOD();
+    lod.name = node.name;
+    let i = 0;
+    for (let child of node.children) {
       const object = this.loadNode(world, child);
       if (object === null) continue;
-      group.add(object);
-      break; // only first LOD for now
+      lod.addLevel(object, 100 * i++);
     }
-    return group;
+    return lod;
   }
 
   private loadAmbientLight(world: World, node: VexxNodeAmbientLight): THREE.AmbientLight {
