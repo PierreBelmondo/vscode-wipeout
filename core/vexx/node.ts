@@ -184,7 +184,6 @@ export class VexxNode {
   forEach(callback: (node: VexxNode) => void) {
     for (const child of this.children) {
       callback(child);
-      child.forEach(callback);
     }
   }
 

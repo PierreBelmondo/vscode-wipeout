@@ -262,27 +262,6 @@ export class Vexx {
     this.root.traverse(callback);
   }
 
-  cleanup(node?: VexxNode): boolean {
-    if (node === undefined) node = this.root;
-
-    for (let i = 0; i < node.children.length; i++) {
-      if (this.cleanup(node.children[i])) {
-        node.children.splice(i, 1);
-        i--;
-      }
-    }
-
-    if (node instanceof VexxNodeTransform) {
-      return node.children.length == 0;
-    }
-
-    if (node instanceof VexxNodeGroup) {
-      return node.children.length == 0;
-    }
-
-    return false;
-  }
-
   get textures(): VexxNodeTexture[] {
     switch (this.header.version) {
       case 4:
