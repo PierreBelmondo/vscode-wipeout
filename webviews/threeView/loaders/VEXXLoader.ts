@@ -74,7 +74,7 @@ export class VEXXLoader extends Loader {
         layer = "Animations";
         break;
       case "ANIM_TRANSFORM": // TODO
-        object = this.loadControlPoint(world, node);
+        object = this.loadAnimTransform(world, node as VexxNodeAnimTransform);
         layer = "Animations";
         break;
       case "BLOB": // TODO
@@ -308,6 +308,22 @@ export class VEXXLoader extends Loader {
   private loadAmbientLight(world: World, node: VexxNodeAmbientLight): THREE.AmbientLight {
     const value = ((255.0 * node.rgba[0]) << 16) + ((255.0 * node.rgba[1]) << 8) + 255.0 * node.rgba[2];
     return new THREE.AmbientLight(value);
+  }
+
+  private loadAnimTransform(world: World, node: VexxNodeAnimTransform): THREE.Object3D {
+    const group = new THREE.Group();
+    group.name = node.name;
+
+    const m = new THREE.Matrix4();
+    m.makeTranslation(node.x, node.y, node.z);
+    group.applyMatrix4(m);
+
+    for (const child of node.children) {
+      const object = this.loadNode(world, child);
+      if (object === null) continue;
+      group.add(object);
+    }
+    return group;
   }
 
   private loadMesh(world: World, node: VexxNodeMesh): THREE.Object3D {
