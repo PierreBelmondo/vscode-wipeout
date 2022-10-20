@@ -37,7 +37,7 @@
       "explorer/context": [
         {
           "command": "wipeout.unpack.psarc",
-          "when": "resourceExtname == /\\.psarc/i",
+          "when": "resourceExtname =~ /\\.psarc/i",
           "group": "wipeout@1"
         },
         {
