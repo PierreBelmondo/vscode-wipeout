@@ -3,6 +3,7 @@ import { World, Loader } from ".";
 import { GTF } from "../../../core/gtf";
 
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
+
 import { vscode } from "../../vscode";
 
 class AsyncMaterial {
@@ -89,21 +90,21 @@ class AsyncTexture {
           break;
         case "DXT1":
           {
-            const imd = [gtfMipmap as unknown as ImageData]
+            const imd = [gtfMipmap as unknown as ImageData];
             const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT1_Format);
             mimaps.push(texture);
           }
           break;
         case "DXT3":
           {
-            const imd = [gtfMipmap as unknown as ImageData]
+            const imd = [gtfMipmap as unknown as ImageData];
             const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT3_Format);
             mimaps.push(texture);
           }
           break;
         case "DXT5":
           {
-            const imd = [gtfMipmap as unknown as ImageData]
+            const imd = [gtfMipmap as unknown as ImageData];
             const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT5_Format);
             mimaps.push(texture);
           }
@@ -113,11 +114,13 @@ class AsyncTexture {
 
     this.texture = mimaps[0];
     this.texture.name = this.rcsTexture.filename;
+    this.texture.wrapS = THREE.RepeatWrapping
+    this.texture.wrapT = THREE.RepeatWrapping
+    this.texture.magFilter = THREE.LinearMipMapNearestFilter;
+    this.texture.minFilter = THREE.LinearMipMapNearestFilter;
     /* this does not work... incomplete mipmap chain ?
     this.texture.generateMipmaps = false;
     this.texture.mipmaps = mimaps.slice(1);
-    this.texture.magFilter = THREE.LinearMipMapNearestFilter;
-    this.texture.minFilter = THREE.LinearMipMapNearestFilter;
     */
     this.texture.needsUpdate = true;
 
@@ -141,6 +144,7 @@ export class RCSModelLoader extends Loader {
   }
 
   require(filename: string) {
+    if (filename in this.requiredFiles) return;
     console.log(`Require ${filename}`);
     this.requiredFiles.push(filename);
   }
@@ -205,12 +209,14 @@ export class RCSModelLoader extends Loader {
     const materialId = object.header.material_id;
     if (object.mesh instanceof RcsModelMesh1) {
       const mesh = this.loadMesh1(world, object.mesh, materialId);
+      mesh.userData.externalId = object.header.id;
       mesh.position.set(position.x, position.y, position.z);
       mesh.scale.set(scale.x, scale.y, scale.z);
       return mesh;
     }
     if (object.mesh instanceof RcsModelMesh5) {
       const mesh = this.loadMesh5(world, object.mesh, materialId);
+      mesh.userData.externalId = object.header.id;
       mesh.position.set(position.x, position.y, position.z);
       mesh.scale.set(scale.x, scale.y, scale.z);
       return mesh;

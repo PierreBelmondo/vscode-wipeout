@@ -45,17 +45,30 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
     webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
 
     // Wait for the webview to be properly ready before we init
-    webviewPanel.webview.onDidReceiveMessage((e) => {
+    webviewPanel.webview.onDidReceiveMessage(async (e) => {
       switch (e.type) {
         case "ready":
           if (document.uri.scheme === "untitled") {
             console.log("empty document");
           } else {
+            const filename = document.uri.path;
             const buffer = document.buffer.toString("base64");
-            const body = { buffer, mime: document.mime };
+            const body = { buffer, filename, mime: document.mime };
             console.log("sending file content to webview");
             this.postMessage(webviewPanel, "load", body);
           }
+          break;
+        case "require":
+          let filename = e.filename;
+          if (filename == ".rcsmodel") {
+            filename = document.uri.path;
+            filename = filename.replace(".vex", ".rcsmodel");
+            filename = filename.replace(document.root.path, "");
+          }
+          console.log(`Document requires external dependency: ${filename}`);
+          const buffer = await this.require(document, filename);
+          const body = { buffer, filename };
+          this.postMessage(webviewPanel, "import", body);
           break;
         case "log":
           console.log(e.message);
@@ -95,6 +108,13 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
 
   private postMessage(panel: vscode.WebviewPanel, type: string, body: any): void {
     panel.webview.postMessage({ type, body });
+  }
+
+  private async require(document: VexxDocument, filename: string) {
+    const uriImport = vscode.Uri.joinPath(document.root, filename);
+    const arrayTmp = await vscode.workspace.fs.readFile(uriImport);
+    const arrayBuffer = arrayTmp.buffer.slice(arrayTmp.byteOffset, arrayTmp.byteOffset + arrayTmp.byteLength);
+    return Buffer.from(arrayBuffer).toString("base64");
   }
 
   private exportGLTF(document: VexxDocument, gltf: any) {

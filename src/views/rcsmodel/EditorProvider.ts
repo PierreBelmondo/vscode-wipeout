@@ -51,8 +51,9 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
           if (document.uri.scheme === "untitled") {
             console.log("empty document");
           } else {
+            const filename = document.uri.path;
             const buffer = document.buffer.toString("base64");
-            const body = { buffer, mime: document.mime };
+            const body = { buffer, filename, mime: document.mime };
             console.log("sending file content to webview");
             this.postMessage(webviewPanel, "load", body);
           }
@@ -105,8 +106,8 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
   }
 
   private async require(document: RcsModelDocument, filename: string) {
-    const uriTexture = vscode.Uri.joinPath(document.root, filename);
-    const arrayTmp = await vscode.workspace.fs.readFile(uriTexture);
+    const uriImport = vscode.Uri.joinPath(document.root, filename);
+    const arrayTmp = await vscode.workspace.fs.readFile(uriImport);
     const arrayBuffer = arrayTmp.buffer.slice(arrayTmp.byteOffset, arrayTmp.byteOffset + arrayTmp.byteLength);
     return Buffer.from(arrayBuffer).toString("base64");
   }

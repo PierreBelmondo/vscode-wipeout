@@ -3,10 +3,15 @@ import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 import { AABB } from "../primitive/aabb";
 import { GU } from "../../utils/pspgu";
+import { Vec2, Vector3 } from "three";
 
 export class VexxNodeMesh extends VexxNode {
   info = new VexxNodeMeshHeader();
+  materials: VexxNodeMeshMaterial[] = [];
   chunks: VexxNodeMeshChunk[] = [];
+
+  externalId: number = 0;
+  chunkLinks: VexxNodeMeshLinkChunk[] = [];
 
   constructor(type = Vexx4NodeType.MESH) {
     super(type);
@@ -14,14 +19,35 @@ export class VexxNodeMesh extends VexxNode {
 
   override load(range: BufferRange): void {
     this.info = VexxNodeMeshHeader.load(range);
-
+    const dataRange = range.slice(this.info.size);
     if (this.info.reserved == 0x0000ff00) {
+      this.externalId = dataRange.getUint32(0);
+
+      let chunkLinksRange = dataRange.slice(48);
+      while (chunkLinksRange.size > 64) {
+        const chunkLink = VexxNodeMeshLinkChunk.load(chunkLinksRange);
+        this.chunkLinks.push(chunkLink);
+        chunkLinksRange = chunkLinksRange.slice(chunkLink.size);
+      }
     } else {
-      let chunksRange = range.slice(this.info.size);
+      let materialsRange = dataRange.clone();
+      for (let i = 0; i < this.info.meshCount; i++) {
+        const material = VexxNodeMeshMaterial.load(materialsRange);
+        this.materials.push(material);
+        materialsRange = materialsRange.slice(material.size);
+      }
+
+      const chunkStart = this.info.chunkStart;
+      if (chunkStart == 0) {
+        console.error("Failed to load shape info");
+        return;
+      }
+
+      let chunksRange = range.slice(chunkStart);
       while (chunksRange.size > 64) {
         const chunk = VexxNodeMeshChunk.load(chunksRange, this.typeInfo.version);
 
-        if (chunk.header.id >= this.info.materials.length) {
+        if (chunk.header.id >= this.materials.length) {
           console.warn(`Cannot add chunk with id ${chunk.header.id}`);
           break;
         }
@@ -36,6 +62,10 @@ export class VexxNodeMesh extends VexxNode {
       }
     }
   }
+
+  get isExternal(): boolean {
+    return this.externalId > 0;
+  }
 }
 
 class VexxNodeMeshHeader {
@@ -46,37 +76,49 @@ class VexxNodeMeshHeader {
   length2 = 0;
   reserved = 0;
   aabb = new AABB();
-  materials: VexxNodeMeshMaterial[] = [];
 
   static load(range: BufferRange): VexxNodeMeshHeader {
     const ret = new VexxNodeMeshHeader();
-    ret.type = range.getUint16(0);
-    ret.meshCount = range.getUint16(2);
-    ret.length1 = range.getUint32(4);
-    ret.length2 = range.getUint32(8);
-    ret.reserved = range.getUint32(12);
-
-    if (ret.length2) ret.range = range.slice(0, ret.length2);
-    else ret.range = range.slice(0, ret.length1);
-
-    if (ret.length1 + ret.length2 == 0) {
-      console.error("Failed to load shape info");
-      return ret;
-    }
-
+    ret.range = range.slice(0, 16 + 32);
+    ret.type = ret.range.getUint16(0);
+    ret.meshCount = ret.range.getUint16(2);
+    ret.length1 = ret.range.getUint32(4);
+    ret.length2 = ret.range.getUint32(8);
+    ret.reserved = ret.range.getUint32(12);
     const aabbRange = ret.range.slice(16, 16 + 32);
     ret.aabb = AABB.loadFromFloat32(aabbRange);
+    return ret;
+  }
 
-    if (ret.reserved == 0x0000ff00) {
-    } else {
-      let materialsRange = ret.range.slice(48);
-      for (let i = 0; i < ret.meshCount; i++) {
-        const material = VexxNodeMeshMaterial.load(materialsRange);
-        ret.materials.push(material);
-        materialsRange = materialsRange.slice(material.size);
-      }
-    }
+  get size(): number {
+    return this.range.size;
+  }
 
+  get chunkStart(): number {
+    if (this.length2) return this.length2;
+    return this.length1;
+  }
+}
+
+class VexxNodeMeshLinkChunk {
+  range = new BufferRange();
+  unknown3 = 0.0;
+  unknown4 = 0.0;
+  unknown5 = 0.0;
+  maybe_quat4 = { x: 0, y: 0, z: 0, w: 0 };
+
+  static load(range: BufferRange): VexxNodeMeshLinkChunk {
+    const ret = new VexxNodeMeshLinkChunk();
+    ret.range = range.slice(0, 64);
+    ret.unknown3 = range.getFloat32(12);
+    ret.unknown4 = range.getFloat32(16);
+    ret.unknown5 = range.getFloat32(20);
+    ret.maybe_quat4 = {
+      x: ret.range.getFloat32(48),
+      y: ret.range.getFloat32(52),
+      z: ret.range.getFloat32(56),
+      w: ret.range.getFloat32(60),
+    };
     return ret;
   }
 

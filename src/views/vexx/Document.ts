@@ -13,14 +13,25 @@ export class VexxDocument extends Disposable implements vscode.CustomDocument {
     return new VexxDocument(uri, Buffer.from(arraybuffer), "model/vnd.wipeout.vexx");
   }
 
+  static findDataRoot(uri: vscode.Uri) {
+    let tmpUri = vscode.Uri.from(uri);
+    while (!tmpUri.path.toLowerCase().endsWith("data")) {
+      tmpUri = vscode.Uri.joinPath(tmpUri, "..");
+      console.log(tmpUri.path);
+    }
+    return vscode.Uri.joinPath(tmpUri, "..");
+  }
+
   private readonly _uri: vscode.Uri;
 
+  private _root: vscode.Uri;
   private _buffer: Buffer;
   private _mime: string;
 
   constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
     super();
     this._uri = uri;
+    this._root = VexxDocument.findDataRoot(uri);
     this._buffer = buffer;
     this._mime = mime;
   }
@@ -29,6 +40,10 @@ export class VexxDocument extends Disposable implements vscode.CustomDocument {
     return this._uri;
   }
 
+  public get root() {
+    return this._root;
+  }
+  
   public get buffer(): Buffer {
     return this._buffer;
   }

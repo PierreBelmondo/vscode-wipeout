@@ -24,15 +24,87 @@ import { VexxNodeStartPosition } from "../../../core/vexx/v4/start_position";
 import { VexxNodeTrail } from "../../../core/vexx/v4/trail";
 import { VexxNodeTransform } from "../../../core/vexx/v4/transform";
 import { VexxNodeWeaponPad } from "../../../core/vexx/v4/weapon_pad";
-import { Vexx4NodeType } from "../../../core/vexx/v4/type";
 import { GU } from "../../../core/utils/pspgu";
 
+import { RCSModelLoader } from "./RCSMODELLoader";
+import { RcsModel } from "../../../core/rcs";
+
+import { vscode } from "../../vscode";
+import { VexxNodeAnimTransform } from "../../../core/vexx/v4/anim_transform";
+
+const rcsModelLoader = new RCSModelLoader();
+
+class AsyncRcsMesh {
+  world: World;
+  vexxMesh: VexxNodeMesh;
+  object: THREE.Object3D;
+
+  constructor(world: World, vexxMesh: VexxNodeMesh, object: THREE.Object3D) {
+    this.world = world;
+    this.vexxMesh = vexxMesh;
+    this.object = object;
+  }
+
+  match(filename: string) {
+    return true;
+  }
+
+  async load(world: World) {
+    const externalId = this.vexxMesh.externalId;
+    for (const child of world.scene.children) {
+      if (!child.userData.externalId) continue;
+      if (child.userData.externalId != externalId) continue;
+      if (this.object.parent) {
+        const parent = this.object.parent;
+        parent.remove(child);
+
+        for (let i = 0; i < this.vexxMesh.chunkLinks.length; i++) {
+          const chunkLink = this.vexxMesh.chunkLinks[i];
+          const submesh = child.children[i];
+
+          let m = new THREE.Matrix4();
+          const x = chunkLink.maybe_quat4.x;
+          const y = chunkLink.maybe_quat4.y;
+          const z = chunkLink.maybe_quat4.z;
+          m = m.makeTranslation(x, y, z);
+          const transform = new THREE.Group();
+          //transform.applyMatrix4(m);
+          transform.add(child);
+          parent.add(transform);
+        }
+      }
+    }
+  }
+}
+
 export class VEXXLoader extends Loader {
+  asyncRcsMeshes: AsyncRcsMesh[] = [];
+  requiredFiles: string[] = [];
+
   override async load(world: World, buffer: ArrayBufferLike) {
     const model = Vexx.load(buffer);
     this.loadTextures(world, model);
     this.loadScene(world, model);
+    for (const requiredFile of this.requiredFiles) vscode.require(requiredFile);
     return world;
+  }
+
+  require(filename: string) {
+    if (this.requiredFiles.indexOf(filename) != -1) return;
+    console.log(`Require ${filename}`);
+    this.requiredFiles.push(filename);
+  }
+
+  override async import(buffer: ArrayBufferLike, filename: string) {
+    if (filename.endsWith(".rcsmodel")) {
+      const tmpWorld = new World();
+      rcsModelLoader.load(tmpWorld, buffer);
+      for (const asyncRcsMesh of this.asyncRcsMeshes) {
+        if (asyncRcsMesh.match(filename)) asyncRcsMesh.load(tmpWorld);
+      }
+    } else {
+      rcsModelLoader.import(buffer, filename);
+    }
   }
 
   private loadTextures(world: World, vexx: Vexx) {
@@ -50,12 +122,8 @@ export class VEXXLoader extends Loader {
   private loadScene(world: World, vexx: Vexx) {
     const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x080808, 1);
     world.scene.add(hemiLight);
-
-    const children = vexx.filter((n) => n.typeInfo.type != Vexx4NodeType.TEXTURE);
-    for (const child of children) {
-      const object = this.loadNode(world, child);
-      world.scene.add(object);
-    }
+    const object = this.loadNode(world, vexx.root);
+    world.scene.add(object);
   }
 
   private loadNode(world: World, node: VexxNode): THREE.Object3D {
@@ -276,6 +344,7 @@ export class VEXXLoader extends Loader {
     const group = new THREE.Group();
     group.name = node.name;
     for (const child of node.children) {
+      if (child.typeName == "TEXTURE") continue;
       const object = this.loadNode(world, child);
       if (object === null) continue;
       group.add(object);
@@ -314,9 +383,11 @@ export class VEXXLoader extends Loader {
     const group = new THREE.Group();
     group.name = node.name;
 
-    const m = new THREE.Matrix4();
-    m.makeTranslation(node.x, node.y, node.z);
-    group.applyMatrix4(m);
+    if (node.unk3 == 0x01) {
+      const m = new THREE.Matrix4();
+      m.makeTranslation(node.x, node.y, node.z);
+      group.applyMatrix4(m);
+    }
 
     for (const child of node.children) {
       const object = this.loadNode(world, child);
@@ -327,6 +398,14 @@ export class VEXXLoader extends Loader {
   }
 
   private loadMesh(world: World, node: VexxNodeMesh): THREE.Object3D {
+    if (node.isExternal) {
+      this.require(".rcsmodel");
+      const point = this.createControlPoint(node.name);
+      const asyncMesh = new AsyncRcsMesh(world, node, point);
+      this.asyncRcsMeshes.push(asyncMesh);
+      return point;
+    }
+
     const primitiveType = (id: number) => {
       switch (id) {
         case GU.PrimitiveType.POINTS:
@@ -368,7 +447,7 @@ export class VEXXLoader extends Loader {
       }
 
       let material = world.materials["_default"];
-      const textureId = node.info.materials[chunkHeader.id].textureId;
+      const textureId = node.materials[chunkHeader.id].textureId;
       if (textureId in world.textures) {
         const map = world.textures[textureId];
         if (node.typeName == "MESH") material = new THREE.MeshPhongMaterial({ map });
