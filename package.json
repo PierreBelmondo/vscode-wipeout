@@ -15,6 +15,7 @@
   ],
   "activationEvents": [
     "onCommand:wipeout.unpack.psarc",
+    "onCommand:wipeout.unpack.wac",
     "onCommand:wipeout.unpack.wad",
     "onCustomEditor:wipeout.view.rcsmodel",
     "onCustomEditor:wipeout.view.vexx",
@@ -29,6 +30,10 @@
         "title": "Unpack PSARC"
       },
       {
+        "command": "wipeout.unpack.wac",
+        "title": "Unpack WAC/WAD"
+      },
+      {
         "command": "wipeout.unpack.wad",
         "title": "Unpack WAD"
       }
@@ -38,6 +43,11 @@
         {
           "command": "wipeout.unpack.psarc",
           "when": "resourceExtname =~ /\\.psarc/i",
+          "group": "wipeout@1"
+        },
+        {
+          "command": "wipeout.unpack.wac",
+          "when": "resourceExtname =~ /\\.wac/i",
           "group": "wipeout@1"
         },
         {
