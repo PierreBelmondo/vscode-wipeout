@@ -204,16 +204,19 @@ export class RCSModelLoader extends Loader {
     const position = object.header.position;
     const scale = object.header.scale;
     const materialId = object.header.material_id;
+
+    const userData = { externalId: object.header.id }
+
     if (object.mesh instanceof RcsModelMesh1) {
       const mesh = this.loadMesh1(world, object.mesh, materialId);
-      mesh.userData.externalId = object.header.id;
+      mesh.userData = userData;
       mesh.position.set(position.x, position.y, position.z);
       mesh.scale.set(scale.x, scale.y, scale.z);
       return mesh;
     }
     if (object.mesh instanceof RcsModelMesh5) {
       const mesh = this.loadMesh5(world, object.mesh, materialId);
-      mesh.userData.externalId = object.header.id;
+      mesh.userData = userData;
       mesh.position.set(position.x, position.y, position.z);
       mesh.scale.set(scale.x, scale.y, scale.z);
       return mesh;

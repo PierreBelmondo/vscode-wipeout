@@ -7,6 +7,7 @@
     "url": "https://github.com/PierreBelmondo/vscode-wipeout.git"
   },
   "version": "0.0.6",
+  "publisher": "PierreBelmondo",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -20,7 +21,8 @@
     "onCustomEditor:wipeout.view.rcsmodel",
     "onCustomEditor:wipeout.view.vexx",
     "onCustomEditor:wipeout.view.gtf",
-    "onCustomEditor:wipeout.view.dds"
+    "onCustomEditor:wipeout.view.dds",
+    "onView:sceneGraph"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -98,7 +100,15 @@
         ],
         "priority": "default"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "sceneGraph",
+          "name": "Scene Graph"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

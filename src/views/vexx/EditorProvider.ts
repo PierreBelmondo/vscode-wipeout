@@ -5,6 +5,7 @@ import { VexxDocument } from "./Document";
 import { WebviewCollection } from "../WebviewCollection";
 import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
+import { bus } from "../../helpers/bus";
 import { TextEncoder } from "util";
 
 /**
@@ -31,7 +32,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
 
   constructor(private readonly _context: vscode.ExtensionContext) {}
 
-  async openCustomDocument(uri: vscode.Uri, openContext: { backupId?: string }, _token: vscode.CancellationToken): Promise<VexxDocument> {
+  async openCustomDocument(uri: vscode.Uri, _openContext: { backupId?: string }, _token: vscode.CancellationToken): Promise<VexxDocument> {
     const document: VexxDocument = await VexxDocument.create(uri);
     const listeners: vscode.Disposable[] = [];
     document.onDidDispose(() => disposeAll(listeners));
@@ -79,8 +80,24 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
           const gltf = e.message.body;
           this.exportGLTF(document, gltf);
           return;
+        case "scene":
+          document.scene = e.body;
+          if (webviewPanel.active) {
+            bus.fireDidChangeActiveCustomDocument(document);
+          }
+          break;
       }
     });
+
+    webviewPanel.onDidChangeViewState((e) => {
+      if (e.webviewPanel.active) {
+        bus.fireDidChangeActiveCustomDocument(document);
+      }
+    });
+
+    if (webviewPanel.active) {
+      bus.fireDidChangeActiveCustomDocument(document);
+    }
   }
 
   private readonly _onDidChangeCustomDocument = new vscode.EventEmitter<vscode.CustomDocumentEditEvent<VexxDocument>>();

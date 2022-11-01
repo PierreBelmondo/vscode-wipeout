@@ -155,6 +155,9 @@ class Editor {
     */
 
     this.render();
+
+    const scene = this.world.scene.toJSON();
+    vscode.scene(scene)
   }
 
   render() {

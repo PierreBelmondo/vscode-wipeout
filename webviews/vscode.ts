@@ -18,6 +18,10 @@ class VSC {
   async exportGTLF(gltf: any) {
     _vscode.postMessage({ type: "export.gltf", body: gltf });
   }
+
+  async scene(scene: any) {
+    _vscode.postMessage({ type: "scene", body: scene });
+  }
 }
 
 export const vscode = new VSC();

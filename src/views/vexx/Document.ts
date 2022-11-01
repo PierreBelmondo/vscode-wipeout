@@ -30,12 +30,16 @@ export class VexxDocument extends Disposable implements vscode.CustomDocument {
   private _buffer: Buffer;
   private _mime: string;
 
+  public scene: any;
+
   constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
     super();
     this._uri = uri;
     this._root = VexxDocument.findDataRoot(uri);
     this._buffer = buffer;
     this._mime = mime;
+
+    this.scene = {};
   }
 
   public get uri() {
