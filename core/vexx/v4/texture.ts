@@ -1,3 +1,4 @@
+import { Mipmaps } from "@core/utils/mipmaps";
 import { BufferRange } from "../../utils/range";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
@@ -24,7 +25,9 @@ export class VexxNodeTexture extends VexxNode {
     external: false,
   };
 
-  rgba = new Uint8ClampedArray(this.properties.width * this.properties.height);
+  cmapRange = new BufferRange();
+  dataRange = new BufferRange();
+  mipmaps: Mipmaps = [];
 
   constructor() {
     super(Vexx4NodeType.TEXTURE);
@@ -49,65 +52,70 @@ export class VexxNodeTexture extends VexxNode {
     // unknown: 8 bytes (32 -> 40)
     // unknown: 8 bytes (40 -> 48)
     // unknown: 8 bytes (48 -> 56)
-    this.properties.external = range.getUint32(48) == 0xFFFFFFFF;
+    this.properties.external = range.getUint32(48) == 0xffffffff;
     this.properties.name = range.slice(56).getString();
   }
 
-  loadColormap(range: BufferRange) {
-    let width = 1;
-    let height = range.size;
-
-    if (range.size / 4 == 16) {
-      width = height = 4;
-    } else if (range.size / 4 == 256) {
-      width = height = 16;
-    }
-
-    let rgba = new Uint8ClampedArray(width * height * 4);
-    for (let i = 0; i < width * height; i++) {
-      rgba[i * 4 + 0] = range.getUint8(i * 4 + 0);
-      rgba[i * 4 + 1] = range.getUint8(i * 4 + 1);
-      rgba[i * 4 + 2] = range.getUint8(i * 4 + 2);
-      rgba[i * 4 + 3] = range.getUint8(i + 4 + 3);
-    }
+  get swizzle(): boolean {
+    return !!(this.properties.format & 1);
   }
 
-  loadTexture(range: BufferRange) {
-    const cmap = range.slice(0, this.properties.cmapSize);
-    this.loadColormap(cmap);
+  setCmapRange(begin: number, end: number) {
+    this.cmapRange = this.range.reset(begin, end);
+  }
 
-    const data = range.slice(this.properties.cmapSize);
+  setDataRange(begin: number, end: number) {
+    this.dataRange = this.range.reset(begin, end);
+  }
 
-    const width = this.properties.width;
-    const height = this.properties.height;
+  loadTexture() {
+    this.mipmaps = [];
+
+    const bpp = this.properties.bpp == 4 ? 4 : 8;
+    const cw = this.cmapRange.size == 64 ? 32 : 16;
+
+    let width = this.properties.width;
+    let height = this.properties.height;
+    let offset = 0;
+
+    console.log(this.name);
+    for (let i = 0; i < this.properties.mipmaps; i++) {
+      const size = Math.floor((Math.max(width, cw) * height * bpp) / 8);
+      const mipmapRange = this.dataRange.slice(offset, offset + size);
+      this.loadMipmap(mipmapRange, width, height);
+      offset += size;
+      width /= 2;
+      height /= 2;
+    }
+
+    console.log(offset, this.dataRange.size, this.dataRange.size - offset);
+  }
+
+  loadMipmap(range: BufferRange, width: number, height: number) {
+    const cw = this.cmapRange.size == 64 ? 32 : 16;
+    width = Math.max(width, cw);
+
     const is = width * height;
     const bpp = this.properties.bpp == 4 ? 4 : 8;
-    const swizzled = !!(this.properties.format & 1);
-
-    let amin = 255;
-    let amax = 0;
 
     let rgba = new Uint8ClampedArray(is * 4);
     for (let i = 0; i < width * height; i++) {
       let ci = 0;
       if (bpp == 4) {
-        ci = data.getUint8(Math.floor(i / 2));
+        ci = range.getUint8(Math.floor(i / 2));
         ci = i % 2 == 0 ? ci & 0xf : ci >> 4;
       } else {
-        ci = data.getUint8(i);
+        ci = range.getUint8(i);
       }
-      amin = Math.min(ci, amin);
-      amax = Math.max(ci, amax);
-      rgba[i * 4 + 0] = cmap.getUint8(ci * 4 + 0);
-      rgba[i * 4 + 1] = cmap.getUint8(ci * 4 + 1);
-      rgba[i * 4 + 2] = cmap.getUint8(ci * 4 + 2);
-      rgba[i * 4 + 3] = cmap.getUint8(ci + 4 + 3);
+      rgba[i * 4 + 0] = this.cmapRange.getUint8(ci * 4 + 0);
+      rgba[i * 4 + 1] = this.cmapRange.getUint8(ci * 4 + 1);
+      rgba[i * 4 + 2] = this.cmapRange.getUint8(ci * 4 + 2);
+      rgba[i * 4 + 3] = this.cmapRange.getUint8(ci + 4 + 3);
     }
 
-    //console.log("indices min, max, bpp", amin, amax, bpp);
-    if (swizzled) {
+    if (this.swizzle) {
       const ch = 8;
-      const cw = cmap.size == 64 ? 32 : 16;
+      const cw = this.cmapRange.size == 64 ? 32 : 16;
       const cs = ch * cw;
 
       const tmp = new Uint8ClampedArray(is * 4);
@@ -130,6 +138,7 @@ export class VexxNodeTexture extends VexxNode {
       }
       rgba = tmp;
     }
-    this.rgba = rgba;
+
+    this.mipmaps.push({ type: "RGBA", width, height, data: rgba });
   }
 }

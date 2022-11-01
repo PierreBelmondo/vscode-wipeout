@@ -116,12 +116,9 @@ class AsyncTexture {
     this.texture.name = this.rcsTexture.filename;
     this.texture.wrapS = THREE.RepeatWrapping
     this.texture.wrapT = THREE.RepeatWrapping
-    this.texture.magFilter = THREE.LinearMipMapNearestFilter;
-    this.texture.minFilter = THREE.LinearMipMapNearestFilter;
-    /* this does not work... incomplete mipmap chain ?
-    this.texture.generateMipmaps = false;
-    this.texture.mipmaps = mimaps.slice(1);
-    */
+    this.texture.magFilter = THREE.LinearFilter;
+    //this.texture.minFilter = THREE.LinearMipmapLinearFilter;
+    //this.texture.mipmaps = mimaps.map((texture) => texture.image);
     this.texture.needsUpdate = true;
 
     for (const asyncMaterial of this.asyncMaterials) asyncMaterial.import(this);

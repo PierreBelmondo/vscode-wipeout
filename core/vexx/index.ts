@@ -188,12 +188,12 @@ class VexxHeader {
     return this.size + this.nodesSize;
   }
 
-  nodesRange(range: BufferRange) {
-    return range.slice(this.nodesBegin, this.nodesBegin + this.nodesSize);
+  nodesRange() {
+    return this.range.reset(this.nodesBegin, this.nodesBegin + this.nodesSize);
   }
 
-  texturesRange(range: BufferRange) {
-    return range.slice(this.texturesBegin, this.texturesBegin + this.texturesSize);
+  texturesRange() {
+    return this.range.reset(this.texturesBegin, this.texturesBegin + this.texturesSize);
   }
 }
 
@@ -216,8 +216,8 @@ export class Vexx {
 
     ret.header = VexxHeader.load(ret.range);
 
-    const nodesRange = ret.header.nodesRange(ret.range);
-    const texturesRange = ret.header.texturesRange(ret.range);
+    const nodesRange = ret.header.nodesRange();
+    const texturesRange = ret.header.texturesRange();
 
     const totalSize = ret.header.size + nodesRange.size + texturesRange.size;
     if (totalSize != buffer.byteLength) console.warn("Total expected size is different than file size");
@@ -227,12 +227,13 @@ export class Vexx {
     ret.root = node;
 
     if (texturesRange.size > 0) {
-      let offset = 0;
+      let offset = texturesRange.begin;
       for (const texture of ret.textures) {
-        const size = texture.properties.cmapSize + texture.properties.dataSize;
-        const textureRange = texturesRange.slice(offset, offset + size);
-        texture.loadTexture(textureRange);
-        offset += size;
+        texture.setCmapRange(offset, offset + texture.properties.cmapSize);
+        offset += texture.properties.cmapSize;
+        texture.setDataRange(offset, offset + texture.properties.dataSize);
+        offset += texture.properties.dataSize;
+        texture.loadTexture();
       }
     }
 

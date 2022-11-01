@@ -22,7 +22,7 @@ export class VexxNodeHeader {
     return this.range.size;
   }
 
-  dataRange(range: BufferRange) {
+  bodyRange(range: BufferRange) {
     return range.slice(this.size, this.size + this.dataLength);
   }
 
@@ -133,7 +133,7 @@ export class VexxNode {
       };
       instance.header = header;
       instance.range = range.slice(0, instance.header.size + instance.header.dataLength);
-      instance.load(instance.dataRange);
+      instance.load(instance.bodyRange);
       return instance;
     }
 
@@ -141,7 +141,7 @@ export class VexxNode {
     instance.typeInfo = typeInfo;
     instance.header = header;
     instance.range = range.slice(0, instance.header.size + instance.header.dataLength);
-    instance.load(instance.dataRange);
+    instance.load(instance.bodyRange);
     return instance;
   }
 
@@ -153,8 +153,8 @@ export class VexxNode {
     return this.range.buffer;
   }
 
-  data(): ArrayBuffer {
-    return this.dataRange.buffer;
+  body(): ArrayBuffer {
+    return this.bodyRange.buffer;
   }
 
   get typeName(): string {
@@ -171,8 +171,8 @@ export class VexxNode {
     return size;
   }
 
-  get dataRange(): BufferRange {
-    return this.header.dataRange(this.range);
+  get bodyRange(): BufferRange {
+    return this.header.bodyRange(this.range);
   }
 
   private dumpChildren(): any[] {

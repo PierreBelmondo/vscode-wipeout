@@ -27,10 +27,10 @@ import { VexxNodeWeaponPad } from "../../../core/vexx/v4/weapon_pad";
 import { GU } from "../../../core/utils/pspgu";
 
 import { RCSModelLoader } from "./RCSMODELLoader";
-import { RcsModel } from "../../../core/rcs";
 
 import { vscode } from "../../vscode";
 import { VexxNodeAnimTransform } from "../../../core/vexx/v4/anim_transform";
+import { Mipmaps } from "../../../core/utils/mipmaps";
 
 const rcsModelLoader = new RCSModelLoader();
 
@@ -62,13 +62,20 @@ class AsyncRcsMesh {
           const chunkLink = this.vexxMesh.chunkLinks[i];
           const submesh = child.children[i];
 
-          let m = new THREE.Matrix4();
-          const x = chunkLink.maybe_quat4.x;
-          const y = chunkLink.maybe_quat4.y;
-          const z = chunkLink.maybe_quat4.z;
-          m = m.makeTranslation(x, y, z);
           const transform = new THREE.Group();
-          //transform.applyMatrix4(m);
+
+          /*
+          let m = new THREE.Matrix4();
+          const x = child.userData.unknownCoordinates.x;
+          const y = child.userData.unknownCoordinates.y;
+          const z = child.userData.unknownCoordinates.z;
+          const w = child.userData.unknownCoordinates.w;
+          const e = new THREE.Euler(x,y,z);
+          const q = new THREE.Quaternion(x,y,z,w);         
+          m = m.makeRotationFromQuaternion(q);
+          transform.applyMatrix4(m);
+          */
+
           transform.add(child);
           parent.add(transform);
         }
@@ -107,14 +114,50 @@ export class VEXXLoader extends Loader {
     }
   }
 
+  generateMissingMipmaps(mipmaps: Mipmaps) {
+    const last = mipmaps[mipmaps.length - 1];
+    let width = last.width;
+    let height = last.height;
+    while (width > 1) {
+      width = Math.floor(width / 2);
+      height = Math.floor(height / 2);
+      const data = new Uint8ClampedArray(height * width * 4);
+      for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+          for (let i = 0; i < 4; i++) {
+            let c = 0;
+            c += last.data[4 * (x + 0 + (y + 0) * width) + i];
+            c += last.data[4 * (x + 1 + (y + 0) * width) + i];
+            c += last.data[4 * (x + 0 + (y + 1) * width) + i];
+            c += last.data[4 * (x + 1 + (y + 1) * width) + i];
+            c = 255;
+            data[4 * (x + y * width) + i] = Math.round(c / 4);
+          }
+        }
+      }
+      mipmaps.push({ type: "RGBA", width, height, data });
+    }
+    return mipmaps;
+  }
+
   private loadTextures(world: World, vexx: Vexx) {
     for (const vexxTexture of vexx.textures) {
-      const texture = new THREE.DataTexture(vexxTexture.rgba, vexxTexture.properties.width, vexxTexture.properties.height, THREE.RGBAFormat);
+      let mipmaps: THREE.Texture[] = [];
+      //vexxTexture.mipmaps = this.generateMissingMipmaps(vexxTexture.mipmaps);
+      for (const vexxMipmap of vexxTexture.mipmaps) {
+        const mipmap = new THREE.DataTexture(vexxMipmap.data, vexxMipmap.width, vexxMipmap.height, THREE.RGBAFormat);
+        mipmaps.push(mipmap);
+      }
+      const texture = mipmaps[0];
+      const images = mipmaps.map((texture) => texture.image, mipmaps);
+      //texture.mipmaps = images;
       texture.magFilter = THREE.LinearFilter;
       texture.minFilter = THREE.LinearFilter;
+      //texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       texture.needsUpdate = true;
+      texture.name = vexxTexture.name;
       world.textures[vexxTexture.properties.id] = texture;
     }
   }
@@ -384,8 +427,12 @@ export class VEXXLoader extends Loader {
     group.name = node.name;
 
     if (node.unk3 == 0x01) {
+      const m1 = new THREE.Matrix4();
+      m1.makeRotationFromEuler(new THREE.Euler(-0.1, node.x > 0 ? -0.08 : 0.08, node.x > 0 ? -0.47 : 0.47));
+      group.applyMatrix4(m1);
+
       const m = new THREE.Matrix4();
-      m.makeTranslation(node.x, node.y, node.z);
+      m.makeTranslation((node.x - 0.5) * 1.3, node.y - 0.05, node.z - 2.22);
       group.applyMatrix4(m);
     }
 
