@@ -17,7 +17,9 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
     return vscode.window.registerCustomEditorProvider(VexxEditorProvider.viewType, new VexxEditorProvider(context), {
-      webviewOptions: {},
+      webviewOptions: {
+        retainContextWhenHidden: true,
+      },
       supportsMultipleEditorsPerDocument: false,
     });
   }

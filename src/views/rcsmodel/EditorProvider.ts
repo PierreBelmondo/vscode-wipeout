@@ -17,7 +17,9 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
     return vscode.window.registerCustomEditorProvider(RcsModelEditorProvider.viewType, new RcsModelEditorProvider(context), {
-      webviewOptions: {},
+      webviewOptions: {
+        retainContextWhenHidden: true,
+      },
       supportsMultipleEditorsPerDocument: false,
     });
   }
