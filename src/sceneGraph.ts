@@ -40,8 +40,12 @@ export class SceneGraphProvider implements vscode.TreeDataProvider<SceneNode> {
 
     if (element === undefined) {
       const nodes = [] as SceneNode[];
+      if ("object" in scene) {
       nodes.push(new SceneWorld(scene.object));
+      }
+      if ("textures" in scene) {
       nodes.push(new SceneTextures(scene.textures));
+      }
       return nodes;
     } else {
       return element.getChildren();
