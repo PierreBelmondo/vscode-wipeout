@@ -34,8 +34,6 @@ steps:
 - bash: |
     echo ">>> Compile vscode-wipeout"
     npm install && npm run compile
-    echo ">>> Run sample integration test"
-    echo npm install && npm run compile && npm run test
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
