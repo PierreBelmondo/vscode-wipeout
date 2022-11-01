@@ -32,7 +32,9 @@ export class SceneGraphProvider implements vscode.TreeDataProvider<SceneNode> {
   }
 
   private getSceneGraphInDocument(element?: SceneNode): SceneNode[] {
-    if (this._currentDocument == null) return [];
+    if (this._currentDocument === null) {
+      return [];
+    }
 
     const scene = this._currentDocument.scene;
 
@@ -93,8 +95,9 @@ export class SceneObject3D extends SceneNode {
   };
 
   public override getChildren(): SceneNode[] {
-    if (!("children" in this.json))
+    if (!("children" in this.json)) {
       return [];
+    }
 
     const nodes = [] as SceneNode[];
     for (const object of this.json.children) {
