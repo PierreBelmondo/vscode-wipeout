@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 16.000004 16"
+   version="1.1"
+   id="svg856"
+   width="16.000004"
+   height="16"
+   sodipodi:docname="dark_texture-material_alternate.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview841"
+     showgrid="false"
+     inkscape:zoom="17.698578"
+     inkscape:cx="12.849226"
+     inkscape:cy="11.110159"
+     inkscape:window-x="1592"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg856" />
+  <metadata
+     id="metadata862">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs860" />
+  <style
+     id="style847">.st0{opacity:0}.st0,.st1{fill:#2d2d30}.st2{fill:#c5c5c5}.st3{fill:#2b282e}</style>
+  <style
+     id="style914">.st0{opacity:0}.st0,.st1{fill:#f6f6f6}.st2{fill:#424242}.st3{fill:#f0eff1}</style>
+  <path
+     id="rect1560-0"
+     style="opacity:0.998;fill:#2d2d2d;fill-opacity:1;stroke-width:0.286102;stop-color:#000000"
+     d="M 0 0 L 0 16 L 16 16 L 16 0 L 0 0 z M 4.5 1 L 8 1 L 8 4.5 L 11.5 4.5 L 11.5 1 L 15 1 L 15 4.5 L 11.5 4.5 L 11.5 8 L 15 8 L 15 11.5 L 11.5 11.5 L 11.5 15 L 8 15 L 8 11.5 L 4.5 11.5 L 4.5 15 L 1 15 L 1 11.5 L 4.5 11.5 L 4.5 8 L 1 8 L 1 4.5 L 4.5 4.5 L 4.5 1 z M 4.5 4.5 L 4.5 8 L 8 8 L 8 4.5 L 4.5 4.5 z M 8 8 L 8 11.5 L 11.5 11.5 L 11.5 8 L 8 8 z " />
+</svg>

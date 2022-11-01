@@ -41,10 +41,10 @@ export class SceneGraphProvider implements vscode.TreeDataProvider<SceneNode> {
     if (element === undefined) {
       const nodes = [] as SceneNode[];
       if ("object" in scene) {
-      nodes.push(new SceneWorld(scene.object));
+        nodes.push(new SceneWorld(scene.object));
       }
       if ("textures" in scene) {
-      nodes.push(new SceneTextures(scene.textures));
+        nodes.push(new SceneTextures(scene.textures));
       }
       return nodes;
     } else {
@@ -74,8 +74,8 @@ export class SceneWorld extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "dependency.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "dependency.svg"),
+    light: path.join(__filename, "..", "..", "resources", "images", "light", "world.svg"),
+    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "world.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -94,8 +94,8 @@ export class SceneObject3D extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "dependency.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "dependency.svg"),
+    light: path.join(__filename, "..", "..", "resources", "images", "light", "cube.svg"),
+    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "cube.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -117,8 +117,8 @@ export class SceneTextures extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "dependency.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "dependency.svg"),
+    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
+    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -136,8 +136,8 @@ export class SceneTexture extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "dependency.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "dependency.svg"),
+    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
+    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
   };
 
   public override getChildren(): SceneNode[] {
