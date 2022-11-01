@@ -3,7 +3,6 @@ declare var acquireVsCodeApi: any;
 const _vscode = acquireVsCodeApi();
 
 class VSC {
-  // Signal to VS Code that the webview is initialized.
   async ready() {
     _vscode.postMessage({ type: "ready" });
   }

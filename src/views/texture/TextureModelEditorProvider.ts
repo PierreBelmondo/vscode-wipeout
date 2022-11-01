@@ -27,7 +27,7 @@ export abstract class TextureModelEditorProvider<TDM extends TextureModelDocumen
         if (document.uri.scheme === "untitled") {
           console.log("empty document");
         } else {
-          const buffer = document.buffer.toString('base64')
+          const buffer = document.buffer.toString("base64");
           const body = { buffer, mime: document.mime };
           console.log("sending file content to webview");
           this.postMessage(webviewPanel, "load", body);

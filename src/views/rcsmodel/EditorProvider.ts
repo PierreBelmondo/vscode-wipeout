@@ -62,7 +62,7 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
           break;
         case "require":
           const filename = e.filename;
-          console.log(`Document requires external dependency: ${filename}`)
+          console.log(`Document requires external dependency: ${filename}`);
           const buffer = await this.require(document, filename);
           const body = { buffer, filename };
           this.postMessage(webviewPanel, "import", body);

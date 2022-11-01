@@ -8,7 +8,9 @@ import { Disposable } from "../../helpers/dispose";
 export class VexxDocument extends Disposable implements vscode.CustomDocument {
   static async create(uri: vscode.Uri): Promise<VexxDocument> {
     let array = new Uint8Array();
-    if (uri.scheme !== "untitled") array = await vscode.workspace.fs.readFile(uri);
+    if (uri.scheme !== "untitled") {
+      array = await vscode.workspace.fs.readFile(uri);
+    }
     const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
     return new VexxDocument(uri, Buffer.from(arraybuffer), "model/vnd.wipeout.vexx");
   }

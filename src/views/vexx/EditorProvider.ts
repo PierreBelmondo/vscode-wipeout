@@ -8,9 +8,9 @@ import { getNonce } from "../../helpers/util";
 import { TextEncoder } from "util";
 
 /**
- * Provider for RCS smodel editors.
+ * Provider for VEXX model editors.
  *
- * RCS model editors are used for `.vexx` files.
+ * VEXX model editors are used for `.vexx` files.
  */
 export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<VexxDocument> {
   private static readonly viewType = "wipeout.view.vexx";
@@ -62,7 +62,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
           break;
         case "require":
           let filename = e.filename;
-          if (filename == ".rcsmodel") {
+          if (filename === ".rcsmodel") {
             filename = document.uri.path;
             filename = filename.replace(".vex", ".rcsmodel");
             filename = filename.replace(document.root.path, "");

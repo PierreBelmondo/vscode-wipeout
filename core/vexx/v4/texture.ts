@@ -14,13 +14,14 @@ export class VexxNodeTexture extends VexxNode {
     dataSize: 0,
     name: "",
     alphaTest: 0, // not sure
-    diffuse: { // not sure
+    diffuse: {
+      // not sure
       r: 0,
       g: 0,
       b: 0,
       a: 0,
     },
-    external: false
+    external: false,
   };
 
   rgba = new Uint8ClampedArray(this.properties.width * this.properties.height);
