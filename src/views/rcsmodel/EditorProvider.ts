@@ -3,8 +3,8 @@ import * as path from "path";
 
 import { RcsModelDocument } from "./Document";
 import { WebviewCollection } from "../WebviewCollection";
-import { disposeAll } from "../../dispose";
-import { getNonce } from "../../util";
+import { disposeAll } from "../../helpers/dispose";
+import { getNonce } from "../../helpers/util";
 import { TextEncoder } from "util";
 
 /**

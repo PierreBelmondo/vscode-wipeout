@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { TextureModelEditorProvider } from "./TextureModelEditorProvider";
 import { GtfModelDocument } from "./GtfModelDocument";
-import { disposeAll } from "../../dispose";
+import { disposeAll } from "../../helpers/dispose";
 
 export class GtfModelEditorProvider extends TextureModelEditorProvider<GtfModelDocument> {
   private static readonly viewType = "wipeout.view.gtf";

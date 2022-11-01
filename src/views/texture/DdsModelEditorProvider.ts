@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { TextureModelEditorProvider } from "./TextureModelEditorProvider";
 import { DdsModelDocument } from "./DdsModelDocument";
-import { disposeAll } from "../../dispose";
+import { disposeAll } from "../../helpers/dispose";
 
 export class DdsModelEditorProvider extends TextureModelEditorProvider<DdsModelDocument> {
   private static readonly viewType = "wipeout.view.dds";

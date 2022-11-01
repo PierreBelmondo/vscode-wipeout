@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { Disposable } from "../../dispose";
+import { Disposable } from "../../helpers/dispose";
 
 /**
  * Define the document (the data model) used for vexx files.

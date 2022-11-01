@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { TextureModelDocument } from "./TextureModelDocument";
 import { WebviewCollection } from "../WebviewCollection";
-import { getNonce } from "../../util";
+import { getNonce } from "../../helpers/util";
 
 /**
  * Provider for Texture editors.
