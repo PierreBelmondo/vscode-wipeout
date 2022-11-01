@@ -82,6 +82,11 @@ async function getWebviewConfig(mode, env, entry) {
       filename: "[name].js",
       path: path.resolve(__dirname, "dist"),
     },
+    performance: {
+      hints: false,
+      maxEntrypointSize: 2048000,
+      maxAssetSize: 2048000,
+    },
     optimization: {
       minimizer: [
         // @ts-ignore
@@ -151,7 +156,7 @@ async function getWebviewConfig(mode, env, entry) {
       alias: {
         "@compat": path.join(__dirname, "compat/browser"),
         "@core": path.join(__dirname, "core"),
-      }
+      },
     },
     plugins: plugins,
   };
@@ -238,8 +243,8 @@ async function getExtensionConfig(mode, env) {
     module: {
       rules: [
         {
-          exclude: [ /node_modules/ ],
-          include: [basePath, corePath ],
+          exclude: [/node_modules/],
+          include: [basePath, corePath],
           test: /\.tsx?$/,
           use: env.esbuild
             ? {
@@ -267,7 +272,7 @@ async function getExtensionConfig(mode, env) {
       alias: {
         "@compat": path.join(__dirname, "compat/node"),
         "@core": path.join(__dirname, "core"),
-      }
+      },
     },
     externals: {
       vscode: "commonjs vscode",
