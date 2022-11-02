@@ -1,7 +1,7 @@
 {
   "name": "wipeout",
-  "displayName": "wipeout",
-  "description": "Wipeout Modding",
+  "displayName": "Belmondo's Vision - WipEout Modding Tool",
+  "description": "WipEout Modding Extension",
   "icon": "resources/images/logo.png",
   "repository": {
     "type": "git",
