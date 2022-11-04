@@ -43,6 +43,9 @@ export class SceneGraphProvider implements vscode.TreeDataProvider<SceneNode> {
       if ("object" in scene) {
         nodes.push(new SceneWorld(scene.object));
       }
+      if ("materials" in scene) {
+        nodes.push(new SceneMaterials(scene.materials));
+      }
       if ("textures" in scene) {
         nodes.push(new SceneTextures(scene.textures));
       }
@@ -66,6 +69,8 @@ export class SceneNode extends vscode.TreeItem {
   public getChildren(): SceneNode[] {
     return [];
   }
+
+  contextValue = "sceneNode";
 }
 
 export class SceneWorld extends SceneNode {
@@ -85,12 +90,21 @@ export class SceneWorld extends SceneNode {
     }
     return nodes;
   }
+
+  contextValue = "sceneWorld";
 }
 
 export class SceneObject3D extends SceneNode {
   constructor(json: any) {
     super(json.name, json);
     this.description = json.type;
+    if ("userData" in json) {
+      if ("format" in json.userData) {
+        if ((json.userData.format = "VEXX")) {
+          this.description = json.userData.type;
+        }
+      }
+    }
   }
 
   iconPath = {
@@ -143,4 +157,44 @@ export class SceneTexture extends SceneNode {
   public override getChildren(): SceneNode[] {
     return [];
   }
+
+  contextValue = "sceneTexture";
+}
+
+export class SceneMaterials extends SceneNode {
+  constructor(json: any) {
+    super("Materials", json);
+  }
+
+  iconPath = {
+    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
+    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
+  };
+
+  public override getChildren(): SceneNode[] {
+    const nodes = [] as SceneNode[];
+    for (const object of this.json) {
+      if (object.type == "LineBasicMaterial") continue;
+      nodes.push(new SceneMaterial(object));
+    }
+    return nodes;
+  }
+}
+
+export class SceneMaterial extends SceneNode {
+  constructor(json: any) {
+    super(json.name, json);
+    this.description = json.type
+  }
+
+  iconPath = {
+    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
+    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
+  };
+
+  public override getChildren(): SceneNode[] {
+    return [];
+  }
+
+  contextValue = "sceneMaterial";
 }

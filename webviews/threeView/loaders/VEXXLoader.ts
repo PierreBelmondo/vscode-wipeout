@@ -32,8 +32,6 @@ import { vscode } from "../../vscode";
 import { VexxNodeAnimTransform } from "../../../core/vexx/v4/anim_transform";
 import { Mipmaps } from "../../../core/utils/mipmaps";
 
-const rcsModelLoader = new RCSModelLoader();
-
 class AsyncRcsMesh {
   world: World;
   vexxMesh: VexxNodeMesh;
@@ -45,73 +43,71 @@ class AsyncRcsMesh {
     this.object = object;
   }
 
-  match(filename: string) {
-    return true;
+  async load() {
+    const externalId = this.vexxMesh.externalId;
+  }
+}
+
+class AsyncRcsModel {
+  rcsModelLoader = new RCSModelLoader();
+  asyncRcsMeshes: AsyncRcsMesh[] = [];
+  world: World;
+
+  constructor(world: World) {
+    this.world = world;
   }
 
-  async load(world: World) {
-    const externalId = this.vexxMesh.externalId;
-    for (const child of world.scene.children) {
-      if (!child.userData.externalId) continue;
-      if (child.userData.externalId != externalId) continue;
-      if (this.object.parent) {
-        const parent = this.object.parent;
-        parent.remove(child);
+  requireAsyncMesh(asyncMesh: AsyncRcsMesh) {
+    this.asyncRcsMeshes.push(asyncMesh);
+  }
 
-        for (let i = 0; i < this.vexxMesh.chunkLinks.length; i++) {
-          const chunkLink = this.vexxMesh.chunkLinks[i];
-          const submesh = child.children[i];
-
-          const transform = new THREE.Group();
-
-          /*
-          let m = new THREE.Matrix4();
-          const x = child.userData.unknownCoordinates.x;
-          const y = child.userData.unknownCoordinates.y;
-          const z = child.userData.unknownCoordinates.z;
-          const w = child.userData.unknownCoordinates.w;
-          const e = new THREE.Euler(x,y,z);
-          const q = new THREE.Quaternion(x,y,z,w);         
-          m = m.makeRotationFromQuaternion(q);
-          transform.applyMatrix4(m);
-          */
-
-          transform.add(child);
-          parent.add(transform);
-        }
+  async load(buffer: ArrayBufferLike) {
+    this.rcsModelLoader.load(this.world, buffer);
+    for (const asyncRcsMesh of this.asyncRcsMeshes) {
+      const externalId = asyncRcsMesh.vexxMesh.externalId;
+      for (const object of this.world.scene.children) {
+        if (!object.userData.externalId) continue;
+        if (object.userData.externalId != externalId) continue;
+        this.world.scene.remove(object);
+        asyncRcsMesh.object.add(object);
       }
     }
+  }
+
+  async import(buffer: ArrayBufferLike, filename: string) {
+    this.rcsModelLoader.import(buffer, filename);
   }
 }
 
 export class VEXXLoader extends Loader {
-  asyncRcsMeshes: AsyncRcsMesh[] = [];
-  requiredFiles: string[] = [];
+  asyncRcsModel?: AsyncRcsModel;
 
   override async load(world: World, buffer: ArrayBufferLike) {
     const model = Vexx.load(buffer);
     this.loadTextures(world, model);
     this.loadScene(world, model);
-    for (const requiredFile of this.requiredFiles) vscode.require(requiredFile);
     return world;
   }
 
-  require(filename: string) {
-    if (this.requiredFiles.indexOf(filename) != -1) return;
-    console.log(`Require ${filename}`);
-    this.requiredFiles.push(filename);
+  override async import(buffer: ArrayBufferLike, filename: string) {
+    if (this.asyncRcsModel === undefined) {
+      console.error("Unexpected file: " + filename);
+      return;
+    }
+    if (filename.endsWith(".rcsmodel")) {
+      this.asyncRcsModel.load(buffer);
+    } else {
+      this.asyncRcsModel.import(buffer, filename);
+    }
   }
 
-  override async import(buffer: ArrayBufferLike, filename: string) {
-    if (filename.endsWith(".rcsmodel")) {
-      const tmpWorld = new World();
-      rcsModelLoader.load(tmpWorld, buffer);
-      for (const asyncRcsMesh of this.asyncRcsMeshes) {
-        if (asyncRcsMesh.match(filename)) asyncRcsMesh.load(tmpWorld);
-      }
-    } else {
-      rcsModelLoader.import(buffer, filename);
+  require(world: World, object3d: THREE.Object3D, node: VexxNodeMesh) {
+    if (this.asyncRcsModel === undefined) {
+      this.asyncRcsModel = new AsyncRcsModel(world);
+      vscode.require(".rcsmodel");
     }
+    const asyncMesh = new AsyncRcsMesh(world, node, object3d);
+    this.asyncRcsModel.requireAsyncMesh(asyncMesh);
   }
 
   generateMissingMipmaps(mipmaps: Mipmaps) {
@@ -372,6 +368,10 @@ export class VEXXLoader extends Loader {
         break;
     }
 
+    if (!("format" in object.userData)) {
+      object.userData = { format: "VEXX", type: node.typeName };
+    }
+
     if (layer) {
       const layerId = world.getLayer(layer);
       object.layers.set(layerId);
@@ -427,12 +427,17 @@ export class VEXXLoader extends Loader {
     group.name = node.name;
 
     if (node.unk3 == 0x01) {
+      /*
       const m1 = new THREE.Matrix4();
       m1.makeRotationFromEuler(new THREE.Euler(-0.1, node.x > 0 ? -0.08 : 0.08, node.x > 0 ? -0.47 : 0.47));
       group.applyMatrix4(m1);
 
       const m = new THREE.Matrix4();
       m.makeTranslation((node.x - 0.5) * 1.3, node.y - 0.05, node.z - 2.22);
+      group.applyMatrix4(m);
+      */
+      const m = new THREE.Matrix4();
+      m.makeTranslation(node.x, node.y, node.z);
       group.applyMatrix4(m);
     }
 
@@ -446,11 +451,11 @@ export class VEXXLoader extends Loader {
 
   private loadMesh(world: World, node: VexxNodeMesh): THREE.Object3D {
     if (node.isExternal) {
-      this.require(".rcsmodel");
-      const point = this.createControlPoint(node.name);
-      const asyncMesh = new AsyncRcsMesh(world, node, point);
-      this.asyncRcsMeshes.push(asyncMesh);
-      return point;
+      const group = new THREE.Group();
+      group.name = node.name;
+      group.userData = { format: "VEXX", type: "MESH (rcsmodel)" };
+      this.require(world, group, node);
+      return group;
     }
 
     const primitiveType = (id: number) => {
@@ -499,6 +504,7 @@ export class VEXXLoader extends Loader {
         const map = world.textures[textureId];
         if (node.typeName == "MESH") material = new THREE.MeshPhongMaterial({ map });
         else if (node.typeName == "SKYCUBE") material = new MeshSkyMaterial(map);
+        material.name = "Material_" + node.name;
       }
 
       if (strideInfo.texture.size > 0) {

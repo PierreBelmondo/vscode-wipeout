@@ -51,6 +51,9 @@ class AsyncMaterial {
     if (this.textures.length == this.loadableTextures) {
       this.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: this.textures[0] });
       this.material.name = this.rcsMaterial.filename;
+
+      this.world.materials[this.material.name] = this.material;
+
       for (const mesh of this.meshes) mesh.material = this.material;
     }
   }
@@ -114,12 +117,14 @@ class AsyncTexture {
 
     this.texture = mimaps[0];
     this.texture.name = this.rcsTexture.filename;
-    this.texture.wrapS = THREE.RepeatWrapping
-    this.texture.wrapT = THREE.RepeatWrapping
+    this.texture.wrapS = THREE.RepeatWrapping;
+    this.texture.wrapT = THREE.RepeatWrapping;
     this.texture.magFilter = THREE.LinearFilter;
     //this.texture.minFilter = THREE.LinearMipmapLinearFilter;
     //this.texture.mipmaps = mimaps.map((texture) => texture.image);
     this.texture.needsUpdate = true;
+
+    this.world.textures[this.texture.name] = this.texture;
 
     for (const asyncMaterial of this.asyncMaterials) asyncMaterial.import(this);
   }
@@ -205,7 +210,7 @@ export class RCSModelLoader extends Loader {
     const scale = object.header.scale;
     const materialId = object.header.material_id;
 
-    const userData = { externalId: object.header.id }
+    const userData = { externalId: object.header.id };
 
     if (object.mesh instanceof RcsModelMesh1) {
       const mesh = this.loadMesh1(world, object.mesh, materialId);

@@ -7,6 +7,7 @@ import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
 import { bus } from "../../helpers/bus";
 import { TextEncoder } from "util";
+import { ThreeViewMessage } from "../../../core/api/rpc";
 
 /**
  * Provider for VEXX model editors.
@@ -89,6 +90,10 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
       }
     });
 
+    bus.onThreeViewMessage((message: ThreeViewMessage) => {
+      webviewPanel.webview.postMessage(message);
+    })
+
     webviewPanel.onDidChangeViewState((e) => {
       if (e.webviewPanel.active) {
         bus.fireDidChangeActiveCustomDocument(document);
@@ -125,7 +130,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
       </html>`;
   }
 
-  private postMessage(panel: vscode.WebviewPanel, type: string, body: any): void {
+  private postMessage(panel: vscode.WebviewPanel, type: string, body?: any): void {
     panel.webview.postMessage({ type, body });
   }
 

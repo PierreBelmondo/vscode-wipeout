@@ -12,6 +12,7 @@ import { GLTFExporter } from "./exporters/GLTFExporter";
 import { Loader, World } from "./loaders";
 import { VEXXLoader } from "./loaders/VEXXLoader";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
+import { ThreeViewMessage } from "../../core/api/rpc";
 
 class Editor {
   canvas: HTMLCanvasElement;
@@ -116,8 +117,17 @@ class Editor {
   }
 
   async import(array: Uint8Array, filename: string) {
-    if (this.loader)
-      this.loader.import(array.buffer, filename);
+    if (this.loader) await this.loader.import(array.buffer, filename);
+    this.updated();
+  }
+
+  updated() {
+    const aabb = new THREE.Box3().setFromObject(this.world.scene);
+    //const helper = new THREE.Box3Helper(aabb, new THREE.Color(0xffff00));
+    //this.world.scene.add(helper);
+
+    const scene = this.world.scene.toJSON();
+    vscode.scene(scene);
   }
 
   loadWorld() {
@@ -149,15 +159,14 @@ class Editor {
     }
 
     /*
-    const aabb = new THREE.Box3();
-    aabb.setFromObject(this.world.scene);
-    // todo control camera init
+    const gridHelper = new THREE.GridHelper(400, 40, 0x0000ff, 0x808080);
+    gridHelper.position.y = 0;
+    gridHelper.position.x = 0;
+    this.world.scene.add(gridHelper);
     */
 
+    this.updated();
     this.render();
-
-    const scene = this.world.scene.toJSON();
-    vscode.scene(scene)
   }
 
   render() {
@@ -192,19 +201,30 @@ export function main() {
 
   // Handle messages from the extension
   window.addEventListener("message", async (e) => {
-    const { type, body } = e.data;
-    switch (type) {
+    const msg = e.data as ThreeViewMessage;
+    switch (msg.type) {
       case "load": {
-        const mime = body.mime;
-        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
+        const mime = msg.body.mime;
+        const array = Uint8Array.from(window.atob(msg.body.buffer), (v) => v.charCodeAt(0));
         editor.load(array, mime);
         break;
       }
       case "import":
         {
-          const mime = body.filename;
-          const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
-          editor.import(array, mime);
+          const filename = msg.body.filename;
+          const array = Uint8Array.from(window.atob(msg.body.buffer), (v) => v.charCodeAt(0));
+          editor.import(array, filename);
+        }
+        break;
+      case "show.world":
+        {
+          console.log("show.world");
+        }
+        break;
+      case "show.texture":
+        {
+          const name = msg.body.name;
+          console.log("show.texture: " + name);
         }
         break;
     }
