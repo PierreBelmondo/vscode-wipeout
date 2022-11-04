@@ -1,10 +1,13 @@
-# Wipeout README
+# Belmondo's Vision - WipEout Modding Tool
 
-Wipeout modding tool for Visual Studio Code
+Wipeout modding extension for Visual Studio Code
+
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
 ## Features
 
 * Unpack WAD with filenames (encrypted DLCs supported with Inflate/LZSS compression)
+* Unpack WAD/WAC with filenames
 * Unpack PSARC with Manifest and filenames
 * Load and render VEXX scenes (version 4 and 6)
 * Load and render RCSMODEL meshes
@@ -23,10 +26,6 @@ nothing yet.
 
 ## Release Notes
 
-### 0.0.7
-
-nothing yet.
-
----
+See CHANGELOG.md.
 
 **Enjoy!**
