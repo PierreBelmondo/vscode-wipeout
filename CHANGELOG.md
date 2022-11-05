@@ -5,6 +5,7 @@ All notable changes to the "wipeout" extension will be documented in this file.
 ## [Unreleased]
 
  - Added a context menu to the SceneGraph to jump to textures
+ - Improve VEXX materials caching
 
 ## [0.0.9]
 
