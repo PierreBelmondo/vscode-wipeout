@@ -596,6 +596,7 @@ export class VEXXLoader extends Loader {
 
   private loadCamera(world: World, node: VexxNodeCamera): THREE.Object3D {
     const camera = new THREE.PerspectiveCamera(45, 1.33, 32, 34);
+    camera.name = node.name;
 
     const helper = new THREE.CameraHelper(camera);
     helper.matrix = new THREE.Matrix4();
