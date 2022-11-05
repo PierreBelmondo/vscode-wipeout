@@ -500,11 +500,19 @@ export class VEXXLoader extends Loader {
 
       let material = world.materials["_default"];
       const textureId = node.materials[chunkHeader.id].textureId;
-      if (textureId in world.textures) {
+      if (textureId in world.materials) {
+        material = world.materials[textureId];
+      } else if (textureId in world.textures) {
         const map = world.textures[textureId];
-        if (node.typeName == "MESH") material = new THREE.MeshPhongMaterial({ map });
-        else if (node.typeName == "SKYCUBE") material = new MeshSkyMaterial(map);
-        material.name = "Material_" + node.name;
+        if (node.typeName == "MESH") {
+          material = new THREE.MeshPhongMaterial({ map });
+          material.name = "PhongMaterial_" + textureId;
+        }
+        else if (node.typeName == "SKYCUBE") {
+          material = new MeshSkyMaterial(map);
+          material.name = "SkyMaterial_" + textureId;
+        }
+        world.materials[textureId] = material;
       }
 
       if (strideInfo.texture.size > 0) {
