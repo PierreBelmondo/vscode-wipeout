@@ -3,7 +3,6 @@ import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 import { AABB } from "../primitive/aabb";
 import { GU } from "../../utils/pspgu";
-import { Vec2, Vector3 } from "three";
 
 export class VexxNodeMesh extends VexxNode {
   info = new VexxNodeMeshHeader();
