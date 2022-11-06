@@ -11,24 +11,16 @@ class AsyncMaterial {
   rcsMaterial: RcsModelMaterial;
   meshes: THREE.Mesh[] = [];
   textures: THREE.Texture[] = [];
+  loadableTextures: string[] = [];
   material?: THREE.Material;
-
-  private loadableTextures: number; //dirty hack to know when material can be loaded
 
   constructor(world: World, material: RcsModelMaterial) {
     this.world = world;
     this.rcsMaterial = material;
-    this.loadableTextures = this.countLoadableTextures();
   }
 
-  private countLoadableTextures(): number {
-    let total = 0;
-    for (const rcsTexture of this.rcsMaterial.textures) {
-      if (!rcsTexture.filename.startsWith("data")) continue;
-      if (rcsTexture.type != 0x8001) continue;
-      total++;
-    }
-    return Math.min(1, total); // only load one atm
+  require() {
+    api.require(this.rcsMaterial.filename);
   }
 
   linkMesh(mesh: THREE.Mesh) {
@@ -39,17 +31,21 @@ class AsyncMaterial {
     return this.rcsMaterial.filename == filename;
   }
 
+  registerTexture(filename: string) {
+    this.loadableTextures.push(filename);
+  }
+
   async load(buffer: ArrayBufferLike) {
     // Nothing to do at the moment
   }
 
-  async import(asyncTexture: AsyncTexture) {
+  import(texture: THREE.Texture) {
     if (this.material) return;
-    if (!asyncTexture.texture) return;
-    this.textures.push(asyncTexture.texture);
+    this.textures.push(texture);
 
-    if (this.textures.length == this.loadableTextures) {
-      this.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: this.textures[0] });
+    if (texture.name == this.loadableTextures[0]) {
+      // hack to use only first channel/texture
+      this.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: texture });
       this.material.name = this.rcsMaterial.filename;
 
       this.world.materials[this.material.name] = this.material;
@@ -70,48 +66,49 @@ class AsyncTexture {
     this.rcsTexture = rcsTexture;
   }
 
+  require() {
+    api.require(this.rcsTexture.filename);
+  }
+
   match(filename: string) {
     return this.rcsTexture.filename == filename;
   }
 
   linkAsyncMaterial(asyncMaterial: AsyncMaterial) {
+    asyncMaterial.registerTexture(this.rcsTexture.filename);
     this.asyncMaterials.push(asyncMaterial);
   }
 
   async load(buffer: ArrayBufferLike) {
     console.log(`Loading GTF ${this.rcsTexture.filename}`);
-    const gtf = await GTF.load(buffer);
+    const gtf = GTF.load(buffer);
 
     let mimaps: THREE.Texture[] = [];
     for (const gtfMipmap of gtf.mipmaps) {
       switch (gtfMipmap.type) {
-        case "RGBA":
-          {
-            const texture = new THREE.DataTexture(gtfMipmap.data, gtfMipmap.width, gtfMipmap.height, THREE.RGBAFormat);
-            mimaps.push(texture);
-          }
+        case "RGBA": {
+          const texture = new THREE.DataTexture(gtfMipmap.data, gtfMipmap.width, gtfMipmap.height, THREE.RGBAFormat);
+          mimaps.push(texture);
           break;
-        case "DXT1":
-          {
-            const imd = [gtfMipmap as unknown as ImageData];
-            const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT1_Format);
-            mimaps.push(texture);
-          }
+        }
+        case "DXT1": {
+          const imd = [gtfMipmap as unknown as ImageData];
+          const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT1_Format);
+          mimaps.push(texture);
           break;
-        case "DXT3":
-          {
-            const imd = [gtfMipmap as unknown as ImageData];
-            const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT3_Format);
-            mimaps.push(texture);
-          }
+        }
+        case "DXT3": {
+          const imd = [gtfMipmap as unknown as ImageData];
+          const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT3_Format);
+          mimaps.push(texture);
           break;
-        case "DXT5":
-          {
-            const imd = [gtfMipmap as unknown as ImageData];
-            const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT5_Format);
-            mimaps.push(texture);
-          }
+        }
+        case "DXT5": {
+          const imd = [gtfMipmap as unknown as ImageData];
+          const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT5_Format);
+          mimaps.push(texture);
           break;
+        }
       }
     }
 
@@ -125,8 +122,9 @@ class AsyncTexture {
     this.texture.needsUpdate = true;
 
     this.world.textures[this.texture.name] = this.texture;
-
-    for (const asyncMaterial of this.asyncMaterials) asyncMaterial.import(this);
+    for (const asyncMaterial of this.asyncMaterials) {
+      asyncMaterial.import(this.texture);
+    }
   }
 }
 
@@ -135,32 +133,31 @@ export class RCSModelLoader extends Loader {
   asyncTextures: AsyncTexture[] = [];
   asyncTextureLookup: { [filename: string]: number } = {};
 
-  requiredFiles: string[] = [];
-
   override load(world: World, buffer: ArrayBufferLike) {
     const model = RcsModel.load(buffer);
     this.loadMaterials(world, model);
     this.loadScene(world, model);
-    for (const requiredFile of this.requiredFiles) api.require(requiredFile);
     return world;
-  }
-
-  require(filename: string) {
-    if (filename in this.requiredFiles) return;
-    console.log(`Require ${filename}`);
-    this.requiredFiles.push(filename);
   }
 
   override async import(buffer: ArrayBufferLike, filename: string) {
     if (filename.endsWith(".rcsmaterial")) {
       for (const asyncMaterial of this.asyncMaterials) {
-        if (asyncMaterial.match(filename)) asyncMaterial.load(buffer);
+        if (asyncMaterial.match(filename)) {
+          await asyncMaterial.load(buffer);
+          return;
+        }
       }
+      return;
     }
     if (filename.endsWith(".gtf")) {
       for (const asyncTexture of this.asyncTextures) {
-        if (asyncTexture.match(filename)) asyncTexture.load(buffer);
+        if (asyncTexture.match(filename)) {
+          await asyncTexture.load(buffer);
+          return;
+        }
       }
+      return;
     }
   }
 
@@ -168,16 +165,16 @@ export class RCSModelLoader extends Loader {
     for (const rcsMaterial of rcs.materials) {
       const asyncMaterial = new AsyncMaterial(world, rcsMaterial);
       this.asyncMaterials.push(asyncMaterial);
-      //this.require(rcsMaterial.filename);
+      //asyncMaterial.require();
+
       for (const rcsTexture of rcsMaterial.textures) {
-        if (!rcsTexture.filename.startsWith("data")) continue;
-        if (rcsTexture.type != 0x8001) continue;
+        if (!rcsTexture.filename.startsWith("data")) continue; // filter out
+
         const asyncTexture = this.loadTexture(world, rcsTexture);
         asyncTexture.linkAsyncMaterial(asyncMaterial);
-        break; // only load one atm
+        asyncTexture.require();
       }
     }
-    console.log("Materials loaded");
   }
 
   private loadTexture(world: World, rcsTexture: RcsModelTexture) {
@@ -189,7 +186,6 @@ export class RCSModelLoader extends Loader {
     const asyncTexture = new AsyncTexture(world, rcsTexture);
     this.asyncTextures.push(asyncTexture);
     this.asyncTextureLookup[filename] = this.asyncTextures.length - 1;
-    this.require(filename);
     return asyncTexture;
   }
 

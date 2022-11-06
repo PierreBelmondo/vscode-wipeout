@@ -98,7 +98,7 @@ class Editor {
     this.world = new World();
   }
 
-  async load(array: Uint8Array, mime: string) {
+  load(array: Uint8Array, mime: string) {
     switch (mime) {
       case "model/vnd.wipeout.vexx":
         this.loader = new VEXXLoader();
@@ -117,17 +117,19 @@ class Editor {
   }
 
   async import(array: Uint8Array, filename: string) {
-    if (this.loader) await this.loader.import(array.buffer, filename);
-    this.updated();
+    if (this.loader) {
+      await this.loader.import(array.buffer, filename);
+      this.updated();
+    }
   }
 
   updated() {
-    const aabb = new THREE.Box3().setFromObject(this.world.scene);
+    //const aabb = new THREE.Box3().setFromObject(this.world.scene);
     //const helper = new THREE.Box3Helper(aabb, new THREE.Color(0xffff00));
     //this.world.scene.add(helper);
 
     const scene = this.world.scene.toJSON();
-    api.scene(scene);
+    api.scene(scene); // Arrays won't be serialized and that's ok
   }
 
   loadWorld() {

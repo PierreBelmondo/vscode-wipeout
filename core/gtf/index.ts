@@ -47,7 +47,7 @@ class GTFHeader {
   height = 0;
   unknown9 = 0;
 
-  static async load(range: BufferRange): Promise<GTFHeader> {
+  static load(range: BufferRange): GTFHeader {
     const ret = new GTFHeader();
     ret.range = range.slice(0, 0x80);
     ret.version = ret.range.getUint32(0);
@@ -110,12 +110,12 @@ export class GTF {
   header = new GTFHeader();
   mipmaps: Mipmaps = [];
 
-  static async load(buffer: ArrayBuffer): Promise<GTF> {
+  static load(buffer: ArrayBuffer): GTF {
     const ret = new GTF();
     ret.range = new BufferRange(buffer);
     ret.range.le = false;
 
-    ret.header = await GTFHeader.load(ret.range);
+    ret.header = GTFHeader.load(ret.range);
 
     switch (ret.header.format) {
       case CellGcmTexture.B8:
