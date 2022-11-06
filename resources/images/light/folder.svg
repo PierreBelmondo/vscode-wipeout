@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 16.000004 16"
+   version="1.1"
+   id="svg856"
+   width="16.000004"
+   height="16"
+   sodipodi:docname="dark_folder.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1600"
+     inkscape:window-height="837"
+     id="namedview886"
+     showgrid="false"
+     inkscape:zoom="49.066667"
+     inkscape:cx="7.8685402"
+     inkscape:cy="6.5585405"
+     inkscape:window-x="-8"
+     inkscape:window-y="61"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg856" />
+  <metadata
+     id="metadata862">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs860" />
+  <style
+     id="style847">.st0{opacity:0}.st0,.st1{fill:#2d2d30}.st2{fill:#c5c5c5}.st3{fill:#2b282e}</style>
+  <style
+     id="style914">.st0{opacity:0}.st0,.st1{fill:#f6f6f6}.st2{fill:#424242}.st3{fill:#f0eff1}</style>
+  <path
+     sodipodi:nodetypes="scsssscsscssccccc"
+     id="rect1449-7"
+     style="opacity:0.998;fill:#626262;fill-opacity:1;stroke-width:2.16262;stop-color:#000000"
+     d="M 2,2 C 1,2 1,2 1,3 0,3 0,3 0,4 v 7.499893 c 0,1 0,1 1,1 h 10 c 1,0 1.000001,-1e-6 1,-1 V 4 C 12,3 12,3 11,3 H 5 C 5,2 5,2 4,2 Z M 1,4 h 10 v 7.999893 H 1 Z" />
+  <path
+     id="rect1449-8-3"
+     style="opacity:0.998;fill:#626262;fill-opacity:1;stroke-width:1.5292;stop-color:#000000"
+     d="M 3.666015,6.9998904 C 4,6.4998924 4,6.4998924 5,6.4998924 h 10 c 1,0 1,0 0.666016,0.499998 L 12.333985,11.999895 C 12.000001,12.499893 12.000001,12.499893 11,12.499893 H 1 c -1,0 -1,0 -0.666016,-0.499998 z"
+     sodipodi:nodetypes="ccccccccc" />
+</svg>

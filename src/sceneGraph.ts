@@ -100,16 +100,23 @@ export class SceneObject3D extends SceneNode {
     this.description = json.type;
     if ("userData" in json) {
       if ("format" in json.userData) {
-        if ((json.userData.format = "VEXX")) {
+        if ((json.userData.format == "VEXX")) {
           this.description = json.userData.type;
         }
       }
     }
+
+    if (json.type == "Mesh") {
+      this.iconPath = {
+        light: path.join(__filename, "..", "..", "resources", "images", "light", "cube.svg"),
+        dark: path.join(__filename, "..", "..", "resources", "images", "dark", "cube.svg"),
+      };          
+    }
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "cube.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "cube.svg"),
+    light: path.join(__filename, "..", "..", "resources", "images", "light", "folder.svg"),
+    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "folder.svg"),
   };
 
   public override getChildren(): SceneNode[] {
