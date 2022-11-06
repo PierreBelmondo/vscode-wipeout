@@ -1,4 +1,4 @@
-import { vscode } from "../vscode";
+import { api } from "./api";
 
 import { Mipmaps } from "../../core/utils/mipmaps";
 import { DXT1, DXT3, DXT5 } from "../../core/utils/dxt";
@@ -126,5 +126,5 @@ export function main() {
     }
   });
 
-  vscode.ready();
+  api.ready();
 }

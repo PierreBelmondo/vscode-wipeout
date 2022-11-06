@@ -1,3 +1,5 @@
+import { api } from "../api";
+
 import * as THREE from "three";
 import { Loader, World } from ".";
 import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
@@ -28,7 +30,6 @@ import { GU } from "../../../core/utils/pspgu";
 
 import { RCSModelLoader } from "./RCSMODELLoader";
 
-import { vscode } from "../../vscode";
 import { VexxNodeAnimTransform } from "../../../core/vexx/v4/anim_transform";
 import { Mipmaps } from "../../../core/utils/mipmaps";
 
@@ -104,7 +105,7 @@ export class VEXXLoader extends Loader {
   require(world: World, object3d: THREE.Object3D, node: VexxNodeMesh) {
     if (this.asyncRcsModel === undefined) {
       this.asyncRcsModel = new AsyncRcsModel(world);
-      vscode.require(".rcsmodel");
+      api.require(".rcsmodel");
     }
     const asyncMesh = new AsyncRcsMesh(world, node, object3d);
     this.asyncRcsModel.requireAsyncMesh(asyncMesh);

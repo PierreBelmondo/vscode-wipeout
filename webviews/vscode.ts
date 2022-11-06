@@ -1,27 +1,21 @@
-declare var acquireVsCodeApi: any;
-
-const _vscode = acquireVsCodeApi();
-
-class VSC {
-  async ready() {
-    _vscode.postMessage({ type: "ready" });
-  }
-
-  async require(filename: string) {
-    _vscode.postMessage({ type: "require", filename });
-  }
-
-  async log(message: any) {
-    _vscode.postMessage({ type: "log", message });
-  }
-
-  async exportGTLF(gltf: any) {
-    _vscode.postMessage({ type: "export.gltf", body: gltf });
-  }
-
-  async scene(scene: any) {
-    _vscode.postMessage({ type: "scene", body: scene });
-  }
+interface VsCodeApi {
+  postMessage(message: any): void;
+  getState(): any;
+  setState(state: any): void;
 }
 
-export const vscode = new VSC();
+declare var acquireVsCodeApi: () => VsCodeApi;
+
+const _vsCodeApi = acquireVsCodeApi();
+
+export function postMessage(message: any): void {
+  _vsCodeApi.postMessage(message);
+}
+
+export function getState(): any {
+  return _vsCodeApi.getState();
+}
+
+export function setState(state: any): void {
+  _vsCodeApi.setState(state);
+}

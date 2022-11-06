@@ -1,10 +1,10 @@
+import { api } from "../api";
+
 import * as THREE from "three";
 import { World, Loader } from ".";
 import { GTF } from "../../../core/gtf";
 
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
-
-import { vscode } from "../../vscode";
 
 class AsyncMaterial {
   world: World;
@@ -141,7 +141,7 @@ export class RCSModelLoader extends Loader {
     const model = RcsModel.load(buffer);
     this.loadMaterials(world, model);
     this.loadScene(world, model);
-    for (const requiredFile of this.requiredFiles) vscode.require(requiredFile);
+    for (const requiredFile of this.requiredFiles) api.require(requiredFile);
     return world;
   }
 

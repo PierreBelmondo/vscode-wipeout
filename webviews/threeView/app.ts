@@ -1,4 +1,4 @@
-import { vscode } from "../vscode";
+import { api } from "./api";
 
 import * as THREE from "three";
 
@@ -84,10 +84,10 @@ class Editor {
       exporter.parse(
         this.world.scene,
         (gltf: any) => {
-          vscode.exportGTLF(gltf);
+          api.exportGTLF(gltf);
         },
         (error: any) => {
-          vscode.log("An error happened:");
+          api.log("An error happened:");
           console.log(error);
         },
         {}
@@ -127,7 +127,7 @@ class Editor {
     //this.world.scene.add(helper);
 
     const scene = this.world.scene.toJSON();
-    vscode.scene(scene);
+    api.scene(scene);
   }
 
   loadWorld() {
@@ -238,5 +238,5 @@ export function main() {
     false
   );
 
-  vscode.ready();
+  api.ready();
 }
