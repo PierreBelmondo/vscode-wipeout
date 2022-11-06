@@ -483,7 +483,8 @@ export class VEXXLoader extends Loader {
     const group = new THREE.Group();
     group.name = node.name;
 
-    for (const chunk of node.chunks) {
+    for (let i = 0; i < node.chunks.length; i++) {
+      const chunk = node.chunks[i];
       const chunkHeader = chunk.header;
       const strideInfo = chunkHeader.strideInfo;
       const strides = chunk.strides;
@@ -561,6 +562,7 @@ export class VEXXLoader extends Loader {
       }
 
       const mesh = new THREE.Mesh(geometry, material);
+      mesh.name = node.name + "__" + i;
       mesh.renderOrder = node.typeName == "SKYCUBE" ? 0 : 1;
       mesh.layers.set(0);
       group.add(mesh);
