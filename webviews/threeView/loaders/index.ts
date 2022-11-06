@@ -40,6 +40,15 @@ export class World {
     return this._layers[name];
   }
 
+  getTextureByName(name: string): THREE.Texture | null {
+    for (const index in this.textures) {
+      const texture = this.textures[index];
+      if (texture.name == name)
+        return texture;
+    }
+    return null;
+  }
+
   get layers(): { name: string; id: number }[] {
     const ret: { name: string; id: number }[] = [];
     for (const name in this._layers)

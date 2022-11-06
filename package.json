@@ -39,6 +39,14 @@
       {
         "command": "wipeout.unpack.wad",
         "title": "Unpack WAD"
+      },
+      {
+        "command": "sceneGraph.show",
+        "title": "Show",
+        "icon": {
+          "light": "resources/images/light/eye-open.svg",
+          "dark": "resources/images/dark/eye-open.svg"
+        }
       }
     ],
     "menus": {
@@ -57,6 +65,16 @@
           "command": "wipeout.unpack.wad",
           "when": "resourceExtname =~ /\\.wad/i",
           "group": "wipeout@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "sceneGraph.show",
+          "when": "view == sceneGraph && viewItem == sceneWorld"
+        },
+        {
+          "command": "sceneGraph.show",
+          "when": "view == sceneGraph && viewItem == sceneTexture"
         }
       ]
     },

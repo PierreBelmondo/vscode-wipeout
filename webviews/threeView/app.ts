@@ -1,28 +1,23 @@
-import { api } from "./api";
-
 import * as THREE from "three";
-
 import { GUI } from "lil-gui";
 
 import { OrbitControls } from "./controls/OrbitControls";
 import { FlyControls } from "./controls/FlyControls";
 import { CSS2DRenderer } from "./renderers/CSS2DRenderer";
 import { GLTFExporter } from "./exporters/GLTFExporter";
-
 import { Loader, World } from "./loaders";
 import { VEXXLoader } from "./loaders/VEXXLoader";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
+
+import { api } from "./api";
 import { ThreeViewMessage } from "../../core/api/rpc";
 
 class Editor {
   canvas: HTMLCanvasElement;
 
   world: World;
-  loader?: Loader;
-
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
-
   labelRenderer: CSS2DRenderer;
   controls: OrbitControls | FlyControls;
 
@@ -31,6 +26,9 @@ class Editor {
     layers: {},
     airbrakes: {},
   };
+
+  loader?: Loader;
+  currentScene: THREE.Scene;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -95,7 +93,15 @@ class Editor {
     };
     this.gui.add(this.settings, "Export to glTF");
 
+    /*
+    this.settings["Update scene graph"] = () => {
+      this.updated();
+    };
+    this.gui.add(this.settings, "Update scene graph");
+    */
+
     this.world = new World();
+    this.currentScene = this.world.scene;
   }
 
   load(array: Uint8Array, mime: string) {
@@ -167,13 +173,15 @@ class Editor {
     this.world.scene.add(gridHelper);
     */
 
+    this.currentScene = this.world.scene;
+
     this.updated();
     this.render();
   }
 
   render() {
-    this.renderer.render(this.world.scene, this.camera);
-    this.labelRenderer.render(this.world.scene, this.camera);
+    this.renderer.render(this.currentScene, this.camera);
+    this.labelRenderer.render(this.currentScene, this.camera);
   }
 
   resize() {
@@ -182,6 +190,24 @@ class Editor {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
     this.render();
+  }
+
+  showWorld() {
+    this.currentScene = this.world.scene;
+  }
+
+  showTexture(name: string) {
+    const map = this.world.getTextureByName(name);
+    if (map) {
+      this.currentScene = new THREE.Scene();
+      const square = new THREE.PlaneGeometry(1, 1);
+      const material = new THREE.MeshPhongMaterial({ map, side: THREE.DoubleSide });
+      const mesh = new THREE.Mesh(square, material);
+      this.currentScene.add(mesh);
+      const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x080808, 1);
+      this.currentScene.add(hemiLight);
+      this.render();
+    }
   }
 }
 
@@ -211,24 +237,21 @@ export function main() {
         editor.load(array, mime);
         break;
       }
-      case "import":
-        {
-          const filename = msg.body.filename;
-          const array = Uint8Array.from(window.atob(msg.body.buffer), (v) => v.charCodeAt(0));
-          editor.import(array, filename);
-        }
+      case "import": {
+        const filename = msg.body.filename;
+        const array = Uint8Array.from(window.atob(msg.body.buffer), (v) => v.charCodeAt(0));
+        editor.import(array, filename);
         break;
-      case "show.world":
-        {
-          console.log("show.world");
-        }
+      }
+      case "show.world": {
+        editor.showWorld();
         break;
-      case "show.texture":
-        {
-          const name = msg.body.name;
-          console.log("show.texture: " + name);
-        }
+      }
+      case "show.texture": {
+        const name = msg.body.name;
+        editor.showTexture(name);
         break;
+      }
     }
   });
 

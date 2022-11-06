@@ -7,7 +7,7 @@ import { VexxEditorProvider } from './views/vexx/EditorProvider';
 import { RcsModelEditorProvider } from './views/rcsmodel/EditorProvider';
 import { DdsModelEditorProvider } from './views/texture/DdsModelEditorProvider';
 import { GtfModelEditorProvider } from './views/texture/GtfModelEditorProvider';
-import { SceneGraphProvider } from './sceneGraph';
+import { SceneGraphProvider, SceneGraphShow } from './sceneGraph';
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(PsarcUnpackCommandProvider.register(context));
@@ -20,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const sceneGrapheProvider = new SceneGraphProvider();
 	context.subscriptions.push(vscode.window.registerTreeDataProvider('sceneGraph', sceneGrapheProvider));
+	context.subscriptions.push(SceneGraphShow.register(context));
 }
 
 export function deactivate() {}

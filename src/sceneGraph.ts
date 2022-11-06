@@ -3,6 +3,21 @@ import * as path from "path";
 import { bus } from "./helpers/bus";
 import { VexxDocument } from "./views/vexx/Document";
 
+export class SceneGraphShow {
+  static readonly commandType = "sceneGraph.show";
+
+  public static register(context: vscode.ExtensionContext): vscode.Disposable {
+    return vscode.commands.registerCommand(SceneGraphShow.commandType, async (sceneNode: SceneNode) => {
+      if (sceneNode instanceof SceneWorld) {
+        bus.showWorld();
+      }
+      if (sceneNode instanceof SceneTexture) {
+        bus.showTexture(sceneNode.json.name);
+      }
+    });
+  }
+}
+
 export class SceneGraphProvider implements vscode.TreeDataProvider<SceneNode> {
   private _onDidChangeTreeData: vscode.EventEmitter<SceneNode | undefined | void> = new vscode.EventEmitter<SceneNode | undefined | void>();
   readonly onDidChangeTreeData: vscode.Event<SceneNode | undefined | void> = this._onDidChangeTreeData.event;
