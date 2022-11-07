@@ -1,6 +1,8 @@
 import { Mipmaps } from "@core/utils/mipmaps";
+import { KeyframeTrack } from "three";
 import { BufferRange } from "../../utils/range";
 import { VexxNode } from "../node";
+import { VexxNodeDynamicShadowOccluder } from "./dynamic_shadow_occluder";
 import { Vexx4NodeType } from "./type";
 
 export class VexxNodeTexture extends VexxNode {
@@ -71,55 +73,58 @@ export class VexxNodeTexture extends VexxNode {
   loadTexture() {
     this.mipmaps = [];
 
+    const blockSize = this.cmapRange.size == 64 ? 32 : 16;
     const bpp = this.properties.bpp == 4 ? 4 : 8;
-    const cw = this.cmapRange.size == 64 ? 32 : 16;
 
     let width = this.properties.width;
     let height = this.properties.height;
     let offset = 0;
 
-    console.log(this.name);
     for (let i = 0; i < this.properties.mipmaps; i++) {
-      const size = Math.floor((Math.max(width, cw) * height * bpp) / 8);
-      const mipmapRange = this.dataRange.slice(offset, offset + size);
-      this.loadMipmap(mipmapRange, width, height);
-      offset += size;
+      const memwidth = Math.max(blockSize, width);
+      const memsize = Math.floor((memwidth * height * bpp) / 8);
+      let mipmapRange = this.dataRange.slice(offset, offset + memsize);
+      this.loadMipmap(mipmapRange, width, height, blockSize, bpp);
+      offset += memsize;
       width /= 2;
       height /= 2;
     }
-
-    console.log(offset, this.dataRange.size, this.dataRange.size - offset);
   }
 
-  loadMipmap(range: BufferRange, width: number, height: number) {
-    const cw = this.cmapRange.size == 64 ? 32 : 16;
-    width = Math.max(width, cw);
+  loadMipmap(range: BufferRange, width: number, height: number, blockSize: number, bpp: number) {
+    const size = width * height;
+    const rgba = new Uint8ClampedArray(size * 4);
 
-    const is = width * height;
-    const bpp = this.properties.bpp == 4 ? 4 : 8;
+    const blockReal = Math.min(width, blockSize);
+    const blocks = (width * height) / blockReal;
 
-    let rgba = new Uint8ClampedArray(is * 4);
-    for (let i = 0; i < width * height; i++) {
-      let ci = 0;
-      if (bpp == 4) {
-        ci = range.getUint8(Math.floor(i / 2));
-        ci = i % 2 == 0 ? ci & 0xf : ci >> 4;
-      } else {
-        ci = range.getUint8(i);
+    for (let i = 0; i < blocks; i++) {
+      const blockOffset = (i * blockSize * bpp) / 8;
+      const indices = range.slice(blockOffset, blockOffset + (blockReal * bpp) / 8);
+      for (let j = 0; j < blockReal; j++) {
+        let index = 0;
+        if (bpp == 4) {
+          index = indices.getUint8(j >>> 1);
+          index = j % 2 == 0 ? index & 0b1111 : index >>> 4;
+        } else {
+          index = indices.getUint8(j);
+        }
+        const pixel = j + i * blockReal;
+        rgba[pixel * 4 + 0] = this.cmapRange.getUint8(index * 4 + 0);
+        rgba[pixel * 4 + 1] = this.cmapRange.getUint8(index * 4 + 1);
+        rgba[pixel * 4 + 2] = this.cmapRange.getUint8(index * 4 + 2);
+        rgba[pixel * 4 + 3] = this.cmapRange.getUint8(index + 4 + 3);
       }
-      rgba[i * 4 + 0] = this.cmapRange.getUint8(ci * 4 + 0);
-      rgba[i * 4 + 1] = this.cmapRange.getUint8(ci * 4 + 1);
-      rgba[i * 4 + 2] = this.cmapRange.getUint8(ci * 4 + 2);
-      rgba[i * 4 + 3] = this.cmapRange.getUint8(ci + 4 + 3);
     }
 
-    if (this.swizzle) {
+    // http://homebrew.pixelbath.com/wiki/PSP_texture_swizzling
+    if (this.swizzle && width > blockReal) {
       const ch = 8;
       const cw = this.cmapRange.size == 64 ? 32 : 16;
       const cs = ch * cw;
 
-      const tmp = new Uint8ClampedArray(is * 4);
-      for (let ci = 0; ci < is / cs; ci++) {
+      const tmp = new Uint8ClampedArray(size * 4);
+      for (let ci = 0; ci < size / cs; ci++) {
         const chunk = rgba.slice(cs * 4 * ci, cs * 4 * (ci + 1));
         for (let l = 0; l < ch; l++) {
           let k = 0;
@@ -136,7 +141,8 @@ export class VexxNodeTexture extends VexxNode {
           }
         }
       }
-      rgba = tmp;
+      this.mipmaps.push({ type: "RGBA", width, height, data: tmp });
+      return;
     }
 
     this.mipmaps.push({ type: "RGBA", width, height, data: rgba });

@@ -112,27 +112,25 @@ export class VEXXLoader extends Loader {
   }
 
   generateMissingMipmaps(mipmaps: Mipmaps) {
-    const last = mipmaps[mipmaps.length - 1];
-    let width = last.width;
-    let height = last.height;
-    while (width > 1) {
-      width = Math.floor(width / 2);
-      height = Math.floor(height / 2);
+    let last = mipmaps[mipmaps.length - 1];
+    while (last.width >= 2 || last.height >= 2) {
+      const width = Math.floor(last.width / 2);
+      const height = Math.floor(last.height / 2);
       const data = new Uint8ClampedArray(height * width * 4);
       for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
           for (let i = 0; i < 4; i++) {
             let c = 0;
-            c += last.data[4 * (x + 0 + (y + 0) * width) + i];
-            c += last.data[4 * (x + 1 + (y + 0) * width) + i];
-            c += last.data[4 * (x + 0 + (y + 1) * width) + i];
-            c += last.data[4 * (x + 1 + (y + 1) * width) + i];
-            c = 255;
-            data[4 * (x + y * width) + i] = Math.round(c / 4);
+            c += Math.pow(last.data[4 * (2 * x + 0 + (2 * y + 0) * width * 2) + i], 2);
+            c += Math.pow(last.data[4 * (2 * x + 1 + (2 * y + 0) * width * 2) + i], 2);
+            c += Math.pow(last.data[4 * (2 * x + 0 + (2 * y + 1) * width * 2) + i], 2);
+            c += Math.pow(last.data[4 * (2 * x + 1 + (2 * y + 1) * width * 2) + i], 2);
+            data[4 * (x + y * width) + i] = Math.sqrt(c / 4);
           }
         }
       }
-      mipmaps.push({ type: "RGBA", width, height, data });
+      last = { type: "RGBA", width, height, data };
+      mipmaps.push(last);
     }
     return mipmaps;
   }
@@ -140,17 +138,17 @@ export class VEXXLoader extends Loader {
   private loadTextures(world: World, vexx: Vexx) {
     for (const vexxTexture of vexx.textures) {
       let mipmaps: THREE.Texture[] = [];
-      //vexxTexture.mipmaps = this.generateMissingMipmaps(vexxTexture.mipmaps);
+      vexxTexture.mipmaps = this.generateMissingMipmaps(vexxTexture.mipmaps);
       for (const vexxMipmap of vexxTexture.mipmaps) {
         const mipmap = new THREE.DataTexture(vexxMipmap.data, vexxMipmap.width, vexxMipmap.height, THREE.RGBAFormat);
         mipmaps.push(mipmap);
       }
       const texture = mipmaps[0];
       const images = mipmaps.map((texture) => texture.image, mipmaps);
-      //texture.mipmaps = images;
+      texture.mipmaps = images;
       texture.magFilter = THREE.LinearFilter;
-      texture.minFilter = THREE.LinearFilter;
-      //texture.minFilter = THREE.LinearMipmapLinearFilter;
+      //texture.minFilter = THREE.LinearFilter;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       texture.needsUpdate = true;
