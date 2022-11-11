@@ -204,6 +204,25 @@ class Editor {
       const material = new THREE.MeshPhongMaterial({ map, side: THREE.DoubleSide });
       const mesh = new THREE.Mesh(square, material);
       this.currentScene.add(mesh);
+      const box = new THREE.BoxHelper(mesh, 0xffff00);
+      this.currentScene.add(box);
+      let offset = 0;
+      for (let i = 1; i < map.mipmaps.length; i++) {
+        const mipmap = map.mipmaps[i];
+        const texture = new THREE.DataTexture(mipmap.data, mipmap.width, mipmap.height, THREE.RGBAFormat);
+        texture.needsUpdate = true;
+        console.log(mipmap)
+        const size = 1.0 / Math.pow(2, i);
+        const square = new THREE.PlaneGeometry(size, size);
+        const material = new THREE.MeshPhongMaterial({ map: texture, side: THREE.DoubleSide });
+        const mesh = new THREE.Mesh(square, material);
+        mesh.position.x += size / 2 + 0.5;
+        mesh.position.y += size / 2 - offset;
+        this.currentScene.add(mesh);
+        const box = new THREE.BoxHelper(mesh, 0xffff00);
+        this.currentScene.add(box);
+          offset += size / 2;
+      }
       const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x080808, 1);
       this.currentScene.add(hemiLight);
       this.render();
