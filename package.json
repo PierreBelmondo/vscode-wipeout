@@ -23,6 +23,7 @@
     "onCustomEditor:wipeout.view.vexx",
     "onCustomEditor:wipeout.view.gtf",
     "onCustomEditor:wipeout.view.dds",
+    "onCustomEditor:wipeout.view.fnt",
     "onView:sceneGraph"
   ],
   "main": "./dist/extension.js",
@@ -115,6 +116,16 @@
         "selector": [
           {
             "filenamePattern": "*.dds"
+          }
+        ],
+        "priority": "default"
+      },
+      {
+        "viewType": "wipeout.view.fnt",
+        "displayName": "Font",
+        "selector": [
+          {
+            "filenamePattern": "*.fnt"
           }
         ],
         "priority": "default"

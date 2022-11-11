@@ -5,6 +5,7 @@ import { DXT1, DXT3, DXT5 } from "../../core/utils/dxt";
 
 import { GTF } from "../../core/gtf";
 import { DDS } from "../../core/dds";
+import { FNT } from "../../core/fnt";
 
 class ARGB {
   static convert(argb: Uint8Array | Uint8ClampedArray) {
@@ -18,8 +19,31 @@ class ARGB {
     return data;
   }
 }
+
+class Gray4 {
+  static convert(gray4: Uint8Array | Uint8ClampedArray) {
+    const data = new Uint8Array(gray4.length * 2 * 4);
+    for (let i = 0; i < gray4.length; i++) {
+      const p1 = (gray4[i] & 0b11110000);
+      const p2 = (gray4[i] & 0b00001111) << 4;
+      data[i * 8 + 0] = p2;
+      data[i * 8 + 1] = p2;
+      data[i * 8 + 2] = p2;
+      data[i * 8 + 3] = 255;
+      data[i * 8 + 4] = p1;
+      data[i * 8 + 5] = p1;
+      data[i * 8 + 6] = p1;
+      data[i * 8 + 7] = 255;
+    }
+    return data;
+  }
+}
+
 class Editor {
   app: HTMLElement;
+
+  scaleX = 1;
+  scaleY = -1;
 
   constructor(app: HTMLElement) {
     this.app = app;
@@ -34,6 +58,9 @@ class Editor {
       case "image/dds":
         mipmaps = await this.loadDDS(array);
         break;
+      case "font/fnt":
+        mipmaps = await this.loadFNT(array);
+        break;
     }
     console.log(mipmaps);
     mipmaps = this.decompress(mipmaps);
@@ -44,6 +71,14 @@ class Editor {
     const uncompressedMipmaps: Mipmaps = [];
     for (const mipmap of mipmaps) {
       switch (mipmap.type) {
+        case "Gray4":
+          uncompressedMipmaps.push({
+            type: "RGBA",
+            width: mipmap.width,
+            height: mipmap.height,
+            data: Gray4.convert(mipmap.data),
+          });
+          break;
         case "RGBA":
           uncompressedMipmaps.push(mipmap);
           break;
@@ -97,6 +132,12 @@ class Editor {
     return [];
   }
 
+  async loadFNT(array: Uint8Array): Promise<Mipmaps> {
+    this.scaleY = 1;
+    const fnt = await FNT.load(array.buffer);
+    return [fnt.image.mipmap];
+  }
+
   render(textures: Mipmaps) {
     for (const texture of textures) {
       const canvas = document.createElement("canvas");
@@ -107,7 +148,7 @@ class Editor {
       canvas.width = texture.width;
       canvas.height = texture.height;
       canvas.style.border = "1px solid white";
-      canvas.style.transform = "scale(1, -1)";
+      canvas.style.transform = `scale(${this.scaleX}, ${this.scaleY})`;
       canvas.style.margin = "10px";
       canvas.style.backgroundColor = "#000000";
       this.app.append(canvas);
