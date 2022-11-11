@@ -6,6 +6,18 @@ import { DXT1, DXT3, DXT5 } from "../../core/utils/dxt";
 import { GTF } from "../../core/gtf";
 import { DDS } from "../../core/dds";
 
+class ARGB {
+  static convert(argb: Uint8Array | Uint8ClampedArray) {
+    const data = new Uint8Array(argb.length);
+    for (let i = 0; i < argb.length / 4; i++) {
+      data[i * 4 + 0] = argb[i * 4 + 1];
+      data[i * 4 + 1] = argb[i * 4 + 2];
+      data[i * 4 + 2] = argb[i * 4 + 3];
+      data[i * 4 + 3] = argb[i * 4 + 0];
+    }
+    return data;
+  }
+}
 class Editor {
   app: HTMLElement;
 
@@ -34,6 +46,14 @@ class Editor {
       switch (mipmap.type) {
         case "RGBA":
           uncompressedMipmaps.push(mipmap);
+          break;
+        case "ARGB":
+          uncompressedMipmaps.push({
+            type: "RGBA",
+            width: mipmap.width,
+            height: mipmap.height,
+            data: ARGB.convert(mipmap.data),
+          });
           break;
         case "DXT1":
           uncompressedMipmaps.push({

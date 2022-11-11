@@ -1,9 +1,8 @@
-
 export type Mipmap = {
-    type: "RGBA" | "DXT1" | "DXT3" | "DXT5"
-    width: number,
-    height: number,
-    data: Uint8Array | Uint8ClampedArray,
+  type: "ARGB" | "RGBA" | "DXT1" | "DXT3" | "DXT5";
+  width: number;
+  height: number;
+  data: Uint8Array | Uint8ClampedArray;
 };
 
 export type Mipmaps = Mipmap[];

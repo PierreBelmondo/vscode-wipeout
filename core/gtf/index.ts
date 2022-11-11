@@ -122,8 +122,11 @@ export class GTF {
       case CellGcmTexture.A1R5G5B5:
       case CellGcmTexture.A4R4G4B4:
       case CellGcmTexture.R5G6B5:
-      case CellGcmTexture.A8R8G8B8:
         console.warn(`Format ${ret.header.formatName} is not implemented`);
+        break;
+      case CellGcmTexture.A8R8G8B8:
+        console.log("Loading A8R8G8B8 data...");
+        ret.loadA8R8G8B8();
         break;
       case CellGcmTexture.COMPRESSED_DXT1:
         console.log("Loading COMPRESSED_DXT1 data...");
@@ -164,6 +167,23 @@ export class GTF {
     }
 
     return ret;
+  }
+
+  loadA8R8G8B8() {
+    const dataRange = this.header.data;
+    this.mipmaps = [];
+
+    let width = this.header.width;
+    let height = this.header.height;
+    let dataOffset = 0;
+    for (let i = 0; i < this.header.mipmaps; i++) {
+      const dataLength = width * height * 4;
+      const data = dataRange.getUint8Array(dataOffset, dataOffset + dataLength);
+      this.mipmaps.push({ type: "ARGB", width, height, data });
+      width = Math.floor(width / 2);
+      height = Math.floor(height / 2);
+      dataOffset += dataLength;
+    }
   }
 
   loadCompressedDXT1() {
