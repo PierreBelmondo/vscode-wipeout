@@ -2,10 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 
 import { getNonce } from "../helpers/util";
-import { TextDecoder } from "util";
 import { ThreeViewMessage, ThreeViewMessageLoadBody } from "@core/api/rpc";
-
-const _textDecoder = new TextDecoder();
 
 export class FEPanel {
   /**
