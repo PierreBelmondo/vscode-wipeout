@@ -25,7 +25,7 @@ class Editor {
   };
 
   loader?: Loader;
-  currentScene: THREE.Scene;
+  currentWorld: World;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -81,7 +81,7 @@ class Editor {
     this.gui.add(this.settings, "Update scene graph");
     */
 
-    this.currentScene = this.world.scene;
+    this.showWorld();
   }
 
   load(body: ThreeViewMessageLoadBody) {
@@ -161,15 +161,16 @@ class Editor {
     this.world.scene.add(gridHelper);
     */
 
-    this.currentScene = this.world.scene;
+    this.currentWorld = this.world;
 
     this.updated();
     this.render();
   }
 
   render() {
-    this.renderer.render(this.currentScene, this.world.camera);
-    this.labelRenderer.render(this.currentScene, this.world.camera);
+    const world = this.currentWorld;
+    this.renderer.render(world.scene, world.camera);
+    this.labelRenderer.render(world.scene, world.camera);
   }
 
   resize() {
@@ -181,19 +182,23 @@ class Editor {
   }
 
   showWorld() {
-    this.currentScene = this.world.scene;
+    this.currentWorld = this.world;
   }
 
   showTexture(name: string) {
     const map = this.world.getTextureByName(name);
     if (map) {
-      this.currentScene = new THREE.Scene();
+      const world = new World();
+      world.camera.position.set(0, 0, 3);
+
       const square = new THREE.PlaneGeometry(1, 1);
       const material = new THREE.MeshPhongMaterial({ map, side: THREE.DoubleSide });
       const mesh = new THREE.Mesh(square, material);
-      this.currentScene.add(mesh);
+      world.scene.add(mesh);
+
       const box = new THREE.BoxHelper(mesh, 0xffff00);
-      this.currentScene.add(box);
+      world.scene.add(box);
+
       let offset = 0;
       for (let i = 1; i < map.mipmaps.length; i++) {
         const mipmap = map.mipmaps[i];
@@ -205,13 +210,17 @@ class Editor {
         const mesh = new THREE.Mesh(square, material);
         mesh.position.x += size / 2 + 0.5;
         mesh.position.y += size / 2 - offset;
-        this.currentScene.add(mesh);
+        world.scene.add(mesh);
+
         const box = new THREE.BoxHelper(mesh, 0xffff00);
-        this.currentScene.add(box);
+        world.scene.add(box);
+
         offset += size / 2;
       }
       const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x080808, 1);
-      this.currentScene.add(hemiLight);
+      world.scene.add(hemiLight);
+
+      this.currentWorld = world;
       this.render();
     }
   }
