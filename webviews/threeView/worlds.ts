@@ -1,21 +1,23 @@
 import * as THREE from "three";
 
 export class World {
-  scene: THREE.Scene;
-  textures: { [id: number | string]: THREE.Texture };
-  materials: { [id: number | string]: THREE.Material };
+  scene: THREE.Scene = new THREE.Scene();
+  camera: THREE.PerspectiveCamera;
+  textures: { [id: number | string]: THREE.Texture } = {};
+  materials: { [id: number | string]: THREE.Material } = {};
 
-  private _layers: { [id: string]: number };
+  private _layers: { [id: string]: number } = {};
   private _layerIndex = 8;
 
   private _settings: any = {};
 
   constructor() {
-    this.scene = new THREE.Scene();
-    this.textures = {};
-    this.materials = {};
-    this._layers = {};
-    this._settings = {};
+    const fov = 45;
+    const aspect = window.innerWidth / window.innerHeight;
+    const near = 0.1;
+    const far = 20000;
+    this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    this.camera.position.set(0, 0, 500);
 
     this.materials["_default"] = new THREE.MeshPhongMaterial({
       specular: 0x003000,

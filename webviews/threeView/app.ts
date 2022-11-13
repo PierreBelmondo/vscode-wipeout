@@ -17,7 +17,6 @@ class Editor {
   canvas: HTMLCanvasElement;
 
   world: World;
-  camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   labelRenderer: CSS2DRenderer;
   controls: OrbitControls | FlyControls;
@@ -39,13 +38,8 @@ class Editor {
     this.canvas.style.width = "100%";
     this.canvas.style.height = "100%";
 
-    const fov = 45;
-    const aspect = window.innerWidth / window.innerHeight;
-    const near = 0.1;
-    const far = 20000;
-    this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this.camera.position.set(0, 0, 500);
-
+    this.world = new World();
+    
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
@@ -61,7 +55,7 @@ class Editor {
     this.labelRenderer.domElement.style.top = "0px";
     document.body.appendChild(this.labelRenderer.domElement);
 
-    this.controls = new OrbitControls(this.camera, this.labelRenderer.domElement);
+    this.controls = new OrbitControls(this.world.camera, this.labelRenderer.domElement);
     /*
     this.controls = new FlyControls(
       this.camera,
@@ -101,7 +95,6 @@ class Editor {
     this.gui.add(this.settings, "Update scene graph");
     */
 
-    this.world = new World();
     this.currentScene = this.world.scene;
   }
 
@@ -154,8 +147,8 @@ class Editor {
       for (const layerInfo of this.world.layers) {
         this.settings.layers[layerInfo.name] = false;
         folder.add(this.settings.layers, layerInfo.name).onChange((value: boolean) => {
-          if (value) this.camera.layers.enable(layerInfo.id);
-          else this.camera.layers.disable(layerInfo.id);
+          if (value) this.world.camera.layers.enable(layerInfo.id);
+          else this.world.camera.layers.disable(layerInfo.id);
           this.render();
         });
       }
@@ -189,13 +182,13 @@ class Editor {
   }
 
   render() {
-    this.renderer.render(this.currentScene, this.camera);
-    this.labelRenderer.render(this.currentScene, this.camera);
+    this.renderer.render(this.currentScene, this.world.camera);
+    this.labelRenderer.render(this.currentScene, this.world.camera);
   }
 
   resize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
+    this.world.camera.aspect = window.innerWidth / window.innerHeight;
+    this.world.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
     this.render();
