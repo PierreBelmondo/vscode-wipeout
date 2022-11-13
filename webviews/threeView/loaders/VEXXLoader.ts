@@ -63,7 +63,7 @@ class AsyncRcsModel {
   }
 
   async load(buffer: ArrayBufferLike) {
-    this.rcsModelLoader.load(this.world, buffer);
+    this.rcsModelLoader.loadFromBuffer(this.world, buffer);
     for (const asyncRcsMesh of this.asyncRcsMeshes) {
       const externalId = asyncRcsMesh.vexxMesh.externalId;
       for (const object of this.world.scene.children) {
@@ -83,8 +83,8 @@ class AsyncRcsModel {
 export class VEXXLoader extends Loader {
   asyncRcsModel?: AsyncRcsModel;
 
-  override async load(world: World, buffer: ArrayBufferLike) {
-    const model = Vexx.load(buffer);
+  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike) {
+    const model = Vexx.load(arrayBuffer);
     this.loadTextures(world, model);
     this.loadScene(world, model);
     return world;

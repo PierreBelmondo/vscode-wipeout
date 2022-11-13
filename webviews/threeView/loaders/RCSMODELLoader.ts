@@ -133,8 +133,8 @@ export class RCSModelLoader extends Loader {
   asyncTextures: AsyncTexture[] = [];
   asyncTextureLookup: { [filename: string]: number } = {};
 
-  override load(world: World, buffer: ArrayBufferLike) {
-    const model = RcsModel.load(buffer);
+  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike) {
+    const model = RcsModel.load(arrayBuffer);
     this.loadMaterials(world, model);
     this.loadScene(world, model);
     return world;

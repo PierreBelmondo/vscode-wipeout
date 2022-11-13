@@ -43,8 +43,7 @@ export class World {
   getTextureByName(name: string): THREE.Texture | null {
     for (const index in this.textures) {
       const texture = this.textures[index];
-      if (texture.name == name)
-        return texture;
+      if (texture.name == name) return texture;
     }
     return null;
   }
@@ -66,7 +65,9 @@ export class World {
 }
 
 export abstract class Loader {
-  abstract load(world: World, buffer: ArrayBufferLike);
+  loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike) {}
+
+  loadFromString(world: World, content: string) {}
 
   async import(buffer: ArrayBufferLike, filename: string) {}
 

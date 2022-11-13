@@ -8,9 +8,10 @@ import { GLTFExporter } from "./exporters/GLTFExporter";
 import { Loader, World } from "./loaders";
 import { VEXXLoader } from "./loaders/VEXXLoader";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
+import { FELoader } from "./loaders/FELoader";
 
 import { api } from "./api";
-import { ThreeViewMessage } from "../../core/api/rpc";
+import { ThreeViewMessage, ThreeViewMessageLoadBody } from "../../core/api/rpc";
 
 class Editor {
   canvas: HTMLCanvasElement;
@@ -104,21 +105,29 @@ class Editor {
     this.currentScene = this.world.scene;
   }
 
-  load(array: Uint8Array, mime: string) {
-    switch (mime) {
-      case "model/vnd.wipeout.vexx":
+  load(body: ThreeViewMessageLoadBody) {
+    api.log("Loading " + body.mime);
+    switch (body.mime) {
+      case "model/vnd.wipeout.vexx": {
+        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
         this.loader = new VEXXLoader();
-        this.loader.load(this.world, array.buffer);
+        this.loader.loadFromBuffer(this.world, array.buffer);
         this.loadWorld();
         break;
-      case "model/vnd.wipeout.rcsmodel":
+      }
+      case "model/vnd.wipeout.rcsmodel": {
+        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
         this.loader = new RCSModelLoader();
-        this.loader.load(this.world, array.buffer);
+        this.loader.loadFromBuffer(this.world, array.buffer);
         this.loadWorld();
         break;
-      default:
-        console.error(`Unsupported 3D model: ${mime}`);
+      }
+      case "application/xml+wipeout": {
+        this.loader = new FELoader();
+        this.loader.loadFromString(this.world, body.buffer);
+        this.loadWorld();
         break;
+      }
     }
   }
 
@@ -251,9 +260,7 @@ export function main() {
     const msg = e.data as ThreeViewMessage;
     switch (msg.type) {
       case "load": {
-        const mime = msg.body.mime;
-        const array = Uint8Array.from(window.atob(msg.body.buffer), (v) => v.charCodeAt(0));
-        editor.load(array, mime);
+        editor.load(msg.body);
         break;
       }
       case "import": {

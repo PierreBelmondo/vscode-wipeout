@@ -48,7 +48,12 @@
           "light": "resources/images/light/eye-open.svg",
           "dark": "resources/images/dark/eye-open.svg"
         }
-      }
+      },
+      {
+				"command": "wipeout.fe.preview",
+				"title": "WipEout XML Preview",
+				"category": "XML"
+			}
     ],
     "menus": {
       "explorer/context": [
