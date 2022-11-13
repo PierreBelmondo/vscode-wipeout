@@ -507,8 +507,7 @@ export class VEXXLoader extends Loader {
         if (node.typeName == "MESH") {
           material = new THREE.MeshPhongMaterial({ map });
           material.name = "PhongMaterial_" + textureId;
-        }
-        else if (node.typeName == "SKYCUBE") {
+        } else if (node.typeName == "SKYCUBE") {
           material = new MeshSkyMaterial(map);
           material.name = "SkyMaterial_" + textureId;
         }

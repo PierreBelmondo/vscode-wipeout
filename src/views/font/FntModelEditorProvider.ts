@@ -8,7 +8,7 @@ import { getNonce } from "../../helpers/util";
 /**
  * Provider for Fnt editors.
  */
-export  class FntModelEditorProvider implements vscode.CustomReadonlyEditorProvider<FntModelDocument> {
+export class FntModelEditorProvider implements vscode.CustomReadonlyEditorProvider<FntModelDocument> {
   private static readonly viewType = "wipeout.view.fnt";
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
