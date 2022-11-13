@@ -33,6 +33,10 @@ export class FEPanel {
   }
 
   static show(context: vscode.ExtensionContext) {
+    if (FEPanel.currentPanel) {
+      FEPanel.currentPanel.dispose();
+    }
+    
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       vscode.commands.executeCommand("workbench.action.moveEditorToRightGroup");
