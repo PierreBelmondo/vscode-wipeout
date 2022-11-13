@@ -54,7 +54,10 @@ class Editor {
         const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
         this.loader = new VEXXLoader();
         this.loader.loadFromBuffer(this.world, array.buffer);
+        this.world.emitScene();
         this.world.setupGui();
+        this.world.setupGuiButtonExport();
+        this.world.setupGuiLayers();
         this.loadWorld();
         break;
       }
@@ -62,7 +65,9 @@ class Editor {
         const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
         this.loader = new RCSModelLoader();
         this.loader.loadFromBuffer(this.world, array.buffer);
-        this.world.setupGui();
+        this.world.emitScene();
+        this.world.setupGuiButtonExport();
+        this.world.setupGuiLayers();
         this.loadWorld();
         break;
       }
@@ -78,17 +83,8 @@ class Editor {
   async import(array: Uint8Array, filename: string) {
     if (this.loader) {
       await this.loader.import(array.buffer, filename);
-      this.updated();
+      this.world.emitScene();
     }
-  }
-
-  updated() {
-    //const aabb = new THREE.Box3().setFromObject(this.world.scene);
-    //const helper = new THREE.Box3Helper(aabb, new THREE.Color(0xffff00));
-    //this.world.scene.add(helper);
-
-    const scene = this.world.scene.toJSON();
-    api.scene(scene); // Arrays won't be serialized and that's ok
   }
 
   loadWorld() {
@@ -98,10 +94,7 @@ class Editor {
     gridHelper.position.x = 0;
     this.world.scene.add(gridHelper);
     */
-
     this.currentWorld = this.world;
-
-    this.updated();
     this.render();
   }
 

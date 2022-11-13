@@ -51,6 +51,11 @@ export class World {
     if (this.onUpdate) this.onUpdate();
   }
 
+  emitScene() {
+    const scene = this.scene.toJSON();
+    api.scene(scene);
+  }
+
   setupOrbitContols(element: HTMLElement) {
     this.controls = new OrbitControls(this.camera, element);
     this.controls.enablePan = true;
@@ -67,8 +72,9 @@ export class World {
   setupGui() {
     this.gui = new GUI();
     this.gui.onChange(this.emitUpdate.bind(this));
-    
-    // Buttons
+  }
+
+  setupGuiButtonExport() {
     this.settings["Export to glTF"] = () => {
       _exporter.parse(
         this.scene,
@@ -83,7 +89,16 @@ export class World {
       );
     };
     this.gui.add(this.settings, "Export to glTF");
+  }
 
+  setupGuiButtonUpdate() {
+    this.settings["Update scene graph"] = () => {
+      this.emitScene();
+    };
+    this.gui.add(this.settings, "Update scene graph");
+  }
+
+  setupGuiLayers() {
     this.settings.layers = {};
     if (this.layers.length > 0) {
       const folder = this.gui.addFolder("Layers");
@@ -110,11 +125,6 @@ export class World {
         });
       }
     }
-
-    /*
-    this.settings["Update scene graph"] = () => { this.updated(); };
-    this.gui.add(this.settings, "Update scene graph");
-    */
   }
 
   getLayer(name: string): number {
