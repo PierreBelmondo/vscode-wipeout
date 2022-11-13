@@ -32,6 +32,7 @@ import { RCSModelLoader } from "./RCSMODELLoader";
 
 import { VexxNodeAnimTransform } from "../../../core/vexx/v4/anim_transform";
 import { Mipmaps } from "../../../core/utils/mipmaps";
+import { mipmapsToTexture } from "../utils";
 
 class AsyncRcsMesh {
   world: World;
@@ -111,47 +112,9 @@ export class VEXXLoader extends Loader {
     this.asyncRcsModel.requireAsyncMesh(asyncMesh);
   }
 
-  generateMissingMipmaps(mipmaps: Mipmaps) {
-    let last = mipmaps[mipmaps.length - 1];
-    while (last.width >= 2 || last.height >= 2) {
-      const width = Math.floor(last.width / 2);
-      const height = Math.floor(last.height / 2);
-      const data = new Uint8ClampedArray(height * width * 4);
-      for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-          for (let i = 0; i < 4; i++) {
-            let c = 0;
-            c += Math.pow(last.data[4 * (2 * x + 0 + (2 * y + 0) * width * 2) + i], 2);
-            c += Math.pow(last.data[4 * (2 * x + 1 + (2 * y + 0) * width * 2) + i], 2);
-            c += Math.pow(last.data[4 * (2 * x + 0 + (2 * y + 1) * width * 2) + i], 2);
-            c += Math.pow(last.data[4 * (2 * x + 1 + (2 * y + 1) * width * 2) + i], 2);
-            data[4 * (x + y * width) + i] = Math.sqrt(c / 4);
-          }
-        }
-      }
-      last = { type: "RGBA", width, height, data };
-      mipmaps.push(last);
-    }
-    return mipmaps;
-  }
-
   private loadTextures(world: World, vexx: Vexx) {
     for (const vexxTexture of vexx.textures) {
-      let mipmaps: THREE.Texture[] = [];
-      vexxTexture.mipmaps = this.generateMissingMipmaps(vexxTexture.mipmaps);
-      for (const vexxMipmap of vexxTexture.mipmaps) {
-        const mipmap = new THREE.DataTexture(vexxMipmap.data, vexxMipmap.width, vexxMipmap.height, THREE.RGBAFormat);
-        mipmaps.push(mipmap);
-      }
-      const texture = mipmaps[0];
-      const images = mipmaps.map((texture) => texture.image, mipmaps);
-      texture.mipmaps = images;
-      texture.magFilter = THREE.LinearFilter;
-      //texture.minFilter = THREE.LinearFilter;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      texture.needsUpdate = true;
+      const texture = mipmapsToTexture(vexxTexture.mipmaps);
       texture.name = vexxTexture.name;
       world.textures[vexxTexture.properties.id] = texture;
     }

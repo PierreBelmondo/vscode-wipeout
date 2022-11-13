@@ -5,6 +5,7 @@ import { World, Loader } from ".";
 import { GTF } from "../../../core/gtf";
 
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
+import { mipmapsToTexture } from "../utils";
 
 class AsyncMaterial {
   world: World;
@@ -82,44 +83,8 @@ class AsyncTexture {
   async load(buffer: ArrayBufferLike) {
     console.log(`Loading GTF ${this.rcsTexture.filename}`);
     const gtf = GTF.load(buffer);
-
-    let mimaps: THREE.Texture[] = [];
-    for (const gtfMipmap of gtf.mipmaps) {
-      switch (gtfMipmap.type) {
-        case "RGBA": {
-          const texture = new THREE.DataTexture(gtfMipmap.data, gtfMipmap.width, gtfMipmap.height, THREE.RGBAFormat);
-          mimaps.push(texture);
-          break;
-        }
-        case "DXT1": {
-          const imd = [gtfMipmap as unknown as ImageData];
-          const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT1_Format);
-          mimaps.push(texture);
-          break;
-        }
-        case "DXT3": {
-          const imd = [gtfMipmap as unknown as ImageData];
-          const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT3_Format);
-          mimaps.push(texture);
-          break;
-        }
-        case "DXT5": {
-          const imd = [gtfMipmap as unknown as ImageData];
-          const texture = new THREE.CompressedTexture(imd, gtfMipmap.width, gtfMipmap.height, THREE.RGBA_S3TC_DXT5_Format);
-          mimaps.push(texture);
-          break;
-        }
-      }
-    }
-
-    this.texture = mimaps[0];
+    this.texture = mipmapsToTexture(gtf.mipmaps);
     this.texture.name = this.rcsTexture.filename;
-    this.texture.wrapS = THREE.RepeatWrapping;
-    this.texture.wrapT = THREE.RepeatWrapping;
-    this.texture.magFilter = THREE.LinearFilter;
-    //this.texture.minFilter = THREE.LinearMipmapLinearFilter;
-    //this.texture.mipmaps = mimaps.map((texture) => texture.image);
-    this.texture.needsUpdate = true;
 
     this.world.textures[this.texture.name] = this.texture;
     for (const asyncMaterial of this.asyncMaterials) {
