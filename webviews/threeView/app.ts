@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { GUI } from "lil-gui";
 
-import { OrbitControls } from "./controls/OrbitControls";
-import { FlyControls } from "./controls/FlyControls";
 import { CSS2DRenderer } from "./renderers/CSS2DRenderer";
 import { GLTFExporter } from "./exporters/GLTFExporter";
 import { Loader } from "./loaders";
@@ -19,7 +17,6 @@ class Editor {
   world: World;
   renderer: THREE.WebGLRenderer;
   labelRenderer: CSS2DRenderer;
-  controls: OrbitControls | FlyControls;
 
   gui: GUI;
   settings = {
@@ -39,11 +36,9 @@ class Editor {
     this.canvas.style.height = "100%";
 
     this.world = new World();
-    
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
-      antialias: true,
-    });
+    this.world.onUpdate = this.render.bind(this);
+
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true });
     this.renderer.setClearColor(0x000000);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -55,16 +50,7 @@ class Editor {
     this.labelRenderer.domElement.style.top = "0px";
     document.body.appendChild(this.labelRenderer.domElement);
 
-    this.controls = new OrbitControls(this.world.camera, this.labelRenderer.domElement);
-    /*
-    this.controls = new FlyControls(
-      this.camera,
-      this.labelRenderer.domElement
-    );
-    */
-    this.controls.enablePan = true;
-    this.controls.update();
-    this.controls.addEventListener("change", this.render.bind(this));
+    this.world.setupOrbitContols(this.labelRenderer.domElement);
 
     this.gui = new GUI();
     this.gui.onChange(() => {

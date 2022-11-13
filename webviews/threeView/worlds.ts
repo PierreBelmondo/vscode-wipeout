@@ -1,8 +1,15 @@
 import * as THREE from "three";
 
+import { OrbitControls } from "./controls/OrbitControls";
+import { FlyControls } from "./controls/FlyControls";
+
 export class World {
+  onUpdate?: () => void;
+
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
+  controls: OrbitControls | FlyControls;
+
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
 
@@ -31,6 +38,22 @@ export class World {
       transparent: true,
       opacity: 0.5,
     });
+  }
+
+  emitUpdate() {
+    if (this.onUpdate) this.onUpdate();
+  }
+
+  setupOrbitContols(element: HTMLElement) {
+    this.controls = new OrbitControls(this.camera, element);
+    this.controls.enablePan = true;
+    this.controls.update();
+    this.controls.addEventListener("change", this.emitUpdate.bind(this));
+  }
+
+  setupFlyContols(element: HTMLElement) { /* broken */
+    this.controls = new FlyControls(this.camera, element);
+    this.controls.addEventListener("change", this.emitUpdate.bind(this));
   }
 
   getLayer(name: string): number {
