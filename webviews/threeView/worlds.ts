@@ -1,7 +1,12 @@
 import * as THREE from "three";
+import { GUI } from "lil-gui";
 
 import { OrbitControls } from "./controls/OrbitControls";
 import { FlyControls } from "./controls/FlyControls";
+import { GLTFExporter } from "./exporters/GLTFExporter";
+import { api } from "./api";
+
+const _exporter = new GLTFExporter();
 
 export class World {
   onUpdate?: () => void;
@@ -9,7 +14,9 @@ export class World {
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls | FlyControls;
+  gui: GUI;
 
+  settings = { layers: {}, airbrakes: {} };
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
 
@@ -51,9 +58,63 @@ export class World {
     this.controls.addEventListener("change", this.emitUpdate.bind(this));
   }
 
-  setupFlyContols(element: HTMLElement) { /* broken */
+  setupFlyContols(element: HTMLElement) {
+    /* broken */
     this.controls = new FlyControls(this.camera, element);
     this.controls.addEventListener("change", this.emitUpdate.bind(this));
+  }
+
+  setupGui() {
+    this.gui = new GUI();
+    this.gui.onChange(this.emitUpdate.bind(this));
+    
+    // Buttons
+    this.settings["Export to glTF"] = () => {
+      _exporter.parse(
+        this.scene,
+        (gltf: any) => {
+          api.exportGTLF(gltf);
+        },
+        (error: any) => {
+          api.log("An error happened:");
+          console.log(error);
+        },
+        {}
+      );
+    };
+    this.gui.add(this.settings, "Export to glTF");
+
+    this.settings.layers = {};
+    if (this.layers.length > 0) {
+      const folder = this.gui.addFolder("Layers");
+      for (const layerInfo of this.layers) {
+        this.settings.layers[layerInfo.name] = false;
+        folder.add(this.settings.layers, layerInfo.name).onChange((value: boolean) => {
+          if (value) this.camera.layers.enable(layerInfo.id);
+          else this.camera.layers.disable(layerInfo.id);
+          this.emitUpdate();
+        });
+      }
+    }
+
+    this.settings.airbrakes = {};
+    if ("airbrakes" in this._settings) {
+      const folder = this.gui.addFolder("Airbrakes");
+      for (const airbrake of this._settings.airbrakes) {
+        this.settings.airbrakes[airbrake.name] = 0;
+        folder.add(this.settings.airbrakes, airbrake.name, 0.0, 1.0).onChange((value: number) => {
+          const object = airbrake.object as THREE.Object3D;
+          const euler = new THREE.Euler(value, 0, 0);
+          object.setRotationFromEuler(euler);
+          this.emitUpdate();
+        });
+      }
+    }
+
+    /*
+    this.settings["Update scene graph"] = () => { this.updated(); };
+    this.gui.add(this.settings, "Update scene graph");
+    */
   }
 
   getLayer(name: string): number {
@@ -81,9 +142,5 @@ export class World {
       });
 
     return ret;
-  }
-
-  get settings() {
-    return this._settings;
   }
 }

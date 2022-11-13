@@ -1,8 +1,6 @@
 import * as THREE from "three";
-import { GUI } from "lil-gui";
 
 import { CSS2DRenderer } from "./renderers/CSS2DRenderer";
-import { GLTFExporter } from "./exporters/GLTFExporter";
 import { Loader } from "./loaders";
 import { VEXXLoader } from "./loaders/VEXXLoader";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
@@ -17,12 +15,6 @@ class Editor {
   world: World;
   renderer: THREE.WebGLRenderer;
   labelRenderer: CSS2DRenderer;
-
-  gui: GUI;
-  settings = {
-    layers: {},
-    airbrakes: {},
-  };
 
   loader?: Loader;
   currentWorld: World;
@@ -52,35 +44,6 @@ class Editor {
 
     this.world.setupOrbitContols(this.labelRenderer.domElement);
 
-    this.gui = new GUI();
-    this.gui.onChange(() => {
-      this.render();
-    });
-
-    // Buttons
-    this.settings["Export to glTF"] = () => {
-      const exporter = new GLTFExporter();
-      exporter.parse(
-        this.world.scene,
-        (gltf: any) => {
-          api.exportGTLF(gltf);
-        },
-        (error: any) => {
-          api.log("An error happened:");
-          console.log(error);
-        },
-        {}
-      );
-    };
-    this.gui.add(this.settings, "Export to glTF");
-
-    /*
-    this.settings["Update scene graph"] = () => {
-      this.updated();
-    };
-    this.gui.add(this.settings, "Update scene graph");
-    */
-
     this.showWorld();
   }
 
@@ -91,6 +54,7 @@ class Editor {
         const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
         this.loader = new VEXXLoader();
         this.loader.loadFromBuffer(this.world, array.buffer);
+        this.world.setupGui();
         this.loadWorld();
         break;
       }
@@ -98,6 +62,7 @@ class Editor {
         const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
         this.loader = new RCSModelLoader();
         this.loader.loadFromBuffer(this.world, array.buffer);
+        this.world.setupGui();
         this.loadWorld();
         break;
       }
@@ -127,33 +92,6 @@ class Editor {
   }
 
   loadWorld() {
-    this.settings.layers = {};
-    if (this.world.layers.length > 0) {
-      const folder = this.gui.addFolder("Layers");
-      for (const layerInfo of this.world.layers) {
-        this.settings.layers[layerInfo.name] = false;
-        folder.add(this.settings.layers, layerInfo.name).onChange((value: boolean) => {
-          if (value) this.world.camera.layers.enable(layerInfo.id);
-          else this.world.camera.layers.disable(layerInfo.id);
-          this.render();
-        });
-      }
-    }
-
-    this.settings.airbrakes = {};
-    if ("airbrakes" in this.world.settings) {
-      const folder = this.gui.addFolder("Airbrakes");
-      for (const airbrake of this.world.settings.airbrakes) {
-        this.settings.airbrakes[airbrake.name] = 0;
-        folder.add(this.settings.airbrakes, airbrake.name, 0.0, 1.0).onChange((value: number) => {
-          const object = airbrake.object as THREE.Object3D;
-          const euler = new THREE.Euler(value, 0, 0);
-          object.setRotationFromEuler(euler);
-          this.render();
-        });
-      }
-    }
-
     /*
     const gridHelper = new THREE.GridHelper(400, 40, 0x0000ff, 0x808080);
     gridHelper.position.y = 0;
