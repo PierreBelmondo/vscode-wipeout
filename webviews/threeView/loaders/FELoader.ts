@@ -1,7 +1,8 @@
 import { api } from "../api";
 
 import * as THREE from "three";
-import { Loader, World } from ".";
+import { Loader } from ".";
+import { World } from "../worlds";
 
 export class FELoader extends Loader {
   override loadFromString(world: World, content: string): void {

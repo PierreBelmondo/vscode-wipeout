@@ -1,11 +1,11 @@
-import { api } from "../api";
-
 import * as THREE from "three";
-import { World, Loader } from ".";
-import { GTF } from "../../../core/gtf";
 
-import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
+import { api } from "../api";
+import { GTF } from "../../../core/gtf";
+import { Loader } from ".";
 import { mipmapsToTexture } from "../utils";
+import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
+import { World } from "../worlds";
 
 class AsyncMaterial {
   world: World;

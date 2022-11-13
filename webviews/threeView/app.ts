@@ -5,11 +5,11 @@ import { OrbitControls } from "./controls/OrbitControls";
 import { FlyControls } from "./controls/FlyControls";
 import { CSS2DRenderer } from "./renderers/CSS2DRenderer";
 import { GLTFExporter } from "./exporters/GLTFExporter";
-import { Loader, World } from "./loaders";
+import { Loader } from "./loaders";
 import { VEXXLoader } from "./loaders/VEXXLoader";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
 import { FELoader } from "./loaders/FELoader";
-
+import { World } from "./worlds";
 import { api } from "./api";
 import { ThreeViewMessage, ThreeViewMessageLoadBody } from "../../core/api/rpc";
 

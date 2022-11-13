@@ -1,13 +1,16 @@
-import { api } from "../api";
-
 import * as THREE from "three";
-import { Loader, World } from ".";
-import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
 
+import { api } from "../api";
+import { GU } from "../../../core/utils/pspgu";
+import { Loader } from ".";
+import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
+import { mipmapsToTexture } from "../utils";
+import { RCSModelLoader } from "./RCSMODELLoader";
 import { Vexx } from "../../../core/vexx";
 import { VexxNode, VexxNodeMatrix } from "../../../core/vexx/node";
 import { VexxNodeAirbrake } from "../../../core/vexx/v4/airbrake";
 import { VexxNodeAmbientLight } from "../../../core/vexx/v4/ambient_light";
+import { VexxNodeAnimTransform } from "../../../core/vexx/v4/anim_transform";
 import { VexxNodeCamera } from "../../../core/vexx/v4/camera";
 import { VexxNodeCollision } from "../../../core/vexx/v4/collision";
 import { VexxNodeEngineFire } from "../../../core/vexx/v4/engine_fire";
@@ -26,13 +29,7 @@ import { VexxNodeStartPosition } from "../../../core/vexx/v4/start_position";
 import { VexxNodeTrail } from "../../../core/vexx/v4/trail";
 import { VexxNodeTransform } from "../../../core/vexx/v4/transform";
 import { VexxNodeWeaponPad } from "../../../core/vexx/v4/weapon_pad";
-import { GU } from "../../../core/utils/pspgu";
-
-import { RCSModelLoader } from "./RCSMODELLoader";
-
-import { VexxNodeAnimTransform } from "../../../core/vexx/v4/anim_transform";
-import { Mipmaps } from "../../../core/utils/mipmaps";
-import { mipmapsToTexture } from "../utils";
+import { World } from "../worlds";
 
 class AsyncRcsMesh {
   world: World;
