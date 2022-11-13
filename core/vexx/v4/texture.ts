@@ -1,8 +1,6 @@
 import { Mipmaps } from "@core/utils/mipmaps";
-import { KeyframeTrack } from "three";
 import { BufferRange } from "../../utils/range";
 import { VexxNode } from "../node";
-import { VexxNodeDynamicShadowOccluder } from "./dynamic_shadow_occluder";
 import { Vexx4NodeType } from "./type";
 
 export class VexxNodeTexture extends VexxNode {
