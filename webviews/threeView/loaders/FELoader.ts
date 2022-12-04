@@ -4,7 +4,54 @@ import * as THREE from "three";
 import { Loader } from ".";
 import { World } from "../worlds";
 
+import { mipmapsToTexture } from "../utils";
+import { GTF } from "../../../core/gtf";
+
+class AsyncImage {
+  world: World;
+  filename: string;
+  objects: THREE.Mesh[] = []
+
+  private _texture: THREE.Texture;
+  private _notifyDone = false;
+
+  constructor(world: World, filename: string) {
+    this.world = world;
+    this.filename = filename;
+  }
+
+  notify() {
+    if (!this._notifyDone) {
+      api.require(this.filename);
+      this._notifyDone = true;
+    }
+  }
+
+  addObject(object: THREE.Mesh) {
+    this.objects.push(object);
+    if (this.loaded)
+      this.applyTo(object);
+  }
+
+  async load(buffer: ArrayBufferLike) {
+    const gtf = GTF.load(buffer);
+    this._texture = mipmapsToTexture(gtf.mipmaps);
+    for (const object of this.objects)
+      this.applyTo(object);
+  }
+
+  applyTo(object: THREE.Mesh) {
+    api.log("TODO: need implementation")
+  }
+
+  get loaded(): boolean {
+    return !!this._texture;
+  }
+}
+
 export class FELoader extends Loader {
+  asyncImages: { [path: string]: AsyncImage };
+
   override loadFromString(world: World, content: string): void {
     // Encapsulate the document into one tag to handle partial-documents
     content = `<FAKE_ROOT>${content}</FAKE_ROOT>`;
@@ -25,6 +72,20 @@ export class FELoader extends Loader {
     // Load it
     const object = this.loadDocument(world, doc);
     world.scene.add(object);
+  }
+
+  requireImage(world: World, filename: string, object: THREE.Mesh) {
+    if (!(filename in this.asyncImages)) {
+      this.asyncImages[filename] = new AsyncImage(world, filename);
+    }
+    this.asyncImages[filename].addObject(object);
+    this.asyncImages[filename].notify();
+  }
+
+  override async import(buffer: ArrayBufferLike, filename: string) {
+    if (filename in this.asyncImages) {
+      this.asyncImages.filename.load(buffer);
+    }
   }
 
   loadDocument(world: World, doc: Document) {
