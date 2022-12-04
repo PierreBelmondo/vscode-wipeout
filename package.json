@@ -51,10 +51,10 @@
         }
       },
       {
-				"command": "wipeout.fe.preview",
-				"title": "WipEout XML Preview",
-				"category": "XML"
-			}
+        "command": "wipeout.fe.preview",
+        "title": "WipEout XML Preview",
+        "category": "XML"
+      }
     ],
     "menus": {
       "explorer/context": [
