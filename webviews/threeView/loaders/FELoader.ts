@@ -10,7 +10,7 @@ import { GTF } from "../../../core/gtf";
 class AsyncImage {
   world: World;
   filename: string;
-  objects: THREE.Mesh[] = []
+  objects: THREE.Mesh[] = [];
 
   private _texture: THREE.Texture;
   private _notifyDone = false;
@@ -29,19 +29,17 @@ class AsyncImage {
 
   addObject(object: THREE.Mesh) {
     this.objects.push(object);
-    if (this.loaded)
-      this.applyTo(object);
+    if (this.loaded) this.applyTo(object);
   }
 
   async load(buffer: ArrayBufferLike) {
     const gtf = GTF.load(buffer);
     this._texture = mipmapsToTexture(gtf.mipmaps);
-    for (const object of this.objects)
-      this.applyTo(object);
+    for (const object of this.objects) this.applyTo(object);
   }
 
   applyTo(object: THREE.Mesh) {
-    api.log("TODO: need implementation")
+    api.log("TODO: need implementation");
   }
 
   get loaded(): boolean {
@@ -56,9 +54,11 @@ export class FELoader extends Loader {
     // Encapsulate the document into one tag to handle partial-documents
     content = `<FAKE_ROOT>${content}</FAKE_ROOT>`;
 
-    // Fix comments
-    content = content.replace(/<\?/g, "<!--");
-    content = content.replace(/\?>/g, "-->");
+    // Fix comments and crap
+    content = content.replace(/<\?[^>]*>/g, "");
+    content = content.replace(/<[^>]*\?>/g, "");
+    content = content.replace(/<!--.*-->/g, "");
+    content = content.replace(/ & /g, " &amp; ");
 
     // Parse XML
     const parser = new window.DOMParser();
