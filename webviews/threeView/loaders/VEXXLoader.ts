@@ -587,14 +587,7 @@ export class VEXXLoader extends Loader {
   private loadAirbrake(world: World, node: VexxNodeAirbrake): THREE.Object3D {
     const object = this.loadNodeGeneric(world, node);
     object.name = node.name;
-
-    if (!("airbrakes" in world.settings)) world.settings["airbrakes"] = [];
-    const airbrake = {
-      name: node.name,
-      object,
-    };
-    world.settings["airbrakes"].push(airbrake);
-
+    world.addAirbrake(object);
     return object;
   }
 

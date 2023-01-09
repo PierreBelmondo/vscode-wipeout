@@ -8,6 +8,11 @@ import { api } from "./api";
 
 const _exporter = new GLTFExporter();
 
+type Airbrake = {
+  name: string;
+  object: THREE.Object3D;
+};
+
 export class World {
   onUpdate?: () => void;
 
@@ -22,8 +27,7 @@ export class World {
 
   private _layers: { [id: string]: number } = {};
   private _layerIndex = 8;
-
-  private _settings: any = {};
+  private _airbrakes: Airbrake[] = [];
 
   constructor() {
     const fov = 45;
@@ -113,9 +117,9 @@ export class World {
     }
 
     this.settings.airbrakes = {};
-    if ("airbrakes" in this._settings) {
+    if (this._airbrakes.length > 0) {
       const folder = this.gui.addFolder("Airbrakes");
-      for (const airbrake of this._settings.airbrakes) {
+      for (const airbrake of this._airbrakes) {
         this.settings.airbrakes[airbrake.name] = 0;
         folder.add(this.settings.airbrakes, airbrake.name, 0.0, 1.0).onChange((value: number) => {
           const object = airbrake.object as THREE.Object3D;
@@ -133,6 +137,11 @@ export class World {
       this._layerIndex++;
     }
     return this._layers[name];
+  }
+
+  addAirbrake(object: THREE.Object3D) {
+    const airbrake = { name: object.name, object };
+    this._airbrakes.push(airbrake);
   }
 
   getTextureByName(name: string): THREE.Texture | null {
