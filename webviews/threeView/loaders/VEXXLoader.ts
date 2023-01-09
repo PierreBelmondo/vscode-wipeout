@@ -385,8 +385,8 @@ export class VEXXLoader extends Loader {
     const group = new THREE.Group();
     group.name = node.name;
 
-    if (node.unk3 == 0x01) {
-      /*
+    /*
+     if (node.unk3 == 0x01) {
       const m1 = new THREE.Matrix4();
       m1.makeRotationFromEuler(new THREE.Euler(-0.1, node.x > 0 ? -0.08 : 0.08, node.x > 0 ? -0.47 : 0.47));
       group.applyMatrix4(m1);
@@ -395,10 +395,10 @@ export class VEXXLoader extends Loader {
       m.makeTranslation((node.x - 0.5) * 1.3, node.y - 0.05, node.z - 2.22);
       group.applyMatrix4(m);
       */
-      const m = new THREE.Matrix4();
-      m.makeTranslation(node.x, node.y, node.z);
-      group.applyMatrix4(m);
-    }
+    const m = new THREE.Matrix4();
+    m.makeTranslation(node.x, node.y, node.z);
+    group.applyMatrix4(m);
+    //}
 
     for (const child of node.children) {
       const object = this.loadNode(world, child);
