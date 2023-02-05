@@ -21,7 +21,7 @@ export class World {
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
-  settings = { layers: {}, airbrakes: {} };
+  settings = { layers: {}, airbrakes: {}, backgroundColor: "#000000" };
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
 
@@ -100,6 +100,12 @@ export class World {
       this.emitScene();
     };
     this.gui.add(this.settings, "Update scene graph");
+  }
+
+  setupGuiBackgroundColor() {
+    this.gui.addColor(this.settings, "backgroundColor").onChange(() => {
+      this.emitUpdate();
+    });
   }
 
   setupGuiLayers() {

@@ -7,7 +7,8 @@ All notable changes to the "wipeout" extension will be documented in this file.
  - Added a context menu to the SceneGraph to jump to textures
  - Added .fnt loader for Wipeout HD
  - Improve VEXX materials caching
-
+ - Added customisable background color
+ 
 ## [0.0.9]
 
  - Changed extension displayName to "Belmondo's Vision - WipEout Modding Tool"

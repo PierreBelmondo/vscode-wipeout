@@ -58,6 +58,7 @@ class Editor {
         this.world.setupGui();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
+        this.world.setupGuiBackgroundColor();
         this.loadWorld();
         break;
       }
@@ -68,6 +69,7 @@ class Editor {
         this.world.emitScene();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
+        this.world.setupGuiBackgroundColor();
         this.loadWorld();
         break;
       }
@@ -100,6 +102,7 @@ class Editor {
 
   render() {
     const world = this.currentWorld;
+    this.renderer.setClearColor(world.settings.backgroundColor);
     this.renderer.render(world.scene, world.camera);
     this.labelRenderer.render(world.scene, world.camera);
   }
