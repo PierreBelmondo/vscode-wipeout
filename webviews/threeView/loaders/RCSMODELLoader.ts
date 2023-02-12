@@ -7,17 +7,26 @@ import { mipmapsToTexture } from "../utils";
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
 import { World } from "../worlds";
 
+type TextureChannel = {
+  filename: string;
+  texture: THREE.Texture | null;
+};
+
 class AsyncMaterial {
   world: World;
   rcsMaterial: RcsModelMaterial;
   meshes: THREE.Mesh[] = [];
-  textures: THREE.Texture[] = [];
-  loadableTextures: string[] = [];
+  textureChannels: TextureChannel[] = [];
   material?: THREE.Material;
 
   constructor(world: World, material: RcsModelMaterial) {
     this.world = world;
     this.rcsMaterial = material;
+  }
+
+  get basename(): string {
+    const list = this.rcsMaterial.filename.split("/");
+    return list[list.length - 1];
   }
 
   require() {
@@ -33,7 +42,7 @@ class AsyncMaterial {
   }
 
   registerTexture(filename: string) {
-    this.loadableTextures.push(filename);
+    this.textureChannels.push({ filename, texture: null });
   }
 
   async load(buffer: ArrayBufferLike) {
@@ -41,17 +50,47 @@ class AsyncMaterial {
   }
 
   import(texture: THREE.Texture) {
-    if (this.material) return;
-    this.textures.push(texture);
+    let fullyLoaded = true;
+    for (let i = 0; i < this.textureChannels.length; i++) {
+      if (this.textureChannels[i].filename == texture.name) {
+        this.textureChannels[i].texture = texture;
+      }
+      if (this.textureChannels[i].texture == null) fullyLoaded = false;
+    }
 
-    if (texture.name == this.loadableTextures[0]) {
-      // hack to use only first channel/texture
-      this.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, map: texture });
-      this.material.name = this.rcsMaterial.filename;
+    if (!fullyLoaded) return;
 
+    if (this.basename == "glass_texture.rcsmaterial") {
+      //const textureChannel = this.textureChannels[0];
+      this.material = new THREE.MeshPhongMaterial({
+        name: this.rcsMaterial.filename,
+        side: THREE.DoubleSide,
+        color: 0x0000ff,
+        specular: 0x333333,
+        transparent: true,
+        opacity: 0.5,
+        depthTest: true,
+        depthWrite: true,
+        reflectivity: 1.0,
+        refractionRatio: 0.98,
+      });
       this.world.materials[this.material.name] = this.material;
+    } else {
+      const textureChannel = this.textureChannels[0];
+      this.material = new THREE.MeshBasicMaterial({
+        name: this.rcsMaterial.filename,
+        side: THREE.DoubleSide,
+        map: textureChannel.texture,
+        depthTest: true,
+        depthWrite: true,
+      });
+      this.world.materials[this.material.name] = this.material;
+    }
 
-      for (const mesh of this.meshes) mesh.material = this.material;
+    if (this.material) {
+      for (const mesh of this.meshes) {
+        mesh.material = this.material;
+      }
     }
   }
 }

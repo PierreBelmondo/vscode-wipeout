@@ -4,6 +4,8 @@ All notable changes to the "wipeout" extension will be documented in this file.
 
 ## [Unreleased]
 
+ - Use MeshPhongMaterial with alpha for "glass_texture.rcsmaterial"
+
 ## [0.0.10]
 
  - Added a context menu to the SceneGraph to jump to textures
