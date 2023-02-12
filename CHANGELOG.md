@@ -4,6 +4,8 @@ All notable changes to the "wipeout" extension will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.11]
+
  - Use MeshPhongMaterial with alpha for "glass_texture.rcsmaterial"
 
 ## [0.0.10]

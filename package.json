@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/PierreBelmondo/vscode-wipeout.git"
   },
-  "version": "0.0.10",
+  "version": "0.0.11",
   "publisher": "PierreBelmondo",
   "engines": {
     "vscode": "^1.71.0"
