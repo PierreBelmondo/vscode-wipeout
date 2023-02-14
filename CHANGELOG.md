@@ -4,6 +4,8 @@ All notable changes to the "wipeout" extension will be documented in this file.
 
 ## [Unreleased]
 
+ - update three.js to 0.149.0
+ 
 ## [0.0.11]
 
  - Use MeshPhongMaterial with alpha for "glass_texture.rcsmaterial"

@@ -163,7 +163,7 @@
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
     "@types/pako": "^2.0.0",
-    "@types/three": "^0.144.0",
+    "@types/three": "^0.149.0",
     "@types/vscode": "^1.71.0",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
@@ -186,6 +186,6 @@
     "gl-matrix": "^3.4.3",
     "lil-gui": "^0.17.0",
     "pako": "^2.0.4",
-    "three": "^0.144.0"
+    "three": "^0.149.0"
   }
 }
