@@ -194,9 +194,6 @@ export class RCSModelLoader extends Loader {
   }
 
   private loadScene(world: World, rcs: RcsModel) {
-    const hemiLight = new THREE.HemisphereLight(0xe0e0e0, 0x080808, 1);
-    world.scene.add(hemiLight);
-
     for (const objectData of rcs.objects) {
       const object = this.loadObject(world, objectData);
       if (object === null) continue;

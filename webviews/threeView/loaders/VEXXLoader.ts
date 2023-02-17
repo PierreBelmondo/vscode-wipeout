@@ -118,8 +118,6 @@ export class VEXXLoader extends Loader {
   }
 
   private loadScene(world: World, vexx: Vexx) {
-    const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x080808, 1);
-    world.scene.add(hemiLight);
     const object = this.loadNode(world, vexx.root);
     world.scene.add(object);
   }
