@@ -144,11 +144,12 @@ class WorldRenderer {
       this._renderer.setClearColor(0x000000);
       this._effectComposerBloom.render();
       this._world.scene.traverse(afterBloom);
-    }
 
-    // Before: this._renderer.render(this._world.scene, this._world.camera);
-    this._renderer.setClearColor(this._world.settings.backgroundColor);
-    this._effectComposerFinal.render();
+      this._renderer.setClearColor(this._world.settings.backgroundColor);
+      this._effectComposerFinal.render();
+    } else {
+      this._renderer.render(this._world.scene, this._world.camera);
+    }
   }
 }
 
