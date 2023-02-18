@@ -166,6 +166,11 @@ class Editor {
     this.world.onUpdate = this.render.bind(this);
 
     this.worldRenderer = new WorldRenderer(this.world);
+    this.worldRenderer.domElement.style.position = 'absolute';
+    this.worldRenderer.domElement.style.left = '0';
+    this.worldRenderer.domElement.style.top = '0';
+    this.worldRenderer.domElement.style.width = '100%';
+    this.worldRenderer.domElement.style.height = '100%';
     div.appendChild(this.worldRenderer.domElement);
 
     this.labelRenderer = new CSS2DRenderer();
