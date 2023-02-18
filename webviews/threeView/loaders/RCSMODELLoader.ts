@@ -6,6 +6,7 @@ import { Loader } from ".";
 import { mipmapsToTexture } from "../utils";
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
 import { World } from "../worlds";
+import { rcsDiffuseWithSpecularFromAlpha } from "../materials/rcs/DiffuseWithSpecularFromAlpha";
 
 type TextureChannel = {
   filename: string;
@@ -61,33 +62,73 @@ class AsyncMaterial {
     if (!fullyLoaded) return;
 
     if (this.basename == "glass_texture.rcsmaterial") {
-      //const textureChannel = this.textureChannels[0];
       this.material = new THREE.MeshPhongMaterial({
         name: this.rcsMaterial.filename,
         side: THREE.DoubleSide,
-        color: 0x0000ff,
-        specular: 0x333333,
+        color: 0x000000,
+        specular: 0xffffff,
         transparent: true,
         opacity: 0.5,
-        depthTest: true,
-        depthWrite: true,
+        shininess: 90,
         reflectivity: 1.0,
         refractionRatio: 0.98,
       });
-      this.world.materials[this.material.name] = this.material;
-    } else {
+    } else if (this.basename == "glass_texture_clamped.rcsmaterial") {
       const textureChannel = this.textureChannels[0];
-      this.material = new THREE.MeshBasicMaterial({
+      this.material = new THREE.MeshPhongMaterial({
         name: this.rcsMaterial.filename,
         side: THREE.DoubleSide,
         map: textureChannel.texture,
-        depthTest: true,
-        depthWrite: true,
+        transparent: true,
+        opacity: 0.95,
       });
-      this.world.materials[this.material.name] = this.material;
+    } else if (this.basename == "carbonfibre.rcsmaterial") {
+      const textureChannel = this.textureChannels[0];
+      textureChannel.texture?.repeat.set(20, 20);
+      this.material = new THREE.MeshPhongMaterial({
+        name: this.rcsMaterial.filename,
+        side: THREE.DoubleSide,
+        color: 0x101010,
+        specular: 0xffffff,
+        specularMap: textureChannel.texture,
+        normalMap: textureChannel.texture,
+        shininess: 90,
+      });
+      this.material.needsUpdate = true;
+    } else if (this.basename == "emissive_bloom.rcsmaterial") {
+      const textureChannel = this.textureChannels[0];
+      textureChannel.texture?.repeat.set(20, 20);
+      this.material = new THREE.MeshPhongMaterial({
+        name: this.basename,
+        side: THREE.DoubleSide,
+        color: 0xffffff,
+        specular: 0xffffff,
+        emissive: 0xffffff,
+        emissiveIntensity: 2.0,
+        map: textureChannel.texture,
+      });
+    } else if (this.basename == "detonator_diffuse_with_specular_from_alpha_n_vcol.rcsmaterial") {
+      const textureChannel = this.textureChannels[0];
+      this.material = rcsDiffuseWithSpecularFromAlpha({
+        name: this.basename,
+        map: textureChannel.texture,
+      });
+    } else {
+      console.log(`Unsupported material: ${this.basename}`);
+      const textureChannel = this.textureChannels[0];
+      this.material = new THREE.MeshPhongMaterial({
+        name: this.rcsMaterial.filename,
+        side: THREE.DoubleSide,
+        color: 0xffffff,
+        specular: 0xffffff,
+        map: textureChannel.texture,
+        specularMap: textureChannel.texture,
+      });
+      console.log(this.material);
     }
 
     if (this.material) {
+      this.world.materials[this.material.name] = this.material;
       for (const mesh of this.meshes) {
         mesh.material = this.material;
       }

@@ -23,7 +23,7 @@ export class World {
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
-  settings = { layers: {}, airbrakes: {}, backgroundColor: "#000000" };
+  settings = { layers: {}, airbrakes: {}, backgroundColor: "#000000", bloom: false };
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
 
@@ -38,6 +38,8 @@ export class World {
     const far = 20000;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this.camera.position.set(0, 0, 500);
+
+    this.materials["_black"] = new THREE.MeshBasicMaterial({ color: "black" });
 
     this.materials["_default"] = new THREE.MeshPhongMaterial({
       specular: 0x003000,
@@ -108,9 +110,21 @@ export class World {
   }
 
   setupGuiBackgroundColor() {
-    this.gui.addColor(this.settings, "backgroundColor").onChange(() => {
-      this.emitUpdate();
-    });
+    this.gui
+      .addColor(this.settings, "backgroundColor")
+      .name("Background Color")
+      .onChange(() => {
+        this.emitUpdate();
+      });
+  }
+
+  setupGuiBloom() {
+    this.gui
+      .add(this.settings, "bloom")
+      .name("Bloom")
+      .onChange(() => {
+        this.emitUpdate();
+      });
   }
 
   setupGuiLayers() {
