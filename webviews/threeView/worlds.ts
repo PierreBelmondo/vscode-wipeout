@@ -19,7 +19,7 @@ export class World {
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
 
-  hemiLight: THREE.HemisphereLight;
+  directionalLight: THREE.DirectionalLight;
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
@@ -52,8 +52,8 @@ export class World {
       opacity: 0.5,
     });
 
-    this.hemiLight = new THREE.HemisphereLight(0xe0e0e0, 0x080808, 1.0);
-    this.scene.add(this.hemiLight);
+    this.directionalLight = new THREE.DirectionalLight( 0xffffff, 0.75 );
+    this.scene.add(this.directionalLight);
   }
 
   emitUpdate() {
