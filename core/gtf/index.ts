@@ -195,8 +195,6 @@ export class GTF {
     let dataOffset = 0;
     for (let i = 0; i < this.header.mipmaps; i++) {
       const dataLength = DXT1.size(width, height);
-      //const data = dataRange.getArrayBuffer(dataOffset, dataLength);
-      //const rgba = DXT1.decompress(width, height, data);
       const data = dataRange.getUint8Array(dataOffset, dataLength);
       this.mipmaps.push({ type: "DXT1", width, height, data });
       width = Math.floor(width / 2);
@@ -214,8 +212,6 @@ export class GTF {
     let dataOffset = 0;
     for (let i = 0; i < this.header.mipmaps; i++) {
       const dataLength = DXT3.size(width, height);
-      //const data = dataRange.getArrayBuffer(dataOffset, dataLength);
-      //const rgba = DXT3.decompress(width, height, data);
       const data = dataRange.getUint8Array(dataOffset, dataLength);
       this.mipmaps.push({ type: "DXT3", width, height, data });
       width = width / 2;
@@ -232,10 +228,7 @@ export class GTF {
     let height = this.header.height;
     let dataOffset = 0;
     for (let i = 0; i < this.header.mipmaps; i++) {
-      //console.log(`${width}x${height}`);
       const dataLength = DXT5.size(width, height);
-      //const data = dataRange.getArrayBuffer(dataOffset, dataLength);
-      //const rgba = DXT5.decompress(width, height, data);
       const data = dataRange.getUint8Array(dataOffset, dataLength);
       this.mipmaps.push({ type: "DXT5", width, height, data });
       width = width / 2;
