@@ -15,18 +15,6 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:wipeout.unpack.psarc",
-    "onCommand:wipeout.unpack.wac",
-    "onCommand:wipeout.unpack.wad",
-    "onCommand:wipeout.fe.preview",
-    "onCustomEditor:wipeout.view.rcsmodel",
-    "onCustomEditor:wipeout.view.vexx",
-    "onCustomEditor:wipeout.view.gtf",
-    "onCustomEditor:wipeout.view.dds",
-    "onCustomEditor:wipeout.view.fnt",
-    "onView:sceneGraph"
-  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
