@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { TextureModelDocument } from "./TextureModelDocument";
 import { WebviewCollection } from "../WebviewCollection";
 import { getNonce } from "../../helpers/util";
+import { TextureViewMessageLoadBody } from "@core/api/rpc";
 
 /**
  * Provider for Texture editors.
@@ -25,11 +26,14 @@ export abstract class TextureModelEditorProvider<TDM extends TextureModelDocumen
     webviewPanel.webview.onDidReceiveMessage((e) => {
       if (e.type === "ready") {
         if (document.uri.scheme === "untitled") {
-          console.log("empty document");
+          this.postMessage(webviewPanel, "empty", {});
         } else {
-          const buffer = document.buffer.toString("base64");
-          const body = { buffer, mime: document.mime };
-          console.log("sending file content to webview");
+          const webviewUri = webviewPanel.webview.asWebviewUri(document.uri);
+          const body = {
+            mime: document.mime,
+            uri: document.uri.toString(),
+            webviewUri: webviewUri.toString(),
+          } as TextureViewMessageLoadBody;
           this.postMessage(webviewPanel, "load", body);
         }
       }
@@ -57,7 +61,7 @@ export abstract class TextureModelEditorProvider<TDM extends TextureModelDocumen
       <html lang="en">
         <head>
           <meta charset="UTF-8">
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:;">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}' 'wasm-unsafe-eval'; connect-src data: https:; worker-src blob:; style-src vscode-resource: 'unsafe-inline' http: https: data:;">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Texture</title>
         </head>

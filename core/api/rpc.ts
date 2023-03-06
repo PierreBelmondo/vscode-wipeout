@@ -15,3 +15,11 @@ export type ThreeViewMessage =
   | { type: "import"; body: { filename: string; buffer: string } }
   | { type: "show.world" }
   | { type: "show.texture"; body: { name: string } };
+
+export type TextureViewMessageLoadBody = {
+  mime: string;
+  uri: string;
+  webviewUri: string;
+};
+
+export type TextureViewMessage = { type: "empty"; body: {} } | { type: "load"; body: TextureViewMessageLoadBody };

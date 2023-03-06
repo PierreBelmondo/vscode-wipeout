@@ -1,5 +1,6 @@
 import { api } from "./api";
 
+import { TextureViewMessage } from "../../core/api/rpc";
 import { Mipmaps } from "../../core/utils/mipmaps";
 import { DXT1, DXT3, DXT5 } from "../../core/utils/dxt";
 
@@ -49,25 +50,24 @@ class Editor {
     this.app = app;
   }
 
-  async load(array: Uint8Array, mime: string) {
+  async load(buffer: ArrayBuffer, mime: string) {
     let mipmaps: Mipmaps = [];
     switch (mime) {
       case "image/gtf":
-        mipmaps = await this.loadGTF(array);
+        mipmaps = await this.loadGTF(buffer);
         break;
       case "image/dds":
-        mipmaps = await this.loadDDS(array);
+        mipmaps = await this.loadDDS(buffer);
         break;
       case "font/fnt":
-        mipmaps = await this.loadFNT(array);
+        mipmaps = await this.loadFNT(buffer);
         break;
     }
-    console.log(mipmaps);
-    mipmaps = this.decompress(mipmaps);
+    mipmaps = await this.decompress(mipmaps);
     this.render(mipmaps);
   }
 
-  decompress(mipmaps: Mipmaps): Mipmaps {
+  async decompress(mipmaps: Mipmaps): Promise<Mipmaps> {
     const uncompressedMipmaps: Mipmaps = [];
     for (const mipmap of mipmaps) {
       switch (mipmap.type) {
@@ -122,19 +122,19 @@ class Editor {
     return uncompressedMipmaps;
   }
 
-  async loadGTF(array: Uint8Array): Promise<Mipmaps> {
-    const gtf = await GTF.load(array.buffer);
+  async loadGTF(buffer: ArrayBuffer): Promise<Mipmaps> {
+    const gtf = GTF.load(buffer);
     return gtf.mipmaps;
   }
 
-  async loadDDS(array: Uint8Array): Promise<Mipmaps> {
-    const dds = await DDS.load(array.buffer);
+  async loadDDS(buffer: ArrayBuffer): Promise<Mipmaps> {
+    const dds = await DDS.load(buffer);
     return [];
   }
 
-  async loadFNT(array: Uint8Array): Promise<Mipmaps> {
+  async loadFNT(buffer: ArrayBuffer): Promise<Mipmaps> {
     this.scaleY = 1;
-    const fnt = await FNT.load(array.buffer);
+    const fnt = await FNT.load(buffer);
     return [fnt.image.mipmap];
   }
 
@@ -166,7 +166,7 @@ class Editor {
   }
 }
 
-export function main() {
+export async function main() {
   const app = window.document.querySelector("#app");
   if (!app) {
     console.error("Cannot find .app in document");
@@ -177,12 +177,17 @@ export function main() {
 
   // Handle messages from the extension
   window.addEventListener("message", async (e) => {
-    const { type, body } = e.data;
+    const { type, body } = e.data as TextureViewMessage;
     switch (type) {
+      case "empty": {
+        break;
+      }
       case "load": {
         const mime = body.mime;
-        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
-        editor.load(array, mime);
+        const response = await fetch (body.webviewUri);
+        const buffer = await response.arrayBuffer();
+        editor.load(buffer, mime);
+        break;
       }
     }
   });

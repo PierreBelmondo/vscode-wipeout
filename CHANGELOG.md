@@ -6,6 +6,7 @@ All notable changes to the "wipeout" extension will be documented in this file.
 
  - update three.js to 0.149.0
  - multipass rendering (bloom)
+ - faster texture loading
  
 ## [0.0.11]
 
