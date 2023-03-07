@@ -7,12 +7,7 @@ import { Disposable } from "../../helpers/dispose";
  */
 export class RcsModelDocument extends Disposable implements vscode.CustomDocument {
   static async create(uri: vscode.Uri): Promise<RcsModelDocument> {
-    let array = new Uint8Array();
-    if (uri.scheme !== "untitled") {
-      array = await vscode.workspace.fs.readFile(uri);
-    }
-    const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
-    return new RcsModelDocument(uri, Buffer.from(arraybuffer), "model/vnd.wipeout.rcsmodel");
+    return new RcsModelDocument(uri, "model/vnd.wipeout.rcsmodel");
   }
 
   static findDataRoot(uri: vscode.Uri) {
@@ -27,14 +22,12 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
   private readonly _uri: vscode.Uri;
 
   private _root: vscode.Uri;
-  private _buffer: Buffer;
   private _mime: string;
 
-  constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
+  constructor(uri: vscode.Uri, mime: string) {
     super();
     this._uri = uri;
     this._root = RcsModelDocument.findDataRoot(uri);
-    this._buffer = buffer;
     this._mime = mime;
   }
 
@@ -44,10 +37,6 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
 
   public get root() {
     return this._root;
-  }
-
-  public get buffer(): Buffer {
-    return this._buffer;
   }
 
   public get mime(): string {

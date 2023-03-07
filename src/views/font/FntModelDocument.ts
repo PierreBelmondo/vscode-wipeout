@@ -8,7 +8,6 @@ import { Disposable } from "../../helpers/dispose";
 export class FntModelDocument extends Disposable implements vscode.CustomDocument {
   private readonly _uri: vscode.Uri;
 
-  private _buffer: Buffer;
   private _mime: string;
 
   static async create(uri: vscode.Uri): Promise<FntModelDocument> {
@@ -17,22 +16,17 @@ export class FntModelDocument extends Disposable implements vscode.CustomDocumen
       array = await vscode.workspace.fs.readFile(uri);
     }
     const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
-    return new FntModelDocument(uri, Buffer.from(arraybuffer), "font/fnt");
+    return new FntModelDocument(uri, "font/fnt");
   }
 
-  constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
+  constructor(uri: vscode.Uri, mime: string) {
     super();
     this._uri = uri;
-    this._buffer = buffer;
     this._mime = mime;
   }
 
   public get uri() {
     return this._uri;
-  }
-
-  public get buffer(): Buffer {
-    return this._buffer;
   }
 
   public get mime(): string {

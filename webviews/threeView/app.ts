@@ -13,6 +13,8 @@ import { RenderPass } from "./postprocessing/RenderPass";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";
 import { ShaderPass } from "./postprocessing/ShaderPass";
 
+const textDecoder = new TextDecoder();
+
 const vertexShader = `
 varying vec2 vUv;
 void main() {
@@ -184,13 +186,14 @@ class Editor {
     this.showWorld();
   }
 
-  load(body: ThreeViewMessageLoadBody) {
+  async load(body: ThreeViewMessageLoadBody) {
     api.log("Loading " + body.mime);
     switch (body.mime) {
       case "model/vnd.wipeout.vexx": {
-        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
+        const response = await fetch(body.webviewUri);
+        const buffer = await response.arrayBuffer();
         this.loader = new VEXXLoader();
-        this.loader.loadFromBuffer(this.world, array.buffer);
+        this.loader.loadFromBuffer(this.world, buffer);
         this.world.emitScene();
         this.world.setupGui();
         this.world.setupGuiButtonExport();
@@ -201,9 +204,10 @@ class Editor {
         break;
       }
       case "model/vnd.wipeout.rcsmodel": {
-        const array = Uint8Array.from(window.atob(body.buffer), (v) => v.charCodeAt(0));
+        const response = await fetch(body.webviewUri);
+        const buffer = await response.arrayBuffer();
         this.loader = new RCSModelLoader();
-        this.loader.loadFromBuffer(this.world, array.buffer);
+        this.loader.loadFromBuffer(this.world, buffer);
         this.world.emitScene();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
@@ -212,17 +216,20 @@ class Editor {
         break;
       }
       case "application/xml+wipeout": {
+        const response = await fetch(body.webviewUri);
+        const buffer = await response.arrayBuffer();
         this.loader = new FELoader();
-        this.loader.loadFromString(this.world, body.buffer);
+        const text = textDecoder.decode(buffer)
+        this.loader.loadFromString(this.world, text);
         this.loadWorld();
         break;
       }
     }
   }
 
-  async import(array: Uint8Array, filename: string) {
+  async import(buffer: ArrayBuffer, filename: string) {
     if (this.loader) {
-      await this.loader.import(array.buffer, filename);
+      await this.loader.import(buffer, filename);
       this.world.emitScene();
     }
   }
@@ -316,9 +323,9 @@ export function main() {
         break;
       }
       case "import": {
-        const filename = msg.body.filename;
-        const array = Uint8Array.from(window.atob(msg.body.buffer), (v) => v.charCodeAt(0));
-        editor.import(array, filename);
+        const response = await fetch(msg.body.webviewUri);
+        const buffer = await response.arrayBuffer();
+        editor.import(buffer, msg.body.uri);
         break;
       }
       case "show.world": {

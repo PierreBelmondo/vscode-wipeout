@@ -46,7 +46,7 @@ class AsyncMaterial {
     this.textureChannels.push({ filename, texture: null });
   }
 
-  async load(buffer: ArrayBufferLike) {
+  async load(buffer: ArrayBuffer) {
     // Nothing to do at the moment
   }
 
@@ -160,7 +160,7 @@ class AsyncTexture {
     this.asyncMaterials.push(asyncMaterial);
   }
 
-  async load(buffer: ArrayBufferLike) {
+  async load(buffer: ArrayBuffer) {
     console.log(`Loading GTF ${this.rcsTexture.filename}`);
     const gtf = GTF.load(buffer);
     this.texture = mipmapsToTexture(gtf.mipmaps);

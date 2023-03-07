@@ -7,12 +7,7 @@ import { Disposable } from "../../helpers/dispose";
  */
 export class VexxDocument extends Disposable implements vscode.CustomDocument {
   static async create(uri: vscode.Uri): Promise<VexxDocument> {
-    let array = new Uint8Array();
-    if (uri.scheme !== "untitled") {
-      array = await vscode.workspace.fs.readFile(uri);
-    }
-    const arraybuffer = array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
-    return new VexxDocument(uri, Buffer.from(arraybuffer), "model/vnd.wipeout.vexx");
+    return new VexxDocument(uri, "model/vnd.wipeout.vexx");
   }
 
   static findDataRoot(uri: vscode.Uri) {
@@ -27,16 +22,14 @@ export class VexxDocument extends Disposable implements vscode.CustomDocument {
   private readonly _uri: vscode.Uri;
 
   private _root: vscode.Uri;
-  private _buffer: Buffer;
   private _mime: string;
 
   public scene: any;
 
-  constructor(uri: vscode.Uri, buffer: Buffer, mime: string) {
+  constructor(uri: vscode.Uri, mime: string) {
     super();
     this._uri = uri;
     this._root = VexxDocument.findDataRoot(uri);
-    this._buffer = buffer;
     this._mime = mime;
 
     this.scene = {};
@@ -50,10 +43,6 @@ export class VexxDocument extends Disposable implements vscode.CustomDocument {
     return this._root;
   }
   
-  public get buffer(): Buffer {
-    return this._buffer;
-  }
-
   public get mime(): string {
     return this._mime;
   }

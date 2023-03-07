@@ -6,6 +6,7 @@ import { WebviewCollection } from "../WebviewCollection";
 import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
 import { TextEncoder } from "util";
+import { ThreeViewMessageLoadBody } from "@core/api/rpc";
 
 /**
  * Provider for RCS smodel editors.
@@ -53,9 +54,12 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
           if (document.uri.scheme === "untitled") {
             console.log("empty document");
           } else {
-            const filename = document.uri.path;
-            const buffer = document.buffer.toString("base64");
-            const body = { buffer, filename, mime: document.mime };
+            const webviewUri = webviewPanel.webview.asWebviewUri(document.uri);
+            const body = {
+              mime: document.mime,
+              uri: document.uri.toString(),
+              webviewUri: webviewUri.toString(),
+            } as ThreeViewMessageLoadBody;
             console.log("sending file content to webview");
             this.postMessage(webviewPanel, "load", body);
           }
@@ -63,8 +67,13 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
         case "require":
           const filename = e.filename;
           console.log(`Document requires external dependency: ${filename}`);
-          const buffer = await this.require(document, filename);
-          const body = { buffer, filename };
+          const uri = await this.require(document, filename);
+          const webviewUri = webviewPanel.webview.asWebviewUri(uri);
+          const body = {
+            mime: document.mime,
+            uri: document.uri.toString(),
+            webviewUri: webviewUri.toString(),
+          } as ThreeViewMessageLoadBody;
           this.postMessage(webviewPanel, "import", body);
           break;
         case "log":
@@ -92,7 +101,7 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
       <html lang="en">
         <head>
           <meta charset="UTF-8">
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:;">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:; connect-src https:; font-src data:;">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>RCS Model</title>
         </head>
@@ -108,10 +117,7 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
   }
 
   private async require(document: RcsModelDocument, filename: string) {
-    const uriImport = vscode.Uri.joinPath(document.root, filename);
-    const arrayTmp = await vscode.workspace.fs.readFile(uriImport);
-    const arrayBuffer = arrayTmp.buffer.slice(arrayTmp.byteOffset, arrayTmp.byteOffset + arrayTmp.byteLength);
-    return Buffer.from(arrayBuffer).toString("base64");
+    return vscode.Uri.joinPath(document.root, filename);
   }
 
   private exportGLTF(document: RcsModelDocument, gltf: any) {

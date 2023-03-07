@@ -4,6 +4,7 @@ import { FntModelDocument } from "./FntModelDocument";
 import { WebviewCollection } from "../WebviewCollection";
 import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
+import { TextureViewMessageLoadBody } from "@core/api/rpc";
 
 /**
  * Provider for Fnt editors.
@@ -42,8 +43,12 @@ export class FntModelEditorProvider implements vscode.CustomReadonlyEditorProvid
         if (document.uri.scheme === "untitled") {
           console.log("empty document");
         } else {
-          const buffer = document.buffer.toString("base64");
-          const body = { buffer, mime: document.mime };
+          const webviewUri = webviewPanel.webview.asWebviewUri(document.uri);
+          const body = {
+            mime: document.mime,
+            uri: document.uri.toString(),
+            webviewUri: webviewUri.toString(),
+          } as TextureViewMessageLoadBody;
           console.log("sending file content to webview");
           this.postMessage(webviewPanel, "load", body);
         }
@@ -72,7 +77,7 @@ export class FntModelEditorProvider implements vscode.CustomReadonlyEditorProvid
       <html lang="en">
         <head>
           <meta charset="UTF-8">
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:;">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}' 'wasm-unsafe-eval'; connect-src data: https:; worker-src blob:; style-src vscode-resource: 'unsafe-inline' http: https: data:;">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Fnt</title>
         </head>
