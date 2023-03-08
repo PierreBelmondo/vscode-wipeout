@@ -19,8 +19,7 @@ export class World {
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
 
-  directionalLight: THREE.DirectionalLight;
-  ambientLight: THREE.AmbientLight;
+  directionalLights = [] as THREE.DirectionalLight[];
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
@@ -55,11 +54,15 @@ export class World {
       opacity: 0.5,
     });
 
-    this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
-    this.scene.add(this.directionalLight);
-
-    this.ambientLight = new THREE.AmbientLight(0x404040);
-    this.scene.add(this.ambientLight);
+    for (let i = 0; i < 6; i++) {
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.50);
+      const x = (i % 3 == 0 ? 1 : 0) * (i > 3 ? -1 : 1);
+      const y = (i % 3 == 1 ? 1 : 0) * (i > 3 ? -1 : 1);
+      const z = (i % 3 == 2 ? 1 : 0) * (i > 3 ? -1 : 1);
+      directionalLight.position.set(x, y, z);
+      this.scene.add(directionalLight);
+      this.directionalLights.push(directionalLight);
+    }
   }
 
   emitUpdate() {
