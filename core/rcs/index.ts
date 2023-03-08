@@ -17,10 +17,25 @@ class RcsModelMeshInfo {
   }
 }
 
+class RcsModelMatrix {
+  range = new BufferRange();
+  numebers = [] as number[];
+
+  static load(range: BufferRange): RcsModelMatrix {
+    let ret = new RcsModelMatrix();
+    ret.range = range.slice(0, 64);
+    for (let i = 0; i < 16; i++) ret.numebers.push(ret.range.getFloat32(i * 4));
+    return ret;
+  }
+}
+
 class RcsModelObjectHeader {
   range = new BufferRange();
   id = 0;
+  unknown1 = 0;
+  matrix_offset = 0;
   type = 0;
+  type2 = 0;
   end_offet = 0;
   position = { x: 0, y: 0, z: 0 } as Vertex;
   scale = { x: 1.0, y: 1.0, z: 1.0 } as Vertex;
@@ -31,7 +46,10 @@ class RcsModelObjectHeader {
     ret.range = range.slice(0, 80);
 
     ret.id = ret.range.getUint32(0);
+    ret.unknown1 = ret.range.getUint32(4);
+    ret.matrix_offset = ret.range.getUint32(8);
     ret.type = ret.range.getUint8(6);
+    ret.type2 = ret.range.getUint8(7);
     ret.end_offet = ret.range.getUint32(24);
     ret.material_id = ret.range.getUint32(32);
 
@@ -49,6 +67,13 @@ class RcsModelObjectHeader {
     //ret.scale.w = ret.range.getFloat32(76) * 32768.0;
 
     return ret;
+  }
+
+  get matrix(): RcsModelMatrix {
+    const beg = this.matrix_offset;
+    const end = this.matrix_offset + 64;
+    const range = this.range.reset().slice(beg, end);
+    return RcsModelMatrix.load(range);
   }
 }
 
@@ -89,6 +114,7 @@ export class RcsModelMesh1 {
 
   vbo = new RcsModelVBO();
   ibo = new RcsModelIBO();
+  vsize = 10;
 
   static load(range: BufferRange): RcsModelMesh1 {
     let ret = new RcsModelMesh1();
@@ -98,24 +124,44 @@ export class RcsModelMesh1 {
     ret.vbo_offset = ret.range.getUint32(4);
     ret.ibo_count = ret.range.getUint32(8);
     ret.ibo_offset = ret.range.getUint32(12);
+    ret.ibo = RcsModelIBO.load(ret.vertexIndexRange, ret.ibo_count);
 
-    ret.vbo_count = Math.round((ret.range.end - ret.vbo_offset) / 10);
+    let max = 0;
+    for (const index of ret.ibo.indices) max = max < index ? index : max;
+    max++;
 
-    ret.ibo = RcsModelIBO.load(ret.getVertexIndexRange(), ret.ibo_count);
-    ret.vbo = RcsModelVBO.load(ret.getVertexBufferRange(), 10, ret.vbo_count);
+    if (max != ret.vbo_count) {
+      console.log(`Fixing vbo_count ${ret.vbo_count} => ${max}`);
+      ret.vbo_count = max;
+    }
 
+    let new_vsize = Math.ceil(ret.range.end - ret.vbo_offset) / ret.vbo_count;
+    new_vsize -= new_vsize % 2;
+
+    if (ret.vsize != new_vsize) {
+      console.log(`Fixing vsize ${ret.vsize} => ${new_vsize}`);
+      ret.vsize = new_vsize;
+    }
+
+    ret.vbo = RcsModelVBO.load(ret.vertexBufferRange, ret.vsize, ret.vbo_count);
     return ret;
   }
 
-  getVertexBufferRange(): BufferRange {
-    const beg = this.vbo_offset;
-    const end = this.vbo_offset + this.vbo_count * 10;
+  get headerBufferRange(): BufferRange {
+    const beg = this.range.begin;
+    const end = this.ibo_offset;
     return this.range.reset().slice(beg, end);
   }
 
-  getVertexIndexRange(): BufferRange {
+  get vertexIndexRange(): BufferRange {
     const beg = this.ibo_offset;
-    const end = this.ibo_offset + this.ibo_offset * 2;
+    const end = this.ibo_offset + this.ibo_count * 2;
+    return this.range.reset().slice(beg, end);
+  }
+
+  get vertexBufferRange(): BufferRange {
+    const beg = this.vbo_offset;
+    const end = this.vbo_offset + this.vbo_count * this.vsize;
     return this.range.reset().slice(beg, end);
   }
 }
@@ -269,12 +315,10 @@ export class RcsModelTexture {
     ret.type = ret.range.getUint32(4);
     ret.offset_filename = ret.range.getUint32(24);
 
-    if (ret.offset_filename == 0)
-    ret.filename = "";
+    if (ret.offset_filename == 0) ret.filename = "";
     else {
       ret.filename = ret.range.reset().getCString(ret.offset_filename);
-      if (!(ret.filename.startsWith('data/')))
-      ret.filename = "";
+      if (!ret.filename.startsWith("data/")) ret.filename = "";
     }
     return ret;
   }
