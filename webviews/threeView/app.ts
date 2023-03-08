@@ -150,6 +150,7 @@ class WorldRenderer {
       this._renderer.setClearColor(this._world.settings.backgroundColor);
       this._effectComposerFinal.render();
     } else {
+      this._renderer.setClearColor(this._world.settings.backgroundColor);
       this._renderer.render(this._world.scene, this._world.camera);
     }
   }
