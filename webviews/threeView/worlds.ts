@@ -20,6 +20,7 @@ export class World {
   camera: THREE.PerspectiveCamera;
 
   directionalLight: THREE.DirectionalLight;
+  ambientLight: THREE.AmbientLight;
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
@@ -54,8 +55,11 @@ export class World {
       opacity: 0.5,
     });
 
-    this.directionalLight = new THREE.DirectionalLight( 0xffffff, 0.75 );
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
     this.scene.add(this.directionalLight);
+
+    this.ambientLight = new THREE.AmbientLight(0x404040);
+    this.scene.add(this.ambientLight);
   }
 
   emitUpdate() {
