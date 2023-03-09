@@ -210,6 +210,7 @@ class Editor {
         this.loader = new RCSModelLoader();
         this.loader.loadFromBuffer(this.world, buffer);
         this.world.emitScene();
+        this.world.setupGui();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
         this.world.setupGuiBackgroundColor();
