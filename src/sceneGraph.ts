@@ -100,8 +100,11 @@ export class SceneWorld extends SceneNode {
 
   public override getChildren(): SceneNode[] {
     const nodes = [] as SceneNode[];
-    for (const object of this.json.children[1].children) {
-      nodes.push(new SceneObject3D(object));
+    for (const child of this.json.children) {
+      if (child.type == "Group" && child.name == "world") {
+        for (const object of child.children)
+          nodes.push(new SceneObject3D(object));
+      }
     }
     return nodes;
   }
