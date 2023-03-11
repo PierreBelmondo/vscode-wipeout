@@ -973,6 +973,10 @@ class GLTFWriter {
     if (cache.textures.has(map)) return cache.textures.get(map);
     if (!json.textures) json.textures = [];
     let mimeType = map.userData.mimeType;
+    if (mimeType === undefined) {
+      console.warn("Texture without a mime type, abort export")
+      return;
+    }
     if (mimeType === "image/webp") mimeType = "image/png";
     const textureDef: any = {
       sampler: this.processSampler(map),

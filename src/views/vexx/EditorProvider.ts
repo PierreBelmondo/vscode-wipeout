@@ -98,7 +98,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
           console.log(e.message);
           break;
         case "export.gltf":
-          const gltf = e.message.body;
+          const gltf = e.body;
           this.exportGLTF(document, gltf);
           return;
         case "scene":
