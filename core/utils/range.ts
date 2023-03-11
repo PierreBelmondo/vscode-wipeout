@@ -192,17 +192,57 @@ export class BufferRange {
 
   getInt16Array(offset: number, length: number): Int16Array {
     const range = this.slice(offset, offset + 2 * length);
+    if (!this._littleEndian) {
+      var view = new DataView(range.buffer);
+      let numbers: number[] = [];
+      for (let i = 0; i < length; i++) {
+        const number = view.getInt16(i * 2, this._littleEndian);
+        numbers.push(number);
+      }
+      return new Int16Array(numbers);
+    }
     return new Int16Array(range.buffer);
   }
 
   getUint16Array(offset: number, length: number): Uint16Array {
     const range = this.slice(offset, offset + 2 * length);
-    console.log(range);
+    if (!this._littleEndian) {
+      var view = new DataView(range.buffer);
+      let numbers: number[] = [];
+      for (let i = 0; i < length; i++) {
+        const number = view.getUint16(i * 2, this._littleEndian);
+        numbers.push(number);
+      }
+      return new Uint16Array(numbers);
+    }
     return new Uint16Array(range.buffer);
+  }
+
+  getUint32Array(offset: number, length: number): Uint32Array {
+    const range = this.slice(offset, offset + 4 * length);
+    if (!this._littleEndian) {
+      var view = new DataView(range.buffer);
+      let numbers: number[] = [];
+      for (let i = 0; i < length; i++) {
+        const number = view.getUint32(i * 4, this._littleEndian);
+        numbers.push(number);
+      }
+      return new Uint32Array(numbers);
+    }
+    return new Uint32Array(range.buffer);
   }
 
   getFloat32Array(offset: number, length: number): Float32Array {
     const range = this.slice(offset, offset + 4 * length);
+    if (!this._littleEndian) {
+      var view = new DataView(range.buffer);
+      let numbers: number[] = [];
+      for (let i = 0; i < length; i++) {
+        const number = view.getFloat32(i * 4, this._littleEndian);
+        numbers.push(number);
+      }
+      return new Float32Array(numbers);
+    }
     return new Float32Array(range.buffer);
   }
 }
