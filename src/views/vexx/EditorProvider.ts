@@ -72,10 +72,22 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
             filename = filename.replace(".vex", ".rcsmodel");
             filename = filename.replace(document.root.path, "");
           }
+          if (filename.endsWith(".vex")) {
+            const origFilename = filename;
+            filename = document.uri.path;
+            filename = filename.replace("ship.vex", origFilename);
+            filename = filename.replace(document.root.path, "");
+          }
           const uri = vscode.Uri.joinPath(document.root, filename);
-          console.log(`Document requires external dependency: ${filename}`);
+          try {
+            await vscode.workspace.fs.stat(uri);
+            console.log(`Document requires external dependency: ${filename}`);
+          } catch {
+            console.log(`Document requires missing dependency: ${filename}`);
+            break;
+          }
           const webviewUri = webviewPanel.webview.asWebviewUri(uri);
-          const body = { 
+          const body = {
             mime: "model/vnd.wipeout.rcsmodel",
             uri: filename,
             webviewUri: webviewUri.toString(),

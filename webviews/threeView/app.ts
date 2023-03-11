@@ -195,6 +195,9 @@ class Editor {
         const buffer = await response.arrayBuffer();
         this.loader = new VEXXLoader();
         this.loader.loadFromBuffer(this.world, buffer);
+        if (body.uri.endsWith("ship.vex")) {
+          api.require("locators.vex");
+        }
         this.world.emitScene();
         this.world.setupGui();
         this.world.setupGuiButtonExport();
@@ -233,6 +236,13 @@ class Editor {
     if (this.loader) {
       await this.loader.import(buffer, filename);
       this.world.emitScene();
+      if (filename.endsWith(".vex")) {
+        this.world.setupGui();
+        this.world.setupGuiButtonExport();
+        this.world.setupGuiLayers();
+        this.world.setupGuiBackgroundColor();
+        this.world.setupGuiBloom();
+      }
     }
   }
 

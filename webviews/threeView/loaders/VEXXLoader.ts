@@ -80,13 +80,30 @@ class AsyncRcsModel {
   }
 }
 
+class AsyncVexxModel {
+  world: World;
+  parent: VEXXLoader;
+
+  constructor(world: World, parent: VEXXLoader) {
+    this.world = world;
+    this.parent = parent;
+  }
+
+  async load(buffer: ArrayBufferLike) {
+    const vexx = Vexx.load(buffer);
+    this.parent.loadScene(this.world, vexx);
+  }
+}
+
 export class VEXXLoader extends Loader {
+  asyncVexxModel: AsyncVexxModel;
   asyncRcsModel?: AsyncRcsModel;
 
   override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike) {
-    const model = Vexx.load(arrayBuffer);
-    this.loadTextures(world, model);
-    this.loadScene(world, model);
+    this.asyncVexxModel = new AsyncVexxModel(world, this);
+    const vexx = Vexx.load(arrayBuffer);
+    this.loadTextures(world, vexx);
+    this.loadScene(world, vexx);
     return world;
   }
 
@@ -95,7 +112,9 @@ export class VEXXLoader extends Loader {
       console.error("Unexpected file: " + filename);
       return;
     }
-    if (filename.endsWith(".rcsmodel")) {
+    if (filename.endsWith(".vex")) {
+      this.asyncVexxModel.load(buffer)
+    } else if (filename.endsWith(".rcsmodel")) {
       this.asyncRcsModel.load(buffer);
     } else {
       this.asyncRcsModel.import(buffer, filename);
@@ -119,7 +138,7 @@ export class VEXXLoader extends Loader {
     }
   }
 
-  private loadScene(world: World, vexx: Vexx) {
+  public loadScene(world: World, vexx: Vexx) {
     const object = this.loadNode(world, vexx.root);
     world.scene.add(object);
   }
