@@ -29,6 +29,8 @@ import { VexxNodeStartPosition } from "../../../core/vexx/v4/start_position";
 import { VexxNodeTrail } from "../../../core/vexx/v4/trail";
 import { VexxNodeTransform } from "../../../core/vexx/v4/transform";
 import { VexxNodeWeaponPad } from "../../../core/vexx/v4/weapon_pad";
+import { VexxNodeAbsorb } from "../../../core/vexx/v6/absorb";
+import { VexxNodeWingTip } from "../../../core/vexx/v6/wingtip";
 import { World } from "../worlds";
 
 class AsyncRcsMesh {
@@ -127,6 +129,10 @@ export class VEXXLoader extends Loader {
     let layer: string | null = null;
 
     switch (node.typeName) {
+      case "ABSORB": // TODO
+        object = this.loadControlPointMatrix(world, node as VexxNodeAbsorb);
+        layer = "Ship abosrbs";
+        break;
       case "AIRBRAKE":
         object = this.loadAirbrake(world, node as VexxNodeAirbrake);
         break;
@@ -318,6 +324,10 @@ export class VEXXLoader extends Loader {
       case "WO_TRACK": // TODO
         object = this.loadNodeGeneric(world, node);
         layer = "WO Tracks";
+        break;
+      case "WING_TIP": // TODO
+        object = this.loadControlPointMatrix(world, node as VexxNodeWingTip);
+        layer = "Ship wing tips";
         break;
       default:
         console.warn(`Unexpected node type ${node.typeName}`);

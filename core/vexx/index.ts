@@ -55,6 +55,8 @@ import { VexxNodeCanonFlash } from "./v6/canon_flash";
 import { VexxNodeMagFloorCollision } from "./v6/mag_floor_collision";
 import { VexxNodePointLight } from "./v6/point_light";
 import { VexxNodeSoundCone } from "./v6/sound_cone";
+import { VexxNodeWingTip } from "./v6/wingtip";
+import { VexxNodeAbsorb } from "./v6/absorb";
 
 VexxNode.registerV4(Vexx4NodeType.AIRBRAKE, VexxNodeAirbrake);
 VexxNode.registerV4(Vexx4NodeType.AMBIENT_LIGHT, VexxNodeAmbientLight);
@@ -104,6 +106,7 @@ VexxNode.registerV4(Vexx4NodeType.WO_SPOT, VexxNodeWoSpot);
 VexxNode.registerV4(Vexx4NodeType.WO_TRACK, VexxNodeWoTrack);
 VexxNode.registerV4(Vexx4NodeType.WORLD, VexxNodeWorld);
 
+VexxNode.registerV6(Vexx6NodeType.ABSORB, VexxNodeAbsorb);
 VexxNode.registerV6(Vexx6NodeType.AIRBRAKE, VexxNodeAirbrake);
 VexxNode.registerV6(Vexx6NodeType.AMBIENT_LIGHT, VexxNodeAmbientLight);
 VexxNode.registerV6(Vexx6NodeType.ANIMATION_TRIGGER, VexxNodeAnimationTrigger);
@@ -154,6 +157,7 @@ VexxNode.registerV6(Vexx6NodeType.WEATHER_POSITION, VexxNodePositionShape);
 VexxNode.registerV6(Vexx6NodeType.WO_POINT, VexxNodeWoPoint);
 VexxNode.registerV6(Vexx6NodeType.WO_SPOT, VexxNodeWoSpot);
 VexxNode.registerV6(Vexx6NodeType.WO_TRACK, VexxNodeWoTrack);
+VexxNode.registerV6(Vexx6NodeType.WING_TIP, VexxNodeWingTip);
 VexxNode.registerV6(Vexx6NodeType.WORLD, VexxNodeWorld);
 
 class VexxHeader {

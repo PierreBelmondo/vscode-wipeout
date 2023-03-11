@@ -7,6 +7,7 @@ All notable changes to the "wipeout" extension will be documented in this file.
  - update three.js to 0.149.0
  - multipass rendering (bloom)
  - shorter loading times
+ - add WING_TIP and ABSORB nodes in Vexx 6
  
 ## [0.0.11]
 

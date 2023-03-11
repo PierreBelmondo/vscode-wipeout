@@ -56,5 +56,7 @@ export enum Vexx6NodeType {
   ENGINE_FIRE = 0x3e5,
   MAG_FLOOR_COLLISION = 0x3e6, // only in v6
   CAGE_COLLISION = 0x3e7, // only in v6
-  CANON_FLASH = 0x3eb // only in v6
+  CANON_FLASH = 0x3eb, // only in v6
+  WING_TIP = 0x3ec, // only in v6
+  ABSORB = 0x3ee // only in v6
 }
