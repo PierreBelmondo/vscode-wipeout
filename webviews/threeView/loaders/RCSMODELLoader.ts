@@ -113,6 +113,11 @@ class AsyncMaterial {
         name: this.basename,
         map: textureChannel.texture,
       });
+    } else if (this.basename == "medal.rcsmaterial") {
+      this.material = new THREE.MeshStandardMaterial({
+        metalness: 1,
+        roughness: 0.5,
+      });
     } else {
       console.log(`Unsupported material: ${this.basename} ${this.textureChannels}`);
       const textureChannel = this.textureChannels[0];
