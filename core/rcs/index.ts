@@ -248,6 +248,7 @@ export class RcsModelVBO {
     let ret = new RcsModelVBO();
     ret.range = range.slice(0, count * size);
 
+    let baduv = false;
     for (let i = 0; i < count; i++) {
       const offset = i * size;
 
@@ -263,20 +264,27 @@ export class RcsModelVBO {
           u: ret.range.getFloat16(offset + 6),
           v: ret.range.getFloat16(offset + 8),
         };
+        baduv ||= isNaN(uv.u) || isNaN(uv.v);
         ret.uv.push(uv);
       } else if (size == 18) {
         const uv = {
           u: ret.range.getFloat16(offset + 14),
           v: ret.range.getFloat16(offset + 16),
         };
+        baduv ||= isNaN(uv.u) || isNaN(uv.v);
         ret.uv.push(uv);
       } else if (size == 22) {
         const uv = {
           u: ret.range.getFloat16(offset + 18),
           v: ret.range.getFloat16(offset + 20),
         };
+        baduv ||= isNaN(uv.u) || isNaN(uv.v);
         ret.uv.push(uv);
       }
+    }
+    if (baduv) {
+      console.warn("UVs are broken");
+      ret.uv = [];
     }
     return ret;
   }
