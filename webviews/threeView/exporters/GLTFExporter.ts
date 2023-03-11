@@ -1,3 +1,4 @@
+import { maxHeaderSize } from "http";
 import * as THREE from "three";
 
 type GLTFPluginCallback = (writer: GLTFWriter) => GLTFPlugin;
@@ -975,7 +976,7 @@ class GLTFWriter {
     let mimeType = map.userData.mimeType;
     if (mimeType === undefined) {
       console.warn("Texture without a mime type, abort export")
-      return;
+      return -1;
     }
     if (mimeType === "image/webp") mimeType = "image/png";
     const textureDef: any = {
@@ -1042,20 +1043,21 @@ class GLTFWriter {
         material.metalnessMap,
         material.roughnessMap
       );
-      const metalRoughMapDef = {
-        index: this.processTexture(metalRoughTexture),
-      };
-      this.applyTextureTransform(metalRoughMapDef, metalRoughTexture);
-      materialDef.pbrMetallicRoughness.metallicRoughnessTexture =
-        metalRoughMapDef;
+      const index = this.processTexture(metalRoughTexture);
+      if (index != -1) {
+        const metalRoughMapDef = { index  };
+        this.applyTextureTransform(metalRoughMapDef, metalRoughTexture);
+        materialDef.pbrMetallicRoughness.metallicRoughnessTexture = metalRoughMapDef;
+      }
     } // pbrMetallicRoughness.baseColorTexture or pbrSpecularGlossiness diffuseTexture
 
     if (material.map) {
-      const baseColorMapDef = {
-        index: this.processTexture(material.map),
-      };
-      this.applyTextureTransform(baseColorMapDef, material.map);
-      materialDef.pbrMetallicRoughness.baseColorTexture = baseColorMapDef;
+      const index = this.processTexture(material.map);
+      if (index != -1) {
+        const baseColorMapDef = { index };
+        this.applyTextureTransform(baseColorMapDef, material.map);
+        materialDef.pbrMetallicRoughness.baseColorTexture = baseColorMapDef;
+      }
     }
 
     if (material.emissive) {
@@ -1077,41 +1079,39 @@ class GLTFWriter {
       } // emissiveTexture
 
       if (material.emissiveMap) {
-        const emissiveMapDef = {
-          index: this.processTexture(material.emissiveMap),
-        };
-        this.applyTextureTransform(emissiveMapDef, material.emissiveMap);
-        materialDef.emissiveTexture = emissiveMapDef;
+        const index = this.processTexture(material.emissiveMap);
+        if (index != -1) {
+          const emissiveMapDef = { index };
+          this.applyTextureTransform(emissiveMapDef, material.emissiveMap);
+          materialDef.emissiveTexture = emissiveMapDef;
+        }
       }
     } // normalTexture
 
     if (material.normalMap) {
-      const normalMapDef: any = {
-        index: this.processTexture(material.normalMap),
-      };
-
-      if (material.normalScale && material.normalScale.x !== 1) {
-        // glTF normal scale is univariate. Ignore `y`, which may be flipped.
-        // Context: https://github.com/mrdoob/three.js/issues/11438#issuecomment-507003995
-        normalMapDef.scale = material.normalScale.x;
-      }
-
+      const index = this.processTexture(material.normalMap);
+      if (index != -1) {
+        const normalMapDef: any = { index };
+        if (material.normalScale && material.normalScale.x !== 1) {
+          // glTF normal scale is univariate. Ignore `y`, which may be flipped.
+          // Context: https://github.com/mrdoob/three.js/issues/11438#issuecomment-507003995
+          normalMapDef.scale = material.normalScale.x;
+        }
       this.applyTextureTransform(normalMapDef, material.normalMap);
       materialDef.normalTexture = normalMapDef;
-    } // occlusionTexture
+    }
+  } // occlusionTexture
 
     if (material.aoMap) {
-      const occlusionMapDef: any = {
-        index: this.processTexture(material.aoMap),
-        texCoord: 1,
-      };
-
-      if (material.aoMapIntensity !== 1.0) {
-        occlusionMapDef.strength = material.aoMapIntensity;
+      const index = this.processTexture(material.aoMap);
+      if (index != -1) {
+        const occlusionMapDef: any = { index, texCoord: 1 };
+        if (material.aoMapIntensity !== 1.0) {
+          occlusionMapDef.strength = material.aoMapIntensity;
+        }
+        this.applyTextureTransform(occlusionMapDef, material.aoMap);
+        materialDef.occlusionTexture = occlusionMapDef;
       }
-
-      this.applyTextureTransform(occlusionMapDef, material.aoMap);
-      materialDef.occlusionTexture = occlusionMapDef;
     } // alphaMode
 
     if (material.transparent) {
@@ -1886,11 +1886,12 @@ class GLTFMaterialsPBRSpecularGlossiness extends GLTFPlugin {
     }
 
     if (material.specularMap) {
-      const specularMapDef = {
-        index: writer.processTexture(material.specularMap),
-      };
-      writer.applyTextureTransform(specularMapDef, material.specularMap);
-      extensionDef.specularGlossinessTexture = specularMapDef;
+      const index = writer.processTexture(material.specularMap);
+      if (index != -1) {
+        const specularMapDef = { index };
+        writer.applyTextureTransform(specularMapDef, material.specularMap);
+        extensionDef.specularGlossinessTexture = specularMapDef;
+      }
     }
 
     materialDef.extensions = materialDef.extensions || {};
@@ -1917,35 +1918,38 @@ class GLTFMaterialsClearcoatExtension extends GLTFPlugin {
     extensionDef.clearcoatFactor = material.clearcoat;
 
     if (material.clearcoatMap) {
-      const clearcoatMapDef = {
-        index: writer.processTexture(material.clearcoatMap),
-      };
-      writer.applyTextureTransform(clearcoatMapDef, material.clearcoatMap);
-      extensionDef.clearcoatTexture = clearcoatMapDef;
+      const index = writer.processTexture(material.clearcoatMap);
+      if (index != -1) {
+        const clearcoatMapDef = { index };
+        writer.applyTextureTransform(clearcoatMapDef, material.clearcoatMap);
+        extensionDef.clearcoatTexture = clearcoatMapDef;
+      }
     }
 
     extensionDef.clearcoatRoughnessFactor = material.clearcoatRoughness;
 
     if (material.clearcoatRoughnessMap) {
-      const clearcoatRoughnessMapDef = {
-        index: writer.processTexture(material.clearcoatRoughnessMap),
-      };
-      writer.applyTextureTransform(
-        clearcoatRoughnessMapDef,
-        material.clearcoatRoughnessMap
-      );
-      extensionDef.clearcoatRoughnessTexture = clearcoatRoughnessMapDef;
+      const index = writer.processTexture(material.clearcoatRoughnessMap);
+      if (index != -1) {
+        const clearcoatRoughnessMapDef = { index };
+        writer.applyTextureTransform(
+          clearcoatRoughnessMapDef,
+          material.clearcoatRoughnessMap
+        );
+        extensionDef.clearcoatRoughnessTexture = clearcoatRoughnessMapDef;
+      }
     }
 
     if (material.clearcoatNormalMap) {
-      const clearcoatNormalMapDef = {
-        index: writer.processTexture(material.clearcoatNormalMap),
-      };
-      writer.applyTextureTransform(
-        clearcoatNormalMapDef,
-        material.clearcoatNormalMap
-      );
-      extensionDef.clearcoatNormalTexture = clearcoatNormalMapDef;
+      const index = writer.processTexture(material.clearcoatNormalMap);
+      if (index != -1) {
+        const clearcoatNormalMapDef = { index };
+        writer.applyTextureTransform(
+          clearcoatNormalMapDef,
+          material.clearcoatNormalMap
+        );
+        extensionDef.clearcoatNormalTexture = clearcoatNormalMapDef;
+      }
     }
 
     materialDef.extensions = materialDef.extensions || {};
@@ -1972,11 +1976,12 @@ class GLTFMaterialsIridescenceExtension extends GLTFPlugin {
     extensionDef.iridescenceFactor = material.iridescence;
 
     if (material.iridescenceMap) {
-      const iridescenceMapDef = {
-        index: writer.processTexture(material.iridescenceMap),
-      };
-      writer.applyTextureTransform(iridescenceMapDef, material.iridescenceMap);
-      extensionDef.iridescenceTexture = iridescenceMapDef;
+      const index = writer.processTexture(material.iridescenceMap);
+      if (index != -1) {
+        const iridescenceMapDef = { index };
+        writer.applyTextureTransform(iridescenceMapDef, material.iridescenceMap);
+        extensionDef.iridescenceTexture = iridescenceMapDef;
+      }
     }
 
     extensionDef.iridescenceIor = material.iridescenceIOR;
@@ -1986,14 +1991,15 @@ class GLTFMaterialsIridescenceExtension extends GLTFPlugin {
       material.iridescenceThicknessRange[1];
 
     if (material.iridescenceThicknessMap) {
-      const iridescenceThicknessMapDef = {
-        index: writer.processTexture(material.iridescenceThicknessMap),
-      };
-      writer.applyTextureTransform(
-        iridescenceThicknessMapDef,
-        material.iridescenceThicknessMap
-      );
-      extensionDef.iridescenceThicknessTexture = iridescenceThicknessMapDef;
+      const index = writer.processTexture(material.iridescenceThicknessMap);
+      if (index != -1) {
+        const iridescenceThicknessMapDef = { index };
+        writer.applyTextureTransform(
+          iridescenceThicknessMapDef,
+          material.iridescenceThicknessMap
+        );
+        extensionDef.iridescenceThicknessTexture = iridescenceThicknessMapDef;
+      }
     }
 
     materialDef.extensions = materialDef.extensions || {};
@@ -2020,14 +2026,15 @@ class GLTFMaterialsTransmissionExtension extends GLTFPlugin {
     extensionDef.transmissionFactor = material.transmission;
 
     if (material.transmissionMap) {
-      const transmissionMapDef = {
-        index: writer.processTexture(material.transmissionMap),
-      };
-      writer.applyTextureTransform(
-        transmissionMapDef,
-        material.transmissionMap
-      );
-      extensionDef.transmissionTexture = transmissionMapDef;
+      const index = writer.processTexture(material.transmissionMap);
+      if (index != -1) {
+        const transmissionMapDef = { index };
+        writer.applyTextureTransform(
+          transmissionMapDef,
+          material.transmissionMap
+        );
+        extensionDef.transmissionTexture = transmissionMapDef;
+      }
     }
 
     materialDef.extensions = materialDef.extensions || {};
@@ -2054,11 +2061,12 @@ class GLTFMaterialsVolumeExtension extends GLTFPlugin {
     extensionDef.thicknessFactor = material.thickness;
 
     if (material.thicknessMap) {
-      const thicknessMapDef = {
-        index: writer.processTexture(material.thicknessMap),
-      };
-      writer.applyTextureTransform(thicknessMapDef, material.thicknessMap);
-      extensionDef.thicknessTexture = thicknessMapDef;
+      const index = writer.processTexture(material.thicknessMap);
+      if (index != -1) {
+        const thicknessMapDef = { index };
+        writer.applyTextureTransform(thicknessMapDef, material.thicknessMap);
+        extensionDef.thicknessTexture = thicknessMapDef;
+      }
     }
 
     extensionDef.attenuationDistance = material.attenuationDistance;
