@@ -25,7 +25,7 @@ class Gray4 {
   static convert(gray4: Uint8Array | Uint8ClampedArray) {
     const data = new Uint8Array(gray4.length * 2 * 4);
     for (let i = 0; i < gray4.length; i++) {
-      const p1 = (gray4[i] & 0b11110000);
+      const p1 = (gray4[i] & 0b11110000) << 0;
       const p2 = (gray4[i] & 0b00001111) << 4;
       data[i * 8 + 0] = p2;
       data[i * 8 + 1] = p2;
@@ -151,6 +151,7 @@ class Editor {
       canvas.style.transform = `scale(${this.scaleX}, ${this.scaleY})`;
       canvas.style.margin = "10px";
       canvas.style.backgroundColor = "#000000";
+      canvas.style.maxWidth = "100%";
       this.app.append(canvas);
 
       const ctx = canvas.getContext("2d");

@@ -113,7 +113,7 @@ export class VEXXLoader extends Loader {
       return;
     }
     if (filename.endsWith(".vex")) {
-      this.asyncVexxModel.load(buffer)
+      this.asyncVexxModel.load(buffer);
     } else if (filename.endsWith(".rcsmodel")) {
       this.asyncRcsModel.load(buffer);
     } else {

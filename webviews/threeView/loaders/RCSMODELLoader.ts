@@ -114,7 +114,7 @@ class AsyncMaterial {
         map: textureChannel.texture,
       });
     } else {
-      console.log(`Unsupported material: ${this.basename}`);
+      console.log(`Unsupported material: ${this.basename} ${this.textureChannels}`);
       const textureChannel = this.textureChannels[0];
       this.material = new THREE.MeshPhongMaterial({
         name: this.rcsMaterial.filename,

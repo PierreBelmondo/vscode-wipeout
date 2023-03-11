@@ -33,7 +33,7 @@ void main() {
 
 const params = {
   bloom: true,
-  bloomThreshold: 0.0,
+  bloomThreshold: 0.5,
   bloomStrength: 1.5,
   bloomRadius: 0.1,
 };
@@ -169,11 +169,11 @@ class Editor {
     this.world.onUpdate = this.render.bind(this);
 
     this.worldRenderer = new WorldRenderer(this.world);
-    this.worldRenderer.domElement.style.position = 'absolute';
-    this.worldRenderer.domElement.style.left = '0';
-    this.worldRenderer.domElement.style.top = '0';
-    this.worldRenderer.domElement.style.width = '100%';
-    this.worldRenderer.domElement.style.height = '100%';
+    this.worldRenderer.domElement.style.position = "absolute";
+    this.worldRenderer.domElement.style.left = "0";
+    this.worldRenderer.domElement.style.top = "0";
+    this.worldRenderer.domElement.style.width = "100%";
+    this.worldRenderer.domElement.style.height = "100%";
     div.appendChild(this.worldRenderer.domElement);
 
     this.labelRenderer = new CSS2DRenderer();
@@ -224,7 +224,7 @@ class Editor {
         const response = await fetch(body.webviewUri);
         const buffer = await response.arrayBuffer();
         this.loader = new FELoader();
-        const text = textDecoder.decode(buffer)
+        const text = textDecoder.decode(buffer);
         this.loader.loadFromString(this.world, text);
         this.loadWorld();
         break;
@@ -248,8 +248,8 @@ class Editor {
 
   loadWorld() {
     /*
-    const gridHelper = new THREE.GridHelper(400, 40, 0x0000ff, 0x808080);
-    gridHelper.position.y = 0;
+    const gridHelper = new THREE.GridHelper(400, 100, 0xffffff, 0x808080);
+    gridHelper.position.y = -2;
     gridHelper.position.x = 0;
     this.world.scene.add(gridHelper);
     */
@@ -306,10 +306,6 @@ class Editor {
 
         offset += size / 2;
       }
-      /*
-      const hemiLight = new THREE.HemisphereLight(0xa0a0a0, 0x080808, 1);
-      world.scene.add(hemiLight);
-      */
 
       this.worldRenderer.world = world;
       this.render();
