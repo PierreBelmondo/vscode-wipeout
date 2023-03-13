@@ -6,6 +6,7 @@ import { WadUnpackCommandProvider } from "./commands/wad";
 import { VexxEditorProvider } from "./views/vexx/EditorProvider";
 import { RcsModelEditorProvider } from "./views/rcsmodel/EditorProvider";
 import { DdsModelEditorProvider } from "./views/texture/DdsModelEditorProvider";
+import { GnfModelEditorProvider } from "./views/texture/GnfModelEditorProvider";
 import { GtfModelEditorProvider } from "./views/texture/GtfModelEditorProvider";
 import { SceneGraphProvider, SceneGraphShow } from "./sceneGraph";
 import { FntModelEditorProvider } from "./views/font/FntModelEditorProvider";
@@ -18,6 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(VexxEditorProvider.register(context));
   context.subscriptions.push(RcsModelEditorProvider.register(context));
   context.subscriptions.push(DdsModelEditorProvider.register(context));
+  context.subscriptions.push(GnfModelEditorProvider.register(context));
   context.subscriptions.push(GtfModelEditorProvider.register(context));
   context.subscriptions.push(FntModelEditorProvider.register(context));
 

@@ -3,7 +3,9 @@ import { api } from "./api";
 import { TextureViewMessage } from "../../core/api/rpc";
 import { Mipmaps } from "../../core/utils/mipmaps";
 import { DXT1, DXT3, DXT5 } from "../../core/utils/dxt";
+import { BC7 } from "../../core/utils/bcdec";
 
+import { GNF } from "../../core/gnf";
 import { GTF } from "../../core/gtf";
 import { DDS } from "../../core/dds";
 import { FNT } from "../../core/fnt";
@@ -53,6 +55,9 @@ class Editor {
   async load(buffer: ArrayBuffer, mime: string) {
     let mipmaps: Mipmaps = [];
     switch (mime) {
+      case "image/gnf":
+        mipmaps = await this.loadGNF(buffer);
+        break;
       case "image/gtf":
         mipmaps = await this.loadGTF(buffer);
         break;
@@ -114,12 +119,27 @@ class Editor {
             data: DXT5.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
           });
           break;
+        case "BC7":
+          console.log("Decompression BC7")
+          uncompressedMipmaps.push({
+            type: "RGBA",
+            width: mipmap.width,
+            height: mipmap.height,
+            data: await BC7.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+          });
+          break;
         default:
           console.log(`Compression mode ${mipmap.type} is not supported`);
       }
     }
     console.log(uncompressedMipmaps);
     return uncompressedMipmaps;
+  }
+
+  async loadGNF(buffer: ArrayBuffer): Promise<Mipmaps> {
+    const gnf = GNF.load(buffer);
+    console.log(gnf);
+    return gnf.mipmaps;
   }
 
   async loadGTF(buffer: ArrayBuffer): Promise<Mipmaps> {

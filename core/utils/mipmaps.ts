@@ -1,5 +1,5 @@
 export type Mipmap = {
-  type: "Gray4" | "ARGB" | "RGBA" | "DXT1" | "DXT3" | "DXT5";
+  type: "Gray4" | "ARGB" | "RGBA" | "DXT1" | "DXT3" | "DXT5" | "BC7";
   width: number;
   height: number;
   data: Uint8Array | Uint8ClampedArray;
