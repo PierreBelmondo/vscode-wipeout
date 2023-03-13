@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { Mipmaps } from "../../core/utils/mipmaps";
+import { Mipmaps } from "@core/utils/mipmaps";
 
 export function generateMissingMipmaps(mipmaps: Mipmaps) {
     let last = mipmaps[mipmaps.length - 1];

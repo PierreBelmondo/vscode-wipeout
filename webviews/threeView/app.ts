@@ -7,7 +7,7 @@ import { RCSModelLoader } from "./loaders/RCSMODELLoader";
 import { FELoader } from "./loaders/FELoader";
 import { World } from "./worlds";
 import { api } from "./api";
-import { ThreeViewMessage, ThreeViewMessageLoadBody } from "../../core/api/rpc";
+import { ThreeViewMessage, ThreeViewMessageLoadBody } from "@core/api/rpc";
 import { EffectComposer } from "./postprocessing/EffectComposer";
 import { RenderPass } from "./postprocessing/RenderPass";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";

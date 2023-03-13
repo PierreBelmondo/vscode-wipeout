@@ -1,5 +1,5 @@
 import { mat4 } from "gl-matrix";
-import { BufferRange } from "../../utils/range";
+import { BufferRange } from "@core/utils/range";
 import { Vexx4NodeType as Vexx4NodeType } from "./v4/type";
 import { Vexx6NodeType } from "./v6/type";
 

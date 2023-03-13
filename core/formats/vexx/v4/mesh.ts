@@ -1,8 +1,8 @@
-import { BufferRange } from "../../../utils/range";
+import { BufferRange } from "@core/utils/range";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 import { AABB } from "../primitive/aabb";
-import { GU } from "../../../utils/pspgu";
+import { GU } from "@core/utils/pspgu";
 
 export class VexxNodeMesh extends VexxNode {
   info = new VexxNodeMeshHeader();

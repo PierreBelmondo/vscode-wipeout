@@ -1,7 +1,24 @@
-import { BufferRange } from "../../utils/range";
+import { BufferRange } from "@core/utils/range";
+import { GTF } from "@core/formats/gtf";
 import { vec4 } from "gl-matrix";
-import { RGBA, UV, Vertex } from "./types";
-import { GTF } from "../gtf";
+
+type Vertex = {
+  x: number;
+  y: number;
+  z: number;
+};
+
+type RGBA = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};
+
+type UV = {
+  u: number;
+  v: number;
+};
 
 class RcsModelMeshInfo {
   range = new BufferRange();

@@ -1,3 +1,6 @@
+/**
+ * Messages from Webview to Editor
+ */
 export type ThreeDocumentMessage =
   | { type: "ready" }
   | { type: "require"; body: string }
@@ -5,14 +8,17 @@ export type ThreeDocumentMessage =
   | { type: "export.gltf" }
   | { type: "scene"; body: any };
 
+/**
+ * Messages from Editor to Webview
+ */
 export type ThreeViewMessageLoadBody =
   | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.vexx" }
   | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.rcsmodel" }
   | { uri: string; webviewUri: string; mime: "application/xml+wipeout" };
 
 export type ThreeViewMessageImportBody =
+  | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.vexx" }
   | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.rcsmodel" }
-  | { uri: string; webviewUri: string; mime: "application/xml+wipeout" }
   | { uri: string; webviewUri: string; mime: "application/binary" };
 
 export type ThreeViewMessage =

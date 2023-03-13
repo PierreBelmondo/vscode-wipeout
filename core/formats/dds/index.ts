@@ -6,9 +6,8 @@
 // https://msdn.microsoft.com/en-us/library/windows/desktop/bb943983(v=vs.85).aspx
 // https://github.com/playcanvas/engine/blob/master/src/resources/resources_texture.js
 
-import { BufferRange } from "../../utils/range";
-import { DXT5 } from "../../utils/dxt";
-import { Mipmaps } from "../../utils/mipmaps";
+import { BufferRange } from "@core/utils/range";
+import { Mipmaps } from "@core/utils/mipmaps";
 
 export type Image = {
   offset: number;

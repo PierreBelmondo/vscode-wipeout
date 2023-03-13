@@ -1,4 +1,4 @@
-import { BufferRange } from "../../utils/range";
+import { BufferRange } from "@core/utils/range";
 
 // inspired by https://github.com/vgmstream/vgmstream/blob/master/src/meta/bnk_sony.c
 

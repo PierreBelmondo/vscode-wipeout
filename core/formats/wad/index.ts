@@ -1,7 +1,7 @@
-import { BufferRange } from "../../utils/range";
+import { BufferRange } from "@core/utils/range";
 import { filenameFromHash } from "./hashes";
 import { xtea8_ctr_bruteforce, xtea8_ctr_decrypt } from "./crypto";
-import { lzss } from "../../utils/lzss";
+import { lzss } from "@core/utils/lzss";
 import zlib from "zlib";
 
 export enum WadVersion {

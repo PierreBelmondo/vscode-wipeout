@@ -1,5 +1,5 @@
 import { Mipmap } from "@core/utils/mipmaps";
-import { BufferRange } from "../../utils/range";
+import { BufferRange } from "@core/utils/range";
 
 class FNTImageHeader {
   range = new BufferRange();

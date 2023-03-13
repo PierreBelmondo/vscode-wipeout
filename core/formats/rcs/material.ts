@@ -1,4 +1,4 @@
-import { BufferRange } from "../../utils/range";
+import { BufferRange } from "@core/utils/range";
 
 export class RcsMaterial {
     range = new BufferRange();

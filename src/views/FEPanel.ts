@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
 
 import { getNonce } from "../helpers/util";
 import { ThreeViewMessage, ThreeViewMessageLoadBody } from "@core/api/rpc";

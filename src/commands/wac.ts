@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from 'fs';
 
-import { Wac, WacFile } from "../../core/formats/wac";
+import { Wac, WacFile } from "@core/formats/wac";
 
 export class WacUnpackCommandProvider {
   static readonly commandType = "wipeout.unpack.wac";

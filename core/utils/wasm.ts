@@ -48,7 +48,7 @@ export class WASMInstance {
     this.module = module;
     this.object = object;
 
-    this._sbrk = object.exports.__heap_base.value;
+    this._sbrk = (object.exports.__heap_base as unknown as any).value;
     this._pages = 0;
   }
 

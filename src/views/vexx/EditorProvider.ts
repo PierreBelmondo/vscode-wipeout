@@ -7,7 +7,7 @@ import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
 import { bus } from "../../helpers/bus";
 import { TextEncoder } from "util";
-import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "../../../core/api/rpc";
+import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "@core/api/rpc";
 
 /**
  * Provider for VEXX model editors.

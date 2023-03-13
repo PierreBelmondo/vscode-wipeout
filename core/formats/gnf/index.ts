@@ -1,5 +1,5 @@
-import { BufferRange } from "../../utils/range";
-import { Mipmaps } from "../../utils/mipmaps";
+import { BufferRange } from "@core/utils/range";
+import { Mipmaps } from "@core/utils/mipmaps";
 import { BC7 } from "@core/utils/bcdec";
 import { GNMTexture } from "./gnm";
 

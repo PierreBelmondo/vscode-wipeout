@@ -1,5 +1,4 @@
-import { getEnabledCategories } from "trace_events";
-import { GU } from "../core/utils/pspgu";
+import { GU } from "@core/utils/pspgu";
 
 if (process.argv.length != 3) {
   console.error("Usage: ts-node pspgu.ts <vtxdef>");

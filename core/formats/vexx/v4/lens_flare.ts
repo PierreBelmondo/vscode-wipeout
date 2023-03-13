@@ -1,4 +1,4 @@
-import { BufferRange } from "../../../utils/range";
+import { BufferRange } from "@core/utils/range";
 import { VexxNodeMatrix } from "../node";
 import { Vexx4NodeType } from "./type";
 

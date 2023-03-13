@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { VexxDocument } from "views/vexx/Document";
-import { ThreeViewMessage } from "../../core/api/rpc";
+import { ThreeViewMessage } from "@core/api/rpc";
 
 class Bus {
   private readonly _onDidChangeActiveCustomDocument = new vscode.EventEmitter<VexxDocument>();

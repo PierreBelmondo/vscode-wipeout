@@ -20,8 +20,12 @@
     "strict": false,
     "strictNullChecks": false,
     "target": "es2019",
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "paths": {
+      "@core/*": ["../core/*"],
+      "@compat/*": ["../compat/node/*"]
+    }
   },
-  "include": ["compat", "core", "src", "webviews"],
-  "exclude": ["node_modules"]
+  "include": ["compat/browser", "core", "webviews"],
+  "exclude": ["compat/node", "node_modules"]
 }

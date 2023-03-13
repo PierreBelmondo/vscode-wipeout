@@ -1,6 +1,6 @@
-import { BufferRange } from "../../utils/range";
-import { DXT1, DXT3, DXT5 } from "../../utils/dxt";
-import { Mipmaps } from "../../utils/mipmaps";
+import { BufferRange } from "@core/utils/range";
+import { DXT1, DXT3, DXT5 } from "@core/utils/dxt";
+import { Mipmaps } from "@core/utils/mipmaps";
 
 enum CellGcmTexture {
   B8 = 0x81,

@@ -47,7 +47,7 @@ declare namespace WebAssembly {
 
   interface Instance {
     constructor(module: Module, importObject?: object);
-    get exports(): objects;
+    get exports(): any /* objects */;
   }
 
   type MemoryDescriptor = {

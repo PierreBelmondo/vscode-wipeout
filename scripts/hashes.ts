@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { crc32 } from "../core/utils/crc32";
+import { crc32 } from "@core/utils/crc32";
 
 function rehash(filename: string): number {
   return crc32(filename.replace("\\", "/").toLowerCase());

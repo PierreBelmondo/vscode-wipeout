@@ -17,7 +17,7 @@
  * See also: https://github.com/thp/wipeout-pure-dlc2dlc/blob/master/dlc2dlc.c
  */
 
-import { decrypt } from "../../utils/xtea";
+import { decrypt } from "@core/utils/xtea";
 import { DLC_KEYS } from "./dlc_keys";
 
 const SIG_SIZE = 256;
