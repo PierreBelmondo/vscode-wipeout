@@ -4,11 +4,5 @@
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
     "strictNullChecks": true,
     "baseUrl": "src",
-    "paths": {
-      "@core/*": ["../core/*"],
-      "@compat/*": ["../compat/node/*"]
-    }
-  },
-  "include": ["compat/node", "core"],
-  "exclude": ["compat/browser", "node_modules", "src/test", "webviews"]
+  }
 }
