@@ -12,7 +12,8 @@ export type ThreeViewMessageLoadBody =
 
 export type ThreeViewMessageImportBody =
   | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.rcsmodel" }
-  | { uri: string; webviewUri: string; mime: "application/xml+wipeout" };
+  | { uri: string; webviewUri: string; mime: "application/xml+wipeout" }
+  | { uri: string; webviewUri: string; mime: "application/binary" };
 
 export type ThreeViewMessage =
   | { type: "load"; body: ThreeViewMessageLoadBody }

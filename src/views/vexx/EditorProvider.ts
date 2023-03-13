@@ -7,7 +7,7 @@ import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
 import { bus } from "../../helpers/bus";
 import { TextEncoder } from "util";
-import { ThreeViewMessage, ThreeViewMessageLoadBody } from "../../../core/api/rpc";
+import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "../../../core/api/rpc";
 
 /**
  * Provider for VEXX model editors.
@@ -88,10 +88,10 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
           }
           const webviewUri = webviewPanel.webview.asWebviewUri(uri);
           const body = {
-            mime: "model/vnd.wipeout.rcsmodel",
+            mime: "application/binary",
             uri: filename,
             webviewUri: webviewUri.toString(),
-          } as ThreeViewMessageLoadBody;
+          } as ThreeViewMessageImportBody;
           this.postMessage(webviewPanel, "import", body);
           break;
         case "log":
@@ -152,10 +152,6 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
 
   private postMessage(panel: vscode.WebviewPanel, type: string, body?: any): void {
     panel.webview.postMessage({ type, body });
-  }
-
-  private async require(document: VexxDocument, filename: string) {
-    return vscode.Uri.joinPath(document.root, filename);
   }
 
   private exportGLTF(document: VexxDocument, gltf: any) {

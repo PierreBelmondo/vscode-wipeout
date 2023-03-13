@@ -14,7 +14,6 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
     let tmpUri = vscode.Uri.from(uri);
     while (!tmpUri.path.toLowerCase().endsWith("data")) {
       tmpUri = vscode.Uri.joinPath(tmpUri, "..");
-      console.log(tmpUri.path);
     }
     return vscode.Uri.joinPath(tmpUri, "..");
   }

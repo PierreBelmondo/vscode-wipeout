@@ -6,7 +6,7 @@ import { WebviewCollection } from "../WebviewCollection";
 import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
 import { TextEncoder } from "util";
-import { ThreeViewMessageLoadBody } from "@core/api/rpc";
+import { ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "@core/api/rpc";
 
 /**
  * Provider for RCS smodel editors.
@@ -65,15 +65,15 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
           }
           break;
         case "require":
-          const filename = e.filename;
+          const filename = e.filename as string;
           console.log(`Document requires external dependency: ${filename}`);
-          const uri = await this.require(document, filename);
+          const uri = vscode.Uri.joinPath(document.root, filename);
           const webviewUri = webviewPanel.webview.asWebviewUri(uri);
           const body = {
-            mime: document.mime,
-            uri: document.uri.toString(),
+            mime: "application/binary",
+            uri: filename,
             webviewUri: webviewUri.toString(),
-          } as ThreeViewMessageLoadBody;
+          } as ThreeViewMessageImportBody;
           this.postMessage(webviewPanel, "import", body);
           break;
         case "log":
@@ -115,11 +115,6 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
   private postMessage(panel: vscode.WebviewPanel, type: string, body: any): void {
     panel.webview.postMessage({ type, body });
   }
-
-  private async require(document: RcsModelDocument, filename: string) {
-    return vscode.Uri.joinPath(document.root, filename);
-  }
-
   private exportGLTF(document: RcsModelDocument, gltf: any) {
     const json = JSON.stringify(gltf, null, "\t");
     const encoder = new TextEncoder();
