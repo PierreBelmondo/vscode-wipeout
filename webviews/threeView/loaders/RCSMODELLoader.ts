@@ -84,7 +84,7 @@ class AsyncMaterial {
       });
     } else if (this.basename == "carbonfibre.rcsmaterial") {
       const textureChannel = this.textureChannels[0];
-      textureChannel.texture?.repeat.set(20, 20);
+      textureChannel.texture?.repeat.set(4, 4);
       this.material = new THREE.MeshPhongMaterial({
         name: this.rcsMaterial.filename,
         side: THREE.DoubleSide,
