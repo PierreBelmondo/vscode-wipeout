@@ -1,10 +1,10 @@
 import * as THREE from "three";
 
 import { api } from "../api";
-import { GTF } from "../../../core/gtf";
+import { GTF } from "../../../core/formats/gtf";
 import { Loader } from ".";
 import { mipmapsToTexture } from "../utils";
-import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/rcs";
+import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "../../../core/formats/rcs";
 import { World } from "../worlds";
 import { rcsDiffuseWithSpecularFromAlpha } from "../materials/rcs/DiffuseWithSpecularFromAlpha";
 

@@ -5,10 +5,10 @@ import { Mipmaps } from "../../core/utils/mipmaps";
 import { DXT1, DXT3, DXT5 } from "../../core/utils/dxt";
 import { BC7 } from "../../core/utils/bcdec";
 
-import { GNF } from "../../core/gnf";
-import { GTF } from "../../core/gtf";
-import { DDS } from "../../core/dds";
-import { FNT } from "../../core/fnt";
+import { GNF } from "../../core/formats/gnf";
+import { GTF } from "../../core/formats/gtf";
+import { DDS } from "../../core/formats/dds";
+import { FNT } from "../../core/formats/fnt";
 
 class ARGB {
   static convert(argb: Uint8Array | Uint8ClampedArray) {

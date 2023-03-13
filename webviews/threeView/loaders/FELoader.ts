@@ -5,7 +5,7 @@ import { Loader } from ".";
 import { World } from "../worlds";
 
 import { mipmapsToTexture } from "../utils";
-import { GTF } from "../../../core/gtf";
+import { GTF } from "../../../core/formats/gtf";
 
 class AsyncImage {
   world: World;
