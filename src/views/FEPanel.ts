@@ -35,7 +35,7 @@ export class FEPanel {
     if (FEPanel.currentPanel) {
       FEPanel.currentPanel.dispose();
     }
-    
+
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       vscode.commands.executeCommand("workbench.action.moveEditorToRightGroup");
@@ -56,18 +56,22 @@ export class FEPanel {
     this._context = context;
     this._uri = uri;
 
-    const panelWebview = this._panel.webview;
-    panelWebview.html = this.getHtmlForWebview(panelWebview);
-    panelWebview.onDidReceiveMessage((e) => {
+    const webviewPanel = this._panel.webview;
+    webviewPanel.html = this.getHtmlForWebview(webviewPanel);
+    webviewPanel.onDidReceiveMessage((e) => {
       switch (e.type) {
         case "ready": {
-          const buffer = fs.readFileSync(this._uri.path, "utf-8");
-          const body: ThreeViewMessageLoadBody = { mime: "application/xml+wipeout", buffer };
-          this.postMessageLoad(body);
+          const webviewUri = webviewPanel.asWebviewUri(uri);
+          const body = {
+            mime: "application/xml+wipeout",
+            uri: this._uri,
+            webviewUri: webviewUri.toString(),
+          } as ThreeViewMessageImportBody;
+          this.postMessage(webviewPanel, "import", body);
           break;
         }
         case "log": {
-          console.log(e.message)
+          console.log(e.message);
           break;
         }
       }
