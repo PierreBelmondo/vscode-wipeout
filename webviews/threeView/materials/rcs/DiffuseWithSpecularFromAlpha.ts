@@ -116,7 +116,7 @@ void main(void) {
     #include <emissivemap_fragment>
     
     shininess = wo_specular;
-    specularStrength = wo_specular;
+    specularStrength = 1.0;
 
     // accumulation
     #include <lights_phong_fragment>
