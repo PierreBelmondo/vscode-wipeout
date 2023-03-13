@@ -20,28 +20,39 @@ type UV = {
   v: number;
 };
 
-class RcsModelMeshInfo {
+export class RcsModelMeshInfo {
   range = new BufferRange();
   count = 0;
   type = 22;
 
   static load(range: BufferRange): RcsModelMeshInfo {
     let ret = new RcsModelMeshInfo();
-    ret.range = range.clone();
+    ret.range = range.slice(0, 144);
     ret.count = ret.range.getUint8(0);
     ret.type = ret.range.getUint8(1);
     return ret;
   }
 }
 
-class RcsModelMatrix {
+export class RcsModelMatrix {
   range = new BufferRange();
-  numebers = [] as number[];
+
+  numbers = [] as number[];
 
   static load(range: BufferRange): RcsModelMatrix {
     let ret = new RcsModelMatrix();
     ret.range = range.slice(0, 64);
-    for (let i = 0; i < 16; i++) ret.numebers.push(ret.range.getFloat32(i * 4));
+    for (let i = 0; i < 16; i++) ret.numbers.push(ret.range.getFloat32(i * 4));
+    return ret;
+  }
+}
+
+export class RcsModelObjectUnknown {
+  range = new BufferRange();
+
+  static load(range: BufferRange): RcsModelObjectUnknown {
+    const ret = new RcsModelObjectUnknown();
+    ret.range = range.slice(0, 16);
     return ret;
   }
 }
@@ -53,7 +64,7 @@ class RcsModelObjectHeader {
   matrix_offset = 0;
   type = 0;
   type2 = 0;
-  end_offet = 0;
+  offset_unknown = 0;
   position = { x: 0, y: 0, z: 0 } as Vertex;
   scale = { x: 1.0, y: 1.0, z: 1.0 } as Vertex;
   material_id = 0;
@@ -67,7 +78,7 @@ class RcsModelObjectHeader {
     ret.matrix_offset = ret.range.getUint32(8);
     ret.type = ret.range.getUint8(6);
     ret.type2 = ret.range.getUint8(7);
-    ret.end_offet = ret.range.getUint32(24);
+    ret.offset_unknown = ret.range.getUint32(24);
     ret.material_id = ret.range.getUint32(32);
 
     ret.position.x = ret.range.getFloat32(48);
@@ -96,27 +107,33 @@ class RcsModelObjectHeader {
 
 export class RcsModelObject {
   range = new BufferRange();
+
   header = new RcsModelObjectHeader();
   mesh = null as null | RcsModelMesh1 | RcsModelMesh5;
+  matrix = new RcsModelMatrix();
+  unknown = new RcsModelObjectUnknown();
 
   static load(range: BufferRange): RcsModelObject {
     let ret = new RcsModelObject();
-    ret.range = range.clone();
+    ret.range = range.slice(0, 80);
     ret.header = RcsModelObjectHeader.load(ret.range);
-    ret.range.end = ret.header.end_offet;
+    ret.range.end = ret.header.offset_unknown;
 
     switch (ret.header.type) {
       case 1:
-        ret.mesh = RcsModelMesh1.load(ret.range.slice(80));
+        ret.mesh = RcsModelMesh1.load(range.slice(80));
         break;
       case 5:
-        ret.mesh = RcsModelMesh5.load(ret.range.slice(80));
+        ret.mesh = RcsModelMesh5.load(range.slice(80));
         break;
       default:
         console.warn(`unexpect object type ${ret.header.type}`);
         break;
     }
 
+    const rangeUnknown = range.reset().slice(ret.header.offset_unknown);
+    ret.unknown = RcsModelObjectUnknown.load(rangeUnknown)
+    ret.matrix = ret.header.matrix;
     return ret;
   }
 }
@@ -196,7 +213,7 @@ export class RcsModelMesh5 {
 
   static load(range: BufferRange): RcsModelMesh5 {
     let ret = new RcsModelMesh5();
-    ret.range = range.clone();
+    ret.range = range.slice(0, 16);
 
     ret.submesh_count = ret.range.getUint32(0);
     ret.submesh_offset = ret.range.getUint32(4);
@@ -249,7 +266,7 @@ export class RcsModelSubmesh {
 
   getVertexIndexRange(): BufferRange {
     const beg = this.ibo_offset;
-    const end = this.ibo_offset + this.ibo_offset * 2;
+    const end = this.ibo_offset + this.ibo_count * 2;
     return this.range.reset().slice(beg, end);
   }
 }
@@ -353,6 +370,21 @@ export class RcsModelTexture {
   }
 }
 
+export class RcsModelMaterialUnknown {
+  range = new BufferRange();
+
+  unknown1: number;
+  unknown2: number;
+
+  static load(range: BufferRange): RcsModelMaterialUnknown {
+    const ret = new RcsModelMaterialUnknown();
+    ret.range = range.slice(0, 32);
+    ret.unknown1 = ret.range.getFloat32(0);
+    ret.unknown2 = ret.range.getUint32(16);
+    return ret;
+  }
+}
+
 export class RcsModelMaterial {
   range = new BufferRange();
 
@@ -360,15 +392,19 @@ export class RcsModelMaterial {
   offset_filename = 0;
   textures_count = 0;
   textures_offset = 0;
+  unknown_offset = 0;
+
   textures: RcsModelTexture[] = [];
+  unknown: RcsModelMaterialUnknown = new RcsModelMaterialUnknown();
 
   static load(range: BufferRange): RcsModelMaterial {
     const ret = new RcsModelMaterial();
-    ret.range = range.clone();
+    ret.range = range.slice(0, 64);
     ret.id = ret.range.getUint32(0);
     ret.offset_filename = ret.range.getUint32(4);
     ret.textures_count = ret.range.getUint32(48);
     ret.textures_offset = ret.range.getUint32(52);
+    ret.unknown_offset = ret.range.getUint32(56);
 
     let textureRange = ret.range.reset(ret.textures_offset);
     for (let i = 0; i < ret.textures_count; i++) {
@@ -376,6 +412,9 @@ export class RcsModelMaterial {
       ret.textures.push(texture);
       textureRange = textureRange.slice(texture.size);
     }
+
+    const unknownRange = ret.range.reset().slice(ret.unknown_offset);
+    ret.unknown = RcsModelMaterialUnknown.load(unknownRange);
 
     return ret;
   }
@@ -385,10 +424,55 @@ export class RcsModelMaterial {
   }
 }
 
+class RcsModelLookupTable {
+  range = new BufferRange();
+
+  values: number[] = [];
+
+  static load(range: BufferRange): RcsModelLookupTable {
+    let ret = new RcsModelLookupTable();
+    const size = range.getUint32(0);
+    let end = 4 + 4 * size;
+    ret.range = range.slice(0, end);
+    const padding = ret.range.end % 16 == 0 ? 0 : (16 - ret.range.end % 16);
+    ret.range.end += padding;
+    // TODO: range padding ?
+    for (let i = 0; i < size; i++) {
+      const value = range.getUint32(4 + i * 4);
+      ret.values.push(value);
+    }
+    return ret;
+  }
+}
+
+class RcsModelObjectUnknownTable {
+  range = new BufferRange();
+  values: vec4[] = [];
+
+  static load(range: BufferRange, count: number): RcsModelObjectUnknownTable {
+    let ret = new RcsModelObjectUnknownTable();
+    ret.range = range.slice(0, count * 16);
+    for (let i = 0; i < count; i++) {
+      const x = ret.range.getFloat32(16 * i + 0);
+      const y = ret.range.getFloat32(16 * i + 4);
+      const z = ret.range.getFloat32(16 * i + 8);
+      const w = ret.range.getFloat32(16 * i + 12);
+      const v = vec4.fromValues(x, y, z, w);
+      ret.values.push(v);
+    }
+    return ret;
+  }
+}
+
 class RcsModelHeader {
   range = new BufferRange();
+
+  lookup_table_offset = 0;
+
+  object_unknown_table_offset = 0;
   object_table_count = 0;
   object_table_offset = 0;
+
   material_table_count = 0;
   material_table_offset = 0;
   rotation = [] as vec4[];
@@ -396,19 +480,24 @@ class RcsModelHeader {
   static load(range: BufferRange): RcsModelHeader {
     let ret = new RcsModelHeader();
     ret.range = range.slice(0, 64);
+    ret.lookup_table_offset = ret.range.getUint32(4);
     ret.object_table_count = ret.range.getUint32(28);
     ret.object_table_offset = ret.range.getUint32(32);
+    ret.object_unknown_table_offset = ret.range.getUint32(36);
     ret.material_table_count = ret.range.getUint32(44);
     ret.material_table_offset = ret.range.getUint32(48);
-    for (let i = 0; i < ret.object_table_count; i++) {
-      const x = ret.range.getFloat32(64 + i * 16 + 0);
-      const y = ret.range.getFloat32(64 + i * 16 + 4);
-      const z = ret.range.getFloat32(64 + i * 16 + 8);
-      const w = ret.range.getFloat32(64 + i * 16 + 12);
-      const v = vec4.fromValues(x, y, z, w);
-      ret.rotation.push(v);
-    }
     return ret;
+  }
+
+  getObjectUnknownTable(): RcsModelObjectUnknownTable {
+    const range = this.range.reset().slice(this.object_unknown_table_offset);
+    return RcsModelObjectUnknownTable.load(range, this.object_table_count);
+  }
+
+  getLookupTable(): RcsModelLookupTable {
+    const range = this.range.reset().slice(this.lookup_table_offset);
+    const lookupTable = RcsModelLookupTable.load(range);
+    return lookupTable;
   }
 
   getObjectTable(): RcsModelOffsetTable {
@@ -441,10 +530,12 @@ export class RcsModel {
   range = new BufferRange();
 
   header = new RcsModelHeader();
+  lookup_table = new RcsModelLookupTable();
   objects_table = new RcsModelOffsetTable();
   objects = [] as RcsModelObject[];
   materials_table = new RcsModelOffsetTable();
   materials = [] as RcsModelMaterial[];
+  object_unknown_table: RcsModelObjectUnknownTable;
 
   static load(buffer: ArrayBuffer): RcsModel {
     let ret = new RcsModel();
@@ -452,6 +543,9 @@ export class RcsModel {
     ret.range.le = false;
 
     ret.header = RcsModelHeader.load(ret.range);
+    ret.object_unknown_table = ret.header.getObjectUnknownTable();
+    ret.lookup_table = ret.header.getLookupTable();
+
     ret.objects_table = ret.header.getObjectTable();
     for (const offset of ret.objects_table.offsets) {
       const range = ret.range.slice(offset);
@@ -466,7 +560,6 @@ export class RcsModel {
       ret.materials.push(material);
     }
 
-    console.log(ret);
     return ret;
   }
 }
