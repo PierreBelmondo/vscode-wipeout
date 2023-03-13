@@ -5,6 +5,13 @@
     "esModuleInterop": true,
     "types": [
       "node"
-    ]
+    ],
+    "paths": {
+      "@compat/*": ["../compat/node/*"],
+      "@core/*": ["../core/*"]
+    }
   },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }
