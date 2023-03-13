@@ -160,11 +160,13 @@ class Editor {
   worldRenderer: WorldRenderer;
   labelRenderer: CSS2DRenderer;
 
+  clock: THREE.Clock;
   world: World;
 
   loader?: Loader;
 
   constructor(div: Element) {
+    this.clock = new THREE.Clock();
     this.world = new World();
     this.world.onUpdate = this.render.bind(this);
 
@@ -255,6 +257,7 @@ class Editor {
     */
     this.worldRenderer.world = this.world;
     this.render();
+    //this.animate();
   }
 
   render() {
@@ -267,6 +270,13 @@ class Editor {
     this.world.camera.updateProjectionMatrix();
     this.worldRenderer.setSize(window.innerWidth, window.innerHeight);
     this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    this.render();
+  }
+
+  animate() {
+    requestAnimationFrame(this.animate.bind(this));
+    const delta = this.clock.getDelta();
+    this.world.updateAnimations(delta);
     this.render();
   }
 

@@ -23,13 +23,14 @@ export class World {
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
-  settings = { layers: {}, airbrakes: {}, backgroundColor: "#000000", bloom: false };
+  settings = { layers: {}, airbrakes: {}, actions: {}, backgroundColor: "#000000", bloom: false };
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
 
   private _layers: { [id: string]: number } = {};
   private _layerIndex = 8;
   private _airbrakes: Airbrake[] = [];
+  private _actions: { name: string; mixer: THREE.AnimationMixer, action: THREE.AnimationAction }[] = [];
 
   constructor() {
     const fov = 45;
@@ -161,6 +162,22 @@ export class World {
         });
       }
     }
+
+    this.settings.actions = {};
+    if (this._actions.length > 0) {
+      const folder = this.gui.addFolder("Animations");
+      for (const action of this._actions) {
+        this.settings.actions[action.name] = false;
+        folder.add(this.settings.actions, action.name).onChange((value: number) => {
+          if (value) {
+            action.action.reset();
+            action.action.play();
+          }
+          else
+            action.action.stop();
+        });
+      }
+    }
   }
 
   getLayer(name: string): number {
@@ -174,6 +191,16 @@ export class World {
   addAirbrake(object: THREE.Object3D) {
     const airbrake = { name: object.name, object };
     this._airbrakes.push(airbrake);
+  }
+
+  addAction(name, action: THREE.AnimationAction, mixer: THREE.AnimationMixer) {
+    const a = { name, mixer, action };
+    this._actions.push(a);
+  }
+
+  updateAnimations(delta: number) {
+    for (const action of this._actions)
+      action.mixer.update(delta);
   }
 
   getTextureByName(name: string): THREE.Texture | null {
