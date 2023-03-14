@@ -269,15 +269,15 @@ export class RCSModelLoader extends Loader {
     if (object.mesh instanceof RcsModelMesh1) {
       const mesh = this.loadMesh1(world, object.mesh, materialId);
       mesh.userData = userData;
-      mesh.position.set(position.x, position.y, position.z);
-      mesh.scale.set(scale.x, scale.y, scale.z);
+      mesh.position.set(position[0], position[1], position[2]);
+      mesh.scale.set(scale[0], scale[1], scale[2]);
       return mesh;
     }
     if (object.mesh instanceof RcsModelMesh5) {
       const mesh = this.loadMesh5(world, object.mesh, materialId);
       mesh.userData = userData;
-      mesh.position.set(position.x, position.y, position.z);
-      mesh.scale.set(scale.x, scale.y, scale.z);
+      mesh.position.set(position[0], position[1], position[2]);
+      mesh.scale.set(scale[0], scale[1], scale[2]);
       return mesh;
     }
     return null;
@@ -314,10 +314,20 @@ export class RCSModelLoader extends Loader {
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
 
-    if (vbo.uv) {
+    /*
+    if (vbo.rgba.length) {
+      const rgba = [] as number[];
+      for (const v of vbo.rgba) {
+        rgba.push(v.r, v.g, v.b, v.a);
+      }
+      geometry.setAttribute("color", new THREE.Float32BufferAttribute(rgba, 4));
+    }
+    */
+
+    if (vbo.uv.length) {
       const uvs = [] as number[];
-      for (const uv of vbo.uv) {
-        uvs.push(uv.u, uv.v);
+      for (const v of vbo.uv) {
+        uvs.push(v.u, v.v);
       }
       geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
     }

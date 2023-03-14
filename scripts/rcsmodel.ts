@@ -24,8 +24,10 @@ class Output {
     this.log("=".repeat(name.length));
   }
 
-  h2(name: string, range: BufferRange) {
-    const s = `${name} (0x${range.begin.toString(16)} => 0x${range.end.toString(16)})`;
+  h2(name: string, range?: BufferRange) {
+    let s = name
+    if (range)
+      s += `(0x${range.begin.toString(16)} => 0x${range.end.toString(16)})`;
     this.log(s);
     this.log("-".repeat(s.length));
   }
@@ -76,7 +78,7 @@ function main(args: string[]) {
   output.log(`Material count:        ${rcs.header.material_table_count}`);
   output.br();
 
-  output.h2("Object unknown table", rcs.object_unknown_table.range);
+  output.h2("AABB", rcs.object_unknown_table.range);
   output.log(`Object count:          ${rcs.object_unknown_table.values.length}`);
   output.br();
 
@@ -108,17 +110,25 @@ function main(args: string[]) {
     output.pop();
   }
 
-  output.h2("Meshes table", rcs.objects_table.range);
+  output.h2("Mesh offset table", rcs.objects_table.range);
   output.log(`Object count:          ${rcs.objects_table.offsets.length}`);
+  for (const offset of rcs.objects_table.offsets)
+  output.log(`:                      0x${offset.toString(16)}`);
   output.br();
 
   output.h2("Lookup table", rcs.lookup_table.range);
   output.log(`Items:                 ${rcs.lookup_table.values.length}`);
   output.br();
 
+  output.h2("Mesh info table");
+  output.push()
   {
     let infos: { [offset: number]: RcsModelMeshInfo } = {};
     for (const object of rcs.objects) {
+      if (object.mesh instanceof RcsModelMesh1) {
+        const info = object.mesh.info;
+        if (!(info.range.begin in infos)) infos[info.range.begin] = info;
+      }
       if (object.mesh instanceof RcsModelMesh5) {
         const info = object.mesh.info;
         if (!(info.range.begin in infos)) infos[info.range.begin] = info;
@@ -130,9 +140,17 @@ function main(args: string[]) {
     for (const key of keys) {
       const info = infos[key];
       output.h2(`Mesh-info`, info.range);
+      output.log(`Object count:          ${info.count}`);
+      output.log(`Object stride:         ${info.align}`);
+      output.log(`Stride:`);
+      for (const stride of info.strides) {
+        output.log(JSON.stringify(stride));
+      }
       output.br();
     }
   }
+  output.pop()
+  output.br();
 
   {
     let matrices: { [offset: number]: RcsModelMatrix } = {};
@@ -171,7 +189,7 @@ function main(args: string[]) {
     const keys = Object.keys(strings)
       .map((x) => parseInt(x))
       .sort();
-    output.log(`Strings`);
+    output.h2(`Strings`);
     for (const key of keys) {
       const string = strings[key];
       output.log(`0x${key.toString(16)} => 0x${(key + string.length).toString(16)} : ${string}`);
@@ -198,7 +216,6 @@ function main(args: string[]) {
       output.log(`IBO offset:         0x${object.mesh.ibo_offset.toString(16)}`);
       output.log(`IBO count:          ${object.mesh.ibo_count}`);
       output.log(`VBO offset:         0x${object.mesh.vbo_offset.toString(16)}`);
-      output.log(`VBO count:          ${object.mesh.vbo_count}`);
 
       output.log(`Unknown offset:     0x${object.header.offset_unknown.toString(16)}`);
       output.br();
@@ -234,11 +251,10 @@ function main(args: string[]) {
         output.br();
         output.pop();
       }
-      output.h2(`Unknown`, object.unknown.range);
+      //output.h2(`Unknown`, object.unknown.range);
       output.pop();
     }
     output.pop();
-    break;
   }
 }
 

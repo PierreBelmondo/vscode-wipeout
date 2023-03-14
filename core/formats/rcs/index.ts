@@ -20,20 +20,6 @@ type UV = {
   v: number;
 };
 
-export class RcsModelMeshInfo {
-  range = new BufferRange();
-  count = 0;
-  type = 22;
-
-  static load(range: BufferRange): RcsModelMeshInfo {
-    let ret = new RcsModelMeshInfo();
-    ret.range = range.slice(0, 144);
-    ret.count = ret.range.getUint8(0);
-    ret.type = ret.range.getUint8(1);
-    return ret;
-  }
-}
-
 export class RcsModelMatrix {
   range = new BufferRange();
 
@@ -61,43 +47,59 @@ class RcsModelObjectHeader {
   range = new BufferRange();
   id = 0;
   unknown1 = 0;
-  matrix_offset = 0;
   type = 0;
   type2 = 0;
+  matrix_offset = 0;
+  unknown4 = 0;
+  unknown5 = 0;
+  unknown6 = 0;
   offset_unknown = 0;
-  position = { x: 0, y: 0, z: 0 } as Vertex;
-  scale = { x: 1.0, y: 1.0, z: 1.0 } as Vertex;
+  unknown7 = 0;
   material_id = 0;
+  unknown8 = 0;
+  ffffffff = 0xffffffff;
+  OOOOOOOO = 0x00000000;
+  position = [0, 0, 0, 0];
+  scale = [1, 1, 1, 1];
 
   static load(range: BufferRange): RcsModelObjectHeader {
     let ret = new RcsModelObjectHeader();
     ret.range = range.slice(0, 80);
 
     ret.id = ret.range.getUint32(0);
-    ret.unknown1 = ret.range.getUint32(4);
-    ret.matrix_offset = ret.range.getUint32(8);
+    ret.unknown1 = ret.range.getUint16(4);
     ret.type = ret.range.getUint8(6);
     ret.type2 = ret.range.getUint8(7);
+    ret.matrix_offset = ret.range.getUint32(8);
+    ret.unknown4 = ret.range.getUint32(12);
+    ret.unknown5 = ret.range.getUint32(16);
+    ret.unknown6 = ret.range.getUint32(20);
     ret.offset_unknown = ret.range.getUint32(24);
+    ret.unknown7 = ret.range.getUint32(28);
     ret.material_id = ret.range.getUint32(32);
-
-    ret.position.x = ret.range.getFloat32(48);
-    ret.position.y = ret.range.getFloat32(52);
-    ret.position.z = ret.range.getFloat32(56);
-    //ret.position.w = ret.range.getFloat32(60);
-
+    ret.unknown8 = ret.range.getUint32(36);
+    ret.ffffffff = ret.range.getUint32(40);
+    ret.OOOOOOOO = ret.range.getUint32(44);
+    ret.position = [ret.range.getFloat32(48), ret.range.getFloat32(52), ret.range.getFloat32(56), ret.range.getFloat32(60)];
     // Since OpenGL/WebGL2 interprets signed 16-bit integers as normalized,
     // We must account for this in the scale
     // .00007812500000000000 = 2.56 / 32768
-    ret.scale.x = ret.range.getFloat32(64) * 32768.0;
-    ret.scale.y = ret.range.getFloat32(68) * 32768.0;
-    ret.scale.z = ret.range.getFloat32(72) * 32768.0;
-    //ret.scale.w = ret.range.getFloat32(76) * 32768.0;
+    ret.scale = [
+      ret.range.getFloat32(64) * 32768.0,
+      ret.range.getFloat32(68) * 32768.0,
+      ret.range.getFloat32(72) * 32768.0,
+      ret.range.getFloat32(76) * 32768.0,
+    ];
 
     return ret;
   }
 
-  get matrix(): RcsModelMatrix {
+  getUnknown(): RcsModelObjectUnknown {
+    const range = this.range.reset(this.offset_unknown);
+    return RcsModelObjectUnknown.load(range);
+  }
+
+  getMatrix(): RcsModelMatrix {
     const beg = this.matrix_offset;
     const end = this.matrix_offset + 64;
     const range = this.range.reset().slice(beg, end);
@@ -111,7 +113,7 @@ export class RcsModelObject {
   header = new RcsModelObjectHeader();
   mesh = null as null | RcsModelMesh1 | RcsModelMesh5;
   matrix = new RcsModelMatrix();
-  unknown = new RcsModelObjectUnknown();
+  //unknown = new RcsModelObjectUnknown();
 
   static load(range: BufferRange): RcsModelObject {
     let ret = new RcsModelObject();
@@ -131,9 +133,39 @@ export class RcsModelObject {
         break;
     }
 
-    const rangeUnknown = range.reset().slice(ret.header.offset_unknown);
-    ret.unknown = RcsModelObjectUnknown.load(rangeUnknown)
-    ret.matrix = ret.header.matrix;
+    //ret.unknown = ret.header.getUnknown();
+    ret.matrix = ret.header.getMatrix();
+    return ret;
+  }
+}
+
+type StrideInfo = {
+  id: number;
+  align: number;
+  type: number;
+  offset: number;
+};
+
+export class RcsModelMeshInfo {
+  range = new BufferRange();
+  count = 0;
+  align = 0;
+  strides = [] as StrideInfo[];
+
+  static load(range: BufferRange): RcsModelMeshInfo {
+    let ret = new RcsModelMeshInfo();
+    ret.range = range.slice(0, 144);
+    ret.count = ret.range.getUint8(0);
+    ret.align = ret.range.getUint8(1);
+    for (let i = 0; i < ret.count; i++) {
+      const info = {
+        id: ret.range.getUint32(4 + 8 * i + 0),
+        align: ret.range.getUint8(4 + 8 * i + 5),
+        type: ret.range.getUint8(4 + 8 * i + 6),
+        offset: ret.range.getUint8(4 + 8 * i + 7),
+      };
+      ret.strides.push(info);
+    }
     return ret;
   }
 }
@@ -142,57 +174,42 @@ export class RcsModelMesh1 {
   range = new BufferRange();
 
   info_offset = 0;
-  info = new RcsModelMeshInfo();
-
-  vbo_count = 0;
   vbo_offset = 0;
   ibo_count = 0;
   ibo_offset = 0;
 
+  info = new RcsModelMeshInfo();
   vbo = new RcsModelVBO();
   ibo = new RcsModelIBO();
-  vsize = 10;
 
   static load(range: BufferRange): RcsModelMesh1 {
     let ret = new RcsModelMesh1();
     ret.range = range.slice(0, 16);
-
     ret.info_offset = ret.range.getUint32(0);
-    const tmpRange = ret.range.reset(ret.info_offset);
-    ret.info = RcsModelMeshInfo.load(tmpRange);
-
     ret.vbo_offset = ret.range.getUint32(4);
-    //ret.vbo_end = ret.range.getUint32(4);
     ret.ibo_count = ret.range.getUint32(8);
     ret.ibo_offset = ret.range.getUint32(12);
-    ret.ibo = RcsModelIBO.load(ret.vertexIndexRange, ret.ibo_count);
 
-    let max = 0;
-    for (const index of ret.ibo.indices) max = max < index ? index : max;
-    max++;
-
-    ret.vbo_count = max;
-
-    ret.vbo = RcsModelVBO.load(ret.vertexBufferRange, ret.info.type, ret.vbo_count);
+    ret.info = RcsModelMeshInfo.load(ret.getMeshInfoRange());
+    ret.ibo = RcsModelIBO.load(ret.getVertexIndexRange(), ret.ibo_count);
+    ret.vbo = RcsModelVBO.load(ret.getVertexBufferRange(), ret.info, ret.ibo.max + 1);
     return ret;
   }
 
-  get headerBufferRange(): BufferRange {
-    const beg = this.range.begin;
-    const end = this.ibo_offset;
-    return this.range.reset().slice(beg, end);
+  getMeshInfoRange(): BufferRange {
+    return this.range.reset(this.info_offset);
   }
 
-  get vertexIndexRange(): BufferRange {
+  getVertexIndexRange(): BufferRange {
     const beg = this.ibo_offset;
     const end = this.ibo_offset + this.ibo_count * 2;
-    return this.range.reset().slice(beg, end);
+    return this.range.reset(beg, end);
   }
 
-  get vertexBufferRange(): BufferRange {
+  getVertexBufferRange(): BufferRange {
     const beg = this.vbo_offset;
-    const end = this.vbo_offset + this.vbo_count * this.vsize;
-    return this.range.reset().slice(beg, end);
+    const end = this.vbo_offset + this.info.count * this.info.align;
+    return this.range.reset(beg, end);
   }
 }
 
@@ -210,23 +227,25 @@ export class RcsModelMesh5 {
   static load(range: BufferRange): RcsModelMesh5 {
     let ret = new RcsModelMesh5();
     ret.range = range.slice(0, 16);
-
     ret.submesh_count = ret.range.getUint32(0);
     ret.submesh_offset = ret.range.getUint32(4);
     ret.info_offset = ret.range.getUint32(8);
     ret.extra_offet = ret.range.getUint32(12);
 
-    const tmpRange = ret.range.reset(ret.info_offset);
-    ret.info = RcsModelMeshInfo.load(tmpRange);
+    ret.info = RcsModelMeshInfo.load(ret.getMeshInfoRange());
 
     let subrange = ret.range.reset(ret.submesh_offset);
     for (let i = 0; i < ret.submesh_count; i++) {
-      const submesh = RcsModelSubmesh.load(subrange, ret.info.type);
+      const submesh = RcsModelSubmesh.load(subrange, ret.info);
       ret.submeshes.push(submesh);
       subrange = subrange.slice(8 * 16);
     }
 
     return ret;
+  }
+
+  getMeshInfoRange(): BufferRange {
+    return this.range.reset(this.info_offset);
   }
 }
 
@@ -240,7 +259,7 @@ export class RcsModelSubmesh {
   vbo = new RcsModelVBO();
   ibo = new RcsModelIBO();
 
-  static load(range: BufferRange, type: number): RcsModelSubmesh {
+  static load(range: BufferRange, info: RcsModelMeshInfo): RcsModelSubmesh {
     let ret = new RcsModelSubmesh();
     ret.range = range.slice(0, 8 * 16);
     ret.vbo_count = ret.range.getUint16(8);
@@ -249,7 +268,7 @@ export class RcsModelSubmesh {
     ret.vbo_offset = ret.range.getUint32(24);
 
     ret.ibo = RcsModelIBO.load(ret.getVertexIndexRange(), ret.ibo_count);
-    ret.vbo = RcsModelVBO.load(ret.getVertexBufferRange(), type, ret.vbo_count);
+    ret.vbo = RcsModelVBO.load(ret.getVertexBufferRange(), info, ret.vbo_count);
 
     return ret;
   }
@@ -257,13 +276,13 @@ export class RcsModelSubmesh {
   getVertexBufferRange(): BufferRange {
     const beg = this.vbo_offset;
     const end = this.ibo_offset;
-    return this.range.reset().slice(beg, end);
+    return this.range.reset(beg, end);
   }
 
   getVertexIndexRange(): BufferRange {
     const beg = this.ibo_offset;
     const end = this.ibo_offset + this.ibo_count * 2;
-    return this.range.reset().slice(beg, end);
+    return this.range.reset(beg, end);
   }
 }
 
@@ -274,47 +293,40 @@ export class RcsModelVBO {
   rgba = [] as RGBA[];
   uv = [] as UV[];
 
-  static load(range: BufferRange, size: number, count: number): RcsModelVBO {
+  static load(range: BufferRange, info: RcsModelMeshInfo, count: number): RcsModelVBO {
     let ret = new RcsModelVBO();
-    ret.range = range.slice(0, count * size);
+    ret.range = range.slice(0, count * info.align);
 
-    let baduv = false;
     for (let i = 0; i < count; i++) {
-      const offset = i * size;
-
-      const vertex = {
-        x: ret.range.getInt16(offset + 0),
-        y: ret.range.getInt16(offset + 2),
-        z: ret.range.getInt16(offset + 4),
-      };
-      ret.vertices.push(vertex);
-
-      if (size == 10) {
-        const uv = {
-          u: ret.range.getFloat16(offset + 6),
-          v: ret.range.getFloat16(offset + 8),
-        };
-        baduv ||= isNaN(uv.u) || isNaN(uv.v);
-        ret.uv.push(uv);
-      } else if (size == 18) {
-        const uv = {
-          u: ret.range.getFloat16(offset + 14),
-          v: ret.range.getFloat16(offset + 16),
-        };
-        baduv ||= isNaN(uv.u) || isNaN(uv.v);
-        ret.uv.push(uv);
-      } else if (size == 22) {
-        const uv = {
-          u: ret.range.getFloat16(offset + 18),
-          v: ret.range.getFloat16(offset + 20),
-        };
-        baduv ||= isNaN(uv.u) || isNaN(uv.v);
-        ret.uv.push(uv);
+      const offset = i * info.align;
+      for (const stride of info.strides) {
+        if (stride.type == 0x23) {
+          const v = {
+            u: ret.range.getFloat16(offset + stride.offset + 0),
+            v: ret.range.getFloat16(offset + stride.offset + 2),
+          };
+          ret.uv.push(v);
+        }
+        if (stride.type == 0x35) {
+          const v = {
+            x: ret.range.getInt16(offset + stride.offset + 0),
+            y: ret.range.getInt16(offset + stride.offset + 2),
+            z: ret.range.getInt16(offset + stride.offset + 4),
+          };
+          ret.vertices.push(v);
+        }
+        /*
+        if (stride.type == 0x44) {
+          const v = {
+            r: ret.range.getUint8(offset + stride.offset + 0),
+            g: ret.range.getUint8(offset + stride.offset + 1),
+            b: ret.range.getUint8(offset + stride.offset + 2),
+            a: ret.range.getUint8(offset + stride.offset + 3),
+          };
+          ret.rgba.push(v);
+        }
+        */
       }
-    }
-    if (baduv) {
-      console.warn("UVs are broken");
-      ret.uv = [];
     }
     return ret;
   }
@@ -430,7 +442,7 @@ class RcsModelLookupTable {
     const size = range.getUint32(0);
     let end = 4 + 4 * size;
     ret.range = range.slice(0, end);
-    const padding = ret.range.end % 16 == 0 ? 0 : (16 - ret.range.end % 16);
+    const padding = ret.range.end % 16 == 0 ? 0 : 16 - (ret.range.end % 16);
     ret.range.end += padding;
     // TODO: range padding ?
     for (let i = 0; i < size; i++) {
@@ -539,8 +551,8 @@ export class RcsModel {
     ret.range.le = false;
 
     ret.header = RcsModelHeader.load(ret.range);
-    ret.object_unknown_table = ret.header.getObjectUnknownTable();
     ret.lookup_table = ret.header.getLookupTable();
+    ret.object_unknown_table = ret.header.getObjectUnknownTable();
 
     ret.objects_table = ret.header.getObjectTable();
     for (const offset of ret.objects_table.offsets) {
