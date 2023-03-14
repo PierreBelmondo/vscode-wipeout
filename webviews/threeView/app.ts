@@ -237,7 +237,7 @@ class Editor {
   async import(buffer: ArrayBuffer, filename: string) {
     if (this.loader) {
       await this.loader.import(buffer, filename);
-      this.world.emitScene();
+      //this.world.emitScene();
       if (filename.endsWith(".vex")) {
         this.world.setupGui();
         this.world.setupGuiButtonExport();
@@ -256,8 +256,8 @@ class Editor {
     this.world.scene.add(gridHelper);
     */
     this.worldRenderer.world = this.world;
-    this.render();
-    //this.animate();
+    //this.render();
+    this.animate();
   }
 
   render() {

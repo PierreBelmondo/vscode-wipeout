@@ -161,11 +161,10 @@ export class VEXXLoader extends Loader {
         break;
       case "ANIMATION_TRIGGER": // TODO
         object = this.loadControlPoint(world, node);
-        layer = "Animations";
+        layer = "Animation triggers";
         break;
       case "ANIM_TRANSFORM": // TODO
         object = this.loadAnimTransform(world, node as VexxNodeAnimTransform);
-        layer = "Animations";
         break;
       case "BLOB": // TODO
         object = this.loadControlPoint(world, node);
@@ -250,6 +249,7 @@ export class VEXXLoader extends Loader {
         break;
       case "POINT_LIGHT": // TODO
         object = this.loadNodeGeneric(world, node);
+        console.log(node);
         layer = "Lights";
         break;
       case "QUAKE": // TODO
@@ -413,21 +413,40 @@ export class VEXXLoader extends Loader {
     const group = new THREE.Group();
     group.name = node.name;
 
-    /*
-     if (node.unk3 == 0x01) {
-      const m1 = new THREE.Matrix4();
-      m1.makeRotationFromEuler(new THREE.Euler(-0.1, node.x > 0 ? -0.08 : 0.08, node.x > 0 ? -0.47 : 0.47));
-      group.applyMatrix4(m1);
-
+    if (node.has_position) {
       const m = new THREE.Matrix4();
-      m.makeTranslation((node.x - 0.5) * 1.3, node.y - 0.05, node.z - 2.22);
+      m.makeTranslation(node.x, node.y, node.z);
       group.applyMatrix4(m);
-      */
-    const m = new THREE.Matrix4();
-    m.makeTranslation(node.x, node.y, node.z);
-    group.applyMatrix4(m);
-    //}
+    }
 
+    console.log(node.name);
+    let tracks: THREE.VectorKeyframeTrack[] = [];
+    if (node.track1) {
+      console.log(node.track1.keys, node.track1.values)
+      const track1 = new THREE.VectorKeyframeTrack(".position", node.track1.keys, node.track1.values, THREE.InterpolateSmooth);
+      track1.createInterpolant();
+      tracks.push(track1);
+    }
+
+    /*
+    if (node.track2) {
+      const track2 = new THREE.VectorKeyframeTrack(".scale", node.track2.keys, node.track2.values, THREE.InterpolateSmooth);
+      track2.createInterpolant();
+      tracks.push(track2);
+    }
+    */
+
+    if (tracks.length > 0) {
+      const clip = new THREE.AnimationClip(group.name, 10, tracks);
+      console.log(THREE.AnimationClip.toJSON(clip));
+      const mixer = new THREE.AnimationMixer(group);
+      const action = mixer.clipAction(clip);
+      action.startAt(0); 
+      //action.clampWhenFinished = true;
+      console.log(action.loop);
+      world.addAction(group.name, action, mixer);
+    }
+    
     for (const child of node.children) {
       const object = this.loadNode(world, child);
       if (object === null) continue;
