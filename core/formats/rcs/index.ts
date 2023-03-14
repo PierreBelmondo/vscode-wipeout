@@ -141,6 +141,9 @@ export class RcsModelObject {
 export class RcsModelMesh1 {
   range = new BufferRange();
 
+  info_offset = 0;
+  info = new RcsModelMeshInfo();
+
   vbo_count = 0;
   vbo_offset = 0;
   ibo_count = 0;
@@ -152,10 +155,14 @@ export class RcsModelMesh1 {
 
   static load(range: BufferRange): RcsModelMesh1 {
     let ret = new RcsModelMesh1();
-    ret.range = range.clone();
+    ret.range = range.slice(0, 16);
 
-    ret.vbo_count = ret.range.getUint32(0);
+    ret.info_offset = ret.range.getUint32(0);
+    const tmpRange = ret.range.reset(ret.info_offset);
+    ret.info = RcsModelMeshInfo.load(tmpRange);
+
     ret.vbo_offset = ret.range.getUint32(4);
+    //ret.vbo_end = ret.range.getUint32(4);
     ret.ibo_count = ret.range.getUint32(8);
     ret.ibo_offset = ret.range.getUint32(12);
     ret.ibo = RcsModelIBO.load(ret.vertexIndexRange, ret.ibo_count);
@@ -164,20 +171,9 @@ export class RcsModelMesh1 {
     for (const index of ret.ibo.indices) max = max < index ? index : max;
     max++;
 
-    if (max != ret.vbo_count) {
-      console.log(`Fixing vbo_count ${ret.vbo_count} => ${max}`);
-      ret.vbo_count = max;
-    }
+    ret.vbo_count = max;
 
-    let new_vsize = Math.ceil(ret.range.end - ret.vbo_offset) / ret.vbo_count;
-    new_vsize -= new_vsize % 2;
-
-    if (ret.vsize != new_vsize) {
-      console.log(`Fixing vsize ${ret.vsize} => ${new_vsize}`);
-      ret.vsize = new_vsize;
-    }
-
-    ret.vbo = RcsModelVBO.load(ret.vertexBufferRange, ret.vsize, ret.vbo_count);
+    ret.vbo = RcsModelVBO.load(ret.vertexBufferRange, ret.info.type, ret.vbo_count);
     return ret;
   }
 

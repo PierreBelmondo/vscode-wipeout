@@ -82,6 +82,18 @@ class AsyncMaterial {
         transparent: true,
         opacity: 0.95,
       });
+    } else if (this.basename == "hexagonalshield_rich.rcsmaterial") {
+      const textureChannel = this.textureChannels[0];
+      this.material = new THREE.MeshPhongMaterial({
+        emissive: 0x8080FF,
+        emissiveIntensity: 0.5,
+        emissiveMap: textureChannel.texture,
+        name: this.rcsMaterial.filename,
+        side: THREE.DoubleSide,
+        //map: textureChannel.texture,
+        transparent: true,
+        opacity: 0.80,
+      });
     } else if (this.basename == "carbonfibre.rcsmaterial") {
       const textureChannel = this.textureChannels[0];
       textureChannel.texture?.repeat.set(4, 4);
@@ -129,7 +141,6 @@ class AsyncMaterial {
         map: textureChannel.texture,
         specularMap: textureChannel.texture,
       });
-      console.log(this.material);
     }
 
     if (this.material) {

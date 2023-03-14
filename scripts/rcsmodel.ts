@@ -194,8 +194,21 @@ function main(args: string[]) {
 
     output.push();
     if (object.mesh instanceof RcsModelMesh1) {
+      output.h2(`Mesh (type=1)`, object.mesh.range);
       output.log(`IBO offset:         0x${object.mesh.ibo_offset.toString(16)}`);
+      output.log(`IBO count:          ${object.mesh.ibo_count}`);
       output.log(`VBO offset:         0x${object.mesh.vbo_offset.toString(16)}`);
+      output.log(`VBO count:          ${object.mesh.vbo_count}`);
+
+      output.log(`Unknown offset:     0x${object.header.offset_unknown.toString(16)}`);
+      output.br();
+
+      output.push();
+      output.h2(`IBO`, object.mesh.ibo.range);
+      output.br();
+      output.h2(`VBO`, object.mesh.vbo.range);
+      output.br();
+      output.pop();
     }
     if (object.mesh instanceof RcsModelMesh5) {
       output.h2(`Mesh (type=5)`, object.mesh.range);
@@ -225,6 +238,7 @@ function main(args: string[]) {
       output.pop();
     }
     output.pop();
+    break;
   }
 }
 
