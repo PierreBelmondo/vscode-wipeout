@@ -284,7 +284,7 @@ export class RCSModelLoader extends Loader {
 
   loadMesh1(world: World, rcsMesh: RcsModelMesh1, materialId: number): THREE.Mesh {
     const geometry = this.loadBO(rcsMesh.vbo, rcsMesh.ibo);
-    geometry.computeVertexNormals();
+    //geometry.computeVertexNormals();
     let material = world.materials["_default"];
     if (materialId in world.materials) material = world.materials[materialId];
     const mesh = new THREE.Mesh(geometry, material);
@@ -296,7 +296,7 @@ export class RCSModelLoader extends Loader {
     const group = new THREE.Group();
     for (const rcsSubMesh of rcsMesh.submeshes) {
       const geometry = this.loadBO(rcsSubMesh.vbo, rcsSubMesh.ibo);
-      geometry.computeVertexNormals();
+      //geometry.computeVertexNormals();
       let material = world.materials["_default"];
       const mesh = new THREE.Mesh(geometry, material);
       this.asyncMaterials[materialId].linkMesh(mesh);
