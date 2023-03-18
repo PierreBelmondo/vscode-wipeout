@@ -3,7 +3,8 @@ import * as THREE from "three";
 import { Mipmaps } from "@core/utils/mipmaps";
 
 export function generateMissingMipmaps(mipmaps: Mipmaps) {
-    let last = mipmaps[mipmaps.length - 1];
+  let last = mipmaps[mipmaps.length - 1];
+  if (last.type == "RGBA") {
     while (last.width >= 2 || last.height >= 2) {
       const width = Math.floor(last.width / 2);
       const height = Math.floor(last.height / 2);
@@ -23,8 +24,9 @@ export function generateMissingMipmaps(mipmaps: Mipmaps) {
       last = { type: "RGBA", width, height, data };
       mipmaps.push(last);
     }
-    return mipmaps;
   }
+  return mipmaps;
+}
 
 export function mipmapsToTexture(mipmaps: Mipmaps): THREE.Texture {
     let textures: THREE.Texture[] = [];
