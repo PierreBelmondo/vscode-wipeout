@@ -56,6 +56,7 @@ import { VexxNodeMagFloorCollision } from "./v6/mag_floor_collision";
 import { VexxNodePointLight } from "./v6/point_light";
 import { VexxNodeSoundCone } from "./v6/sound_cone";
 import { VexxNodeWingTip } from "./v6/wingtip";
+import { VexxNodeTrackWallCollision } from "./v6/track_wall_collision";
 import { VexxNodeAbsorb } from "./v6/absorb";
 
 VexxNode.registerV4(Vexx4NodeType.AIRBRAKE, VexxNodeAirbrake);
@@ -149,6 +150,7 @@ VexxNode.registerV6(Vexx6NodeType.SOUND_CONE, VexxNodeSoundCone);
 VexxNode.registerV6(Vexx6NodeType.SPEEDUP_PAD, VexxNodeSpeedupPad);
 VexxNode.registerV6(Vexx6NodeType.START_POSITION, VexxNodeStartPosition);
 VexxNode.registerV6(Vexx6NodeType.TEXTURE, VexxNodeTexture);
+VexxNode.registerV6(Vexx6NodeType.TRACK_WALL_COLLISION, VexxNodeTrackWallCollision);
 VexxNode.registerV6(Vexx6NodeType.TRAIL, VexxNodeTrail);
 VexxNode.registerV6(Vexx6NodeType.TRANSFORM, VexxNodeTransform);
 VexxNode.registerV6(Vexx6NodeType.WALL_COLLISION, VexxNodeWallCollision);
