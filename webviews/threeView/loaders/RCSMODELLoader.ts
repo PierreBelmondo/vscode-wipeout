@@ -46,6 +46,10 @@ class AsyncMaterial {
     this.textureChannels.push({ filename, texture: null });
   }
 
+  linked() {
+    if (this.textureChannels.length == 0) this.createMaterial();
+  }
+
   async load(buffer: ArrayBuffer) {
     // Nothing to do at the moment
   }
@@ -59,8 +63,11 @@ class AsyncMaterial {
       if (this.textureChannels[i].texture == null) fullyLoaded = false;
     }
 
-    if (!fullyLoaded) return;
+    if (fullyLoaded) this.createMaterial();
+  }
 
+  createMaterial() {
+    console.log(`Creating shader for ${this.basename}`);
     if (this.basename == "glass_texture.rcsmaterial") {
       this.material = new THREE.MeshPhongMaterial({
         name: this.rcsMaterial.filename,
@@ -198,6 +205,9 @@ export class RCSModelLoader extends Loader {
     const model = RcsModel.load(arrayBuffer);
     this.loadMaterials(world, model);
     this.loadScene(world, model);
+    for (const asyncMaterial of this.asyncMaterials) {
+      asyncMaterial.linked();
+    }
     return world;
   }
 
