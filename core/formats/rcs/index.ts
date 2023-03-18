@@ -330,7 +330,6 @@ export class RcsModelVBO {
           const a = ret.range.getUint8(offset + stride.offset + 3) / 255.0;
           ret.rgba.push(r, g, b, a);
           */
-        }
       }
     }
     return ret;
