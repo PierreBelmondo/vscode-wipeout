@@ -92,14 +92,14 @@ class AsyncMaterial {
     } else if (this.basename == "hexagonalshield_rich.rcsmaterial") {
       const textureChannel = this.textureChannels[0];
       this.material = new THREE.MeshPhongMaterial({
-        emissive: 0x8080FF,
+        emissive: 0x8080ff,
         emissiveIntensity: 0.5,
         emissiveMap: textureChannel.texture,
         name: this.rcsMaterial.filename,
         side: THREE.DoubleSide,
         //map: textureChannel.texture,
         transparent: true,
-        opacity: 0.80,
+        opacity: 0.8,
       });
     } else if (this.basename == "carbonfibre.rcsmaterial") {
       const textureChannel = this.textureChannels[0];
@@ -126,6 +126,41 @@ class AsyncMaterial {
         emissiveIntensity: 2.0,
         map: textureChannel.texture,
       });
+    } else if (this.basename == "constantmaterial.rcsmaterial") {
+      this.material = new THREE.MeshPhongMaterial({
+        name: this.basename,
+        side: THREE.DoubleSide,
+        color: 0xffffff,
+        specular: 0xffffff,
+      });
+    } else if (this.basename == "constantmaterial_vertalpha.rcsmaterial") {
+      const textureChannel = this.textureChannels[0];
+      this.material = new THREE.MeshPhongMaterial({
+        name: this.basename,
+        side: THREE.DoubleSide,
+        color: 0xffffff,
+        specular: 0xffffff,
+        alphaMap: textureChannel.texture,
+        transparent: true
+      });
+    } else if (this.basename == "tracktexture_with_normal.rcsmaterial") {
+      const textureChannel0 = this.textureChannels[0];
+      const textureChannel1 = this.textureChannels[1];
+      this.material = new THREE.MeshPhongMaterial({
+        name: this.rcsMaterial.filename,
+        side: THREE.DoubleSide,
+        color: 0xffffff,
+        specular: 0xffffff,
+        //map: textureChannel0.texture,
+        //specularMap: textureChannel0.texture,
+        normalMap: textureChannel1.texture,
+      });
+    } else if (this.basename == "basic_vertexemissive.rcsmaterial") {
+      this.material = new THREE.MeshBasicMaterial({
+        name: this.basename,
+        side: THREE.DoubleSide,
+        vertexColors: true,
+      });
     } else if (this.basename == "detonator_diffuse_with_specular_from_alpha_n_vcol.rcsmaterial") {
       const textureChannel = this.textureChannels[0];
       this.material = rcsDiffuseWithSpecularFromAlpha({
@@ -139,15 +174,25 @@ class AsyncMaterial {
       });
     } else {
       console.log(`Unsupported material: ${this.basename} ${this.textureChannels}`);
-      const textureChannel = this.textureChannels[0];
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.rcsMaterial.filename,
-        side: THREE.DoubleSide,
-        color: 0xffffff,
-        specular: 0xffffff,
-        map: textureChannel.texture,
-        specularMap: textureChannel.texture,
-      });
+      if (false) {
+        this.material = new THREE.MeshBasicMaterial({ vertexColors: true });
+      } else if (false) {
+        this.material = new THREE.MeshNormalMaterial();
+      } else {
+        if (this.textureChannels.length == 0) {
+          this.material = new THREE.MeshNormalMaterial();
+        } else if (this.textureChannels.length > 0) {
+          const textureChannel = this.textureChannels[0];
+          this.material = new THREE.MeshPhongMaterial({
+            name: this.rcsMaterial.filename,
+            side: THREE.DoubleSide,
+            color: 0xffffff,
+            specular: 0xffffff,
+            map: textureChannel.texture,
+            specularMap: textureChannel.texture,
+          });
+        }
+      }
     }
 
     if (this.material) {
@@ -316,31 +361,18 @@ export class RCSModelLoader extends Loader {
   }
 
   loadBO(vbo: RcsModelVBO, ibo: RcsModelIBO) {
-    const vertices = [] as number[];
-    const s = 2.0 / 65536;
-    for (const vertex of vbo.vertices) vertices.push(vertex.x * s, vertex.y * s, vertex.z * s);
-
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(vbo.vertices, 3));
 
-    /*
     if (vbo.rgba.length) {
-      const rgba = [] as number[];
-      for (const v of vbo.rgba) {
-        rgba.push(v.r, v.g, v.b, v.a);
-      }
-      geometry.setAttribute("color", new THREE.Float32BufferAttribute(rgba, 4));
+      geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.rgba, 4));
     }
-    */
-
+    if (vbo.normals.length) {
+      geometry.setAttribute("normal", new THREE.Float32BufferAttribute(vbo.normals, 3));
+    }
     if (vbo.uv.length) {
-      const uvs = [] as number[];
-      for (const v of vbo.uv) {
-        uvs.push(v.u, v.v);
-      }
-      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.uv, 2));
     }
-
     geometry.setIndex(ibo.indices);
     return geometry;
   }

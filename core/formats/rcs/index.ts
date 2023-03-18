@@ -2,24 +2,6 @@ import { BufferRange } from "@core/utils/range";
 import { GTF } from "@core/formats/gtf";
 import { vec4 } from "gl-matrix";
 
-type Vertex = {
-  x: number;
-  y: number;
-  z: number;
-};
-
-type RGBA = {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-};
-
-type UV = {
-  u: number;
-  v: number;
-};
-
 export class RcsModelMatrix {
   range = new BufferRange();
 
@@ -81,14 +63,11 @@ class RcsModelObjectHeader {
     ret.ffffffff = ret.range.getUint32(40);
     ret.OOOOOOOO = ret.range.getUint32(44);
     ret.position = [ret.range.getFloat32(48), ret.range.getFloat32(52), ret.range.getFloat32(56), ret.range.getFloat32(60)];
-    // Since OpenGL/WebGL2 interprets signed 16-bit integers as normalized,
-    // We must account for this in the scale
-    // .00007812500000000000 = 2.56 / 32768
     ret.scale = [
-      ret.range.getFloat32(64) * 32768.0,
-      ret.range.getFloat32(68) * 32768.0,
-      ret.range.getFloat32(72) * 32768.0,
-      ret.range.getFloat32(76) * 32768.0,
+      ret.range.getFloat32(64),
+      ret.range.getFloat32(68),
+      ret.range.getFloat32(72),
+      ret.range.getFloat32(76),
     ];
 
     return ret;
@@ -288,10 +267,10 @@ export class RcsModelSubmesh {
 
 export class RcsModelVBO {
   range = new BufferRange();
-  vertices = [] as Vertex[];
-  normals = [] as Vertex[];
-  rgba = [] as RGBA[];
-  uv = [] as UV[];
+  vertices = [] as number[];
+  normals = [] as number[];
+  rgba = [] as number[];
+  uv = [] as number[];
 
   static load(range: BufferRange, info: RcsModelMeshInfo, count: number): RcsModelVBO {
     let ret = new RcsModelVBO();
@@ -300,32 +279,58 @@ export class RcsModelVBO {
     for (let i = 0; i < count; i++) {
       const offset = i * info.align;
       for (const stride of info.strides) {
+        if (stride.type == 0x16) {
+          const u = ret.range.getUint32(offset + stride.offset + 0); // 11 11 10
+          const x = ((u >> 21) & ((1 << 11) - 1)) / 1024.0;
+          const y = ((u >> 10) & ((1 << 11) - 1)) / 1024.0;
+          const z = ((u >> 0) & ((1 << 10) - 1)) / 512.0;
+          ret.normals.push(x, y, z);
+        }
+        if (stride.type == 0x22) {
+          /*
+          const r = ret.range.getFloat16(offset + stride.offset + 0);
+          const g = ret.range.getFloat16(offset + stride.offset + 2);
+          const b = ret.range.getFloat16(offset + stride.offset + 4);
+          const a = ret.range.getFloat16(offset + stride.offset + 6);
+          ret.rgba.push(r, g, b, a);
+          */
+        }
         if (stride.type == 0x23) {
-          const v = {
-            u: ret.range.getFloat16(offset + stride.offset + 0),
-            v: ret.range.getFloat16(offset + stride.offset + 2),
-          };
-          ret.uv.push(v);
+          const u = ret.range.getFloat16(offset + stride.offset + 0);
+          const v = ret.range.getFloat16(offset + stride.offset + 2);
+          ret.uv.push(u, v);
         }
         if (stride.type == 0x35) {
-          const v = {
-            x: ret.range.getInt16(offset + stride.offset + 0),
-            y: ret.range.getInt16(offset + stride.offset + 2),
-            z: ret.range.getInt16(offset + stride.offset + 4),
-          };
-          ret.vertices.push(v);
+          const x = ret.range.getInt16(offset + stride.offset + 0);
+          const y = ret.range.getInt16(offset + stride.offset + 2);
+          const z = ret.range.getInt16(offset + stride.offset + 4);
+          ret.vertices.push(x, y, z);
+        }
+        if (stride.type == 0x42) {
+          // 16 bytes ???
+          const r = ret.range.getFloat32(offset + stride.offset + 0);
+          const g = ret.range.getFloat32(offset + stride.offset + 4);
+          const b = ret.range.getFloat32(offset + stride.offset + 8);
+          const a = ret.range.getFloat32(offset + stride.offset + 12);
+          ret.rgba.push(r, g, b, a);
+        }
+        if (stride.type == 0x43) {
+          const r = ret.range.getUint8(offset + stride.offset + 0);
+          const g = ret.range.getUint8(offset + stride.offset + 1);
+          const b = ret.range.getUint8(offset + stride.offset + 2);
+          const a = ret.range.getUint8(offset + stride.offset + 3);
+          //ret.rgba.push(r, g, b, a);
         }
         /*
         if (stride.type == 0x44) {
-          const v = {
-            r: ret.range.getUint8(offset + stride.offset + 0),
-            g: ret.range.getUint8(offset + stride.offset + 1),
-            b: ret.range.getUint8(offset + stride.offset + 2),
-            a: ret.range.getUint8(offset + stride.offset + 3),
-          };
-          ret.rgba.push(v);
+          /*
+          const r = ret.range.getUint8(offset + stride.offset + 0) / 255.0;
+          const g = ret.range.getUint8(offset + stride.offset + 1) / 255.0;
+          const b = ret.range.getUint8(offset + stride.offset + 2) / 255.0;
+          const a = ret.range.getUint8(offset + stride.offset + 3) / 255.0;
+          ret.rgba.push(r, g, b, a);
+          */
         }
-        */
       }
     }
     return ret;

@@ -25,9 +25,8 @@ class Output {
   }
 
   h2(name: string, range?: BufferRange) {
-    let s = name
-    if (range)
-      s += `(0x${range.begin.toString(16)} => 0x${range.end.toString(16)})`;
+    let s = name;
+    if (range) s += ` (0x${range.begin.toString(16)} => 0x${range.end.toString(16)})`;
     this.log(s);
     this.log("-".repeat(s.length));
   }
@@ -48,7 +47,6 @@ function buf2hex(buffer: ArrayBuffer) {
 
 function read(path: string) {
   const buffer = fs.readFileSync(path);
-  console.log(buffer, buffer.byteOffset, buffer.byteLength);
   const arrayBuffer = new Uint8Array(buffer, buffer.byteOffset, buffer.byteLength);
   return arrayBuffer.buffer;
 }
@@ -64,95 +62,119 @@ function main(args: string[]) {
   const rcs = RcsModel.load(arrayBuffer);
   const output = new Output();
 
+  const config = {
+    header: false,
+    aabb: false,
+    materials: true,
+    meshes: true,
+    lookup: false,
+    strides: true,
+    matrices: false,
+    strings: false,
+    points: true,
+  };
+
   output.h1(filename);
   output.log(`@begin: 0x${rcs.range.begin.toString(16)}`);
   output.log(`@end:   0x${rcs.range.end.toString(16)}`);
   output.br();
 
-  output.h2("Header", rcs.header.range);
-  output.log(`Lookup table offset:   0x${rcs.header.lookup_table_offset.toString(16)}`);
-  output.log(`Object unknown offset: 0x${rcs.header.object_unknown_table_offset.toString(16)}`);
-  output.log(`Object table offset:   0x${rcs.header.object_table_offset.toString(16)}`);
-  output.log(`Object count:          ${rcs.header.object_table_count}`);
-  output.log(`Material table offset: 0x${rcs.header.material_table_offset.toString(16)}`);
-  output.log(`Material count:        ${rcs.header.material_table_count}`);
-  output.br();
+  if (config.header) {
+    output.h2("Header", rcs.header.range);
+    output.log(`Lookup table offset:   0x${rcs.header.lookup_table_offset.toString(16)}`);
+    output.log(`Object unknown offset: 0x${rcs.header.object_unknown_table_offset.toString(16)}`);
+    output.log(`Object table offset:   0x${rcs.header.object_table_offset.toString(16)}`);
+    output.log(`Object count:          ${rcs.header.object_table_count}`);
+    output.log(`Material table offset: 0x${rcs.header.material_table_offset.toString(16)}`);
+    output.log(`Material count:        ${rcs.header.material_table_count}`);
+    output.br();
+  }
 
-  output.h2("AABB", rcs.object_unknown_table.range);
-  output.log(`Object count:          ${rcs.object_unknown_table.values.length}`);
-  output.br();
+  if (config.aabb) {
+    output.h2("AABB", rcs.object_unknown_table.range);
+    output.log(`Object count:          ${rcs.object_unknown_table.values.length}`);
+    output.br();
+  }
 
-  output.h2("Materials table", rcs.materials_table.range);
-  output.log(`Object count:          ${rcs.materials_table.offsets.length}`);
-  output.br();
-
-  for (const material of rcs.materials) {
-    output.h2(`Material ${material.id}`, material.range);
-    output.log(`Filename:            ${material.filename}`);
-    output.log(`Texture count:       ${material.textures_count}`);
-    output.log(`Texture offset:      0x${material.textures_offset.toString(16)}`);
-    output.log(`Unknown offset:      0x${material.unknown_offset.toString(16)}`);
+  if (config.materials) {
+    output.h2("Materials table", rcs.materials_table.range);
+    output.log(`Object count:          ${rcs.materials_table.offsets.length}`);
     output.br();
 
-    output.push();
-    for (const texture of material.textures) {
-      output.h2(`Texture ${texture.id}`, texture.range);
-      output.log(`Filename offset:     ${texture.offset_filename}`);
-      output.log(`Filename:            ${texture.filename}`);
-      output.log(`Type:                ${texture.type}`);
+    let id = 0;
+    for (const material of rcs.materials) {
+      output.h2(`Material ${id}`, material.range);
+      output.log(`Filename:            ${material.filename}`);
+      output.log(`Texture count:       ${material.textures_count}`);
+      output.log(`Texture offset:      0x${material.textures_offset.toString(16)}`);
+      output.log(`Unknown offset:      0x${material.unknown_offset.toString(16)}`);
       output.br();
+
+      output.push();
+      for (const texture of material.textures) {
+        output.h2(`Texture ${texture.id}`, texture.range);
+        output.log(`Filename offset:     0x${texture.offset_filename.toString(16)}`);
+        output.log(`Filename:            ${texture.filename}`);
+        output.log(`Type:                ${texture.type}`);
+        output.br();
+      }
+      const unknown = material.unknown;
+      output.h2(`Unknown`, unknown.range);
+      output.log(`Unknown value1:      ${unknown.unknown1}`);
+      output.log(`Unknown value2:      ${unknown.unknown2}`);
+      output.br();
+      output.pop();
+      id++;
     }
-    const unknown = material.unknown;
-    output.h2(`Unknown`, unknown.range);
-    output.log(`Unknown value1:      ${unknown.unknown1}`);
-    output.log(`Unknown value2:      ${unknown.unknown2}`);
+  }
+
+  if (config.meshes) {
+    output.h2("Mesh offset table", rcs.objects_table.range);
+    output.log(`Object count:          ${rcs.objects_table.offsets.length}`);
+    for (const offset of rcs.objects_table.offsets) {
+      output.log(`:                      0x${offset.toString(16)}`);
+    }
     output.br();
+  }
+
+  if (config.lookup) {
+    output.h2("Lookup table", rcs.lookup_table.range);
+    output.log(`Items:                 ${rcs.lookup_table.values.length}`);
+    output.br();
+  }
+
+  if (config.strides) {
+    output.h2("Mesh info table");
+    output.push();
+    {
+      let infos: { [offset: number]: RcsModelMeshInfo } = {};
+      for (const object of rcs.objects) {
+        if (object.mesh instanceof RcsModelMesh1) {
+          const info = object.mesh.info;
+          if (!(info.range.begin in infos)) infos[info.range.begin] = info;
+        }
+        if (object.mesh instanceof RcsModelMesh5) {
+          const info = object.mesh.info;
+          if (!(info.range.begin in infos)) infos[info.range.begin] = info;
+        }
+      }
+      const keys = Object.keys(infos)
+        .map((x) => parseInt(x))
+        .sort();
+      for (const key of keys) {
+        const info = infos[key];
+        output.h2(`Mesh-info`, info.range);
+        output.log(`Object count/length:          ${info.count}/${info.align}`);
+        for (const s of info.strides) {
+          output.log(`id:0x${s['id'].toString(16)} align:${s['align']} type:0x${s['type'].toString(16)} offset:${s['offset']}`);
+        }
+        output.br();
+      }
+    }
     output.pop();
   }
 
-  output.h2("Mesh offset table", rcs.objects_table.range);
-  output.log(`Object count:          ${rcs.objects_table.offsets.length}`);
-  for (const offset of rcs.objects_table.offsets)
-  output.log(`:                      0x${offset.toString(16)}`);
-  output.br();
-
-  output.h2("Lookup table", rcs.lookup_table.range);
-  output.log(`Items:                 ${rcs.lookup_table.values.length}`);
-  output.br();
-
-  output.h2("Mesh info table");
-  output.push()
-  {
-    let infos: { [offset: number]: RcsModelMeshInfo } = {};
-    for (const object of rcs.objects) {
-      if (object.mesh instanceof RcsModelMesh1) {
-        const info = object.mesh.info;
-        if (!(info.range.begin in infos)) infos[info.range.begin] = info;
-      }
-      if (object.mesh instanceof RcsModelMesh5) {
-        const info = object.mesh.info;
-        if (!(info.range.begin in infos)) infos[info.range.begin] = info;
-      }
-    }
-    const keys = Object.keys(infos)
-      .map((x) => parseInt(x))
-      .sort();
-    for (const key of keys) {
-      const info = infos[key];
-      output.h2(`Mesh-info`, info.range);
-      output.log(`Object count:          ${info.count}`);
-      output.log(`Object stride:         ${info.align}`);
-      output.log(`Stride:`);
-      for (const stride of info.strides) {
-        output.log(JSON.stringify(stride));
-      }
-      output.br();
-    }
-  }
-  output.pop()
-  output.br();
-
-  {
+  if (config.matrices) {
     let matrices: { [offset: number]: RcsModelMatrix } = {};
     for (const object of rcs.objects) {
       const matrix = object.matrix;
@@ -173,7 +195,7 @@ function main(args: string[]) {
     }
   }
 
-  {
+  if (config.strings) {
     let strings: { [offset: number]: string } = {};
     for (const material of rcs.materials) {
       const offset = material.offset_filename;
@@ -197,64 +219,67 @@ function main(args: string[]) {
     output.br();
   }
 
-  output.br();
-
-  for (const object of rcs.objects) {
-    output.h2(`Mesh ${object.header.id}`, object.header.range);
-    output.log(`Unknown value1:       0x${object.header.unknown1.toString(16)}`);
-    output.log(`Matrix offset?:       0x${object.header.matrix_offset.toString(16)}`);
-    output.log(`Type:                 ${object.header.type}`);
-    output.log(`Type ?:               ${object.header.type2}`);
-    output.log(`Position:             ${object.header.position}`);
-    output.log(`Scale:                ${object.header.scale}`);
-    output.log(`Material ID:          0x${object.header.material_id.toString(16)}`);
-    output.br();
-
-    output.push();
-    if (object.mesh instanceof RcsModelMesh1) {
-      output.h2(`Mesh (type=1)`, object.mesh.range);
-      output.log(`IBO offset:         0x${object.mesh.ibo_offset.toString(16)}`);
-      output.log(`IBO count:          ${object.mesh.ibo_count}`);
-      output.log(`VBO offset:         0x${object.mesh.vbo_offset.toString(16)}`);
-
-      output.log(`Unknown offset:     0x${object.header.offset_unknown.toString(16)}`);
+  if (config.meshes) {
+    for (const object of rcs.objects) {
+      output.h2(`Mesh ${object.header.id}`, object.header.range);
+      output.log(`Unknown value1:       0x${object.header.unknown1.toString(16)}`);
+      output.log(`Matrix offset?:       0x${object.header.matrix_offset.toString(16)}`);
+      output.log(`Type:                 ${object.header.type}`);
+      output.log(`Type ?:               ${object.header.type2}`);
+      output.log(`Position:             ${object.header.position}`);
+      output.log(`Scale:                ${object.header.scale}`);
+      output.log(`Material ID:          0x${object.header.material_id.toString(16)}`);
       output.br();
 
       output.push();
-      output.h2(`IBO`, object.mesh.ibo.range);
-      output.br();
-      output.h2(`VBO`, object.mesh.vbo.range);
-      output.br();
-      output.pop();
-    }
-    if (object.mesh instanceof RcsModelMesh5) {
-      output.h2(`Mesh (type=5)`, object.mesh.range);
-      output.log(`Mesh-info offset:   0x${object.mesh.info_offset.toString(16)}`);
-      output.log(`Unknown offset:     0x${object.header.offset_unknown.toString(16)}`);
-      output.log(`Sub-mesh offset:    0x${object.mesh.submesh_offset.toString(16)}`);
-      output.log(`Sub-mesh count:     ${object.mesh.submesh_count}`);
-      output.br();
+      if (object.mesh instanceof RcsModelMesh1) {
+        output.h2(`Mesh (type=1)`, object.mesh.range);
+        output.log(`IBO offset:         0x${object.mesh.ibo_offset.toString(16)}`);
+        output.log(`IBO count:          ${object.mesh.ibo_count}`);
+        output.log(`VBO offset:         0x${object.mesh.vbo_offset.toString(16)}`);
 
-      output.push();
-      for (const submesh of object.mesh.submeshes) {
-        output.h2(`Sub-mesh`, submesh.range);
-        output.log(`VBO offset:      0x${submesh.vbo_offset.toString(16)}`);
-        output.log(`VBO count:       ${submesh.vbo_count}`);
-        output.log(`IBO offset:      0x${submesh.ibo_offset.toString(16)}`);
-        output.log(`IBO count:       ${submesh.ibo_count}`);
+        output.log(`Unknown offset:     0x${object.header.offset_unknown.toString(16)}`);
         output.br();
 
         output.push();
-        output.h2(`VBO`, submesh.vbo.range);
+        output.h2(`IBO`, object.mesh.ibo.range);
         output.br();
-        output.h2(`IBO`, submesh.ibo.range);
+        output.h2(`VBO`, object.mesh.vbo.range);
         output.br();
         output.pop();
       }
-      //output.h2(`Unknown`, object.unknown.range);
+      if (object.mesh instanceof RcsModelMesh5) {
+        output.h2(`Mesh (type=5)`, object.mesh.range);
+        output.log(`Mesh-info offset:   0x${object.mesh.info_offset.toString(16)}`);
+        output.log(`Unknown offset:     0x${object.header.offset_unknown.toString(16)}`);
+        output.log(`Sub-mesh offset:    0x${object.mesh.submesh_offset.toString(16)}`);
+        output.log(`Sub-mesh count:     ${object.mesh.submesh_count}`);
+        output.br();
+
+        output.push();
+        for (const submesh of object.mesh.submeshes) {
+          output.h2(`Sub-mesh`, submesh.range);
+          output.log(`VBO offset:      0x${submesh.vbo_offset.toString(16)}`);
+          output.log(`VBO count:       ${submesh.vbo_count}`);
+          output.log(`IBO offset:      0x${submesh.ibo_offset.toString(16)}`);
+          output.log(`IBO count:       ${submesh.ibo_count}`);
+          output.br();
+
+          output.push();
+          output.h2(`VBO`, submesh.vbo.range);
+          if (config.points) {
+            output.log("normals: "+submesh.vbo.normals);
+          }
+          output.br();
+          output.h2(`IBO`, submesh.ibo.range);
+          output.br();
+          output.pop();
+        }
+        //output.h2(`Unknown`, object.unknown.range);
+        output.pop();
+      }
       output.pop();
     }
-    output.pop();
   }
 }
 
