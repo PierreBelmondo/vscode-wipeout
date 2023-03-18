@@ -29,50 +29,72 @@ export function generateMissingMipmaps(mipmaps: Mipmaps) {
 }
 
 export function mipmapsToTexture(mipmaps: Mipmaps): THREE.Texture {
-    let textures: THREE.Texture[] = [];
-    
-    mipmaps = generateMissingMipmaps(mipmaps);
+  let textures: THREE.Texture[] = [];
 
-    for (const mipmap of mipmaps) {
-      switch (mipmap.type) {
-        case "RGBA": {
-          const texture = new THREE.DataTexture(mipmap.data, mipmap.width, mipmap.height, THREE.RGBAFormat);
-          textures.push(texture);
-          break;
-        }
-        case "DXT1": {
-          const imd = [mipmap as unknown as ImageData];
-          const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT1_Format);
-          textures.push(texture);
-          break;
-        }
-        case "DXT3": {
-          const imd = [mipmap as unknown as ImageData];
-          const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT3_Format);
-          textures.push(texture);
-          break;
-        }
-        case "DXT5": {
-          const imd = [mipmap as unknown as ImageData];
-          const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT5_Format);
-          textures.push(texture);
-          break;
-        }
+  mipmaps = generateMissingMipmaps(mipmaps);
+
+  for (const mipmap of mipmaps) {
+    switch (mipmap.type) {
+      case "ARGB": {
+        const data = convertARGBtoRGBA(mipmap.data);
+        const texture = new THREE.DataTexture(data, mipmap.width, mipmap.height, THREE.RGBAFormat);
+        textures.push(texture);
+        break;
+      }
+      case "RGBA": {
+        const texture = new THREE.DataTexture(mipmap.data, mipmap.width, mipmap.height, THREE.RGBAFormat);
+        textures.push(texture);
+        break;
+      }
+      case "DXT1": {
+        const imd = [mipmap as unknown as ImageData];
+        const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT1_Format);
+        textures.push(texture);
+        break;
+      }
+      case "DXT3": {
+        const imd = [mipmap as unknown as ImageData];
+        const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT3_Format);
+        textures.push(texture);
+        break;
+      }
+      case "DXT5": {
+        const imd = [mipmap as unknown as ImageData];
+        const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT5_Format);
+        textures.push(texture);
+        break;
       }
     }
+  }
 
-    const texture = textures[0];
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.magFilter = THREE.LinearFilter;
-    texture.minFilter = THREE.LinearFilter;
-    texture.needsUpdate = true;
-
-    if (textures.length > 0 && texture instanceof THREE.DataTexture) {
-        const images = textures.map((texture) => texture.image);
-        texture.mipmaps = images;
-        texture.minFilter = THREE.LinearMipmapLinearFilter;
-    }
-
+  const texture = textures[0];
+  if (!texture) {
+    console.log(`Failed to load mipmaps`, mipmaps);
     return texture;
+  }
+
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.magFilter = THREE.LinearFilter;
+  texture.minFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+
+  if (textures.length > 0 && texture instanceof THREE.DataTexture) {
+    const images = textures.map((texture) => texture.image);
+    texture.mipmaps = images;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+  }
+
+  return texture;
+}
+
+function convertARGBtoRGBA(data: Uint8ClampedArray | Uint8Array): Uint8ClampedArray {
+  const rgba = new Uint8ClampedArray(data.length);
+  for (let i = 0; i < data.length / 4; i++) {
+    rgba[i * 4 + 0] = data[i * 4 + 1];
+    rgba[i * 4 + 1] = data[i * 4 + 2];
+    rgba[i * 4 + 2] = data[i * 4 + 3];
+    rgba[i * 4 + 3] = data[i * 4 + 0];
+  }
+  return rgba;
 }
