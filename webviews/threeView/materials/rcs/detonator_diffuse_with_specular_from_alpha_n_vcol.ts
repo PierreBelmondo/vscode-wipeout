@@ -1,7 +1,31 @@
 import * as THREE from "three";
+import { MaterialFactory } from "./_abstract";
 
-// Compatible with:
-// "detonator_diffuse_with_specular_from_alpha_n_vcol"
+export const detonator_diffuse_with_specular_from_alpha_n_vcol: MaterialFactory = {
+  name: "detonator_diffuse_with_specular_from_alpha_n_vcol.rcsmaterial",
+  textures: 1,
+  make: (textures: THREE.Texture[]) => {
+    const uniforms = THREE.UniformsUtils.merge([
+      THREE.UniformsLib["common"],
+      THREE.UniformsLib["lights"],
+      {
+        bloomActive: { value: false },
+        map: { value: textures[0] },
+      },
+    ]);
+  
+    return new THREE.ShaderMaterial({
+      lights: true,
+      defines: {
+        USE_MAP: true,
+        USE_UV: true,
+      },
+      uniforms,
+      vertexShader,
+      fragmentShader,
+    });
+  },
+};
 
 const vertexShader = `
 #define PHONG
@@ -138,34 +162,3 @@ void main(void) {
     #include <dithering_fragment>
 }
 `;
-
-type Parameters = {
-  name: string;
-  map?: THREE.Texture | null;
-};
-
-function rcsDiffuseWithSpecularFromAlpha(parameters: Parameters) {
-  const uniforms = THREE.UniformsUtils.merge([
-    THREE.UniformsLib["common"],
-    THREE.UniformsLib["lights"],
-    {
-      bloomActive: { value: false },
-      map: { value: parameters.map },
-    },
-  ]);
-
-  const material = new THREE.ShaderMaterial({
-    lights: true,
-    defines: {
-      USE_MAP: true,
-      USE_UV: true,
-    },
-    uniforms,
-    vertexShader,
-    fragmentShader,
-  });
-  material.name = parameters.name;
-  return material;
-}
-
-export { rcsDiffuseWithSpecularFromAlpha };

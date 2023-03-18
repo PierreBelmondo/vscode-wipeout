@@ -6,7 +6,7 @@ import { Loader } from ".";
 import { mipmapsToTexture } from "../utils";
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "@core/formats/rcs";
 import { World } from "../worlds";
-import { rcsDiffuseWithSpecularFromAlpha } from "../materials/rcs/DiffuseWithSpecularFromAlpha";
+import { createMaterial } from "../materials/rcs";
 
 type TextureChannel = {
   filename: string;
@@ -47,7 +47,7 @@ class AsyncMaterial {
   }
 
   linked() {
-    if (this.textureChannels.length == 0) this.createMaterial();
+    if (this.textureChannels.length == 0) this.finish();
   }
 
   async load(buffer: ArrayBuffer) {
@@ -63,137 +63,13 @@ class AsyncMaterial {
       if (this.textureChannels[i].texture == null) fullyLoaded = false;
     }
 
-    if (fullyLoaded) this.createMaterial();
+    if (fullyLoaded) this.finish();
   }
 
-  createMaterial() {
-    console.log(`Creating shader for ${this.basename}`);
-    if (this.basename == "glass_texture.rcsmaterial") {
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.rcsMaterial.filename,
-        side: THREE.DoubleSide,
-        color: 0x000000,
-        specular: 0xffffff,
-        transparent: true,
-        opacity: 0.5,
-        shininess: 90,
-        reflectivity: 1.0,
-        refractionRatio: 0.98,
-      });
-    } else if (this.basename == "glass_texture_clamped.rcsmaterial") {
-      const textureChannel = this.textureChannels[0];
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.rcsMaterial.filename,
-        side: THREE.DoubleSide,
-        map: textureChannel.texture,
-        transparent: true,
-        opacity: 0.95,
-      });
-    } else if (this.basename == "hexagonalshield_rich.rcsmaterial") {
-      const textureChannel = this.textureChannels[0];
-      this.material = new THREE.MeshPhongMaterial({
-        emissive: 0x8080ff,
-        emissiveIntensity: 0.5,
-        emissiveMap: textureChannel.texture,
-        name: this.rcsMaterial.filename,
-        side: THREE.DoubleSide,
-        //map: textureChannel.texture,
-        transparent: true,
-        opacity: 0.8,
-      });
-    } else if (this.basename == "carbonfibre.rcsmaterial") {
-      const textureChannel = this.textureChannels[0];
-      textureChannel.texture?.repeat.set(4, 4);
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.rcsMaterial.filename,
-        side: THREE.DoubleSide,
-        color: 0x101010,
-        specular: 0xffffff,
-        specularMap: textureChannel.texture,
-        normalMap: textureChannel.texture,
-        shininess: 90,
-      });
-      this.material.needsUpdate = true;
-    } else if (this.basename == "emissive_bloom.rcsmaterial") {
-      const textureChannel = this.textureChannels[0];
-      textureChannel.texture?.repeat.set(20, 20);
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.basename,
-        side: THREE.DoubleSide,
-        color: 0xffffff,
-        specular: 0xffffff,
-        emissive: 0xffffff,
-        emissiveIntensity: 2.0,
-        map: textureChannel.texture,
-      });
-    } else if (this.basename == "constantmaterial.rcsmaterial") {
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.basename,
-        side: THREE.DoubleSide,
-        color: 0xffffff,
-        specular: 0xffffff,
-      });
-    } else if (this.basename == "constantmaterial_vertalpha.rcsmaterial") {
-      const textureChannel = this.textureChannels[0];
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.basename,
-        side: THREE.DoubleSide,
-        color: 0xffffff,
-        specular: 0xffffff,
-        alphaMap: textureChannel.texture,
-        transparent: true
-      });
-    } else if (this.basename == "tracktexture_with_normal.rcsmaterial") {
-      const textureChannel0 = this.textureChannels[0];
-      const textureChannel1 = this.textureChannels[1];
-      this.material = new THREE.MeshPhongMaterial({
-        name: this.rcsMaterial.filename,
-        side: THREE.DoubleSide,
-        color: 0xffffff,
-        specular: 0xffffff,
-        //map: textureChannel0.texture,
-        //specularMap: textureChannel0.texture,
-        normalMap: textureChannel1.texture,
-      });
-    } else if (this.basename == "basic_vertexemissive.rcsmaterial") {
-      this.material = new THREE.MeshBasicMaterial({
-        name: this.basename,
-        side: THREE.DoubleSide,
-        vertexColors: true,
-      });
-    } else if (this.basename == "detonator_diffuse_with_specular_from_alpha_n_vcol.rcsmaterial") {
-      const textureChannel = this.textureChannels[0];
-      this.material = rcsDiffuseWithSpecularFromAlpha({
-        name: this.basename,
-        map: textureChannel.texture,
-      });
-    } else if (this.basename == "medal.rcsmaterial") {
-      this.material = new THREE.MeshStandardMaterial({
-        metalness: 1,
-        roughness: 0.5,
-      });
-    } else {
-      console.log(`Unsupported material: ${this.basename} ${this.textureChannels}`);
-      if (false) {
-        this.material = new THREE.MeshBasicMaterial({ vertexColors: true });
-      } else if (false) {
-        this.material = new THREE.MeshNormalMaterial();
-      } else {
-        if (this.textureChannels.length == 0) {
-          this.material = new THREE.MeshNormalMaterial();
-        } else if (this.textureChannels.length > 0) {
-          const textureChannel = this.textureChannels[0];
-          this.material = new THREE.MeshPhongMaterial({
-            name: this.rcsMaterial.filename,
-            side: THREE.DoubleSide,
-            color: 0xffffff,
-            specular: 0xffffff,
-            map: textureChannel.texture,
-            specularMap: textureChannel.texture,
-          });
-        }
-      }
-    }
+  finish() {
+    //console.log(`Creating shader for ${this.basename}`);
+    const textures = this.textureChannels.map(tc => tc.texture);
+    this.material = createMaterial(this.basename, textures);
 
     if (this.material) {
       this.world.materials[this.material.name] = this.material;
