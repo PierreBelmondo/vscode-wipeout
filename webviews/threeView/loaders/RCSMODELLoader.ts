@@ -230,10 +230,8 @@ export class RCSModelLoader extends Loader {
 
       for (const rcsTexture of rcsMaterial.textures) {
         if (!rcsTexture.filename.startsWith("data")) continue; // filter out
-
         const asyncTexture = this.loadTexture(world, rcsTexture);
         asyncTexture.linkAsyncMaterial(asyncMaterial);
-        asyncTexture.require();
       }
     }
   }
@@ -247,6 +245,7 @@ export class RCSModelLoader extends Loader {
     const asyncTexture = new AsyncTexture(world, rcsTexture);
     this.asyncTextures.push(asyncTexture);
     this.asyncTextureLookup[filename] = this.asyncTextures.length - 1;
+    asyncTexture.require();
     return asyncTexture;
   }
 
