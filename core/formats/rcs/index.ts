@@ -63,12 +63,7 @@ class RcsModelObjectHeader {
     ret.ffffffff = ret.range.getUint32(40);
     ret.OOOOOOOO = ret.range.getUint32(44);
     ret.position = [ret.range.getFloat32(48), ret.range.getFloat32(52), ret.range.getFloat32(56), ret.range.getFloat32(60)];
-    ret.scale = [
-      ret.range.getFloat32(64),
-      ret.range.getFloat32(68),
-      ret.range.getFloat32(72),
-      ret.range.getFloat32(76),
-    ];
+    ret.scale = [ret.range.getFloat32(64), ret.range.getFloat32(68), ret.range.getFloat32(72), ret.range.getFloat32(76)];
 
     return ret;
   }
