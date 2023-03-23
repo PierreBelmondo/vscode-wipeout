@@ -71,7 +71,7 @@ function main(args: string[]) {
     strides: true,
     matrices: false,
     strings: false,
-    points: true,
+    points: false,
   };
 
   output.h1(filename);
@@ -166,7 +166,7 @@ function main(args: string[]) {
         output.h2(`Mesh-info`, info.range);
         output.log(`Object count/length:          ${info.count}/${info.align}`);
         for (const s of info.strides) {
-          output.log(`id:0x${s['id'].toString(16)} align:${s['align']} type:0x${s['type'].toString(16)} offset:${s['offset']}`);
+          output.log(`id:0x${s["id"].toString(16)} align:${s["align"]} type:0x${s["type"].toString(16)} offset:${s["offset"]}`);
         }
         output.br();
       }
@@ -267,14 +267,20 @@ function main(args: string[]) {
 
           output.push();
           output.h2(`VBO`, submesh.vbo.range);
+          output.log("Vertices: " + submesh.vbo.vertices.length);
+          output.log("UVs: " + submesh.vbo.uv.length);
+          output.log("Normals: " + submesh.vbo.normals.length);
+          output.log("Colors: " + submesh.vbo.rgba.length);
           if (config.points) {
-            output.log("normals: "+submesh.vbo.normals);
+            output.log("vertices: " + submesh.vbo.vertices);
+            output.log("normals: " + submesh.vbo.normals);
           }
           output.br();
           output.h2(`IBO`, submesh.ibo.range);
           output.br();
           output.pop();
         }
+
         //output.h2(`Unknown`, object.unknown.range);
         output.pop();
       }
