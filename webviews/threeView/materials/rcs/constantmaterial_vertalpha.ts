@@ -3,7 +3,8 @@ import { MaterialFactory } from "./_abstract";
 
 export const constantmaterial_vertalpha: MaterialFactory = {
   name: "constantmaterial_vertalpha.rcsmaterial",
-  textures: 1,
+  minTextures: 1,
+  maxTextures: 1,
   make: (textures: THREE.Texture[]) => {
     return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,

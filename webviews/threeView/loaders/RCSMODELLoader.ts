@@ -239,9 +239,11 @@ export class RCSModelLoader extends Loader {
   loadBO(vbo: RcsModelVBO, ibo: RcsModelIBO) {
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.Float32BufferAttribute(vbo.vertices, 3));
-
-    if (vbo.rgba.length) {
-      geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.rgba, 4));
+    if (vbo.rgba.length == 1) {
+      geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.rgba[0], 4));
+    } else if (vbo.rgba.length == 2) {
+      //geometry.setAttribute("normal", new THREE.Float32BufferAttribute(vbo.rgba[0], 4));
+      geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.rgba[1], 4));
     }
     if (vbo.normals.length) {
       geometry.setAttribute("normal", new THREE.Float32BufferAttribute(vbo.normals, 3));

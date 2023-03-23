@@ -3,7 +3,8 @@ import { MaterialFactory } from "./_abstract";
 
 export const emissive_bloom: MaterialFactory = {
   name: "emissive_bloom.rcsmaterial",
-  textures: 1,
+  minTextures: 1,
+  maxTextures: 1,
   make: (textures: THREE.Texture[]) => {
     textures[0].repeat.set(20, 20);
     return new THREE.MeshPhongMaterial({

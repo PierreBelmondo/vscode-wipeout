@@ -1,6 +1,7 @@
 
 export type MaterialFactory = {
   name: string;
-  textures: number;
+  minTextures: number;
+  maxTextures: number;
   make: (textures: THREE.Texture[]) => THREE.Material;
 };

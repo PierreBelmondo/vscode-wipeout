@@ -5,11 +5,23 @@ import { carbonfibre } from "./carbonfibre";
 import { constantmaterial } from "./constantmaterial";
 import { constantmaterial_vertalpha } from "./constantmaterial_vertalpha";
 import { detonator_diffuse_with_specular_from_alpha_n_vcol } from "./detonator_diffuse_with_specular_from_alpha_n_vcol";
+import { detonator_emissive_bloom } from "./detonator_emissive_bloom";
+import { diffuse } from "./diffuse";
+import { diffuse_specular } from "./diffuse_specular";
+import { diffuse_vcol } from "./diffuse_vcol";
+import { diffuse_with_specular_from_alpha_n_vcol } from "./diffuse_with_specular_from_alpha_n_vcol";
 import { emissive_bloom } from "./emissive_bloom";
-import { glass_texture_clamped } from "./glass_texture_clamped";
+import { flame_test } from "./flame_test";
 import { glass_texture } from "./glass_texture";
+import { glass_texture_clamped } from "./glass_texture_clamped";
+import { glass_texture_n } from "./glass_texture_n";
 import { hexagonalshield_rich } from "./hexagonalshield_rich";
+import { lambert } from "./lambert";
 import { medal } from "./medal";
+import { orange_glass } from "./orange_glass";
+import { simpletexture } from "./simpletexture";
+import { simpletextureandtexturealpha } from "./simpletextureandtexturealpha";
+import { tech_de_ra_rocks } from "./tech_de_ra_rocks";
 import { tracktexture_with_normal } from "./tracktexture_with_normal";
 
 const FACTORIES = [
@@ -17,12 +29,25 @@ const FACTORIES = [
   carbonfibre,
   constantmaterial,
   constantmaterial_vertalpha,
+  constantmaterial_vertalpha,
   detonator_diffuse_with_specular_from_alpha_n_vcol,
+  detonator_emissive_bloom,
+  diffuse,
+  diffuse_specular,
+  diffuse_vcol,
+  diffuse_with_specular_from_alpha_n_vcol,
   emissive_bloom,
-  glass_texture_clamped,
+  flame_test,
   glass_texture,
+  glass_texture_clamped,
+  glass_texture_n,
   hexagonalshield_rich,
+  lambert,
   medal,
+  orange_glass,
+  simpletexture,
+  simpletextureandtexturealpha,
+  tech_de_ra_rocks,
   tracktexture_with_normal,
 ];
 
@@ -30,15 +55,18 @@ export function createMaterial(name: string, textures: THREE.Texture[]) {
   const factory = FACTORIES.find((factory) => factory.name == name);
 
   if (factory) {
-    if (textures.length != factory.textures) {
-      console.warn(`Wrong number of textures for '${name}' (${textures.length}!=${factory.textures})`);
+    if (textures.length < factory.minTextures) {
+      console.warn(`Wrong number of textures for '${name}' (${factory.minTextures} !< ${textures.length} < ${factory.minTextures})`);
+    }
+    if (textures.length > factory.maxTextures) {
+      console.warn(`Wrong number of textures for '${name}' (${factory.minTextures} < ${textures.length} !< ${factory.maxTextures})`);
     }
     const material = factory.make(textures);
     material.name = name;
     return material;
   }
 
-  //console.log(`Unsupported material: ${name} ${textures}`);
+  console.warn(`Unsupported material: ${name} ${textures}`);
   if (false) {
     return new THREE.MeshBasicMaterial({ name, vertexColors: true });
   } else if (false) {

@@ -3,7 +3,8 @@ import { MaterialFactory } from "./_abstract";
 
 export const carbonfibre: MaterialFactory = {
   name: "carbonfibre.rcsmaterial",
-  textures: 1,
+  minTextures: 1,
+  maxTextures: 1,
   make: (textures: THREE.Texture[]) => {
     textures[0].repeat.set(4, 4);
     return new THREE.MeshPhongMaterial({

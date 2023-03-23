@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { MaterialFactory } from "./_abstract";
 
-export const detonator_diffuse_with_specular_from_alpha_n_vcol: MaterialFactory = {
-  name: "detonator_diffuse_with_specular_from_alpha_n_vcol.rcsmaterial",
+export const diffuse_with_specular_from_alpha_n_vcol: MaterialFactory = {
+  name: "diffuse_with_specular_from_alpha_n_vcol.rcsmaterial",
   minTextures: 2,
   maxTextures: 2,
   make: (textures: THREE.Texture[]) => {
