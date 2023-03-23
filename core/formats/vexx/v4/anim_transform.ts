@@ -6,7 +6,7 @@ export class VexxKeyframeTrack {
   keys: number[];
   values: number[];
 
-  constructor(keys: number[] = [], values: number[]= []) {
+  constructor(keys: number[] = [], values: number[] = []) {
     this.keys = keys;
     this.values = values;
   }
@@ -46,23 +46,37 @@ export class VexxNodeAnimTransform extends VexxNode {
 
     let rangeData = range.slice(rangeHeader.size);
     if (this.has_position) {
-      this.x = rangeData.getFloat32(0);
-      this.y = rangeData.getFloat32(4);
-      this.z = rangeData.getFloat32(8);
+      const ux = rangeData.getUint32(0);
+      const uy = rangeData.getUint32(4);
+      const uz = rangeData.getUint32(8);
+      if (ux != 0x400000 && uy != 0x400000 && uz != 0x400000) {
+        this.x = rangeData.getFloat32(0);
+        this.y = rangeData.getFloat32(4);
+        this.z = rangeData.getFloat32(8);
+      }
       rangeData = rangeData.slice(32);
     }
 
     rangeData = range.slice(this.unk8);
     if (this.count1) {
       this.track1 = new VexxKeyframeTrack();
+      this.track1.keys.push(0);
       for (let i = 0; i < this.count1; i++) {
         const k = rangeData.getUint16(2 * i);
         this.track1.keys.push(k);
       }
       rangeData = rangeData.slice(2 * this.count1);
 
+      this.track1.values.push(this.x);
+      this.track1.values.push(this.y);
+      this.track1.values.push(this.z);
       for (let i = 0; i < this.count1 * 3; i++) {
-        const value = rangeData.getInt16(i * 2) / 32768.0 * 10.0;
+        let value = rangeData.getFloat16(i * 2);
+        if (this.has_position) {
+          if (i % 3 == 0) value *= this.x;
+          //if (i % 3 == 1) value *= this.y;
+          //if (i % 3 == 2) value *= this.z;
+        }
         this.track1.values.push(value);
       }
       rangeData = rangeData.slice(6 * this.count1);
@@ -78,7 +92,7 @@ export class VexxNodeAnimTransform extends VexxNode {
       rangeData = rangeData.slice(2 * this.count2);
 
       for (let i = 0; i < this.count2 * 3; i++) {
-        const value = rangeData.getInt16(i * 2) / 32768.0 * 10.0;
+        const value = rangeData.getInt16(i * 2) / 32768.0;
         this.track2.values.push(value);
       }
       rangeData = rangeData.slice(6 * this.count2);

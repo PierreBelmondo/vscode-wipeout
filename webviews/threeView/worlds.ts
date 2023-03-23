@@ -167,6 +167,7 @@ export class World {
     this.settings.actions = {};
     if (this._actions.length > 0) {
       const folder = this.gui.addFolder("Animations");
+
       for (const action of this._actions) {
         this.settings.actions[action.name] = false;
         folder.add(this.settings.actions, action.name).onChange((value: number) => {
@@ -178,6 +179,14 @@ export class World {
             action.action.stop();
         });
       }
+
+      this.settings["All"] = () => {
+        for (const action of this._actions) {
+          action.action.reset();
+          action.action.play();
+        }
+      };
+      this.gui.add(this.settings, "All");
     }
   }
 
