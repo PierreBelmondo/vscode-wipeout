@@ -7,7 +7,7 @@ import { disposeAll } from "../../helpers/dispose";
 import { getNonce } from "../../helpers/util";
 import { bus } from "../../helpers/bus";
 import { TextEncoder } from "util";
-import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "@core/api/rpc";
+import { ThreeDocumentMessage, ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "@core/api/rpc";
 
 /**
  * Provider for VEXX model editors.
@@ -49,7 +49,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
     webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
 
     // Wait for the webview to be properly ready before we init
-    webviewPanel.webview.onDidReceiveMessage(async (e) => {
+    webviewPanel.webview.onDidReceiveMessage(async (e: ThreeDocumentMessage) => {
       switch (e.type) {
         case "ready":
           if (document.uri.scheme === "untitled") {
@@ -58,7 +58,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
             const webviewUri = webviewPanel.webview.asWebviewUri(document.uri);
             const body = {
               mime: document.mime,
-              uri: document.uri.toString(),
+              uri: document.uri.fsPath,
               webviewUri: webviewUri.toString(),
             } as ThreeViewMessageLoadBody;
             console.log("sending file content to webview");
@@ -67,23 +67,12 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
           break;
         case "require":
           let filename = e.filename as string;
-          if (filename === ".rcsmodel") {
-            filename = document.uri.path;
-            filename = filename.replace(".vex", ".rcsmodel");
-            filename = filename.replace(document.root.path, "");
-          }
-          if (filename.endsWith(".vex")) {
-            const origFilename = filename;
-            filename = document.uri.path;
-            filename = filename.replace("ship.vex", origFilename);
-            filename = filename.replace(document.root.path, "");
-          }
-          const uri = vscode.Uri.joinPath(document.root, filename);
+          const uri = this.resolveUri(document, filename);
           try {
             await vscode.workspace.fs.stat(uri);
             console.log(`Document requires external dependency: ${filename}`);
           } catch {
-            console.log(`Document requires missing dependency: ${filename}`);
+            console.log(`Document requires missing dependency: ${filename} ${uri}`);
             break;
           }
           const webviewUri = webviewPanel.webview.asWebviewUri(uri);
@@ -162,4 +151,17 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
     const uri = vscode.Uri.joinPath(document.uri, "..", filename);
     vscode.workspace.fs.writeFile(uri, array);
   }
+
+  private resolveUri(document: VexxDocument, filename: string) {
+    console.log(filename);
+    if (filename.startsWith("data/")) {
+      return vscode.Uri.joinPath(document.root, filename);
+    }
+    if (filename.startsWith("/")) {
+      return vscode.Uri.parse(filename);
+    }
+    return vscode.Uri.joinPath(document.uri, "..", filename);
+  }
 }
+
+

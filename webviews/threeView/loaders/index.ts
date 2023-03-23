@@ -3,7 +3,7 @@ import { CSS2DObject } from "../renderers/CSS2DRenderer";
 import { World } from "../worlds";
 
 export abstract class Loader {
-  loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike) {}
+  loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike, filename: string) {}
 
   loadFromString(world: World, content: string) {}
 

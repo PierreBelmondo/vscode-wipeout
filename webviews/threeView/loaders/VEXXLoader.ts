@@ -63,8 +63,8 @@ class AsyncRcsModel {
     this.asyncRcsMeshes.push(asyncMesh);
   }
 
-  async load(buffer: ArrayBufferLike) {
-    this.rcsModelLoader.loadFromBuffer(this.world, buffer);
+  async load(buffer: ArrayBufferLike, filename: string) {
+    this.rcsModelLoader.loadFromBuffer(this.world, buffer, filename);
     for (const asyncRcsMesh of this.asyncRcsMeshes) {
       const externalId = asyncRcsMesh.vexxMesh.externalId;
       for (const object of this.world.scene.children) {
@@ -90,9 +90,20 @@ class AsyncVexxModel {
     this.parent = parent;
   }
 
-  async load(buffer: ArrayBufferLike) {
+  async load(filename: string, buffer: ArrayBufferLike, engineflare: boolean = false) {
     const vexx = Vexx.load(buffer);
-    this.parent.loadScene(this.world, vexx);
+    const object = this.parent.loadNode(this.world, vexx.root);
+    if (engineflare) {
+      this.world.scene.traverse((locator: THREE.Object3D) => {
+        if (locator.name == "engine_flare") {
+          for (const child of object.children) locator.add(child);
+        }
+      });
+    } else {
+      this.world.scene.add(object);
+    }
+    const rcsFilename = filename.replace(".vex", ".rcsmodel");
+    api.require(rcsFilename);
   }
 }
 
@@ -100,7 +111,8 @@ export class VEXXLoader extends Loader {
   asyncVexxModel: AsyncVexxModel;
   asyncRcsModel?: AsyncRcsModel;
 
-  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike) {
+  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike, filename: string) {
+    world.userdata.filename = filename;
     this.asyncVexxModel = new AsyncVexxModel(world, this);
     const vexx = Vexx.load(arrayBuffer);
     this.loadTextures(world, vexx);
@@ -114,9 +126,13 @@ export class VEXXLoader extends Loader {
       return;
     }
     if (filename.endsWith(".vex")) {
-      this.asyncVexxModel.load(buffer);
+      if (filename.endsWith("engineflare.vex")) {
+        this.asyncVexxModel.load(filename, buffer, true);
+      } else {
+        this.asyncVexxModel.load(filename, buffer);
+      }
     } else if (filename.endsWith(".rcsmodel")) {
-      this.asyncRcsModel.load(buffer);
+      this.asyncRcsModel.load(buffer, filename);
     } else {
       this.asyncRcsModel.import(buffer, filename);
     }
@@ -125,7 +141,8 @@ export class VEXXLoader extends Loader {
   require(world: World, object3d: THREE.Object3D, node: VexxNodeMesh) {
     if (this.asyncRcsModel === undefined) {
       this.asyncRcsModel = new AsyncRcsModel(world);
-      api.require(".rcsmodel");
+      const filename = world.userdata.filename.replace(".vex", ".rcsmodel");
+      api.require(filename);
     }
     const asyncMesh = new AsyncRcsMesh(world, node, object3d);
     this.asyncRcsModel.requireAsyncMesh(asyncMesh);
@@ -139,12 +156,12 @@ export class VEXXLoader extends Loader {
     }
   }
 
-  public loadScene(world: World, vexx: Vexx) {
+  private loadScene(world: World, vexx: Vexx) {
     const object = this.loadNode(world, vexx.root);
     world.scene.add(object);
   }
 
-  private loadNode(world: World, node: VexxNode): THREE.Object3D {
+  public loadNode(world: World, node: VexxNode): THREE.Object3D {
     let object: THREE.Object3D;
     let layer: string | null = null;
 
@@ -206,6 +223,7 @@ export class VEXXLoader extends Loader {
         break;
       case "ENGINE_FLARE": // TODO
         object = this.loadControlPointMatrix(world, node as VexxNodeEngineFlare);
+        api.require("engineflare.vex");
         layer = "Ship engine flare";
         break;
       case "EXIT_GLOW": // TODO
@@ -249,7 +267,6 @@ export class VEXXLoader extends Loader {
         break;
       case "POINT_LIGHT": // TODO
         object = this.loadNodeGeneric(world, node);
-        console.log(node);
         layer = "Lights";
         break;
       case "QUAKE": // TODO
@@ -350,7 +367,7 @@ export class VEXXLoader extends Loader {
         layer = "Ship wing tips";
         break;
       default:
-        console.warn(`Unexpected node type ${node.typeName}`);
+        console.warn(`Unexpected node type ${node.typeName} ${node.name}`);
         object = this.loadNodeGeneric(world, node);
         break;
     }

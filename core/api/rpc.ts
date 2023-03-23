@@ -3,9 +3,9 @@
  */
 export type ThreeDocumentMessage =
   | { type: "ready" }
-  | { type: "require"; body: string }
+  | { type: "require"; filename: string }
   | { type: "log"; message: string }
-  | { type: "export.gltf" }
+  | { type: "export.gltf"; body: any }
   | { type: "scene"; body: any };
 
 /**

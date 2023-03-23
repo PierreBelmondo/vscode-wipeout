@@ -7,7 +7,7 @@ import { RCSModelLoader } from "./loaders/RCSMODELLoader";
 import { FELoader } from "./loaders/FELoader";
 import { World } from "./worlds";
 import { api } from "./api";
-import { ThreeViewMessage, ThreeViewMessageLoadBody } from "@core/api/rpc";
+import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "@core/api/rpc";
 import { EffectComposer } from "./postprocessing/EffectComposer";
 import { RenderPass } from "./postprocessing/RenderPass";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";
@@ -190,13 +190,13 @@ class Editor {
   }
 
   async load(body: ThreeViewMessageLoadBody) {
-    api.log("Loading " + body.mime);
+    api.log(`Loading ${body.uri} (${body.mime})`);
     switch (body.mime) {
       case "model/vnd.wipeout.vexx": {
         const response = await fetch(body.webviewUri);
         const buffer = await response.arrayBuffer();
         this.loader = new VEXXLoader();
-        this.loader.loadFromBuffer(this.world, buffer);
+        this.loader.loadFromBuffer(this.world, buffer, body.uri);
         if (body.uri.endsWith("ship.vex")) {
           api.require("locators.vex");
         }
@@ -213,7 +213,7 @@ class Editor {
         const response = await fetch(body.webviewUri);
         const buffer = await response.arrayBuffer();
         this.loader = new RCSModelLoader();
-        this.loader.loadFromBuffer(this.world, buffer);
+        this.loader.loadFromBuffer(this.world, buffer, body.uri);
         this.world.emitScene();
         this.world.setupGui();
         this.world.setupGuiButtonExport();
@@ -234,11 +234,15 @@ class Editor {
     }
   }
 
-  async import(buffer: ArrayBuffer, filename: string) {
+  async import(body: ThreeViewMessageImportBody) {
+    api.log(`Importing ${body.uri} (${body.mime})`);
+    const response = await fetch(body.webviewUri);
+    const buffer = await response.arrayBuffer();
+
     if (this.loader) {
-      await this.loader.import(buffer, filename);
-      //this.world.emitScene();
-      if (filename.endsWith(".vex")) {
+      await this.loader.import(buffer, body.uri);
+      if (body.uri.endsWith(".vex")) {
+        this.world.emitScene();
         this.world.setupGui();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
@@ -341,9 +345,7 @@ export function main() {
         break;
       }
       case "import": {
-        const response = await fetch(msg.body.webviewUri);
-        const buffer = await response.arrayBuffer();
-        editor.import(buffer, msg.body.uri);
+        editor.import(msg.body);
         break;
       }
       case "show.world": {

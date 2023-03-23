@@ -26,6 +26,7 @@ export class World {
   settings = { layers: {}, airbrakes: {}, actions: {}, backgroundColor: "#000000", bloom: false };
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
+  userdata: any = {};
 
   private _layers: { [id: string]: number } = {};
   private _layerIndex = 8;

@@ -68,11 +68,11 @@ class AsyncMaterial {
 
   finish() {
     //console.log(`Creating shader for ${this.basename}`);
-    const textures = this.textureChannels.map(tc => tc.texture);
+    const textures = this.textureChannels.map((tc) => tc.texture);
     this.material = createMaterial(this.basename, textures);
 
     if (this.material) {
-      this.world.materials[this.material.name] = this.material;
+      this.world.materials[this.material.id] = this.material;
       for (const mesh of this.meshes) {
         mesh.material = this.material;
       }
@@ -122,7 +122,8 @@ export class RCSModelLoader extends Loader {
   asyncTextures: AsyncTexture[] = [];
   asyncTextureLookup: { [filename: string]: number } = {};
 
-  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike) {
+  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike, filename: string) {
+    world.userdata.filename = filename;
     const model = RcsModel.load(arrayBuffer);
     this.loadMaterials(world, model);
     this.loadScene(world, model);
@@ -182,29 +183,29 @@ export class RCSModelLoader extends Loader {
 
   private loadScene(world: World, rcs: RcsModel) {
     for (const objectData of rcs.objects) {
-      const object = this.loadObject(world, objectData);
+      const object = this.loadObject(world, rcs, objectData);
       if (object === null) continue;
       world.scene.add(object);
     }
-    console.log("Scene loaded");
   }
 
-  private loadObject(world: World, object: RcsModelObject) {
+  private loadObject(world: World, rcs: RcsModel, object: RcsModelObject) {
     const position = object.header.position;
     const scale = object.header.scale;
-    const materialId = object.header.material_id;
+    const materialIndex = object.header.material_id;
+    const material = rcs.materials[materialIndex];
 
     const userData = { externalId: object.header.id };
 
     if (object.mesh instanceof RcsModelMesh1) {
-      const mesh = this.loadMesh1(world, object.mesh, materialId);
+      const mesh = this.loadMesh1(world, object.mesh, material);
       mesh.userData = userData;
       mesh.position.set(position[0], position[1], position[2]);
       mesh.scale.set(scale[0], scale[1], scale[2]);
       return mesh;
     }
     if (object.mesh instanceof RcsModelMesh5) {
-      const mesh = this.loadMesh5(world, object.mesh, materialId);
+      const mesh = this.loadMesh5(world, object.mesh, material);
       mesh.userData = userData;
       mesh.position.set(position[0], position[1], position[2]);
       mesh.scale.set(scale[0], scale[1], scale[2]);
@@ -213,24 +214,34 @@ export class RCSModelLoader extends Loader {
     return null;
   }
 
-  loadMesh1(world: World, rcsMesh: RcsModelMesh1, materialId: number): THREE.Mesh {
+  loadMesh1(world: World, rcsMesh: RcsModelMesh1, rcsMaterial: RcsModelMaterial): THREE.Mesh {
     const geometry = this.loadBO(rcsMesh.vbo, rcsMesh.ibo);
     //geometry.computeVertexNormals();
     let material = world.materials["_default"];
-    if (materialId in world.materials) material = world.materials[materialId];
+    if (rcsMaterial.id in world.materials) material = world.materials[rcsMaterial.id];
     const mesh = new THREE.Mesh(geometry, material);
-    this.asyncMaterials[materialId].linkMesh(mesh);
+    for (const asyncMaterial of this.asyncMaterials) {
+      if (asyncMaterial.rcsMaterial.id == rcsMaterial.id) {
+        asyncMaterial.linkMesh(mesh);
+        break;
+      }
+    }
     return mesh;
   }
 
-  loadMesh5(world: World, rcsMesh: RcsModelMesh5, materialId: number): THREE.Group {
+  loadMesh5(world: World, rcsMesh: RcsModelMesh5, rcsMaterial: RcsModelMaterial): THREE.Group {
     const group = new THREE.Group();
     for (const rcsSubMesh of rcsMesh.submeshes) {
       const geometry = this.loadBO(rcsSubMesh.vbo, rcsSubMesh.ibo);
       //geometry.computeVertexNormals();
       let material = world.materials["_default"];
       const mesh = new THREE.Mesh(geometry, material);
-      this.asyncMaterials[materialId].linkMesh(mesh);
+      for (const asyncMaterial of this.asyncMaterials) {
+        if (asyncMaterial.rcsMaterial.id == rcsMaterial.id) {
+          asyncMaterial.linkMesh(mesh);
+          break;
+        }
+      }
       group.add(mesh);
     }
     return group;
