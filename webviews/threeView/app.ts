@@ -110,6 +110,12 @@ class WorldRenderer {
     this._effectComposerFinal.setSize(width, height);
   }
 
+  readonly bloomMatrials = [
+    "emissive_bloom.rcsmaterial",
+    "detonator_emissive_bloom.rcsmaterial",
+    "flame_test.rcsmaterial",    
+  ]
+
   render() {
     if (this._world.settings.bloom) {
       const beforeBloom = (obj: THREE.Object3D) => {
@@ -119,7 +125,7 @@ class WorldRenderer {
               obj.material.uniforms["bloomActive"].value = true;
             }
           } else if (obj.material instanceof THREE.Material) {
-            if (obj.material.name != "emissive_bloom.rcsmaterial") {
+            if (this.bloomMatrials.indexOf(obj.material.name) == -1) {
               obj.userData["originalMaterial"] = obj.material;
               obj.material = this.world.materials["_black"];
             }
