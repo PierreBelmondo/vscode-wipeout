@@ -58,9 +58,9 @@ export class World {
 
     for (let i = 0; i < 6; i++) {
       const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      const x = (i % 3 == 0 ? 1 : 0) * (i > 3 ? -1 : 1);
-      const y = (i % 3 == 1 ? 1 : 0) * (i > 3 ? -1 : 1);
-      const z = (i % 3 == 2 ? 1 : 0) * (i > 3 ? -1 : 1);
+      const x = (i % 3 == 0 ? 1 : 0) * (i > 2 ? -1 : 1);
+      const y = (i % 3 == 1 ? 1 : 0) * (i > 2 ? -1 : 1);
+      const z = (i % 3 == 2 ? 1 : 0) * (i > 2 ? -1 : 1);
       directionalLight.position.set(x, y, z);
       this.scene.add(directionalLight);
       this.directionalLights.push(directionalLight);
