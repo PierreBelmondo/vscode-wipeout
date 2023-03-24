@@ -7,10 +7,12 @@ import { constantmaterial_vertalpha } from "./constantmaterial_vertalpha";
 import { detonator_diffuse_with_specular_from_alpha_n_vcol } from "./detonator_diffuse_with_specular_from_alpha_n_vcol";
 import { detonator_emissive_bloom } from "./detonator_emissive_bloom";
 import { diffuse } from "./diffuse";
+import { diffuse_normal_specular_emmissive_alpha } from "./diffuse_normal_specular_emmissive_alpha";
 import { diffuse_specular } from "./diffuse_specular";
 import { diffuse_vcol } from "./diffuse_vcol";
 import { diffuse_with_specular_from_alpha_n_vcol } from "./diffuse_with_specular_from_alpha_n_vcol";
 import { emissive_bloom } from "./emissive_bloom";
+import { emissivecolourchange } from "./emissivecolourchange";
 import { flame_test } from "./flame_test";
 import { glass_texture } from "./glass_texture";
 import { glass_texture_clamped } from "./glass_texture_clamped";
@@ -33,10 +35,12 @@ const FACTORIES = [
   detonator_diffuse_with_specular_from_alpha_n_vcol,
   detonator_emissive_bloom,
   diffuse,
+  diffuse_normal_specular_emmissive_alpha,
   diffuse_specular,
   diffuse_vcol,
   diffuse_with_specular_from_alpha_n_vcol,
   emissive_bloom,
+  emissivecolourchange,
   flame_test,
   glass_texture,
   glass_texture_clamped,
