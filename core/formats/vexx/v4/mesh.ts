@@ -19,7 +19,7 @@ export class VexxNodeMesh extends VexxNode {
   override load(range: BufferRange): void {
     this.info = VexxNodeMeshHeader.load(range);
     const dataRange = range.slice(this.info.size);
-    if (this.info.reserved == 0x0000ff00) {
+    if (this.info.reserved == 0xff00) {
       this.externalId = dataRange.getUint32(0);
 
       let chunkLinksRange = dataRange.slice(48);
@@ -73,6 +73,7 @@ class VexxNodeMeshHeader {
   meshCount = 0;
   length1 = 0;
   length2 = 0;
+  unknown = 0;
   reserved = 0;
   aabb = new AABB();
 
@@ -83,7 +84,8 @@ class VexxNodeMeshHeader {
     ret.meshCount = ret.range.getUint16(2);
     ret.length1 = ret.range.getUint32(4);
     ret.length2 = ret.range.getUint32(8);
-    ret.reserved = ret.range.getUint32(12);
+    ret.unknown = ret.range.getUint16(12);
+    ret.reserved = ret.range.getUint16(14);
     const aabbRange = ret.range.slice(16, 16 + 32);
     ret.aabb = AABB.loadFromFloat32(aabbRange);
     return ret;
@@ -121,10 +123,10 @@ class VexxNodeMeshLinkChunk {
       w : ret.range.getInt16(30), 
     }
     ret.maybe_quat2 = {
-      x: ret.range.getFloat32(48),
-      y: ret.range.getFloat32(52),
-      z: ret.range.getFloat32(56),
-      w: ret.range.getFloat32(60),
+      x: ret.range.getInt16(48),
+      y: ret.range.getInt16(52),
+      z: ret.range.getInt16(56),
+      w: ret.range.getInt16(60),
     };
     return ret;
   }
