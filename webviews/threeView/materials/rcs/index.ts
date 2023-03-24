@@ -1,5 +1,6 @@
 import * as THREE from "three";
 
+import { basicalpha } from "./basicalpha";
 import { basic_vertexemissive } from "./basic_vertexemissive";
 import { carbonfibre } from "./carbonfibre";
 import { constantmaterial } from "./constantmaterial";
@@ -27,6 +28,7 @@ import { tech_de_ra_rocks } from "./tech_de_ra_rocks";
 import { tracktexture_with_normal } from "./tracktexture_with_normal";
 
 const FACTORIES = [
+  basicalpha,
   basic_vertexemissive,
   carbonfibre,
   constantmaterial,
