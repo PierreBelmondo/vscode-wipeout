@@ -327,6 +327,10 @@ export class VEXXLoader extends Loader {
       case "TEXTURE_BLOB": // TODO
         object = this.loadNodeGeneric(world, node);
         break;
+      case "TRACK_WALL_COLLISION":
+        object = this.loadCollision(world, node as VexxNodeCollision);
+        layer = "Track wall collisions";
+        break;
       case "TRAIL":
         object = this.loadControlPointMatrix(world, node as VexxNodeTrail);
         break;
