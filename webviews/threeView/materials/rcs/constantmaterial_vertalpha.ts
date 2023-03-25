@@ -3,15 +3,25 @@ import { MaterialFactory } from "./_abstract";
 
 export const constantmaterial_vertalpha: MaterialFactory = {
   name: "constantmaterial_vertalpha.rcsmaterial",
-  minTextures: 1,
-  maxTextures: 1,
-  make: (textures: THREE.Texture[]) => {
-    return new THREE.MeshPhongMaterial({
-      side: THREE.DoubleSide,
-      color: 0xffffff,
-      specular: 0xffffff,
-      alphaMap: textures[0],
+  minTextures: 0,
+  maxTextures: 0,
+  make: (_textures: THREE.Texture[]) => {
+    const phongShader = THREE.ShaderLib["phong"];
+
+    let fragmentShader = phongShader.fragmentShader;
+    fragmentShader = fragmentShader.replace(
+      "diffuseColor = vec4( diffuse, opacity );",
+      "diffuseColor = vec4( diffuse, length(vColor.rgb) );"
+    );
+
+    const material = new THREE.MeshPhongMaterial({
+      vertexColors: true,
       transparent: true,
     });
+    material.onBeforeCompile = (shader) => {
+      shader.fragmentShader = fragmentShader;
+      shader.vertexShader = phongShader.vertexShader;
+    };
+    return material;
   },
 };

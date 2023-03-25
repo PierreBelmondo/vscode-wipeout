@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { basicalpha } from "./basicalpha";
 import { basic_vertexemissive } from "./basic_vertexemissive";
+import { billboarddiffuse } from "./billboarddiffuse";
 import { carbonfibre } from "./carbonfibre";
 import { constantmaterial } from "./constantmaterial";
 import { constantmaterial_vertalpha } from "./constantmaterial_vertalpha";
@@ -30,6 +31,7 @@ import { tracktexture_with_normal } from "./tracktexture_with_normal";
 const FACTORIES = [
   basicalpha,
   basic_vertexemissive,
+  billboarddiffuse,
   carbonfibre,
   constantmaterial,
   constantmaterial_vertalpha,
