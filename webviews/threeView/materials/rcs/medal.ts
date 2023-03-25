@@ -3,11 +3,12 @@ import { MaterialFactory } from "./_abstract";
 
 export const medal: MaterialFactory = {
   name: "medal.rcsmaterial",
-  minTextures: 0,
-  maxTextures: 0,
-  make: (_textures: THREE.Texture[]) => {
+  minTextures: 1,
+  maxTextures: 1,
+  make: (textures: THREE.Texture[]) => {
     return new THREE.MeshStandardMaterial({
-      metalness: 1,
+      //normalMap: textures[0],
+      metalness: 1.0,
       roughness: 0.5,
     });
   },

@@ -13,6 +13,7 @@ import { diffuse_normal_specular_emmissive_alpha } from "./diffuse_normal_specul
 import { diffuse_specular } from "./diffuse_specular";
 import { diffuse_vcol } from "./diffuse_vcol";
 import { diffuse_with_specular_from_alpha_n_vcol } from "./diffuse_with_specular_from_alpha_n_vcol";
+import { diffuse_with_specular_from_alpha_vcol } from "./diffuse_with_specular_from_alpha_vcol";
 import { emissive_bloom } from "./emissive_bloom";
 import { emissivecolourchange } from "./emissivecolourchange";
 import { flame_test } from "./flame_test";
@@ -20,6 +21,7 @@ import { glass_texture } from "./glass_texture";
 import { glass_texture_clamped } from "./glass_texture_clamped";
 import { glass_texture_n } from "./glass_texture_n";
 import { hexagonalshield_rich } from "./hexagonalshield_rich";
+import { holographic_projector2 } from "./holographic_projector2";
 import { lambert } from "./lambert";
 import { medal } from "./medal";
 import { orange_glass } from "./orange_glass";
@@ -43,6 +45,7 @@ const FACTORIES = [
   diffuse_specular,
   diffuse_vcol,
   diffuse_with_specular_from_alpha_n_vcol,
+  diffuse_with_specular_from_alpha_vcol,
   emissive_bloom,
   emissivecolourchange,
   flame_test,
@@ -50,6 +53,7 @@ const FACTORIES = [
   glass_texture_clamped,
   glass_texture_n,
   hexagonalshield_rich,
+  holographic_projector2,
   lambert,
   medal,
   orange_glass,
