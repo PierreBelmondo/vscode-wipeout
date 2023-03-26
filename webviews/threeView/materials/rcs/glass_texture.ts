@@ -11,7 +11,6 @@ export const glass_texture: MaterialFactory = {
       color: 0x101010,
       specular: 0xffffff,
       transparent: true,
-      opacity: 0.5,
       shininess: 90,
       reflectivity: 1.0,
       refractionRatio: 0.98,
