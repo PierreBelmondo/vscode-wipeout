@@ -113,8 +113,9 @@ export class RcsModelObject {
   }
 }
 
-type StrideInfo = {
+export type StrideInfo = {
   id: number;
+  name: string;
   align: number;
   type: number;
   offset: number;
@@ -127,13 +128,68 @@ export class RcsModelMeshInfo {
   strides = [] as StrideInfo[];
 
   static load(range: BufferRange): RcsModelMeshInfo {
+    const id2name = {
+      0xb9d31b0a: "position",
+      0xde7a971b: "normal",
+      0xdbe5f417: "tangent",
+      0x7a3f521c: "uv1",
+      0xc08c9018: "Uv",
+      0x427214fc: "Uv1",
+      0xdb7b4546: "Uv2",
+      0xac7c75d0: "Uv3",
+      0x3218e073: "Uv4",
+      0xd7f6305e: "UV1",
+      0x49f76806: "Uvset1",
+      0xd0fe39bc: "Uvset2",
+      0x7d164d3e: "barsUV",
+      0xe476fcba: "cellUV",
+      0xe24a85ec: "bumpUV",
+      0x81bdf44d: "blendUV",
+      0xa2762127: "diffuseUV",
+      0x2206cab2: "VertexColour",
+      0x7493d450: "VertexColour1",
+      0xed9a85ea: "VertexColour2",
+      0x2003d7e6: "map1",
+      0xb90a865c: "map2",
+      0x77783981: "Smoke",
+      0x1aefe524: "_unknown",
+      0x14071d1e: "_unknown",
+      0x1589348f: "_unknown",
+      0x1aaf7631: "_unknown",
+      0x26a7b665: "_unknown",
+      0x2d94f2bc: "_unknown",
+      0x3a889b0b: "_unknown",
+      0x4487cbd4: "_unknown",
+      0x5627d701: "_unknown",
+      0x0641512d: "_unknown",
+      0x6ca4e3cc: "_unknown",
+      0x6de8d5b2: "_unknown",
+      0x7137c8f8: "_unknown",
+      0x7e7d9311: "_unknown",
+      0x875926de: "_unknown",
+      0x991801ef: "_unknown",
+      0xab616fd7: "_unknown",
+      0xb0528e1e: "_unknown",
+      0xb28abe47: "_unknown",
+      0xb67dc4be: "_unknown",
+      0xc3602a42: "_unknown",
+      0xce5cd9d9: "_unknown",
+      0xd021dd49: "_unknown",
+      0xd8b4d944: "_unknown",
+      0xe0ade624: "_unknown",
+      0x0e7ea5a8: "_unknown",
+      0xf55b5a02: "_unknown",
+    };
+
     let ret = new RcsModelMeshInfo();
     ret.range = range.slice(0, 144);
     ret.count = ret.range.getUint8(0);
     ret.align = ret.range.getUint8(1);
     for (let i = 0; i < ret.count; i++) {
+      const id = ret.range.getUint32(4 + 8 * i + 0);
       const info = {
-        id: ret.range.getUint32(4 + 8 * i + 0),
+        id,
+        name: id2name[id],
         align: ret.range.getUint8(4 + 8 * i + 5),
         type: ret.range.getUint8(4 + 8 * i + 6),
         offset: ret.range.getUint8(4 + 8 * i + 7),
@@ -262,16 +318,15 @@ export class RcsModelSubmesh {
 
 export class RcsModelVBO {
   range = new BufferRange();
-  vertices = [] as number[];
-  normals = [] as number[];
-  rgba = [] as number[][];
-  uv = [] as number[];
+  attributes: { [name: string]: number[] } = {};
 
   static load(range: BufferRange, info: RcsModelMeshInfo, count: number): RcsModelVBO {
     let ret = new RcsModelVBO();
     ret.range = range.slice(0, count * info.align);
 
     for (const stride of info.strides) {
+      let values: number[] = [];
+
       if (stride.type == 0x16) {
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
@@ -279,20 +334,18 @@ export class RcsModelVBO {
           const x = ((u >> 21) & ((1 << 11) - 1)) / 1024.0;
           const y = ((u >> 10) & ((1 << 11) - 1)) / 1024.0;
           const z = ((u >> 0) & ((1 << 10) - 1)) / 512.0;
-          ret.normals.push(x, y, z);
+          values.push(x, y, z);
         }
       }
 
       if (stride.type == 0x22) {
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
-          /*
           const r = ret.range.getFloat16(offset + 0);
           const g = ret.range.getFloat16(offset + 2);
           const b = ret.range.getFloat16(offset + 4);
           const a = ret.range.getFloat16(offset + 6);
-          ret.rgba.push(r, g, b, a);
-          */
+          values.push(r, g, b, a);
         }
       }
       if (stride.type == 0x23) {
@@ -300,7 +353,7 @@ export class RcsModelVBO {
           const offset = i * info.align + stride.offset;
           const u = ret.range.getFloat16(offset + 0);
           const v = ret.range.getFloat16(offset + 2);
-          ret.uv.push(u, v);
+          values.push(u, v);
         }
       }
       if (stride.type == 0x35) {
@@ -309,11 +362,10 @@ export class RcsModelVBO {
           const x = ret.range.getInt16(offset + 0);
           const y = ret.range.getInt16(offset + 2);
           const z = ret.range.getInt16(offset + 4);
-          ret.vertices.push(x, y, z);
+          values.push(x, y, z);
         }
       }
       if (stride.type == 0x42) {
-        const rgba: number[] = [];
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
           // 16 bytes ???
@@ -321,9 +373,8 @@ export class RcsModelVBO {
           const g = ret.range.getFloat32(offset + 4);
           const b = ret.range.getFloat32(offset + 8);
           const a = ret.range.getFloat32(offset + 12);
-          rgba.push(r, g, b, a);
+          values.push(r, g, b, a);
         }
-        ret.rgba.push(rgba);
       }
       if (stride.type == 0x43) {
         for (let i = 0; i < count; i++) {
@@ -332,7 +383,7 @@ export class RcsModelVBO {
           const g = ret.range.getUint8(offset + 1);
           const b = ret.range.getUint8(offset + 2);
           const a = ret.range.getUint8(offset + 3);
-          //ret.rgba.push(r, g, b, a);
+          values.push(r, g, b, a);
         }
       }
       if (stride.type == 0x44) {
@@ -343,12 +394,22 @@ export class RcsModelVBO {
           const g = ret.range.getUint8(offset + 1) / 255.0;
           const b = ret.range.getUint8(offset + 2) / 255.0;
           const a = ret.range.getUint8(offset + 3) / 255.0;
-          rgba.push(r, g, b, a);
+          values.push(r, g, b, a);
         }
-        ret.rgba.push(rgba);
       }
+
+      if (values.length == 0) {
+        console.warn(`Unexpected stride type: 0x${stride.type.toString(16)}`);
+        continue;
+      }
+
+      ret.attributes[stride.name] = values;
     }
     return ret;
+  }
+
+  has(name: string) {
+    return this.attributes.hasOwnProperty(name);
   }
 }
 

@@ -249,19 +249,35 @@ export class RCSModelLoader extends Loader {
 
   loadBO(vbo: RcsModelVBO, ibo: RcsModelIBO) {
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.Float32BufferAttribute(vbo.vertices, 3));
-    if (vbo.rgba.length == 1) {
-      geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.rgba[0], 4));
-    } else if (vbo.rgba.length == 2) {
-      //geometry.setAttribute("normal", new THREE.Float32BufferAttribute(vbo.rgba[0], 4));
-      geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.rgba[1], 4));
+
+    if (vbo.has("position")) {
+      geometry.setAttribute("position", new THREE.Float32BufferAttribute(vbo.attributes["position"], 3));
     }
-    if (vbo.normals.length) {
-      geometry.setAttribute("normal", new THREE.Float32BufferAttribute(vbo.normals, 3));
+    if (vbo.has("normal")) {
+      geometry.setAttribute("normal", new THREE.Float32BufferAttribute(vbo.attributes["normal"], 3));
     }
-    if (vbo.uv.length) {
-      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.uv, 2));
+    if (vbo.has("tangent")) {
+      geometry.setAttribute("tangent", new THREE.Float32BufferAttribute(vbo.attributes["tangent"], 3));
     }
+    if (vbo.has("uv1")) {
+      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["uv1"], 2));
+    }
+    if (vbo.has("Uv1")) {
+      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["Uv1"], 2));
+    }
+    if (vbo.has("Uv2")) {
+      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["Uv2"], 2));
+    }
+    if (vbo.has("Uv3")) {
+      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["Uv3"], 2));
+    }
+    if (vbo.has("VertexColour1")) {
+      geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.attributes["VertexColour1"], 4));
+    }
+    if (vbo.has("VertexColour2")) {
+      geometry.setAttribute("color2", new THREE.Float32BufferAttribute(vbo.attributes["VertexColour2"], 4));
+    }
+
     geometry.setIndex(ibo.indices);
     return geometry;
   }
