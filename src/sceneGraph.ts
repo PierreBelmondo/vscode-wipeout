@@ -94,8 +94,8 @@ export class SceneWorld extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "world.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "world.svg"),
+    light: path.join(__filename, "../../resources/images", "light", "world.svg"),
+    dark: path.join(__filename, "../../resources/images", "dark", "world.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -126,15 +126,15 @@ export class SceneObject3D extends SceneNode {
 
     if (json.type == "Mesh") {
       this.iconPath = {
-        light: path.join(__filename, "..", "..", "resources", "images", "light", "cube.svg"),
-        dark: path.join(__filename, "..", "..", "resources", "images", "dark", "cube.svg"),
+        light: path.join(__filename, "../../resources/images", "light", "cube.svg"),
+        dark: path.join(__filename, "../../resources/images", "dark", "cube.svg"),
       };          
     }
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "folder.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "folder.svg"),
+    light: path.join(__filename, "../../resources/images", "light", "folder.svg"),
+    dark: path.join(__filename, "../../resources/images", "dark", "folder.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -156,8 +156,8 @@ export class SceneTextures extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
+    light: path.join(__filename, "../../resources/images", "light", "texture.svg"),
+    dark: path.join(__filename, "../../resources/images", "dark", "texture.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -175,8 +175,8 @@ export class SceneTexture extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
+    light: path.join(__filename, "../../resources/images", "light", "texture.svg"),
+    dark: path.join(__filename, "../../resources/images", "dark", "texture.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -192,8 +192,8 @@ export class SceneMaterials extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
+    light: path.join(__filename, "../../resources/images", "light", "light.svg"),
+    dark: path.join(__filename, "../../resources/images", "dark", "light.svg"),
   };
 
   public override getChildren(): SceneNode[] {
@@ -213,8 +213,8 @@ export class SceneMaterial extends SceneNode {
   }
 
   iconPath = {
-    light: path.join(__filename, "..", "..", "resources", "images", "light", "texture.svg"),
-    dark: path.join(__filename, "..", "..", "resources", "images", "dark", "texture.svg"),
+    light: path.join(__filename, "../../resources/images", "light", "texture.svg"),
+    dark: path.join(__filename, "../../resources/images", "dark", "texture.svg"),
   };
 
   public override getChildren(): SceneNode[] {
