@@ -65,11 +65,13 @@
       "view/item/context": [
         {
           "command": "sceneGraph.show",
-          "when": "view == sceneGraph && viewItem == sceneWorld"
+          "when": "view == sceneGraph && viewItem == sceneWorld",
+          "group": "inline"
         },
         {
           "command": "sceneGraph.show",
-          "when": "view == sceneGraph && viewItem == sceneTexture"
+          "when": "view == sceneGraph && viewItem == sceneTexture",
+          "group": "inline"
         }
       ]
     },
