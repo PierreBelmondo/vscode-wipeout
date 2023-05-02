@@ -31,7 +31,7 @@ export class World {
   private _layers: { [id: string]: number } = {};
   private _layerIndex = 8;
   private _airbrakes: Airbrake[] = [];
-  private _actions: { name: string; mixer: THREE.AnimationMixer, action: THREE.AnimationAction }[] = [];
+  private _actions: { name: string; mixer: THREE.AnimationMixer; action: THREE.AnimationAction }[] = [];
 
   constructor() {
     const fov = 45;
@@ -174,9 +174,7 @@ export class World {
           if (value) {
             action.action.reset();
             action.action.play();
-          }
-          else
-            action.action.stop();
+          } else action.action.stop();
         });
       }
 
@@ -209,8 +207,7 @@ export class World {
   }
 
   updateAnimations(delta: number) {
-    for (const action of this._actions)
-      action.mixer.update(delta);
+    for (const action of this._actions) action.mixer.update(delta);
   }
 
   getTextureByName(name: string): THREE.Texture | null {
