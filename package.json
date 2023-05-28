@@ -39,6 +39,14 @@
         }
       },
       {
+        "command": "sceneGraph.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/images/light/refresh.svg",
+          "dark": "resources/images/dark/refresh.svg"
+        }
+      },
+      {
         "command": "wipeout.fe.preview",
         "title": "WipEout XML Preview",
         "category": "XML"
@@ -60,6 +68,13 @@
           "command": "wipeout.unpack.wad",
           "when": "resourceExtname =~ /\\.wad/i",
           "group": "wipeout@1"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "sceneGraph.refreshEntry",
+          "when": "view == sceneGraph",
+          "group": "navigation"
         }
       ],
       "view/item/context": [

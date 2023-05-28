@@ -3,6 +3,16 @@ import * as path from "path";
 import { bus } from "./helpers/bus";
 import { VexxDocument } from "./views/vexx/Document";
 
+export class SceneGraphRefresh {
+  static readonly commandType = "sceneGraph.refreshEntry";
+
+  public static register(context: vscode.ExtensionContext): vscode.Disposable {
+    return vscode.commands.registerCommand(SceneGraphRefresh.commandType, async () => {
+      bus.sceneRefreshEntry();
+    });
+  }
+}
+
 export class SceneGraphShow {
   static readonly commandType = "sceneGraph.show";
 

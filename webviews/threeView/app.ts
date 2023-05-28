@@ -290,6 +290,10 @@ class Editor {
     this.render();
   }
 
+  sceneRefresh() {
+    this.world.emitScene();
+  }
+
   showWorld() {
     this.worldRenderer.world = this.world;
   }
@@ -352,6 +356,10 @@ export function main() {
       }
       case "import": {
         editor.import(msg.body);
+        break;
+      }
+      case "scene.refresh": {
+        editor.sceneRefresh();
         break;
       }
       case "show.world": {

@@ -24,6 +24,7 @@ export type ThreeViewMessageImportBody =
 export type ThreeViewMessage =
   | { type: "load"; body: ThreeViewMessageLoadBody }
   | { type: "import"; body: ThreeViewMessageImportBody }
+  | { type: "scene.refresh" }
   | { type: "show.world" }
   | { type: "show.texture"; body: { name: string } };
 

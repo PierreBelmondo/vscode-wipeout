@@ -13,6 +13,10 @@ class Bus {
   private readonly _onThreeViewMessage = new vscode.EventEmitter<ThreeViewMessage>();
   public readonly onThreeViewMessage = this._onThreeViewMessage.event;
 
+  sceneRefreshEntry() {
+    this._onThreeViewMessage.fire({ type: "scene.refresh" });
+  }
+
   showWorld() {
     this._onThreeViewMessage.fire({ type: "show.world" });
   }
