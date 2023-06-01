@@ -28,14 +28,19 @@ export class SceneGraphShow {
   }
 }
 
-export class SceneGraphProvider implements vscode.TreeDataProvider<SceneNode> {
-  private _onDidChangeTreeData: vscode.EventEmitter<SceneNode | undefined | void> = new vscode.EventEmitter<SceneNode | undefined | void>();
-  readonly onDidChangeTreeData: vscode.Event<SceneNode | undefined | void> = this._onDidChangeTreeData.event;
+export class SceneGraphProvider implements vscode.TreeDataProvider<SceneItem> {
+  static readonly treeDataProviderType = "sceneGraph";
+  public static register(context: vscode.ExtensionContext): vscode.Disposable {
+    const treeDataProvider = new SceneGraphProvider(context);
+    return vscode.window.registerTreeDataProvider(SceneGraphProvider.treeDataProviderType, treeDataProvider);
+  }
 
-  private _currentDocument: VexxDocument | null;
+  private _currentDocument: VexxDocument | null = null;
 
-  constructor() {
-    this._currentDocument = null;
+  private _onDidChangeTreeData: vscode.EventEmitter<SceneItem | undefined | void> = new vscode.EventEmitter<SceneItem | undefined | void>();
+  readonly onDidChangeTreeData: vscode.Event<SceneItem | undefined | void> = this._onDidChangeTreeData.event;
+
+  constructor(_context: vscode.ExtensionContext) {
     bus.onDidChangeActiveCustomDocument((e) => {
       console.log("Updating the TreeView");
       this._currentDocument = e;

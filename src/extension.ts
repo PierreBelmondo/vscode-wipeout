@@ -23,8 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(GtfModelEditorProvider.register(context));
   context.subscriptions.push(FntModelEditorProvider.register(context));
 
-  const sceneGrapheProvider = new SceneGraphProvider();
-  context.subscriptions.push(vscode.window.registerTreeDataProvider("sceneGraph", sceneGrapheProvider));
+  context.subscriptions.push(SceneGraphProvider.register(context));
   context.subscriptions.push(SceneGraphRefresh.register(context));
   context.subscriptions.push(SceneGraphShow.register(context));
 
