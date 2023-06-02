@@ -12,16 +12,17 @@ import { MaterialFactory } from "./_abstract";
 */
 export const carbonfibre: MaterialFactory = {
   name: "carbonfibre.rcsmaterial",
-  minTextures: 1,
-  maxTextures: 1,
+  minTextures: 2,
+  maxTextures: 2,
   make: (textures: THREE.Texture[]) => {
     textures[0].repeat.set(4, 4);
+    textures[1].repeat.set(4, 4);
     return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
-      color: 0x101010,
       specular: 0xffffff,
       specularMap: textures[0],
       normalMap: textures[0],
+      map: textures[1],
       shininess: 90,
     });
   },
