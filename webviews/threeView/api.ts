@@ -20,6 +20,10 @@ class API {
   scene(scene: any) {
     vscode.postMessage({ type: "scene", body: scene });
   }
+
+  sceneSelected(uuid: string) {
+    vscode.postMessage({ type: "scene.selected", body: { uuid } });
+  }
 }
 
 export const api = new API();

@@ -18,6 +18,7 @@ export class World {
 
   scene: THREE.Scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
+  raycaster: THREE.Raycaster = new THREE.Raycaster();
 
   directionalLights = [] as THREE.DirectionalLight[];
   controls: OrbitControls | FlyControls;
@@ -34,6 +35,8 @@ export class World {
   private _actions: { name: string; mixer: THREE.AnimationMixer; action: THREE.AnimationAction }[] = [];
 
   constructor() {
+    this.scene.name = "World";
+
     const fov = 45;
     const aspect = window.innerWidth / window.innerHeight;
     const near = 0.1;
@@ -41,15 +44,20 @@ export class World {
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this.camera.position.set(0, 0, 500);
 
-    this.materials["_black"] = new THREE.MeshBasicMaterial({ color: "black" });
+    this.materials["_black"] = new THREE.MeshBasicMaterial({
+      name: ".black",
+      color: "black",
+    });
 
     this.materials["_default"] = new THREE.MeshPhongMaterial({
+      name: ".default",
       specular: 0x003000,
       flatShading: true,
       side: THREE.DoubleSide,
     });
 
     this.materials["_defaultCollision"] = new THREE.MeshBasicMaterial({
+      name: ".defaultCollision",
       color: 0xffff00,
       side: THREE.DoubleSide,
       transparent: true,
@@ -62,9 +70,16 @@ export class World {
       const y = (i % 3 == 1 ? 1 : 0) * (i > 2 ? -1 : 1);
       const z = (i % 3 == 2 ? 1 : 0) * (i > 2 ? -1 : 1);
       directionalLight.position.set(x, y, z);
+      directionalLight.name = `.WorldDirectionalLight${i}`;
       this.scene.add(directionalLight);
       this.directionalLights.push(directionalLight);
     }
+  }
+
+  raycast(pointer: THREE.Vector2) {
+    this.raycaster.setFromCamera(pointer, this.camera);
+    const intersects = this.raycaster.intersectObjects(this.scene.children);
+    return intersects;
   }
 
   emitUpdate() {
@@ -74,6 +89,10 @@ export class World {
   emitScene() {
     const scene = this.scene.toJSON();
     api.scene(scene);
+  }
+
+  emitSelected(object: THREE.Object3D<THREE.Event>) {
+    api.sceneSelected(object.uuid)
   }
 
   setupOrbitContols(element: HTMLElement) {

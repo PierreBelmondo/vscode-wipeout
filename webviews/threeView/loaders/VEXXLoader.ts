@@ -476,7 +476,7 @@ export class VEXXLoader extends Loader {
     if (node.isExternal) {
       const group = new THREE.Group();
       group.name = node.name;
-      group.userData = { format: "VEXX", type: "MESH (rcsmodel)" };
+      group.userData = { format: "VEXX", type: "MESH/RCS" };
       this.require(world, group, node);
       return group;
     }
@@ -632,6 +632,7 @@ export class VEXXLoader extends Loader {
 
     const helper = new THREE.CameraHelper(camera);
     helper.matrix = new THREE.Matrix4();
+    helper.name = `.CameraHelper_${camera.name}`
     camera.add(helper);
 
     const control = this.createControlPoint(node.name);

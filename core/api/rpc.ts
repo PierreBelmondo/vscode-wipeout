@@ -6,7 +6,8 @@ export type ThreeDocumentMessage =
   | { type: "require"; filename: string }
   | { type: "log"; message: string }
   | { type: "export.gltf"; body: any }
-  | { type: "scene"; body: any };
+  | { type: "scene"; body: any }
+  | { type: "scene.selected"; body: { uuid: string } };
 
 /**
  * Messages from Editor to Webview
@@ -25,6 +26,7 @@ export type ThreeViewMessage =
   | { type: "load"; body: ThreeViewMessageLoadBody }
   | { type: "import"; body: ThreeViewMessageImportBody }
   | { type: "scene.refresh" }
+  | { type: "scene.selected"; body: { uuid: string } }
   | { type: "show.world" }
   | { type: "show.texture"; body: { name: string } };
 

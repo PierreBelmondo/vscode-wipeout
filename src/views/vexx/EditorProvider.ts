@@ -50,6 +50,11 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
 
     // Wait for the webview to be properly ready before we init
     webviewPanel.webview.onDidReceiveMessage(async (e: ThreeDocumentMessage) => {
+
+      // Forward each message to the bus
+      bus.fireThreeDocumentMessage(e);
+
+      // Interact with the Document
       switch (e.type) {
         case "ready":
           if (document.uri.scheme === "untitled") {

@@ -192,6 +192,21 @@ class Editor {
 
     this.world.setupOrbitContols(this.labelRenderer.domElement);
 
+    document.addEventListener(
+      "click",
+      (event: MouseEvent) => {
+        const pointer = new THREE.Vector2();
+        pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        const intersections = this.world.raycast(pointer);
+        if (intersections.length > 0) {
+          const intersection = intersections[0];
+          this.world.emitSelected(intersection.object)
+        }
+      },
+      false
+    );
+
     this.showWorld();
   }
 
