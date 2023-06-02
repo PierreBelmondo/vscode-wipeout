@@ -27,6 +27,7 @@ import { medal } from "./medal";
 import { orange_glass } from "./orange_glass";
 import { simpletexture } from "./simpletexture";
 import { simpletextureandtexturealpha } from "./simpletextureandtexturealpha";
+import { simpletextureandtexturealphauvoffsetscale } from "./simpletextureandtexturealphauvoffsetscale";
 import { tech_de_ra_rocks } from "./tech_de_ra_rocks";
 import { tracktexture_with_normal } from "./tracktexture_with_normal";
 
@@ -59,6 +60,7 @@ const FACTORIES = [
   orange_glass,
   simpletexture,
   simpletextureandtexturealpha,
+  simpletextureandtexturealphauvoffsetscale,
   tech_de_ra_rocks,
   tracktexture_with_normal,
 ];
