@@ -7,7 +7,8 @@ export type ThreeDocumentMessage =
   | { type: "log"; message: string }
   | { type: "export.gltf"; body: any }
   | { type: "scene"; body: any }
-  | { type: "scene.selected"; body: { uuid: string } };
+  | { type: "scene.selected"; body: { uuid: string } }
+  | { type: "scene.dump"; body: { uuid: string } };
 
 /**
  * Messages from Editor to Webview

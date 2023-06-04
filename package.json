@@ -31,6 +31,14 @@
         "title": "Unpack WAD"
       },
       {
+        "command": "sceneGraph.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/images/light/refresh.svg",
+          "dark": "resources/images/dark/refresh.svg"
+        }
+      },
+      {
         "command": "sceneGraph.show",
         "title": "Show",
         "icon": {
@@ -39,12 +47,8 @@
         }
       },
       {
-        "command": "sceneGraph.refreshEntry",
-        "title": "Refresh",
-        "icon": {
-          "light": "resources/images/light/refresh.svg",
-          "dark": "resources/images/dark/refresh.svg"
-        }
+        "command": "sceneGraph.dump",
+        "title": "Dump"
       },
       {
         "command": "wipeout.fe.preview",
@@ -85,8 +89,20 @@
         },
         {
           "command": "sceneGraph.show",
+          "when": "view == sceneGraph && viewItem == sceneWorld"
+        },
+        {
+          "command": "sceneGraph.show",
           "when": "view == sceneGraph && viewItem == sceneTexture",
           "group": "inline"
+        },
+        {
+          "command": "sceneGraph.show",
+          "when": "view == sceneGraph && viewItem == sceneTexture"
+        },
+        {
+          "command": "sceneGraph.dump",
+          "when": "view == sceneGraph"
         }
       ]
     },

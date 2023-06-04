@@ -200,6 +200,7 @@ export class RCSModelLoader extends Loader {
     if (object.mesh instanceof RcsModelMesh1) {
       const mesh = this.loadMesh1(world, object.mesh, material);
       mesh.userData = userData;
+      mesh.name = world.userdata.filename;
       mesh.position.set(position[0], position[1], position[2]);
       mesh.scale.set(scale[0], scale[1], scale[2]);
       return mesh;
@@ -207,6 +208,7 @@ export class RCSModelLoader extends Loader {
     if (object.mesh instanceof RcsModelMesh5) {
       const mesh = this.loadMesh5(world, object.mesh, material);
       mesh.userData = userData;
+      mesh.name = world.userdata.filename;
       mesh.position.set(position[0], position[1], position[2]);
       mesh.scale.set(scale[0], scale[1], scale[2]);
       return mesh;

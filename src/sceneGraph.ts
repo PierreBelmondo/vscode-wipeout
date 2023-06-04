@@ -28,30 +28,51 @@ export class SceneGraphShow {
   }
 }
 
+export class SceneGraphDump {
+  static readonly commandType = "sceneGraph.dump";
+
+  public static register(context: vscode.ExtensionContext): vscode.Disposable {
+    return vscode.commands.registerCommand(SceneGraphDump.commandType, async (sceneMesh: SceneMesh) => {
+      const uuid = sceneMesh.json.uuid;
+      bus.fireThreeDocumentMessage({
+        type: "scene.dump",
+        body: { uuid },
+      });
+    });
+  }
+}
+
+let currentDocument: VexxDocument | null = null;
+
 export class SceneGraphProvider implements vscode.TreeDataProvider<SceneItem> {
   static readonly treeDataProviderType = "sceneGraph";
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
     const treeDataProvider = new SceneGraphProvider(context);
     //return vscode.window.registerTreeDataProvider(SceneGraphProvider.treeDataProviderType, treeDataProvider);
     const treeview = vscode.window.createTreeView(SceneGraphProvider.treeDataProviderType, { treeDataProvider });
+
     bus.onThreeDocumentMessage(async (message) => {
       if (message.type == "scene.selected") {
+        console.log(`Revealing scene item ${JSON.stringify(message.body)}`);
         const uuid = message.body.uuid;
-        console.log(message, uuid);
         const item = await treeDataProvider.getTreeItemByUUID(uuid);
-        console.log(item);
         if (item) treeview.reveal(item, { focus: true, select: true });
+      }
+      if (message.type == "scene.dump") {
+        console.log(`Dump scene item ${JSON.stringify(message.body)}`);
+        const uuid = message.body.uuid;
+        const item = await treeDataProvider.getTreeItemByUUID(uuid);
+        if (item) console.log(item.json);
       }
     });
     bus.onDidChangeActiveCustomDocument((e) => {
-      console.log(`Updating Scene Graph (${e.uri})`);
-      treeDataProvider._currentDocument = e;
+      console.log(`Updating scene (${e.uri})`);
+      currentDocument = e;
       treeDataProvider._onDidChangeTreeData.fire();
     });
+
     return treeview;
   }
-
-  private _currentDocument: VexxDocument | null = null;
 
   private _onDidChangeTreeData: vscode.EventEmitter<SceneItem | undefined | void> = new vscode.EventEmitter<SceneItem | undefined | void>();
   readonly onDidChangeTreeData: vscode.Event<SceneItem | undefined | void> = this._onDidChangeTreeData.event;
@@ -62,7 +83,7 @@ export class SceneGraphProvider implements vscode.TreeDataProvider<SceneItem> {
     return element;
   }
 
-  getParent?(element: SceneItem): vscode.ProviderResult<SceneItem> {
+  getParent(element: SceneItem): vscode.ProviderResult<SceneItem> {
     return element.getParent();
   }
 
@@ -79,29 +100,29 @@ export class SceneGraphProvider implements vscode.TreeDataProvider<SceneItem> {
    * @returns children for the given element
    */
   getChildren(element?: SceneItem): SceneItem[] {
-    if (!this._currentDocument) return [];
+    if (!currentDocument) return [];
     if (element) return element.getChildren();
 
-    const scene = this._currentDocument.scene;
-    const nodes = [] as SceneItem[];
-    if ("object" in scene) nodes.push(nodesFromThreeJsScene(scene.object));
-    if ("materials" in scene) nodes.push(new SceneMaterials(scene.materials, "Materials"));
-    if ("textures" in scene) nodes.push(new SceneTextures(scene.textures, "Textures"));
-    return nodes;
+    const scene = currentDocument.scene;
+    const children = [] as SceneItem[];
+    if ("object" in scene) children.push(nodesFromThreeJsScene(scene.object));
+    if ("materials" in scene) children.push(new SceneMaterials(scene.materials, "Materials"));
+    if ("textures" in scene) children.push(new SceneTextures(scene.textures, "Textures"));
+    return children;
   }
 
   getTreeItemByUUID(uuid: string): vscode.ProviderResult<SceneItem> {
     const children = this.getChildren();
-    if (children) {
-      for (const child of children) {
-        const sceneObject = child.getTreeItemByUUID(uuid);
-        if (sceneObject) return sceneObject;
-      }
+    for (const child of children) {
+      const sceneObject = child.getTreeItemByUUID(uuid);
+      if (sceneObject) return sceneObject;
     }
   }
 }
 
 interface SceneItem extends vscode.TreeItem {
+  readonly json: any | any[];
+
   getParent(): vscode.ProviderResult<SceneItem>;
   getChildren(element?: SceneItem): SceneItem[];
   getTreeItemByUUID(uuid: string): vscode.ProviderResult<SceneItem>;
@@ -212,8 +233,12 @@ export abstract class SceneObjects<Object> extends vscode.TreeItem implements Sc
     return nodes;
   }
 
-  getTreeItemByUUID(uuid: string): vscode.ProviderResult<SceneItem> {
-    return;
+  public getTreeItemByUUID(uuid: string): vscode.ProviderResult<SceneItem> {
+    const children = this.getChildren();
+    for (const child of children) {
+      const sceneObject = child.getTreeItemByUUID(uuid);
+      if (sceneObject) return sceneObject;
+    }
   }
 
   contextValue = "SceneObject";
@@ -245,35 +270,17 @@ export class SceneMesh extends SceneObject {
 
   public getChildren(): SceneItem[] {
     const children = super.getChildren();
-    const child = new SceneMeshMaterial(this, this.json.material);
-    children.push(child);
+
+    if (this.json.material && currentDocument) {
+      const uuid = this.json.material;
+      const scene = currentDocument.scene;
+      for (const material of scene.materials) {
+        if (material.uuid == uuid)
+          children.push(nodesFromThreeJsScene(material));
+      }
+    }
+
     return children;
-  }
-}
-
-export class SceneMeshMaterial extends vscode.TreeItem implements SceneItem {
-  iconPath = SceneObject.iconPath("texture");
-  contextValue = "sceneMeshMaterial";
-  uuid: string;
-  readonly parent: SceneItem;
-
-  constructor(parent: SceneItem, uuid: string) {
-    super(uuid, vscode.TreeItemCollapsibleState.Collapsed);
-    this.parent = parent;
-    this.uuid = uuid;
-    this.description = "Material";
-  }
-
-  getParent(): vscode.ProviderResult<SceneItem> {
-    return this.parent;
-  }
-
-  getChildren(element?: SceneItem | undefined): SceneItem[] {
-    return [];
-  }
-
-  getTreeItemByUUID(uuid: string): vscode.ProviderResult<SceneItem> {
-    return undefined;
   }
 }
 
@@ -286,23 +293,94 @@ export class SceneCameraHelper extends SceneObject {
   iconPath = SceneObject.iconPath("camera");
   contextValue = "sceneCameraHelper";
 }
-
-export class SceneTextures extends SceneObjects<SceneTexture> {
-  iconPath = SceneObject.iconPath("texture");
-  contextValue = "sceneTextures";
-}
-
-export class SceneTexture extends SceneObject {
-  iconPath = SceneObject.iconPath("texture");
-  contextValue = "sceneTexture";
-}
-
 export class SceneMaterials extends SceneObjects<SceneMaterial> {
-  iconPath = SceneObject.iconPath("texture");
+  iconPath = SceneObject.iconPath("folder");
   contextValue = "sceneMaterials";
 }
 
 export class SceneMaterial extends SceneObject {
   iconPath = SceneObject.iconPath("texture");
   contextValue = "sceneMaterial";
+
+  public getChildren(): SceneItem[] {
+    const children = super.getChildren();
+
+    if (!currentDocument)
+      return [];
+
+    if (this.json.map) {
+      let uuid = this.json.map;
+      const scene = currentDocument.scene;
+      for (const texture of scene.textures) {
+        if (texture.uuid == uuid)
+          children.push(nodesFromThreeJsScene(texture, this));
+      }
+    }
+    
+    if (this.json.specularMap) {
+      let uuid = this.json.specularMap;
+      const scene = currentDocument.scene;
+      for (const texture of scene.textures) {
+        if (texture.uuid == uuid)
+          children.push(nodesFromThreeJsScene(texture, this));
+      }
+    }
+
+    if (this.json.uniforms) { // ShaderMaterial (map in uniforms)
+      if (this.json.uniforms.alphaMap) {
+        let uuid = this.json.uniforms.alphaMap.value;
+        const scene = currentDocument.scene;
+        for (const texture of scene.textures) {
+          if (texture.uuid == uuid)
+            children.push(nodesFromThreeJsScene(texture, this));
+        }
+      }  
+      if (this.json.uniforms.map) {
+        let uuid = this.json.uniforms.map.value;
+        const scene = currentDocument.scene;
+        for (const texture of scene.textures) {
+          if (texture.uuid == uuid)
+            children.push(nodesFromThreeJsScene(texture, this));
+        }
+      }
+      if (this.json.uniforms.normalMap) {
+        let uuid = this.json.uniforms.normalMap.value;
+        const scene = currentDocument.scene;
+        for (const texture of scene.textures) {
+          if (texture.uuid == uuid)
+            children.push(nodesFromThreeJsScene(texture, this));
+        }
+      }
+    }
+
+    return children;
+  }
+}
+
+export class SceneTextures extends SceneObjects<SceneTexture> {
+  iconPath = SceneObject.iconPath("folder");
+  contextValue = "sceneTextures";
+}
+
+export class SceneTexture extends SceneObject {
+  iconPath = SceneObject.iconPath("texture");
+  contextValue = "sceneTexture";
+
+  /* useless ?
+
+  public getChildren(): SceneItem[] {
+    const children = super.getChildren();
+
+    if (this.json.image && currentDocument) {
+      let uuid = this.json.image;
+      const scene = currentDocument.scene;
+      for (const image of scene.images) {
+        if (image.uuid == uuid)
+          children.push(nodesFromThreeJsScene(image, this));
+      }
+    }
+
+    return children;
+  }
+  */
 }

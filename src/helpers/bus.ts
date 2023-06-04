@@ -20,20 +20,24 @@ class Bus {
   private readonly _onThreeViewMessage = new vscode.EventEmitter<ThreeViewMessage>();
   public readonly onThreeViewMessage = this._onThreeViewMessage.event;
  
+  public fireThreeViewMessage(message: ThreeViewMessage) {
+    this._onThreeViewMessage.fire(message);
+  } 
+
   sceneRefreshEntry() {
-    this._onThreeViewMessage.fire({ type: "scene.refresh" });
+    this.fireThreeViewMessage({ type: "scene.refresh" });
   }
 
   sceneSelectedEntry(uuid: string) {
-    this._onThreeViewMessage.fire({ type: "scene.selected", body: { uuid } });
+    this.fireThreeViewMessage({ type: "scene.selected", body: { uuid } });
   }
 
   showWorld() {
-    this._onThreeViewMessage.fire({ type: "show.world" });
+    this.fireThreeViewMessage({ type: "show.world" });
   }
 
   showTexture(name: string) {
-    this._onThreeViewMessage.fire({ type: "show.texture", body: { name } });
+    this.fireThreeViewMessage({ type: "show.texture", body: { name } });
   }
 }
 
