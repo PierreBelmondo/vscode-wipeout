@@ -23,6 +23,7 @@ import { glass_texture_clamped } from "./glass_texture_clamped";
 import { glass_texture_n } from "./glass_texture_n";
 import { hexagonalshield_rich } from "./hexagonalshield_rich";
 import { holographic_projector2 } from "./holographic_projector2";
+import { holographic_test } from "./holographic_test";
 import { lambert } from "./lambert";
 import { medal } from "./medal";
 import { orange_glass } from "./orange_glass";
@@ -57,6 +58,7 @@ const FACTORIES = [
   glass_texture_n,
   hexagonalshield_rich,
   holographic_projector2,
+  holographic_test,
   lambert,
   medal,
   orange_glass,
