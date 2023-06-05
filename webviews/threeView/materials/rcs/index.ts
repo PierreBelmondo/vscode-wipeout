@@ -17,6 +17,7 @@ import { diffuse_with_specular_from_alpha_vcol } from "./diffuse_with_specular_f
 import { emissive_bloom } from "./emissive_bloom";
 import { emissivecolourchange } from "./emissivecolourchange";
 import { flame_test } from "./flame_test";
+import { glass_colour_spec_trans } from "./glass_colour_spec_trans";
 import { glass_texture } from "./glass_texture";
 import { glass_texture_clamped } from "./glass_texture_clamped";
 import { glass_texture_n } from "./glass_texture_n";
@@ -50,6 +51,7 @@ const FACTORIES = [
   emissive_bloom,
   emissivecolourchange,
   flame_test,
+  glass_colour_spec_trans,
   glass_texture,
   glass_texture_clamped,
   glass_texture_n,
