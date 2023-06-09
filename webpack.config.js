@@ -143,6 +143,10 @@ async function getWebviewConfig(mode, env, entry) {
           use: ["svg-inline-loader"],
         },
         {
+          test: /\.jpg/,
+          type: 'asset/inline',
+        },
+        {
           test: /\.wasm/,
           type: 'asset/inline',
           /*
@@ -157,7 +161,7 @@ async function getWebviewConfig(mode, env, entry) {
       ],
     },
     resolve: {
-      extensions: [".ts", ".tsx", ".js", ".jsx", ".json", ".svg", ".wasm"],
+      extensions: [".ts", ".tsx", ".jpg", ".js", ".jsx", ".json", ".svg", ".wasm"],
       fallback: {
         /*
         crypto: require.resolve("crypto-browserify"),

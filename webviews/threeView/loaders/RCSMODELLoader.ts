@@ -73,6 +73,11 @@ class AsyncMaterial {
 
     if (this.material) {
       this.world.materials[this.material.id] = this.material;
+      if (this.world.scene.background) {
+        if (this.material instanceof THREE.MeshPhongMaterial) {
+          this.material.envMap = this.world.scene.background as THREE.Texture;
+        }
+      }
       for (const mesh of this.meshes) {
         mesh.material = this.material;
       }

@@ -133,7 +133,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
       <html lang="en">
         <head>
           <meta charset="UTF-8">
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:; connect-src https:; font-src data:;">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:; connect-src https:; font-src data:;">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>RCS Model</title>
         </head>
