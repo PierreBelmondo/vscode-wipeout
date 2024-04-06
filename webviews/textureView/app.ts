@@ -5,6 +5,7 @@ import { Mipmaps } from "@core/utils/mipmaps";
 import { DXT1, DXT3, DXT5 } from "@core/utils/dxt";
 import { BC7 } from "@core/utils/bcdec";
 
+import { MIP } from "@core/formats/mip";
 import { GNF } from "@core/formats/gnf";
 import { GTF } from "@core/formats/gtf";
 import { DDS } from "@core/formats/dds";
@@ -55,6 +56,10 @@ class Editor {
   async load(buffer: ArrayBuffer, mime: string) {
     let mipmaps: Mipmaps = [];
     switch (mime) {
+      case "image/mip":
+        this.scaleY = 1;
+        mipmaps = await this.loadMIP(buffer);
+        break;
       case "image/gnf":
         mipmaps = await this.loadGNF(buffer);
         break;
@@ -134,6 +139,12 @@ class Editor {
     }
     console.log(uncompressedMipmaps);
     return uncompressedMipmaps;
+  }
+
+  async loadMIP(buffer: ArrayBuffer): Promise<Mipmaps> {
+    const mip = MIP.load(buffer);
+    console.log(mip);
+    return mip.mipmaps;
   }
 
   async loadGNF(buffer: ArrayBuffer): Promise<Mipmaps> {

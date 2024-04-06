@@ -8,6 +8,7 @@ import { RcsModelEditorProvider } from "./views/rcsmodel/EditorProvider";
 import { DdsModelEditorProvider } from "./views/texture/DdsModelEditorProvider";
 import { GnfModelEditorProvider } from "./views/texture/GnfModelEditorProvider";
 import { GtfModelEditorProvider } from "./views/texture/GtfModelEditorProvider";
+import { MipModelEditorProvider } from "./views/texture/MipModelEditorProvider";
 import { SceneGraphProvider, SceneGraphRefresh, SceneGraphShow, SceneGraphDump } from "./sceneGraph";
 import { FntModelEditorProvider } from "./views/font/FntModelEditorProvider";
 import { FEPanel } from "./views/FEPanel";
@@ -22,6 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(GnfModelEditorProvider.register(context));
   context.subscriptions.push(GtfModelEditorProvider.register(context));
   context.subscriptions.push(FntModelEditorProvider.register(context));
+  context.subscriptions.push(MipModelEditorProvider.register(context));
 
   context.subscriptions.push(SceneGraphProvider.register(context));
   context.subscriptions.push(SceneGraphRefresh.register(context));

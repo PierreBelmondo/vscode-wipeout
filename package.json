@@ -166,6 +166,16 @@
           }
         ],
         "priority": "default"
+      },
+      {
+        "viewType": "wipeout.view.mip",
+        "displayName": "Mip",
+        "selector": [
+          {
+            "filenamePattern": "*.mip"
+          }
+        ],
+        "priority": "default"
       }
     ],
     "views": {
