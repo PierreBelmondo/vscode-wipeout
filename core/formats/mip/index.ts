@@ -6,26 +6,20 @@ class MIPHeader {
 
   width = 128;
   height = 128;
-  bpp = 1;
-  mipmaps = 0;
-  format = 1;
+  bpp = 8;
+  mipmaps = 1;
+  format = 0;
   flag = 0;
-  cmapSize = 0;
 
   static load(range: BufferRange): MIPHeader {
     const ret = new MIPHeader();
     ret.range = range.slice(0, 16);
-
     ret.width = ret.range.getUint16(0);
     ret.height = ret.range.getUint16(2);
     ret.bpp = ret.range.getUint16(4);
     ret.mipmaps = ret.range.getUint8(6);
     ret.format = ret.range.getUint8(7);
     ret.flag = ret.range.getUint16(8);
-    ret.cmapSize = (ret.bpp == 4 ? 0x40 : 0x400);
-
-    console.log(ret.range);
-    console.log(ret);
     return ret;
   }
 
@@ -35,6 +29,10 @@ class MIPHeader {
 
   get swizzle(): boolean {
     return !!(this.format & 1);
+  }
+
+  get cmapSize(): number {
+    return this.bpp == 4 ? 0x40 : 0x400
   }
 }
 
@@ -64,16 +62,14 @@ export class MIP {
     this.mipmaps = [];
 
     const blockSize = this.cmapRange.size == 64 ? 32 : 16;
-    const bpp = this.header.bpp == 4 ? 4 : 8;
 
+    const bpp = this.header.bpp;
     let width = this.header.width;
     let height = this.header.height;
     let offset = 0;
 
     for (let i = 0; i < this.header.mipmaps; i++) {
-      console.log(this.dataRange.begin + offset, width, height)
-      const memwidth = Math.min(blockSize, width);
-      const memsize = Math.floor((memwidth * height * bpp) / 8);
+      const memsize = width * height * bpp / 8;
       let mipmapRange = this.dataRange.slice(offset, offset + memsize);
       this.loadMipmap(mipmapRange, width, height, blockSize, bpp);
       offset += memsize;
@@ -86,13 +82,12 @@ export class MIP {
     const size = width * height;
     const rgba = new Uint8ClampedArray(size * 4);
 
-    const blockReal = Math.min(width, blockSize);
-    const blocks = (width * height) / blockReal;
+    const blocks = (width * height) / blockSize;
 
     for (let i = 0; i < blocks; i++) {
       const blockOffset = (i * blockSize * bpp) / 8;
-      const indices = range.slice(blockOffset, blockOffset + (blockReal * bpp) / 8);
-      for (let j = 0; j < blockReal; j++) {
+      const indices = range.slice(blockOffset, blockOffset + (blockSize * bpp) / 8);
+      for (let j = 0; j < blockSize; j++) {
         let index = 0;
         if (bpp == 4) {
           index = indices.getUint8(j >>> 1);
@@ -100,7 +95,7 @@ export class MIP {
         } else {
           index = indices.getUint8(j);
         }
-        const pixel = j + i * blockReal;
+        const pixel = j + i * blockSize;
         rgba[pixel * 4 + 0] = this.cmapRange.getUint8(index * 4 + 0);
         rgba[pixel * 4 + 1] = this.cmapRange.getUint8(index * 4 + 1);
         rgba[pixel * 4 + 2] = this.cmapRange.getUint8(index * 4 + 2);
@@ -109,7 +104,7 @@ export class MIP {
     }
 
     // http://homebrew.pixelbath.com/wiki/PSP_texture_swizzling
-    if (this.header.swizzle && width > blockReal) {
+    if (this.header.swizzle && width > blockSize) {
       const ch = 8;
       const cw = this.cmapRange.size == 64 ? 32 : 16;
       const cs = ch * cw;
