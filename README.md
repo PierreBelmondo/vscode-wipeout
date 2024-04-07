@@ -13,6 +13,7 @@ Wipeout modding extension for Visual Studio Code
 * Load and render RCSMODEL meshes
 * Load GTF textures (only DXT1 to DXT5, still buggy...)
 * Load DDS textures (experimental)
+* Load MIP textures
 
 ## Extension Settings
 
