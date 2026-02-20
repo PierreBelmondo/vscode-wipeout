@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { api } from "../api";
 import { Loader } from ".";
 import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
+import { MeshVexxPSPMaterial } from "../materials/MeshVexxPSPMaterial";
 import { mipmapsToTexture } from "../utils";
 import { RCSModelLoader } from "./RCSMODELLoader";
 import { World } from "../worlds";
@@ -529,7 +530,11 @@ export class VEXXLoader extends Loader {
       } else if (textureId in world.textures) {
         const map = world.textures[textureId];
         if (node.typeName == "MESH") {
-          material = new THREE.MeshPhongMaterial({ map });
+          if (node.typeInfo.version <= 4) {
+            material = new MeshVexxPSPMaterial(map);
+          } else {
+            material = new THREE.MeshPhongMaterial({ map, alphaTest: 0.5, side: THREE.DoubleSide });
+          }
           material.name = "PhongMaterial_" + textureId;
         } else if (node.typeName == "SKYCUBE") {
           material = new MeshSkyMaterial(map);
