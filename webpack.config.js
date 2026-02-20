@@ -12,15 +12,15 @@
 
 const execFile = require("child_process").execFile;
 const path = require("path");
-const { ESBuildMinifyPlugin } = require("esbuild-loader");
+const { EsbuildPlugin } = require("esbuild-loader");
 const ForkTsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
 const JSON5 = require("json5");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 
-async function resolveTSConfig(configFile) {
+async function resolveTSConfig(/** @type {string} */ configFile) {
   const data = await new Promise((resolve, reject) => {
-    execFile("yarn", ["tsc", `-p ${configFile}`, "--showConfig"], { cwd: __dirname, encoding: "utf8", shell: true }, function (error, stdout, stderr) {
+    execFile("yarn", ["tsc", `-p ${configFile}`, "--showConfig"], { cwd: __dirname, encoding: "utf8", shell: true }, function (error, stdout) {
       if (error != null) {
         reject(error);
       }
@@ -91,7 +91,7 @@ async function getWebviewConfig(mode, env, entry) {
       minimizer: [
         // @ts-ignore
         env.esbuild
-          ? new ESBuildMinifyPlugin({
+          ? new EsbuildPlugin({
               format: "cjs",
               minify: true,
               treeShaking: true,
@@ -129,7 +129,6 @@ async function getWebviewConfig(mode, env, entry) {
                 loader: "ts-loader",
                 options: {
                   configFile: ts_config,
-                  experimentalWatchApi: true,
                   transpileOnly: true,
                 },
               },
@@ -236,7 +235,7 @@ async function getExtensionConfig(mode, env) {
       minimizer: [
         // @ts-ignore
         env.esbuild
-          ? new ESBuildMinifyPlugin({
+          ? new EsbuildPlugin({
               format: "cjs",
               minify: true,
               treeShaking: true,
@@ -275,7 +274,6 @@ async function getExtensionConfig(mode, env) {
                 loader: "ts-loader",
                 options: {
                   configFile: ts_config,
-                  experimentalWatchApi: true,
                   transpileOnly: true,
                 },
               },
