@@ -1,0 +1,476 @@
+{
+  "code": "UCUS98612DDELTAPACK1",
+  "name": "WipEout Pure USA DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1774653664,
+          "filename": "Data/Skins/Assegai/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3352294313,
+          "filename": "Data/Skins/Assegai/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 833046462,
+          "filename": "Data/Skins/Assegai/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2995934792,
+          "filename": "Data/Skins/Assegai/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3247677412,
+          "filename": "Data/Skins/Assegai/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2756652880,
+          "filename": "Data/Skins/Assegai/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3044702315,
+          "filename": "Data/Skins/Assegai/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4285231230,
+          "filename": "Data/Skins/Assegai/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3384876579,
+          "filename": "Data/Skins/Assegai/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1945995077,
+          "filename": "Data/Skins/Assegai/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 416633988,
+          "filename": "Data/Skins/Assegai/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2487460799,
+          "filename": "Data/Skins/Assegai/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3992086751,
+          "filename": "Data/Skins/Assegai/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1633984484,
+          "filename": "Data/Skins/Assegai/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4096044681,
+          "filename": "Data/Skins/Assegai/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3883108991,
+          "filename": "Data/Skins/Assegai/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4013006381,
+          "filename": "Data/Skins/Assegai/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3198304841,
+          "filename": "Data/Skins/Harimau/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3424231533,
+          "filename": "Data/Skins/Harimau/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3492329012,
+          "filename": "Data/Skins/Harimau/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3417706516,
+          "filename": "Data/Skins/Harimau/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3350455145,
+          "filename": "Data/Skins/Harimau/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1020000178,
+          "filename": "Data/Skins/Harimau/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1994063783,
+          "filename": "Data/Skins/Harimau/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 910673372,
+          "filename": "Data/Skins/Harimau/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4199286940,
+          "filename": "Data/Skins/Harimau/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2439306077,
+          "filename": "Data/Skins/Harimau/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 502410342,
+          "filename": "Data/Skins/Harimau/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1682171654,
+          "filename": "Data/Skins/Harimau/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3906277437,
+          "filename": "Data/Skins/Harimau/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2106925392,
+          "filename": "Data/Skins/Harimau/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 418730368,
+          "filename": "Data/Skins/Harimau/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2666916640,
+          "filename": "Data/Skins/Harimau/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2202861743,
+          "filename": "Data/Skins/Harimau/Images/backgroundlarge.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1719669236,
+          "filename": "Data/Skins/Harimau/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2125173066,
+          "filename": "Data/Tournaments/Delta/Images/deltaleague_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1568477424,
+          "filename": "Data/Tournaments/Delta/Images/deltaleague.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1654009705,
+          "filename": "Data/Tournaments/Delta/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1533115390,
+          "filename": "Data/Tournaments/Delta/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3913931991,
+          "filename": "Data/Tournaments/Delta/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 604309712,
+          "filename": "Data/240508D0",
+          "confidence": 0
+        },
+        {
+          "hash": 426058080,
+          "filename": "Data/19652160",
+          "confidence": 0
+        },
+        {
+          "hash": 1589992368,
+          "filename": "Data/5EC55BB0",
+          "confidence": 0
+        },
+        {
+          "hash": 3477554699,
+          "filename": "Data/CF47460B",
+          "confidence": 0
+        },
+        {
+          "hash": 2384863504,
+          "filename": "Data/8E262110",
+          "confidence": 0
+        },
+        {
+          "hash": 1986463586,
+          "filename": "Data/76670762",
+          "confidence": 0
+        },
+        {
+          "hash": 548807534,
+          "filename": "Data/20B6236E",
+          "confidence": 0
+        },
+        {
+          "hash": 1647934719,
+          "filename": "Data/62397CFF",
+          "confidence": 0
+        },
+        {
+          "hash": 1083595733,
+          "filename": "Data/40965BD5",
+          "confidence": 0
+        },
+        {
+          "hash": 1929076482,
+          "filename": "Data/72FB5F02",
+          "confidence": 0
+        },
+        {
+          "hash": 1926558881,
+          "filename": "Data/72D4F4A1",
+          "confidence": 0
+        },
+        {
+          "hash": 1337253137,
+          "filename": "Data/4FB4DD11",
+          "confidence": 0
+        },
+        {
+          "hash": 135571393,
+          "filename": "Data/0814A7C1",
+          "confidence": 0
+        },
+        {
+          "hash": 2891462579,
+          "filename": "Data/AC5837B3",
+          "confidence": 0
+        },
+        {
+          "hash": 1479271587,
+          "filename": "Data/582BE4A3",
+          "confidence": 0
+        },
+        {
+          "hash": 1651220437,
+          "filename": "Data/626B9FD5",
+          "confidence": 0
+        },
+        {
+          "hash": 1599165089,
+          "filename": "Data/5F5152A1",
+          "confidence": 0
+        },
+        {
+          "hash": 2782507401,
+          "filename": "Data/A5D9B189",
+          "confidence": 0
+        },
+        {
+          "hash": 3903786703,
+          "filename": "Data/E8AF0ECF",
+          "confidence": 0
+        },
+        {
+          "hash": 1458144686,
+          "filename": "Data/56E985AE",
+          "confidence": 0
+        },
+        {
+          "hash": 1967060109,
+          "filename": "Data/753EF48D",
+          "confidence": 0
+        },
+        {
+          "hash": 1803660272,
+          "filename": "Data/6B81ABF0",
+          "confidence": 0
+        },
+        {
+          "hash": 2621950769,
+          "filename": "Data/9C47CB31",
+          "confidence": 0
+        },
+        {
+          "hash": 1684664984,
+          "filename": "Data/Billboards/3dvexwindow/Goteki/go_1.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 600410184,
+          "filename": "Data/Billboards/3dvexwindow/Goteki/go_2.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2239426534,
+          "filename": "Data/Billboards/3dvexwindow/Icaras/ica_2.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1018729382,
+          "filename": "Data/Billboards/3dvexwindow/Tigron/ti_2.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1577313074,
+          "filename": "Data/Billboards/3dvexwindow/Vanuber/vu_1.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3269104950,
+          "filename": "Data/Billboards/3dvexwindow/Icaras/ica_1.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2065230198,
+          "filename": "Data/Billboards/3dvexwindow/Tigron/ti_1.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 430152162,
+          "filename": "Data/Billboards/3dvexwindow/Vanuber/vu_2.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2173580478,
+          "filename": "Data/Gallery/iridia0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3169721614,
+          "filename": "Data/Gallery/iridia1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4216219614,
+          "filename": "Data/Gallery/iridia2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3324923502,
+          "filename": "Data/Gallery/iridia3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1947112062,
+          "filename": "Data/Gallery/iridia4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1669110284,
+          "filename": "Data/Gallery/iridiat0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1578939324,
+          "filename": "Data/Gallery/iridiat1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 431802732,
+          "filename": "Data/Gallery/iridiat2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 618455260,
+          "filename": "Data/Gallery/iridiat3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2533113036,
+          "filename": "Data/Gallery/iridiat4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4156566337,
+          "filename": "Data/Gallery/anulpha_pass0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3399484145,
+          "filename": "Data/Gallery/anulpha_pass1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2365618209,
+          "filename": "Data/Gallery/anulpha_pass2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2959102353,
+          "filename": "Data/Gallery/anulpha_pass3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 37784961,
+          "filename": "Data/Gallery/anulpha_pass4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1309162398,
+          "filename": "Data/Gallery/anulpha_passt0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1936200238,
+          "filename": "Data/Gallery/anulpha_passt1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 885549310,
+          "filename": "Data/Gallery/anulpha_passt2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 162021710,
+          "filename": "Data/Gallery/anulpha_passt3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3146292574,
+          "filename": "Data/Gallery/anulpha_passt4.tga",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

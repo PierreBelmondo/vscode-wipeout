@@ -1,0 +1,36 @@
+{
+  "code": "UCES00001DMSCSLOT1",
+  "name": "WipEout Pure European DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4164530645,
+          "filename": "Data/F839B1D5",
+          "confidence": 0
+        },
+        {
+          "hash": 2704104578,
+          "filename": "Data/A12D5C82",
+          "confidence": 0
+        },
+        {
+          "hash": 2181842229,
+          "filename": "Data/820C4535",
+          "confidence": 0
+        },
+        {
+          "hash": 350417544,
+          "filename": "Data/14E2F288",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

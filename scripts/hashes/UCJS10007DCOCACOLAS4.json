@@ -1,0 +1,61 @@
+{
+  "code": "UCJS10007DCOCACOLAS4",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3817294763,
+          "filename": "Data/E3874BAB",
+          "confidence": 0
+        },
+        {
+          "hash": 2475411685,
+          "filename": "Data/938BC8E5",
+          "confidence": 0
+        },
+        {
+          "hash": 1759702127,
+          "filename": "Data/68E2EC6F",
+          "confidence": 0
+        },
+        {
+          "hash": 1873406455,
+          "filename": "Data/6FA9E9F7",
+          "confidence": 0
+        },
+        {
+          "hash": 2191164544,
+          "filename": "Data/829A8480",
+          "confidence": 0
+        },
+        {
+          "hash": 3583376512,
+          "filename": "Data/D595FC80",
+          "confidence": 0
+        },
+        {
+          "hash": 4213663964,
+          "filename": "Data/FB2768DC",
+          "confidence": 0
+        },
+        {
+          "hash": 1197906075,
+          "filename": "Data/4766989B",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

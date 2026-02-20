@@ -1,0 +1,106 @@
+{
+  "code": "UCJS10007DCOCACOLA4",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 54479368,
+          "filename": "Data/Ships/AG_Systems/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2372670011,
+          "filename": "Data/Ships/AG_Systems/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 4213418176,
+          "filename": "Data/Ships/Assegai/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3777366323,
+          "filename": "Data/Ships/Assegai/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2264372412,
+          "filename": "Data/Ships/Auricom/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2011748787,
+          "filename": "Data/Ships/Auricom/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2471398717,
+          "filename": "Data/Ships/Feisar/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 725973775,
+          "filename": "Data/Ships/Feisar/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 447502666,
+          "filename": "Data/Ships/Harimau/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2309377746,
+          "filename": "Data/Ships/Harimau/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 948185750,
+          "filename": "Data/Ships/Piranha/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 767918720,
+          "filename": "Data/Ships/Piranha/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 953849540,
+          "filename": "Data/Ships/Qirex/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1586556083,
+          "filename": "Data/Ships/Qirex/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 635412772,
+          "filename": "Data/Ships/Triakis/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3793700227,
+          "filename": "Data/Ships/Triakis/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 748107909,
+          "filename": "Data/2C973885",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

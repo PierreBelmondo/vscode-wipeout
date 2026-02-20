@@ -1,0 +1,436 @@
+{
+  "code": "UCUS98612DDELTAPACK2",
+  "name": "WipEout Pure USA DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2728761888,
+          "filename": "Data/Skins/Triakis/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2214699801,
+          "filename": "Data/Skins/Triakis/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4015738458,
+          "filename": "Data/Skins/Triakis/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2199565143,
+          "filename": "Data/Skins/Triakis/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 130473,
+          "filename": "Data/Skins/Triakis/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1462815086,
+          "filename": "Data/Skins/Triakis/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2822787466,
+          "filename": "Data/Skins/Triakis/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3796982175,
+          "filename": "Data/Skins/Triakis/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 517076708,
+          "filename": "Data/Skins/Triakis/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1858580132,
+          "filename": "Data/Skins/Triakis/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 99581285,
+          "filename": "Data/Skins/Triakis/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2306443870,
+          "filename": "Data/Skins/Triakis/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4039655742,
+          "filename": "Data/Skins/Triakis/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2086581765,
+          "filename": "Data/Skins/Triakis/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3911092072,
+          "filename": "Data/Skins/Triakis/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 811819704,
+          "filename": "Data/Skins/Triakis/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4060854220,
+          "filename": "Data/Skins/Triakis/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1996846358,
+          "filename": "Data/Skins/Ag-systems/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2270210346,
+          "filename": "Data/Skins/Ag-systems/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3209284436,
+          "filename": "Data/Skins/Ag-systems/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 289763816,
+          "filename": "Data/Skins/Ag-systems/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3457571925,
+          "filename": "Data/Skins/Ag-systems/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 792811515,
+          "filename": "Data/Skins/Ag-systems/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2028346450,
+          "filename": "Data/Skins/Ag-systems/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2864939501,
+          "filename": "Data/Skins/Ag-systems/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3771894264,
+          "filename": "Data/Skins/Ag-systems/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3439690191,
+          "filename": "Data/Skins/Ag-systems/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1816428227,
+          "filename": "Data/Skins/Ag-systems/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 124562690,
+          "filename": "Data/Skins/Ag-systems/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2348440121,
+          "filename": "Data/Skins/Ag-systems/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4065038681,
+          "filename": "Data/Skins/Ag-systems/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2128438882,
+          "filename": "Data/Skins/Ag-systems/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3952957199,
+          "filename": "Data/Skins/Ag-systems/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3820426643,
+          "filename": "Data/Skins/Ag-systems/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4035471275,
+          "filename": "Data/Skins/Ag-systems/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2125173066,
+          "filename": "Data/Tournaments/Delta/Images/deltaleague_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1568477424,
+          "filename": "Data/Tournaments/Delta/Images/deltaleague.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1654009705,
+          "filename": "Data/Tournaments/Delta/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1533115390,
+          "filename": "Data/Tournaments/Delta/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3913931991,
+          "filename": "Data/Tournaments/Delta/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3286320626,
+          "filename": "Data/C3E145F2",
+          "confidence": 0
+        },
+        {
+          "hash": 4269894722,
+          "filename": "Data/FE816C42",
+          "confidence": 0
+        },
+        {
+          "hash": 3105953426,
+          "filename": "Data/B9211692",
+          "confidence": 0
+        },
+        {
+          "hash": 945199880,
+          "filename": "Data/38569B08",
+          "confidence": 0
+        },
+        {
+          "hash": 660501297,
+          "filename": "Data/275E7331",
+          "confidence": 0
+        },
+        {
+          "hash": 539955429,
+          "filename": "Data/202F10E5",
+          "confidence": 0
+        },
+        {
+          "hash": 4255940484,
+          "filename": "Data/FDAC7F84",
+          "confidence": 0
+        },
+        {
+          "hash": 2480492910,
+          "filename": "Data/93D9516E",
+          "confidence": 0
+        },
+        {
+          "hash": 3886889723,
+          "filename": "Data/E7AD3AFB",
+          "confidence": 0
+        },
+        {
+          "hash": 3942981477,
+          "filename": "Data/EB051F65",
+          "confidence": 0
+        },
+        {
+          "hash": 2866194559,
+          "filename": "Data/AAD6A87F",
+          "confidence": 0
+        },
+        {
+          "hash": 3983987375,
+          "filename": "Data/ED76D2AF",
+          "confidence": 0
+        },
+        {
+          "hash": 3491167007,
+          "filename": "Data/D016FB1F",
+          "confidence": 0
+        },
+        {
+          "hash": 1325322724,
+          "filename": "Data/4EFED1E4",
+          "confidence": 0
+        },
+        {
+          "hash": 3837299419,
+          "filename": "Data/E4B88ADB",
+          "confidence": 0
+        },
+        {
+          "hash": 1007285685,
+          "filename": "Data/3C09F5B5",
+          "confidence": 0
+        },
+        {
+          "hash": 1103958376,
+          "filename": "Data/41CD1168",
+          "confidence": 0
+        },
+        {
+          "hash": 3516987822,
+          "filename": "Data/D1A0F9AE",
+          "confidence": 0
+        },
+        {
+          "hash": 540390220,
+          "filename": "Data/2035B34C",
+          "confidence": 0
+        },
+        {
+          "hash": 3548234666,
+          "filename": "Data/D37DC3AA",
+          "confidence": 0
+        },
+        {
+          "hash": 2057062512,
+          "filename": "Data/7A9C4870",
+          "confidence": 0
+        },
+        {
+          "hash": 1964894265,
+          "filename": "Data/751DE839",
+          "confidence": 0
+        },
+        {
+          "hash": 289609218,
+          "filename": "Data/11431602",
+          "confidence": 0
+        },
+        {
+          "hash": 4158209718,
+          "filename": "Data/Gallery/koltiwa0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3401127686,
+          "filename": "Data/Gallery/koltiwa1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2367253974,
+          "filename": "Data/Gallery/koltiwa2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2960737382,
+          "filename": "Data/Gallery/koltiwa3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 39426166,
+          "filename": "Data/Gallery/koltiwa4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1842431284,
+          "filename": "Data/Gallery/koltiwat0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1353804932,
+          "filename": "Data/Gallery/koltiwat1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 386995796,
+          "filename": "Data/Gallery/koltiwat2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 712064996,
+          "filename": "Data/Gallery/koltiwat3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2555503604,
+          "filename": "Data/Gallery/koltiwat4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 151528933,
+          "filename": "Data/Gallery/khara_descentt4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4145254728,
+          "filename": "Data/Gallery/khara_descent1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2964581272,
+          "filename": "Data/Gallery/khara_descent2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1072897592,
+          "filename": "Data/Gallery/khara_descent4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4236804901,
+          "filename": "Data/Gallery/khara_descentt0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3253250709,
+          "filename": "Data/Gallery/khara_descentt1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2252918853,
+          "filename": "Data/Gallery/khara_descentt2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3140024821,
+          "filename": "Data/Gallery/khara_descentt3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3396581624,
+          "filename": "Data/Gallery/khara_descent0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2379465256,
+          "filename": "Data/Gallery/khara_descent3.tga",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

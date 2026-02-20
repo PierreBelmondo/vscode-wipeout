@@ -1,0 +1,296 @@
+{
+  "code": "UCJS10007DGAMMAPACK2",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 87885442,
+          "filename": "Data/Skins/Feisar/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 55687696,
+          "filename": "Data/Skins/Feisar/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1036832359,
+          "filename": "Data/Skins/Feisar/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 138472005,
+          "filename": "Data/Skins/Feisar/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2934742695,
+          "filename": "Data/Skins/Feisar/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3254993747,
+          "filename": "Data/Skins/Feisar/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2282900294,
+          "filename": "Data/Skins/Feisar/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3786727302,
+          "filename": "Data/Skins/Feisar/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 75807869,
+          "filename": "Data/Skins/Feisar/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1873571772,
+          "filename": "Data/Skins/Feisar/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3812268167,
+          "filename": "Data/Skins/Feisar/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2592822247,
+          "filename": "Data/Skins/Feisar/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 371041500,
+          "filename": "Data/Skins/Feisar/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2203948465,
+          "filename": "Data/Skins/Feisar/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3473296346,
+          "filename": "Data/Skins/Feisar/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3795868650,
+          "filename": "Data/Skins/Feisar/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1285428568,
+          "filename": "Data/Tournaments/Gamma/Images/gammaleague.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1746879175,
+          "filename": "Data/Tournaments/Gamma/Images/gammaleague_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1734397045,
+          "filename": "Data/Tournaments/Gamma/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1447618347,
+          "filename": "Data/Tournaments/Gamma/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3724046784,
+          "filename": "Data/Tournaments/Gamma/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1513355886,
+          "filename": "Data/Ships/Vanuber/Images/vanuber3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3341886836,
+          "filename": "Data/Ships/Vanuber/Images/vanuberside.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1371004317,
+          "filename": "Data/Ships/Vanuber/Images/vanubertop.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3078497679,
+          "filename": "Data/Ships/Vanuber/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2115198657,
+          "filename": "Data/Ships/Vanuber/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3818403220,
+          "filename": "Data/Ships/Vanuber/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 273785792,
+          "filename": "Data/Environments/11_sebenco_peak/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 758221424,
+          "filename": "Data/Environments/11_sebenco_peak/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1787949216,
+          "filename": "Data/Environments/11_sebenco_peak/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2801058970,
+          "filename": "Data/Environments/11_sebenco_peak/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2267806900,
+          "filename": "Data/Environments/11_sebenco_peak/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4055012560,
+          "filename": "Data/Environments/11_sebenco_peak/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2882414115,
+          "filename": "Data/Environments/11_sebenco_peak/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 497711873,
+          "filename": "Data/Environments/11_sebenco_peak/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 418679417,
+          "filename": "Data/Environments/11_sebenco_peak/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2451848651,
+          "filename": "Data/Environments/11_sebenco_peak/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 799049496,
+          "filename": "Data/Environments/11_sebenco_peak/envsebencopeak.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 2657277077,
+          "filename": "Data/Ships/Vanuber/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1508781753,
+          "filename": "Data/Ships/Vanuber/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2780342650,
+          "filename": "Data/Ships/Vanuber/vr/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 358550982,
+          "filename": "Data/Gallery/gamma0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 675226742,
+          "filename": "Data/Gallery/gamma1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1392473878,
+          "filename": "Data/Gallery/gamma3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1872715430,
+          "filename": "Data/Gallery/gamma2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3772754694,
+          "filename": "Data/Gallery/gamma4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3567806826,
+          "filename": "Data/Gallery/sebenco_peak1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2926066186,
+          "filename": "Data/Gallery/sebenco_peak3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 701200697,
+          "filename": "Data/Gallery/sebenco_peakt0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 346771593,
+          "filename": "Data/Gallery/sebenco_peakt1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1393240665,
+          "filename": "Data/Gallery/sebenco_peakt2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1852507113,
+          "filename": "Data/Gallery/sebenco_peakt3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3922215130,
+          "filename": "Data/Gallery/sebenco_peak0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 474539546,
+          "filename": "Data/Gallery/sebenco_peak4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2466780090,
+          "filename": "Data/Gallery/sebenco_peak2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3695960057,
+          "filename": "Data/Gallery/sebenco_peakt4.tga",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

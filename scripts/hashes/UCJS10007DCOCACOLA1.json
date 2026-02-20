@@ -1,0 +1,101 @@
+{
+  "code": "UCJS10007DCOCACOLA1",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3766579412,
+          "filename": "Data/E08170D4",
+          "confidence": 0
+        },
+        {
+          "hash": 2590009503,
+          "filename": "Data/9A60689F",
+          "confidence": 0
+        },
+        {
+          "hash": 468372384,
+          "filename": "Data/1BEACBA0",
+          "confidence": 0
+        },
+        {
+          "hash": 1878345828,
+          "filename": "Data/6FF54864",
+          "confidence": 0
+        },
+        {
+          "hash": 1811056994,
+          "filename": "Data/6BF28962",
+          "confidence": 0
+        },
+        {
+          "hash": 1984230337,
+          "filename": "Data/7644F3C1",
+          "confidence": 0
+        },
+        {
+          "hash": 1012267988,
+          "filename": "Data/3C55FBD4",
+          "confidence": 0
+        },
+        {
+          "hash": 4278282846,
+          "filename": "Data/FF016A5E",
+          "confidence": 0
+        },
+        {
+          "hash": 2965572847,
+          "filename": "Data/B0C30CEF",
+          "confidence": 0
+        },
+        {
+          "hash": 3689668398,
+          "filename": "Data/DBEBDF2E",
+          "confidence": 0
+        },
+        {
+          "hash": 1467820053,
+          "filename": "Data/577D2815",
+          "confidence": 0
+        },
+        {
+          "hash": 785179509,
+          "filename": "Data/2ECCE375",
+          "confidence": 0
+        },
+        {
+          "hash": 2723812430,
+          "filename": "Data/A25A144E",
+          "confidence": 0
+        },
+        {
+          "hash": 924460323,
+          "filename": "Data/371A2523",
+          "confidence": 0
+        },
+        {
+          "hash": 3518234114,
+          "filename": "Data/D1B3FE02",
+          "confidence": 0
+        },
+        {
+          "hash": 160134082,
+          "filename": "Data/098B73C2",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

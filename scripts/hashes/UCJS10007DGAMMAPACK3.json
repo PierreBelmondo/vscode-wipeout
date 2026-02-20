@@ -1,0 +1,486 @@
+{
+  "code": "UCJS10007DGAMMAPACK3",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2229886224,
+          "filename": "Data/Skins/Auricom/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1797964800,
+          "filename": "Data/Skins/Auricom/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1282636738,
+          "filename": "Data/Skins/Auricom/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2290770154,
+          "filename": "Data/Skins/Auricom/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2756453968,
+          "filename": "Data/Skins/Auricom/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3999084101,
+          "filename": "Data/Skins/Auricom/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2027667801,
+          "filename": "Data/Skins/Auricom/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1657526654,
+          "filename": "Data/Skins/Auricom/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 165874367,
+          "filename": "Data/Skins/Auricom/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2239102340,
+          "filename": "Data/Skins/Auricom/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4240717540,
+          "filename": "Data/Skins/Auricom/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1884471775,
+          "filename": "Data/Skins/Auricom/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3843223730,
+          "filename": "Data/Skins/Auricom/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1449743621,
+          "filename": "Data/Skins/Auricom/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3926589497,
+          "filename": "Data/Skins/Auricom/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1070497187,
+          "filename": "Data/Skins/Auricom/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4051685850,
+          "filename": "Data/Skins/Qirex/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1882022113,
+          "filename": "Data/Skins/Qirex/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4217123207,
+          "filename": "Data/Skins/Qirex/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2598933055,
+          "filename": "Data/Skins/Qirex/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1522983015,
+          "filename": "Data/Skins/Qirex/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 282585202,
+          "filename": "Data/Skins/Qirex/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3231248016,
+          "filename": "Data/Skins/Qirex/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2621513545,
+          "filename": "Data/Skins/Qirex/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4150905992,
+          "filename": "Data/Skins/Qirex/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2080324531,
+          "filename": "Data/Skins/Qirex/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 38727891,
+          "filename": "Data/Skins/Qirex/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2396522472,
+          "filename": "Data/Skins/Qirex/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 462960261,
+          "filename": "Data/Skins/Qirex/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3995761356,
+          "filename": "Data/Skins/Qirex/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 480265360,
+          "filename": "Data/Skins/Qirex/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1014426587,
+          "filename": "Data/Skins/Qirex/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1285428568,
+          "filename": "Data/Tournaments/Gamma/Images/gammaleague.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1746879175,
+          "filename": "Data/Tournaments/Gamma/Images/gammaleague_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1734397045,
+          "filename": "Data/Tournaments/Gamma/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1447618347,
+          "filename": "Data/Tournaments/Gamma/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3724046784,
+          "filename": "Data/Tournaments/Gamma/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 764647856,
+          "filename": "Data/Tournaments/Descension/Images/descensionleague.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 448173349,
+          "filename": "Data/Tournaments/Descension/Images/descensionleague_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1167238221,
+          "filename": "Data/Tournaments/Descension/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3138519972,
+          "filename": "Data/Tournaments/Descension/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2749035914,
+          "filename": "Data/Tournaments/Descension/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3944761447,
+          "filename": "Data/Environments/02_exostra_run/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2894082743,
+          "filename": "Data/Environments/02_exostra_run/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2447383303,
+          "filename": "Data/Environments/02_exostra_run/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4290115029,
+          "filename": "Data/Environments/02_exostra_run/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 981371281,
+          "filename": "Data/Environments/02_exostra_run/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1307715776,
+          "filename": "Data/Environments/02_exostra_run/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3066394363,
+          "filename": "Data/Environments/02_exostra_run/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 702029053,
+          "filename": "Data/Environments/02_exostra_run/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4220544561,
+          "filename": "Data/Environments/02_exostra_run/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1683998629,
+          "filename": "Data/Environments/05_ubermall/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1497361941,
+          "filename": "Data/Environments/05_ubermall/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 513774789,
+          "filename": "Data/Environments/05_ubermall/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3056336756,
+          "filename": "Data/Environments/05_ubermall/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3786762631,
+          "filename": "Data/Environments/05_ubermall/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2014333207,
+          "filename": "Data/Environments/05_ubermall/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2923942893,
+          "filename": "Data/Environments/05_ubermall/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1510501189,
+          "filename": "Data/Environments/05_ubermall/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2153411491,
+          "filename": "Data/Environments/05_ubermall/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3412397188,
+          "filename": "Data/Environments/02_exostra_run/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 4223266263,
+          "filename": "Data/Environments/02_exostra_run/envexostrarun.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 2197489189,
+          "filename": "Data/Environments/05_ubermall/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 699834903,
+          "filename": "Data/Environments/05_ubermall/envubermall.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 358550982,
+          "filename": "Data/Gallery/gamma0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 675226742,
+          "filename": "Data/Gallery/gamma1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1392473878,
+          "filename": "Data/Gallery/gamma3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1872715430,
+          "filename": "Data/Gallery/gamma2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3772754694,
+          "filename": "Data/Gallery/gamma4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1273638989,
+          "filename": "Data/Gallery/descension4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3194656397,
+          "filename": "Data/Gallery/descension0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2198519613,
+          "filename": "Data/Gallery/descension1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3299526125,
+          "filename": "Data/Gallery/descension2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4190825565,
+          "filename": "Data/Gallery/descension3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2728798436,
+          "filename": "Data/Gallery/ubermall0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3907062522,
+          "filename": "Data/Gallery/ubermallt0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2680553812,
+          "filename": "Data/Gallery/ubermall1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3630594948,
+          "filename": "Data/Gallery/ubermall2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3842396724,
+          "filename": "Data/Gallery/ubermall3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1462144548,
+          "filename": "Data/Gallery/ubermall4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3582010186,
+          "filename": "Data/Gallery/ubermallt1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2451659162,
+          "filename": "Data/Gallery/ubermallt2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2940301354,
+          "filename": "Data/Gallery/ubermallt3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 492940346,
+          "filename": "Data/Gallery/ubermallt4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1608301264,
+          "filename": "Data/Gallery/exostra_run0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1656525664,
+          "filename": "Data/Gallery/exostra_run1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 622651824,
+          "filename": "Data/Gallery/exostra_run2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 410828800,
+          "filename": "Data/Gallery/exostra_run3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2858163216,
+          "filename": "Data/Gallery/exostra_run4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3383264477,
+          "filename": "Data/Gallery/exostra_runt0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4106792301,
+          "filename": "Data/Gallery/exostra_runt1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3009992637,
+          "filename": "Data/Gallery/exostra_runt2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2382953997,
+          "filename": "Data/Gallery/exostra_runt3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1009263133,
+          "filename": "Data/Gallery/exostra_runt4.tga",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

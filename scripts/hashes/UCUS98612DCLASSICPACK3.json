@@ -1,0 +1,351 @@
+{
+  "code": "UCUS98612DCLASSICPACK3",
+  "name": "WipEout Pure USA DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2240818828,
+          "filename": "Data/Skins/Icaras/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1600225727,
+          "filename": "Data/Skins/Icaras/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3219305072,
+          "filename": "Data/Skins/Icaras/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 23961321,
+          "filename": "Data/Skins/Icaras/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3597597535,
+          "filename": "Data/Skins/Icaras/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1363722962,
+          "filename": "Data/Skins/Icaras/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 413026132,
+          "filename": "Data/Skins/Icaras/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1385123649,
+          "filename": "Data/Skins/Icaras/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2131416865,
+          "filename": "Data/Skins/Icaras/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1121296658,
+          "filename": "Data/Skins/Icaras/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3726227578,
+          "filename": "Data/Skins/Icaras/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3039914939,
+          "filename": "Data/Skins/Icaras/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 967285888,
+          "filename": "Data/Skins/Icaras/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1075206112,
+          "filename": "Data/Skins/Icaras/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3430981851,
+          "filename": "Data/Skins/Icaras/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1505792438,
+          "filename": "Data/Skins/Icaras/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1371030397,
+          "filename": "Data/Skins/Icaras/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3268442629,
+          "filename": "Data/Skins/Icaras/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2831069644,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2894695944,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 763460402,
+          "filename": "Data/Tournaments/Classic2/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 98157003,
+          "filename": "Data/Tournaments/Classic2/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 355194845,
+          "filename": "Data/Tournaments/Classic2/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 166430592,
+          "filename": "Data/Ships/Icaras/Images/icaras3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 695772495,
+          "filename": "Data/Ships/Icaras/Images/icarasside.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 374786719,
+          "filename": "Data/Ships/Icaras/Images/icarastop.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 539069083,
+          "filename": "Data/Ships/Icaras/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2670185661,
+          "filename": "Data/Ships/Icaras/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2906549077,
+          "filename": "Data/Ships/Icaras/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2245762442,
+          "filename": "Data/Music/Classic3_messij/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2749417488,
+          "filename": "Data/Music/Classic3_messij/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1308122655,
+          "filename": "Data/Music/Classic3_messij/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1047084204,
+          "filename": "Data/Music/Classic4_operatique/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1901526860,
+          "filename": "Data/Music/Classic4_operatique/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2939853298,
+          "filename": "Data/Music/Classic4_operatique/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 588221618,
+          "filename": "Data/Classics/08_vohl_square/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1689253474,
+          "filename": "Data/Classics/08_vohl_square/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1506795474,
+          "filename": "Data/Classics/08_vohl_square/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 946971345,
+          "filename": "Data/Classics/08_vohl_square/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2407865956,
+          "filename": "Data/Classics/08_vohl_square/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1740400188,
+          "filename": "Data/Classics/08_vohl_square/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 318747688,
+          "filename": "Data/Classics/08_vohl_square/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2742159621,
+          "filename": "Data/Classics/08_vohl_square/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3726853920,
+          "filename": "Data/Classics/08_vohl_square/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 640634233,
+          "filename": "Data/Classics/08_vohl_square/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2254325701,
+          "filename": "Data/Classics/08_vohl_square/envvohlsquare.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 291565866,
+          "filename": "Data/Ships/Icaras/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3809132186,
+          "filename": "Data/Ships/Icaras/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1833410835,
+          "filename": "Data/Ships/Icaras/vr/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2095229088,
+          "filename": "Data/Gallery/vohl_square0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1099071760,
+          "filename": "Data/Gallery/vohl_square1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 102955968,
+          "filename": "Data/Gallery/vohl_square2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 994234992,
+          "filename": "Data/Gallery/vohl_square3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2304904800,
+          "filename": "Data/Gallery/vohl_square4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2576272371,
+          "filename": "Data/Gallery/vohl_squaret0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2767118915,
+          "filename": "Data/Gallery/vohl_squaret1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3813578899,
+          "filename": "Data/Gallery/vohl_squaret2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3727601955,
+          "filename": "Data/Gallery/vohl_squaret3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1812884787,
+          "filename": "Data/Gallery/vohl_squaret4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1441448574,
+          "filename": "Data/Gallery/classic_20.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1753934798,
+          "filename": "Data/Gallery/classic_21.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 791318814,
+          "filename": "Data/Gallery/classic_22.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 306886830,
+          "filename": "Data/Gallery/classic_23.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2691327166,
+          "filename": "Data/Gallery/classic_24.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 322251319,
+          "filename": "Data/Music/Classic3_messij/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 2827455249,
+          "filename": "Data/Music/Classic4_operatique/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1012,8 +1012,8 @@
         },
         {
           "hash": 3387231919,
-          "filename": "Data/C9E50EAF",
-          "confidence": 0
+          "filename": "Data/Defaults/LensflareComponents.pct",
+          "confidence": 9
         },
         {
           "hash": 692748433,
@@ -1027,8 +1027,8 @@
         },
         {
           "hash": 1970565604,
-          "filename": "Data/Defaults/Loading/757471E4",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/absorb.pct",
+          "confidence": 9
         },
         {
           "hash": 935002039,
@@ -1037,8 +1037,8 @@
         },
         {
           "hash": 149744882,
-          "filename": "Data/Defaults/Loading/Pulse/08ECECF2",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/autopilot.pct",
+          "confidence": 9
         },
         {
           "hash": 1670207720,
@@ -1052,8 +1052,8 @@
         },
         {
           "hash": 1937591830,
-          "filename": "Data/Defaults/Loading/Pulse/737D4E16",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/cannon.pct",
+          "confidence": 9
         },
         {
           "hash": 86634680,
@@ -1067,13 +1067,13 @@
         },
         {
           "hash": 3866239000,
-          "filename": "Data/Defaults/Loading/Pulse/E6722018",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/leech.pct",
+          "confidence": 9
         },
         {
           "hash": 1707618400,
-          "filename": "Data/Defaults/Loading/Pulse/65C83060",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/mines.pct",
+          "confidence": 9
         },
         {
           "hash": 3143066846,
@@ -1092,28 +1092,28 @@
         },
         {
           "hash": 1355780377,
-          "filename": "Data/Defaults/Loading/Pulse/50CF9119",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/photomode.pct",
+          "confidence": 9
         },
         {
           "hash": 1578781394,
-          "filename": "Data/Defaults/Loading/Pulse/5E1A4AD2",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/plasma.pct",
+          "confidence": 9
         },
         {
           "hash": 667604698,
-          "filename": "Data/Defaults/Loading/Pulse/27CAD6DA",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/quake.pct",
+          "confidence": 9
         },
         {
           "hash": 319611058,
-          "filename": "Data/Defaults/Loading/Pulse/130CE0B2",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/rapier.pct",
+          "confidence": 9
         },
         {
           "hash": 3175010845,
-          "filename": "Data/Defaults/Loading/Pulse/BD3ED21D",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/repulsor.pct",
+          "confidence": 9
         },
         {
           "hash": 1331479771,
@@ -1132,18 +1132,18 @@
         },
         {
           "hash": 1998450896,
-          "filename": "Data/Defaults/Loading/Pulse/771DF0D0",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/shuriken.pct",
+          "confidence": 9
         },
         {
           "hash": 3965798696,
-          "filename": "Data/Defaults/Loading/Pulse/EC614928",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/sideshift.pct",
+          "confidence": 9
         },
         {
           "hash": 2749037660,
-          "filename": "Data/Defaults/Loading/Pulse/A3DAFC5C",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/speedpad.pct",
+          "confidence": 9
         },
         {
           "hash": 1456757935,
@@ -1157,8 +1157,8 @@
         },
         {
           "hash": 2587512340,
-          "filename": "Data/Defaults/9A3A4E14",
-          "confidence": 0
+          "filename": "Data/Defaults/Loading/Pulse/weaponpad.pct",
+          "confidence": 9
         },
         {
           "hash": 1471997660,
@@ -4057,13 +4057,13 @@
         },
         {
           "hash": 40354789,
-          "filename": "Data/Environments/04_Track/Textures/0267C3E5",
-          "confidence": 0
+          "filename": "Data/Environments/04_Track/textures/laser_ADD.pct",
+          "confidence": 9
         },
         {
           "hash": 493589333,
-          "filename": "Data/Environments/04_Track/Textures/1D6B9355",
-          "confidence": 0
+          "filename": "Data/Environments/04_Track/textures/laser_smoke_ADD.pct",
+          "confidence": 9
         },
         {
           "hash": 887679615,
@@ -8277,8 +8277,8 @@
         },
         {
           "hash": 1974746496,
-          "filename": "Data/Environments/10_Track/Textures/75B43D80",
-          "confidence": 0
+          "filename": "Data/Environments/10_Track/Textures/interior_wallpanel.pct",
+          "confidence": 9
         },
         {
           "hash": 1976587921,
@@ -8332,8 +8332,8 @@
         },
         {
           "hash": 3226507921,
-          "filename": "Data/Environments/10_Track/Textures/C0509A91",
-          "confidence": 0
+          "filename": "Data/Environments/10_Track/Textures/rf_corrugatedTile_shinemap.pct",
+          "confidence": 9
         },
         {
           "hash": 3513202030,
@@ -8777,8 +8777,8 @@
         },
         {
           "hash": 331661909,
-          "filename": "Data/Environments/10_Track/13C4C255",
-          "confidence": 0
+          "filename": "Data/Environments/10_Track/Textures/startbuildingarch.pct",
+          "confidence": 9
         },
         {
           "hash": 3623084008,
@@ -11472,13 +11472,13 @@
         },
         {
           "hash": 1533947341,
-          "filename": "Data/Environments/13_Track/Zone_Textures/5B6E2DCD",
-          "confidence": 0
+          "filename": "Data/Environments/13_Track/Zone_Textures/Feisar_Glass.pct",
+          "confidence": 9
         },
         {
           "hash": 4092023860,
-          "filename": "Data/Environments/13_Track/Zone_Textures/F3E75434",
-          "confidence": 0
+          "filename": "Data/Environments/13_Track/Zone_Textures/Glass_ADD.pct",
+          "confidence": 9
         },
         {
           "hash": 15572188,
@@ -11687,13 +11687,13 @@
         },
         {
           "hash": 3213812376,
-          "filename": "Data/Environments/13_Track/BF8EE298",
-          "confidence": 0
+          "filename": "Data/Environments/13_Track/Zone_Textures/Zone_mushroomdome1.pct",
+          "confidence": 9
         },
         {
           "hash": 4163803208,
-          "filename": "Data/Environments/13_Track/F82E9848",
-          "confidence": 0
+          "filename": "Data/Environments/13_Track/Zone_Textures/Zone_mushroomdome2.pct",
+          "confidence": 9
         },
         {
           "hash": 160887226,
@@ -11712,8 +11712,8 @@
         },
         {
           "hash": 3065089385,
-          "filename": "Data/Environments/13_Track/B6B18D69",
-          "confidence": 0
+          "filename": "Data/Environments/13_Track/Zone_Textures/Zone_rf_loafbuildingtile_shinemap.pct",
+          "confidence": 9
         },
         {
           "hash": 763582073,
@@ -11722,8 +11722,8 @@
         },
         {
           "hash": 3984732595,
-          "filename": "Data/Environments/13_Track/ED8231B3",
-          "confidence": 0
+          "filename": "Data/Environments/13_Track/Zone_Textures/Zone_startbuilding_walls2.pct",
+          "confidence": 9
         },
         {
           "hash": 3504478211,
@@ -13677,8 +13677,8 @@
         },
         {
           "hash": 1617541571,
-          "filename": "Data/Environments/16_Track/Textures/6069B9C3",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/Barrier_sml.pct",
+          "confidence": 9
         },
         {
           "hash": 4155838490,
@@ -13817,8 +13817,8 @@
         },
         {
           "hash": 2908221567,
-          "filename": "Data/Environments/16_Track/Textures/AD57F07F",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/col_display7_GLOW.pct",
+          "confidence": 9
         },
         {
           "hash": 2961138699,
@@ -13852,8 +13852,8 @@
         },
         {
           "hash": 1774464861,
-          "filename": "Data/Environments/16_Track/Textures/69C42F5D",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/Crowd_backgrnd.pct",
+          "confidence": 9
         },
         {
           "hash": 3851693646,
@@ -13937,18 +13937,18 @@
         },
         {
           "hash": 1843205744,
-          "filename": "Data/Environments/16_Track/Textures/6DDD1670",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/hub_banner_GLOW.pct",
+          "confidence": 9
         },
         {
           "hash": 166920759,
-          "filename": "Data/Environments/16_Track/Textures/09F30237",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/interior_wallpanel.pct",
+          "confidence": 9
         },
         {
           "hash": 3681379555,
-          "filename": "Data/Environments/16_Track/Textures/DB6D64E3",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/Lightglow01_GLOW_BLEND.pct",
+          "confidence": 9
         },
         {
           "hash": 3834419402,
@@ -13957,8 +13957,8 @@
         },
         {
           "hash": 2310809024,
-          "filename": "Data/Environments/16_Track/Textures/89BC25C0",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/Lightpanel01_GLOW.pct",
+          "confidence": 9
         },
         {
           "hash": 3638277342,
@@ -13977,28 +13977,28 @@
         },
         {
           "hash": 2493581513,
-          "filename": "Data/Environments/16_Track/Textures/94A108C9",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/plate2.pct",
+          "confidence": 9
         },
         {
           "hash": 2848006521,
-          "filename": "Data/Environments/16_Track/Textures/A9C12179",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/plate3.pct",
+          "confidence": 9
         },
         {
           "hash": 467795305,
-          "filename": "Data/Environments/16_Track/Textures/1BE1FD69",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/plate4.pct",
+          "confidence": 9
         },
         {
           "hash": 1719308344,
-          "filename": "Data/Environments/16_Track/Textures/667A9038",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/PurpleBase_GLOW.pct",
+          "confidence": 9
         },
         {
           "hash": 1815586702,
-          "filename": "Data/Environments/16_Track/Textures/6C37A78E",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/rf_corrugatedTile_shinemap.pct",
+          "confidence": 9
         },
         {
           "hash": 964269857,
@@ -14022,8 +14022,8 @@
         },
         {
           "hash": 4221295744,
-          "filename": "Data/Environments/16_Track/Textures/FB9BDC80",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/skyreflect.pct",
+          "confidence": 9
         },
         {
           "hash": 3418908419,
@@ -14042,8 +14042,8 @@
         },
         {
           "hash": 2283061915,
-          "filename": "Data/Environments/16_Track/Textures/8814C29B",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/startbuildingarch.pct",
+          "confidence": 9
         },
         {
           "hash": 437044610,
@@ -14082,28 +14082,28 @@
         },
         {
           "hash": 2353172168,
-          "filename": "Data/Environments/16_Track/Textures/8C428EC8",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/tur_windows_SHINEMAP.pct",
+          "confidence": 9
         },
         {
           "hash": 3102983172,
-          "filename": "Data/Environments/16_Track/Textures/B8F3C404",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/viewing_tower004.pct",
+          "confidence": 9
         },
         {
           "hash": 2241064372,
-          "filename": "Data/Environments/16_Track/Textures/8593EDB4",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/viewing_tower005.pct",
+          "confidence": 9
         },
         {
           "hash": 491748702,
-          "filename": "Data/Environments/16_Track/Textures/1D4F7D5E",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/viewing_tower006_GLOW.pct",
+          "confidence": 9
         },
         {
           "hash": 4283678420,
-          "filename": "Data/Environments/16_Track/Textures/FF53BED4",
-          "confidence": 0
+          "filename": "Data/Environments/16_Track/Textures/viewing_tower007.pct",
+          "confidence": 9
         },
         {
           "hash": 1912134120,
@@ -16037,8 +16037,8 @@
         },
         {
           "hash": 3533906997,
-          "filename": "Data/Environments/NewStaticAds/D2A32435",
-          "confidence": 0
+          "filename": "Data/Environments/NewStaticAds/Feisar_Glass.pct",
+          "confidence": 9
         },
         {
           "hash": 1196375789,
@@ -16067,8 +16067,8 @@
         },
         {
           "hash": 3228662211,
-          "filename": "Data/Environments/NewStaticAds/C07179C3",
-          "confidence": 0
+          "filename": "Data/Environments/NewStaticAds/Glass_ADD.pct",
+          "confidence": 9
         },
         {
           "hash": 2932045417,
@@ -17467,8 +17467,8 @@
         },
         {
           "hash": 1384831456,
-          "filename": "Data/FE/Images/528AD9E0",
-          "confidence": 0
+          "filename": "Data/FE/Images/surface_FE_GLOW.pct",
+          "confidence": 9
         },
         {
           "hash": 3792981301,
@@ -18277,8 +18277,8 @@
         },
         {
           "hash": 1998356851,
-          "filename": "Data/Pads/771C8173",
-          "confidence": 0
+          "filename": "Data/Pads/Textures/envmap_stripe1.pct",
+          "confidence": 9
         },
         {
           "hash": 2346670799,
@@ -19907,13 +19907,13 @@
         },
         {
           "hash": 3765440290,
-          "filename": "Data/Ships/AG_Systems/E0700F22",
-          "confidence": 0
+          "filename": "Data/Ships/AG_Systems/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 2399270864,
-          "filename": "Data/Ships/AG_Systems/8F01F7D0",
-          "confidence": 0
+          "filename": "Data/Ships/AG_Systems/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 3564610878,
@@ -19967,8 +19967,8 @@
         },
         {
           "hash": 2050093591,
-          "filename": "Data/Ships/AG_Systems/7A31F217",
-          "confidence": 0
+          "filename": "Data/Ships/AG_Systems/shipXX.vex",
+          "confidence": 9
         },
         {
           "hash": 3787534376,
@@ -21267,13 +21267,13 @@
         },
         {
           "hash": 1966561602,
-          "filename": "Data/Ships/Assegai/75375942",
-          "confidence": 0
+          "filename": "Data/Ships/Assegai/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 440836528,
-          "filename": "Data/Ships/Assegai/1A46A1B0",
-          "confidence": 0
+          "filename": "Data/Ships/Assegai/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 3091054134,
@@ -22112,8 +22112,8 @@
         },
         {
           "hash": 624362105,
-          "filename": "Data/Ships/Auricom/FE_Tex/25370279",
-          "confidence": 0
+          "filename": "Data/Ships/Auricom/FE_Tex/cockpit test.pct",
+          "confidence": 9
         },
         {
           "hash": 2279615666,
@@ -22502,13 +22502,13 @@
         },
         {
           "hash": 754561129,
-          "filename": "Data/Ships/Auricom/2CF9B069",
-          "confidence": 0
+          "filename": "Data/Ships/Auricom/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 1133004955,
-          "filename": "Data/Ships/Auricom/4388489B",
-          "confidence": 0
+          "filename": "Data/Ships/Auricom/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 787705526,
@@ -23757,13 +23757,13 @@
         },
         {
           "hash": 1512497206,
-          "filename": "Data/Ships/EGX/5A26E036",
-          "confidence": 0
+          "filename": "Data/Ships/EGX/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 894900420,
-          "filename": "Data/Ships/EGX/355718C4",
-          "confidence": 0
+          "filename": "Data/Ships/EGX/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 1860653611,
@@ -25012,13 +25012,13 @@
         },
         {
           "hash": 3058940614,
-          "filename": "Data/Ships/Feisar/B653BAC6",
-          "confidence": 0
+          "filename": "Data/Ships/Feisar/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 3642901044,
-          "filename": "Data/Ships/Feisar/D9224234",
-          "confidence": 0
+          "filename": "Data/Ships/Feisar/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 1918815242,
@@ -25647,8 +25647,8 @@
         },
         {
           "hash": 2764647420,
-          "filename": "Data/Ships/A4C92BFC",
-          "confidence": 0
+          "filename": "Data/Environments/08_Sinucit/Images/Trend2.xml",
+          "confidence": 9
         },
         {
           "hash": 3106792123,
@@ -26282,13 +26282,13 @@
         },
         {
           "hash": 3716073631,
-          "filename": "Data/Ships/Goteki/DD7EC89F",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 2987339885,
-          "filename": "Data/Ships/Goteki/B20F306D",
-          "confidence": 0
+          "filename": "Data/Ships/Goteki/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 1768215075,
@@ -27547,13 +27547,13 @@
         },
         {
           "hash": 2025569421,
-          "filename": "Data/Ships/Harimau/78BBBC8D",
-          "confidence": 0
+          "filename": "Data/Ships/Harimau/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 399131775,
-          "filename": "Data/Ships/Harimau/17CA447F",
-          "confidence": 0
+          "filename": "Data/Ships/Harimau/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 3502111191,
@@ -28792,13 +28792,13 @@
         },
         {
           "hash": 889327997,
-          "filename": "Data/Ships/Icaras/3502117D",
-          "confidence": 0
+          "filename": "Data/Ships/Icaras/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 1517545871,
-          "filename": "Data/Ships/Icaras/5A73E98F",
-          "confidence": 0
+          "filename": "Data/Ships/Icaras/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 3121678751,
@@ -29942,8 +29942,8 @@
         },
         {
           "hash": 1399654623,
-          "filename": "Data/Ships/Mantis/536D08DF",
-          "confidence": 0
+          "filename": "Data/Music/Urban_germany_treieer/track_markjames_01.irx",
+          "confidence": 9
         },
         {
           "hash": 1317650840,
@@ -29982,8 +29982,8 @@
         },
         {
           "hash": 3869761452,
-          "filename": "Data/Ships/Mantis/E6A7DFAC",
-          "confidence": 0
+          "filename": "Data/Ships/AG_Systems/FE_Tex/Zone/Zone_Stripe_Horiz_OrangeWhite.vex",
+          "confidence": 9
         },
         {
           "hash": 4215477995,
@@ -30032,13 +30032,13 @@
         },
         {
           "hash": 3116954046,
-          "filename": "Data/Ships/Mantis/B9C8F1BE",
-          "confidence": 0
+          "filename": "Data/Ships/Mantis/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 3602450764,
-          "filename": "Data/Ships/Mantis/D6B9094C",
-          "confidence": 0
+          "filename": "Data/Ships/Mantis/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 2718984216,
@@ -31257,13 +31257,13 @@
         },
         {
           "hash": 4160489985,
-          "filename": "Data/Ships/Piranha/F7FC0A01",
-          "confidence": 0
+          "filename": "Data/Ships/Piranha/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 2559439603,
-          "filename": "Data/Ships/Piranha/988DF2F3",
-          "confidence": 0
+          "filename": "Data/Ships/Piranha/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 1960719749,
@@ -31757,8 +31757,8 @@
         },
         {
           "hash": 420453864,
-          "filename": "Data/Ships/Piranha/190F9DE8",
-          "confidence": 0
+          "filename": "Data/Environments/07_Blue_Ridge/Images/SL_Guarde.ogg",
+          "confidence": 9
         },
         {
           "hash": 1805298781,
@@ -32462,13 +32462,13 @@
         },
         {
           "hash": 1922655333,
-          "filename": "Data/Ships/Qirex/72996465",
-          "confidence": 0
+          "filename": "Data/Ships/Qirex/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 501783703,
-          "filename": "Data/Ships/Qirex/1DE89C97",
-          "confidence": 0
+          "filename": "Data/Ships/Qirex/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 126573494,
@@ -33672,13 +33672,13 @@
         },
         {
           "hash": 3532555050,
-          "filename": "Data/Ships/Triakis/D28E832A",
-          "confidence": 0
+          "filename": "Data/Ships/Triakis/Ship1.twd",
+          "confidence": 9
         },
         {
           "hash": 3187637208,
-          "filename": "Data/Ships/Triakis/BDFF7BD8",
-          "confidence": 0
+          "filename": "Data/Ships/Triakis/Ship1.vex",
+          "confidence": 9
         },
         {
           "hash": 3137663622,
@@ -36322,8 +36322,8 @@
         },
         {
           "hash": 1635112319,
-          "filename": "Data/6175D57F",
-          "confidence": 0
+          "filename": "Data/Environments/02_Track/FE/07_Warning_GLOW.pmf",
+          "confidence": 9
         },
         {
           "hash": 3895579780,

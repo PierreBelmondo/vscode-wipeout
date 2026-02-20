@@ -1,0 +1,446 @@
+{
+  "code": "UCUS98612DCLASSICPACK2",
+  "name": "WipEout Pure USA DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1678947065,
+          "filename": "Data/Skins/Vanuber/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1504707310,
+          "filename": "Data/Skins/Vanuber/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1424374763,
+          "filename": "Data/Skins/Vanuber/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 568564166,
+          "filename": "Data/Skins/Vanuber/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2810124100,
+          "filename": "Data/Skins/Vanuber/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3028304664,
+          "filename": "Data/Skins/Vanuber/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1908375225,
+          "filename": "Data/Skins/Vanuber/Images/backgroundlarge.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3710930834,
+          "filename": "Data/Skins/Vanuber/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 403985292,
+          "filename": "Data/Skins/Vanuber/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1376082841,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4144105427,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3734219938,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3048963939,
+          "filename": "Data/Skins/Vanuber/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 959285336,
+          "filename": "Data/Skins/Vanuber/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1083982648,
+          "filename": "Data/Skins/Vanuber/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3423253507,
+          "filename": "Data/Skins/Vanuber/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1498056046,
+          "filename": "Data/Skins/Vanuber/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3652227983,
+          "filename": "Data/Skins/Vanuber/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1113568714,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 36019535,
+          "filename": "Data/Skins/Tigron/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3835049388,
+          "filename": "Data/Skins/Tigron/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4118444843,
+          "filename": "Data/Skins/Tigron/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 59226192,
+          "filename": "Data/Skins/Tigron/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 527177332,
+          "filename": "Data/Skins/Tigron/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2338207706,
+          "filename": "Data/Skins/Tigron/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1516148931,
+          "filename": "Data/Skins/Tigron/Images/backgroundlarge.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3057799220,
+          "filename": "Data/Skins/Tigron/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2958421498,
+          "filename": "Data/Skins/Tigron/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4198819311,
+          "filename": "Data/Skins/Tigron/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1322029668,
+          "filename": "Data/Skins/Tigron/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1993478868,
+          "filename": "Data/Skins/Tigron/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 502972693,
+          "filename": "Data/Skins/Tigron/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2439788078,
+          "filename": "Data/Skins/Tigron/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3906862414,
+          "filename": "Data/Skins/Tigron/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1682639477,
+          "filename": "Data/Skins/Tigron/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4044045080,
+          "filename": "Data/Skins/Tigron/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1618871864,
+          "filename": "Data/Skins/Tigron/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3927837628,
+          "filename": "Data/Skins/Tigron/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2831069644,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2894695944,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 763460402,
+          "filename": "Data/Tournaments/Classic2/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 98157003,
+          "filename": "Data/Tournaments/Classic2/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 355194845,
+          "filename": "Data/Tournaments/Classic2/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1723499892,
+          "filename": "Data/Classics/07_porto_kora/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 555417508,
+          "filename": "Data/Classics/07_porto_kora/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 477812244,
+          "filename": "Data/Classics/07_porto_kora/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4043210957,
+          "filename": "Data/Classics/07_porto_kora/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3163736658,
+          "filename": "Data/Classics/07_porto_kora/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2822104177,
+          "filename": "Data/Classics/07_porto_kora/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1001429041,
+          "filename": "Data/Classics/07_porto_kora/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1250699290,
+          "filename": "Data/Classics/07_porto_kora/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3843233224,
+          "filename": "Data/Classics/07_porto_kora/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2629966277,
+          "filename": "Data/Classics/06_odessa_keys/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3680658197,
+          "filename": "Data/Classics/06_odessa_keys/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3858909861,
+          "filename": "Data/Classics/06_odessa_keys/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3833814666,
+          "filename": "Data/Classics/06_odessa_keys/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1656879166,
+          "filename": "Data/Classics/06_odessa_keys/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3975125552,
+          "filename": "Data/Classics/06_odessa_keys/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2639401008,
+          "filename": "Data/Classics/06_odessa_keys/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 906895366,
+          "filename": "Data/Classics/06_odessa_keys/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3150738285,
+          "filename": "Data/Classics/06_odessa_keys/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2120012107,
+          "filename": "Data/Classics/07_porto_kora/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2428563064,
+          "filename": "Data/Classics/07_porto_kora/envportokora.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 48159063,
+          "filename": "Data/Classics/06_odessa_keys/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2751446016,
+          "filename": "Data/Classics/06_odessa_keys/envodessakeys.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 1155759227,
+          "filename": "Data/Gallery/porto_kora0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2038650315,
+          "filename": "Data/Gallery/porto_kora1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1042493211,
+          "filename": "Data/Gallery/porto_kora2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2976111291,
+          "filename": "Data/Gallery/porto_kora4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2293743995,
+          "filename": "Data/Gallery/porto_korat0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3050825931,
+          "filename": "Data/Gallery/porto_korat1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4067922459,
+          "filename": "Data/Gallery/porto_korat2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3474439083,
+          "filename": "Data/Gallery/porto_korat3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2100783035,
+          "filename": "Data/Gallery/porto_korat4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 54724267,
+          "filename": "Data/Gallery/porto_kora3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 223538799,
+          "filename": "Data/Gallery/odessa_keys1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2901987825,
+          "filename": "Data/Gallery/odessa_keyst4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1257411775,
+          "filename": "Data/Gallery/odessa_keys2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2006105359,
+          "filename": "Data/Gallery/odessa_keys3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3316801823,
+          "filename": "Data/Gallery/odessa_keys4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 808634335,
+          "filename": "Data/Gallery/odessa_keys0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1501067057,
+          "filename": "Data/Gallery/odessa_keyst0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1679318657,
+          "filename": "Data/Gallery/odessa_keyst1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 599270481,
+          "filename": "Data/Gallery/odessa_keyst2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 517475809,
+          "filename": "Data/Gallery/odessa_keyst3.tga",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

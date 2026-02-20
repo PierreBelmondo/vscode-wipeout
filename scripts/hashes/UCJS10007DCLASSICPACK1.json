@@ -1,0 +1,291 @@
+{
+  "code": "UCJS10007DCLASSICPACK1",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 748107909,
+          "filename": "Data/2C973885",
+          "confidence": 0
+        },
+        {
+          "hash": 36019535,
+          "filename": "Data/Skins/Tigron/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3835049388,
+          "filename": "Data/Skins/Tigron/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4118444843,
+          "filename": "Data/Skins/Tigron/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 59226192,
+          "filename": "Data/Skins/Tigron/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 527177332,
+          "filename": "Data/Skins/Tigron/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1516148931,
+          "filename": "Data/Skins/Tigron/Images/backgroundlarge.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3057799220,
+          "filename": "Data/Skins/Tigron/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2958421498,
+          "filename": "Data/Skins/Tigron/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4198819311,
+          "filename": "Data/Skins/Tigron/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1322029668,
+          "filename": "Data/Skins/Tigron/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3927837628,
+          "filename": "Data/Skins/Tigron/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1993478868,
+          "filename": "Data/Skins/Tigron/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 502972693,
+          "filename": "Data/Skins/Tigron/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2439788078,
+          "filename": "Data/Skins/Tigron/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3906862414,
+          "filename": "Data/Skins/Tigron/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1682639477,
+          "filename": "Data/Skins/Tigron/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4044045080,
+          "filename": "Data/Skins/Tigron/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1618871864,
+          "filename": "Data/Skins/Tigron/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2338207706,
+          "filename": "Data/Skins/Tigron/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2831069644,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2894695944,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 763460402,
+          "filename": "Data/Tournaments/Classic2/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 98157003,
+          "filename": "Data/Tournaments/Classic2/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 355194845,
+          "filename": "Data/Tournaments/Classic2/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1997564882,
+          "filename": "Data/Music/Classic1_cairodrome/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3332561440,
+          "filename": "Data/Music/Classic1_cairodrome/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2103295937,
+          "filename": "Data/Music/Classic1_cairodrome/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2028626351,
+          "filename": "Data/Music/Classic2_canada/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3893964203,
+          "filename": "Data/Music/Classic2_canada/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1658194049,
+          "filename": "Data/Music/Classic2_canada/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3986733411,
+          "filename": "Data/Classics/05_altima_vii/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2852176819,
+          "filename": "Data/Classics/05_altima_vii/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2539710979,
+          "filename": "Data/Classics/05_altima_vii/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4168113386,
+          "filename": "Data/Classics/05_altima_vii/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3912429126,
+          "filename": "Data/Classics/05_altima_vii/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2998571048,
+          "filename": "Data/Classics/05_altima_vii/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2842501719,
+          "filename": "Data/Classics/05_altima_vii/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3640810623,
+          "filename": "Data/Classics/05_altima_vii/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1854517079,
+          "filename": "Data/Classics/05_altima_vii/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2646465286,
+          "filename": "Data/Classics/05_altima_vii/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 596614030,
+          "filename": "Data/Classics/05_altima_vii/envaltima.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 1086116869,
+          "filename": "Data/Gallery/altima_vii0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2111634869,
+          "filename": "Data/Gallery/altima_vii1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 981239653,
+          "filename": "Data/Gallery/altima_vii2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 119320277,
+          "filename": "Data/Gallery/altima_vii3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3040637637,
+          "filename": "Data/Gallery/altima_vii4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1057932008,
+          "filename": "Data/Gallery/altima_viit0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 40823640,
+          "filename": "Data/Gallery/altima_viit1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1171165576,
+          "filename": "Data/Gallery/altima_viit2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2024716344,
+          "filename": "Data/Gallery/altima_viit3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3398329384,
+          "filename": "Data/Gallery/altima_viit4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3791576175,
+          "filename": "Data/Music/Classic1_cairodrome/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 3993294354,
+          "filename": "Data/Music/Classic2_canada/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

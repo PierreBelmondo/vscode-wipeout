@@ -1,0 +1,271 @@
+{
+  "code": "UCUS98612DGAMMAPACK1",
+  "name": "WipEout Pure USA DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 681060560,
+          "filename": "Data/Skins/Piranha/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 996348253,
+          "filename": "Data/Skins/Piranha/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4060136936,
+          "filename": "Data/Skins/Piranha/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 25054203,
+          "filename": "Data/Skins/Piranha/Images/piranha_background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4162096679,
+          "filename": "Data/Skins/Piranha/Images/piranha_texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2708018417,
+          "filename": "Data/Skins/Piranha/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 844693950,
+          "filename": "Data/Skins/Piranha/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2017986987,
+          "filename": "Data/Skins/Piranha/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1073683201,
+          "filename": "Data/Skins/Piranha/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4108254864,
+          "filename": "Data/Skins/Piranha/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2683710801,
+          "filename": "Data/Skins/Piranha/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 325114474,
+          "filename": "Data/Skins/Piranha/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1792086282,
+          "filename": "Data/Skins/Piranha/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3863471665,
+          "filename": "Data/Skins/Piranha/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1929893724,
+          "filename": "Data/Skins/Piranha/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 290295645,
+          "filename": "Data/Skins/Piranha/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1285428568,
+          "filename": "Data/Tournaments/Gamma/Images/gammaleague.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1746879175,
+          "filename": "Data/Tournaments/Gamma/Images/gammaleague_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1734397045,
+          "filename": "Data/Tournaments/Gamma/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1447618347,
+          "filename": "Data/Tournaments/Gamma/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3724046784,
+          "filename": "Data/Tournaments/Gamma/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1900801381,
+          "filename": "Data/Ships/Tigron/Images/tigron3d.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3327032322,
+          "filename": "Data/Ships/Tigron/Images/tigrontop.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2803257856,
+          "filename": "Data/Ships/Tigron/Images/tigronside.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3341490301,
+          "filename": "Data/Ships/Tigron/handlingstats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 617642158,
+          "filename": "Data/Ships/Tigron/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2949926380,
+          "filename": "Data/Ships/Tigron/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3184851582,
+          "filename": "Data/Environments/06_staten_park/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2159334350,
+          "filename": "Data/Environments/06_staten_park/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3340019998,
+          "filename": "Data/Environments/06_staten_park/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2206279502,
+          "filename": "Data/Environments/06_staten_park/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4004086397,
+          "filename": "Data/Environments/06_staten_park/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 772680837,
+          "filename": "Data/Environments/06_staten_park/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2953854944,
+          "filename": "Data/Environments/06_staten_park/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2622012906,
+          "filename": "Data/Environments/06_staten_park/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2620463151,
+          "filename": "Data/Environments/06_staten_park/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3075595807,
+          "filename": "Data/Environments/06_staten_park/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1666991176,
+          "filename": "Data/Environments/06_staten_park/envstatenpark.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 1542994033,
+          "filename": "Data/Ships/Tigron/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1578807051,
+          "filename": "Data/Ships/Tigron/shipwreck.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 3913422713,
+          "filename": "Data/Ships/Tigron/vr/ship.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 1533718453,
+          "filename": "Data/Gallery/staten_park1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3400061562,
+          "filename": "Data/Gallery/staten_parkt4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 483054949,
+          "filename": "Data/Gallery/staten_park2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2475303109,
+          "filename": "Data/Gallery/staten_park4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1059615930,
+          "filename": "Data/Gallery/staten_parkt0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 38296842,
+          "filename": "Data/Gallery/staten_parkt1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2022182506,
+          "filename": "Data/Gallery/staten_parkt3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1711965701,
+          "filename": "Data/Gallery/staten_park0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 564853973,
+          "filename": "Data/Gallery/staten_park3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1172842458,
+          "filename": "Data/Gallery/staten_parkt2.tga",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

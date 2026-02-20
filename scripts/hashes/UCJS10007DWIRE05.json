@@ -1,0 +1,281 @@
+{
+  "code": "UCJS10007DWIRE05",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2693121286,
+          "filename": "Data/A085C506",
+          "confidence": 0
+        },
+        {
+          "hash": 2669499573,
+          "filename": "Data/9F1D54B5",
+          "confidence": 0
+        },
+        {
+          "hash": 610847362,
+          "filename": "Data/2468CA82",
+          "confidence": 0
+        },
+        {
+          "hash": 1933436725,
+          "filename": "Data/733DE735",
+          "confidence": 0
+        },
+        {
+          "hash": 2111180346,
+          "filename": "Data/7DD60E3A",
+          "confidence": 0
+        },
+        {
+          "hash": 935790127,
+          "filename": "Data/37C7062F",
+          "confidence": 0
+        },
+        {
+          "hash": 3580220215,
+          "filename": "Data/D565D337",
+          "confidence": 0
+        },
+        {
+          "hash": 3142709524,
+          "filename": "Data/BB51F114",
+          "confidence": 0
+        },
+        {
+          "hash": 3497599701,
+          "filename": "Data/D07922D5",
+          "confidence": 0
+        },
+        {
+          "hash": 1559221742,
+          "filename": "Data/5CEFD5EE",
+          "confidence": 0
+        },
+        {
+          "hash": 626925198,
+          "filename": "Data/255E1E8E",
+          "confidence": 0
+        },
+        {
+          "hash": 2848516533,
+          "filename": "Data/A9C8E9B5",
+          "confidence": 0
+        },
+        {
+          "hash": 1015601368,
+          "filename": "Data/3C88D8D8",
+          "confidence": 0
+        },
+        {
+          "hash": 4225189739,
+          "filename": "Data/FBD7476B",
+          "confidence": 0
+        },
+        {
+          "hash": 4238113019,
+          "filename": "Data/FC9C78FB",
+          "confidence": 0
+        },
+        {
+          "hash": 664660092,
+          "filename": "Data/279DE87C",
+          "confidence": 0
+        },
+        {
+          "hash": 2615645812,
+          "filename": "Data/Tournaments/Exclusive/Images/league.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 631188618,
+          "filename": "Data/Tournaments/Exclusive/Images/league_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3056764348,
+          "filename": "Data/Tournaments/Exclusive/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 4208734374,
+          "filename": "Data/Tournaments/Exclusive/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 686402338,
+          "filename": "Data/Tournaments/Exclusive/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3784920949,
+          "filename": "Data/E1994F75",
+          "confidence": 0
+        },
+        {
+          "hash": 3574338119,
+          "filename": "Data/D50C1247",
+          "confidence": 0
+        },
+        {
+          "hash": 3681140420,
+          "filename": "Data/DB69BEC4",
+          "confidence": 0
+        },
+        {
+          "hash": 39104380,
+          "filename": "Data/0254AF7C",
+          "confidence": 0
+        },
+        {
+          "hash": 1623427076,
+          "filename": "Data/60C38804",
+          "confidence": 0
+        },
+        {
+          "hash": 2132046813,
+          "filename": "Data/7F1473DD",
+          "confidence": 0
+        },
+        {
+          "hash": 1444266921,
+          "filename": "Data/5615C3A9",
+          "confidence": 0
+        },
+        {
+          "hash": 4056302193,
+          "filename": "Data/F1C64271",
+          "confidence": 0
+        },
+        {
+          "hash": 3433458625,
+          "filename": "Data/CCA66BC1",
+          "confidence": 0
+        },
+        {
+          "hash": 2332430609,
+          "filename": "Data/8B061111",
+          "confidence": 0
+        },
+        {
+          "hash": 4157803959,
+          "filename": "Data/F7D30DB7",
+          "confidence": 0
+        },
+        {
+          "hash": 1706455736,
+          "filename": "Data/65B672B8",
+          "confidence": 0
+        },
+        {
+          "hash": 3177791897,
+          "filename": "Data/BD694199",
+          "confidence": 0
+        },
+        {
+          "hash": 2759984322,
+          "filename": "Data/A48204C2",
+          "confidence": 0
+        },
+        {
+          "hash": 3174358994,
+          "filename": "Data/BD34DFD2",
+          "confidence": 0
+        },
+        {
+          "hash": 2313430659,
+          "filename": "Data/89E42683",
+          "confidence": 0
+        },
+        {
+          "hash": 3850011310,
+          "filename": "Data/E57A82AE",
+          "confidence": 0
+        },
+        {
+          "hash": 832509935,
+          "filename": "Data/319F17EF",
+          "confidence": 0
+        },
+        {
+          "hash": 452450202,
+          "filename": "Data/1AF7D79A",
+          "confidence": 0
+        },
+        {
+          "hash": 3741666943,
+          "filename": "Data/DF054E7F",
+          "confidence": 0
+        },
+        {
+          "hash": 1630378971,
+          "filename": "Data/612D9BDB",
+          "confidence": 0
+        },
+        {
+          "hash": 468568251,
+          "filename": "Data/1BEDC8BB",
+          "confidence": 0
+        },
+        {
+          "hash": 1548595819,
+          "filename": "Data/5C4DB26B",
+          "confidence": 0
+        },
+        {
+          "hash": 646832395,
+          "filename": "Data/268DE10B",
+          "confidence": 0
+        },
+        {
+          "hash": 2494381339,
+          "filename": "Data/94AD3D1B",
+          "confidence": 0
+        },
+        {
+          "hash": 1581558900,
+          "filename": "Data/5E44AC74",
+          "confidence": 0
+        },
+        {
+          "hash": 1663337924,
+          "filename": "Data/632485C4",
+          "confidence": 0
+        },
+        {
+          "hash": 612695828,
+          "filename": "Data/2484FF14",
+          "confidence": 0
+        },
+        {
+          "hash": 434427556,
+          "filename": "Data/19E4D6A4",
+          "confidence": 0
+        },
+        {
+          "hash": 2881751732,
+          "filename": "Data/ABC40AB4",
+          "confidence": 0
+        },
+        {
+          "hash": 3925525600,
+          "filename": "Data/E9FAC460",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

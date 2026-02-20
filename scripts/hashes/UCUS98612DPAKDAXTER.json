@@ -1,0 +1,116 @@
+{
+  "code": "UCUS98612DPAKDAXTER",
+  "name": "WipEout Pure USA DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1538384545,
+          "filename": "Data/5BB1E2A1",
+          "confidence": 0
+        },
+        {
+          "hash": 557192639,
+          "filename": "Data/213615BF",
+          "confidence": 0
+        },
+        {
+          "hash": 516628435,
+          "filename": "Data/1ECB1FD3",
+          "confidence": 0
+        },
+        {
+          "hash": 2155078690,
+          "filename": "Data/8073E422",
+          "confidence": 0
+        },
+        {
+          "hash": 2801639326,
+          "filename": "Data/A6FD9F9E",
+          "confidence": 0
+        },
+        {
+          "hash": 3999183035,
+          "filename": "Data/EE5EB0BB",
+          "confidence": 0
+        },
+        {
+          "hash": 3380667433,
+          "filename": "Data/C980E429",
+          "confidence": 0
+        },
+        {
+          "hash": 775864531,
+          "filename": "Data/2E3EC0D3",
+          "confidence": 0
+        },
+        {
+          "hash": 3675913352,
+          "filename": "Data/DB19FC88",
+          "confidence": 0
+        },
+        {
+          "hash": 4127307147,
+          "filename": "Data/F601B58B",
+          "confidence": 0
+        },
+        {
+          "hash": 3736476887,
+          "filename": "Data/DEB61CD7",
+          "confidence": 0
+        },
+        {
+          "hash": 3143627597,
+          "filename": "Data/BB5FF34D",
+          "confidence": 0
+        },
+        {
+          "hash": 3817755475,
+          "filename": "Data/E38E5353",
+          "confidence": 0
+        },
+        {
+          "hash": 2671245554,
+          "filename": "Data/9F37F8F2",
+          "confidence": 0
+        },
+        {
+          "hash": 2616700835,
+          "filename": "Data/9BF7AFA3",
+          "confidence": 0
+        },
+        {
+          "hash": 2996365935,
+          "filename": "Data/B298EA6F",
+          "confidence": 0
+        },
+        {
+          "hash": 2410960613,
+          "filename": "Data/8FB456E5",
+          "confidence": 0
+        },
+        {
+          "hash": 1035065940,
+          "filename": "Data/3DB1DA54",
+          "confidence": 0
+        },
+        {
+          "hash": 2538359827,
+          "filename": "Data/974C4C13",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}

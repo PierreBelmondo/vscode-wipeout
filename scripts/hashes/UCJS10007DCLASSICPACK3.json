@@ -1,0 +1,286 @@
+{
+  "code": "UCJS10007DCLASSICPACK3",
+  "name": "WipEout Pure Japanese DLC",
+  "wads": [
+    {
+      "path": "PI.WAD",
+      "files": [
+        {
+          "hash": 3448164202,
+          "filename": "definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1212993349,
+          "filename": "stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1678947065,
+          "filename": "Data/Skins/Vanuber/definition.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1504707310,
+          "filename": "Data/Skins/Vanuber/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1424374763,
+          "filename": "Data/Skins/Vanuber/skin.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 568564166,
+          "filename": "Data/Skins/Vanuber/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2810124100,
+          "filename": "Data/Skins/Vanuber/Images/background.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1908375225,
+          "filename": "Data/Skins/Vanuber/Images/backgroundlarge.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3710930834,
+          "filename": "Data/Skins/Vanuber/Images/screen.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 403985292,
+          "filename": "Data/Skins/Vanuber/Images/screen_de_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1376082841,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4144105427,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1113568714,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_ko.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3734219938,
+          "filename": "Data/Skins/Vanuber/Images/screen_en_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3048963939,
+          "filename": "Data/Skins/Vanuber/Images/screen_es_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 959285336,
+          "filename": "Data/Skins/Vanuber/Images/screen_es_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1083982648,
+          "filename": "Data/Skins/Vanuber/Images/screen_fr_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3423253507,
+          "filename": "Data/Skins/Vanuber/Images/screen_fr_us.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1498056046,
+          "filename": "Data/Skins/Vanuber/Images/screen_it_eu.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3652227983,
+          "filename": "Data/Skins/Vanuber/Images/screen_ja_jap.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 3028304664,
+          "filename": "Data/Skins/Vanuber/Images/texture.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2831069644,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2894695944,
+          "filename": "Data/Tournaments/Classic2/Images/classic2league_m.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 763460402,
+          "filename": "Data/Tournaments/Classic2/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 98157003,
+          "filename": "Data/Tournaments/Classic2/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 355194845,
+          "filename": "Data/Tournaments/Classic2/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2245762442,
+          "filename": "Data/Music/Classic3_messij/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 2749417488,
+          "filename": "Data/Music/Classic3_messij/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1308122655,
+          "filename": "Data/Music/Classic3_messij/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1047084204,
+          "filename": "Data/Music/Classic4_operatique/album.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 1901526860,
+          "filename": "Data/Music/Classic4_operatique/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2939853298,
+          "filename": "Data/Music/Classic4_operatique/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1723499892,
+          "filename": "Data/Classics/07_porto_kora/Images/track_1.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 555417508,
+          "filename": "Data/Classics/07_porto_kora/Images/track_2.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 477812244,
+          "filename": "Data/Classics/07_porto_kora/Images/track_3.mip",
+          "confidence": 0
+        },
+        {
+          "hash": 4043210957,
+          "filename": "Data/Classics/07_porto_kora/screen.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3163736658,
+          "filename": "Data/Classics/07_porto_kora/screen_m.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2822104177,
+          "filename": "Data/Classics/07_porto_kora/screen_tt.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1250699290,
+          "filename": "Data/Classics/07_porto_kora/stats.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 3843233224,
+          "filename": "Data/Classics/07_porto_kora/stringtable.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 1001429041,
+          "filename": "Data/Classics/07_porto_kora/trackstartup.xml",
+          "confidence": 0
+        },
+        {
+          "hash": 2120012107,
+          "filename": "Data/Classics/07_porto_kora/track.vex",
+          "confidence": 0
+        },
+        {
+          "hash": 2428563064,
+          "filename": "Data/Classics/07_porto_kora/envportokora.bnk",
+          "confidence": 0
+        },
+        {
+          "hash": 1155759227,
+          "filename": "Data/Gallery/porto_kora0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2038650315,
+          "filename": "Data/Gallery/porto_kora1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 1042493211,
+          "filename": "Data/Gallery/porto_kora2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 54724267,
+          "filename": "Data/Gallery/porto_kora3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2976111291,
+          "filename": "Data/Gallery/porto_kora4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2293743995,
+          "filename": "Data/Gallery/porto_korat0.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3050825931,
+          "filename": "Data/Gallery/porto_korat1.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 4067922459,
+          "filename": "Data/Gallery/porto_korat2.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 3474439083,
+          "filename": "Data/Gallery/porto_korat3.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 2100783035,
+          "filename": "Data/Gallery/porto_korat4.tga",
+          "confidence": 0
+        },
+        {
+          "hash": 322251319,
+          "filename": "Data/Music/Classic3_messij/music.at3",
+          "confidence": 0
+        },
+        {
+          "hash": 2827455249,
+          "filename": "Data/Music/Classic4_operatique/music.at3",
+          "confidence": 0
+        }
+      ]
+    }
+  ]
+}
