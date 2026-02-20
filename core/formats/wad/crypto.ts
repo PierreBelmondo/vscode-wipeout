@@ -37,5 +37,12 @@ export function xtea8_ctr_decrypt(buffer: Buffer, key: string): Buffer {
   const k = Buffer.from(key, "ascii");
   const iv = Buffer.alloc(8);
   iv.writeInt32LE(0x12345678, 0);
-  return decrypt(buffer, k, "ctr", iv, false, 8);
+
+  const originalLength = buffer.length;
+  const remainder = originalLength & 7;
+  if (remainder !== 0) {
+    buffer = Buffer.concat([buffer, Buffer.alloc(8 - remainder)]);
+  }
+
+  return decrypt(buffer, k, "ctr", iv, true, 8).slice(0, originalLength);
 }
