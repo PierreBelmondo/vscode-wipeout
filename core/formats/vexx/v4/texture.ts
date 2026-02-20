@@ -111,7 +111,7 @@ export class VexxNodeTexture extends VexxNode {
         rgba[pixel * 4 + 0] = this.cmapRange.getUint8(index * 4 + 0);
         rgba[pixel * 4 + 1] = this.cmapRange.getUint8(index * 4 + 1);
         rgba[pixel * 4 + 2] = this.cmapRange.getUint8(index * 4 + 2);
-        rgba[pixel * 4 + 3] = this.cmapRange.getUint8(index + 4 + 3);
+        rgba[pixel * 4 + 3] = this.cmapRange.getUint8(index * 4 + 3);
       }
     }
 
