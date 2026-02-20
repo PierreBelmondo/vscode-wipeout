@@ -709,7 +709,7 @@ program
     const tables = loadTables();
     const hashes = mergeTables(tables);
     validateHash(hashes);
-    outputHashes(hashes, __dirname + "/../src/core/wad/hashes.ts");
+    outputHashes(hashes, __dirname + "/../core/formats/wad/hashes.ts");
   });
 
 program
