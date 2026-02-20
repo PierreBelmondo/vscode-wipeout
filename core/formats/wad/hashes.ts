@@ -1767,7 +1767,7 @@ export const WAD_HASHMAP = {
 	0xf5935b7b: "Data/Tex/caustics/save.31.mip",
 	0xb23321ab: "Data/Tex/caustics/save.32.mip",
 	0x74b685cc: "Data/Tex/74B685CC.mip",
-	0x2a131f4d: "Data/Tex/engineFlare/2A131F4D.mip",
+	0x2a131f4d: "Data/Tex/EngineFlare/2A131F4D.mip",
 	0x218958fa: "Data/Tex/218958FA.mip",
 	0x2065f3b7: "Data/Tex/2065F3B7.mip",
 	0xd2db7c7f: "Data/Tex/D2DB7C7F.mip",

@@ -210,6 +210,7 @@
     "@typescript-eslint/parser": "^5.62.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^2.32.0",
+    "commander": "^14.0.3",
     "crypto-browserify": "^3.12.1",
     "esbuild-loader": "^4.4.2",
     "eslint": "^8.57.1",
