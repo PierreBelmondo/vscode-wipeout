@@ -40,9 +40,11 @@ export class WadFile {
     const range = this.range.reset(this.offset, this.offset + this.sizeCompressed);
     if (this.compressed) {
       if (this.sizeUncompressed & (1 << 31)) {
-        return zlib.inflateSync(range.buffer);
+        const inflated = zlib.inflateSync(range.buffer);
+        return inflated.buffer.slice(inflated.byteOffset, inflated.byteOffset + inflated.byteLength) as ArrayBuffer;
       } else {
-        return lzss.decompress(range.getBuffer(), this.sizeUncompressed);
+        const decompressed = lzss.decompress(range.getBuffer(), this.sizeUncompressed);
+        return decompressed.buffer.slice(decompressed.byteOffset, decompressed.byteOffset + decompressed.byteLength) as ArrayBuffer;
       }
     }
     return range.buffer;
@@ -71,7 +73,7 @@ export class Wad {
       const dk = xtea8_ctr_bruteforce(buffer);
       if (dk == null) throw new Error("WAD file is encrypted or has wrong format");
       buffer = xtea8_ctr_decrypt(ret.range.getBuffer(), dk.key);
-      let ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+      const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
       return Wad.load(ab);
     }
 

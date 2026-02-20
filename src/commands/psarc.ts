@@ -27,7 +27,7 @@ export class PsarcUnpackCommandProvider {
               const buffer = array.buffer.slice(
                 array.byteOffset,
                 array.byteOffset + array.byteLength
-              );
+              ) as ArrayBuffer;
 
               const psarc = Psarc.load(buffer);
               const outfiles = psarc.files;

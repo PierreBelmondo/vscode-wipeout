@@ -29,7 +29,7 @@ export class PsarcFile {
     return ret;
   }
 
-  get head(): ArrayBuffer {
+  get head(): Uint8Array {
     return this.parent.blocks[this.index].getUint8Array(false).slice(0, 10);
   }
 
@@ -75,7 +75,7 @@ export class PsarcBlock {
 
   get data(): ArrayBuffer {
     const array = this.getUint8Array();
-    return array.buffer;
+    return array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength) as ArrayBuffer;
   }
 }
 

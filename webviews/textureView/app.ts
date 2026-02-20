@@ -105,7 +105,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: DXT1.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+            data: DXT1.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
           });
           break;
         case "DXT3":
@@ -113,7 +113,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: DXT3.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+            data: DXT3.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
           });
           break;
         case "DXT5":
@@ -121,7 +121,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: DXT5.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+            data: DXT5.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
           });
           break;
         case "BC7":
@@ -130,7 +130,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: await BC7.decompress(mipmap.width, mipmap.height, mipmap.data.buffer),
+            data: await BC7.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
           });
           break;
         default:

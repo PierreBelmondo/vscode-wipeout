@@ -25,7 +25,7 @@ export class WacUnpackCommandProvider {
             progress.report({ increment: 0, message: "Loading file..." });
 
             const wacArray = await vscode.workspace.fs.readFile(wacFilename);
-            const wacBuffer = wacArray.buffer.slice(wacArray.byteOffset, wacArray.byteOffset + wacArray.byteLength);
+            const wacBuffer = wacArray.buffer.slice(wacArray.byteOffset, wacArray.byteOffset + wacArray.byteLength) as ArrayBuffer;
 
             const wac = Wac.load(wacBuffer);
             const wad = fs.openSync(wadFilename.fsPath, 'r');

@@ -3,11 +3,11 @@ import { CSS2DObject } from "../renderers/CSS2DRenderer";
 import { World } from "../worlds";
 
 export abstract class Loader {
-  loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike, filename: string) {}
+  loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {}
 
   loadFromString(world: World, content: string) {}
 
-  async import(buffer: ArrayBufferLike, filename: string) {}
+  async import(buffer: ArrayBuffer, filename: string) {}
 
   protected createControlPoint(name: string): THREE.Object3D {
     const div = document.createElement("div") as HTMLDivElement;

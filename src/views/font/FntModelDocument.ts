@@ -11,7 +11,7 @@ export class FntModelDocument extends Disposable implements vscode.CustomDocumen
   private _mime: string;
 
   static async create(uri: vscode.Uri): Promise<FntModelDocument> {
-    let array = new Uint8Array();
+    let array: Uint8Array<ArrayBufferLike> = new Uint8Array();
     if (uri.scheme !== "untitled") {
       array = await vscode.workspace.fs.readFile(uri);
     }

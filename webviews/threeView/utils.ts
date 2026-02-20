@@ -37,12 +37,12 @@ export function mipmapsToTexture(mipmaps: Mipmaps): THREE.Texture {
     switch (mipmap.type) {
       case "ARGB": {
         const data = convertARGBtoRGBA(mipmap.data);
-        const texture = new THREE.DataTexture(data, mipmap.width, mipmap.height, THREE.RGBAFormat);
+        const texture = new THREE.DataTexture(data as unknown as Uint8ClampedArray<ArrayBuffer>, mipmap.width, mipmap.height, THREE.RGBAFormat);
         textures.push(texture);
         break;
       }
       case "RGBA": {
-        const texture = new THREE.DataTexture(mipmap.data, mipmap.width, mipmap.height, THREE.RGBAFormat);
+        const texture = new THREE.DataTexture(mipmap.data as unknown as Uint8Array<ArrayBuffer>, mipmap.width, mipmap.height, THREE.RGBAFormat);
         textures.push(texture);
         break;
       }

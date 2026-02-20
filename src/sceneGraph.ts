@@ -163,8 +163,8 @@ export class SceneObject extends vscode.TreeItem implements SceneItem {
   static iconPath(name: string) {
     const svg = name + ".svg";
     return {
-      light: path.join(__filename, "../../resources/images", "light", svg),
-      dark: path.join(__filename, "../../resources/images", "dark", svg),
+      light: vscode.Uri.file(path.join(__filename, "../../resources/images", "light", svg)),
+      dark: vscode.Uri.file(path.join(__filename, "../../resources/images", "dark", svg)),
     };
   }
 

@@ -32,7 +32,7 @@ class AsyncImage {
     if (this.loaded) this.applyTo(object);
   }
 
-  async load(buffer: ArrayBufferLike) {
+  async load(buffer: ArrayBuffer) {
     const gtf = GTF.load(buffer);
     this._texture = mipmapsToTexture(gtf.mipmaps);
     for (const object of this.objects) this.applyTo(object);
@@ -82,7 +82,7 @@ export class FELoader extends Loader {
     this.asyncImages[filename].notify();
   }
 
-  override async import(buffer: ArrayBufferLike, filename: string) {
+  override async import(buffer: ArrayBuffer, filename: string) {
     if (filename in this.asyncImages) {
       this.asyncImages.filename.load(buffer);
     }

@@ -27,7 +27,7 @@ export class WadUnpackCommandProvider {
               const buffer = array.buffer.slice(
                 array.byteOffset,
                 array.byteOffset + array.byteLength
-              );
+              ) as ArrayBuffer;
 
               const psarc = Wad.load(buffer);
               const outfiles = psarc.files;

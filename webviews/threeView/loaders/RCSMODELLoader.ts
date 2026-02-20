@@ -7,6 +7,7 @@ import { mipmapsToTexture } from "../utils";
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "@core/formats/rcs";
 import { World } from "../worlds";
 import { createMaterial } from "../materials/rcs";
+import { VertexNormalsHelper } from "../helpers/VertexNormalsHelper";
 
 type TextureChannel = {
   filename: string;
@@ -127,7 +128,7 @@ export class RCSModelLoader extends Loader {
   asyncTextures: AsyncTexture[] = [];
   asyncTextureLookup: { [filename: string]: number } = {};
 
-  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike, filename: string) {
+  override async loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {
     world.userdata.filename = filename;
     const model = RcsModel.load(arrayBuffer);
     this.loadMaterials(world, model);
@@ -138,7 +139,7 @@ export class RCSModelLoader extends Loader {
     return world;
   }
 
-  override async import(buffer: ArrayBufferLike, filename: string) {
+  override async import(buffer: ArrayBuffer, filename: string) {
     if (filename.endsWith(".rcsmaterial")) {
       for (const asyncMaterial of this.asyncMaterials) {
         if (asyncMaterial.match(filename)) {
@@ -233,6 +234,11 @@ export class RCSModelLoader extends Loader {
         break;
       }
     }
+    /*
+    const helper = new VertexNormalsHelper( mesh, 1, 0xff0000 );
+    helper.name = ".VertexNormalsHelper"
+    mesh.add(helper);
+    */
     return mesh;
   }
 
@@ -249,6 +255,11 @@ export class RCSModelLoader extends Loader {
           break;
         }
       }
+      /*
+      const helper = new VertexNormalsHelper( mesh, 1, 0xff0000 );
+      helper.name = ".VertexNormalsHelper"
+      mesh.add(helper);
+      */
       group.add(mesh);
     }
     return group;

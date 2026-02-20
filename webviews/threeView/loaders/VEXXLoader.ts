@@ -63,7 +63,7 @@ class AsyncRcsModel {
     this.asyncRcsMeshes.push(asyncMesh);
   }
 
-  async load(buffer: ArrayBufferLike, filename: string) {
+  async load(buffer: ArrayBuffer, filename: string) {
     this.rcsModelLoader.loadFromBuffer(this.world, buffer, filename);
     for (const asyncRcsMesh of this.asyncRcsMeshes) {
       const externalId = asyncRcsMesh.vexxMesh.externalId;
@@ -76,7 +76,7 @@ class AsyncRcsModel {
     }
   }
 
-  async import(buffer: ArrayBufferLike, filename: string) {
+  async import(buffer: ArrayBuffer, filename: string) {
     this.rcsModelLoader.import(buffer, filename);
   }
 }
@@ -90,7 +90,7 @@ class AsyncVexxModel {
     this.parent = parent;
   }
 
-  async load(filename: string, buffer: ArrayBufferLike, engineflare: boolean = false) {
+  async load(filename: string, buffer: ArrayBuffer, engineflare: boolean = false) {
     const vexx = Vexx.load(buffer);
     const object = this.parent.loadNode(this.world, vexx.root);
     if (engineflare) {
@@ -111,7 +111,7 @@ export class VEXXLoader extends Loader {
   asyncVexxModel: AsyncVexxModel;
   asyncRcsModel?: AsyncRcsModel;
 
-  override async loadFromBuffer(world: World, arrayBuffer: ArrayBufferLike, filename: string) {
+  override async loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {
     world.userdata.filename = filename;
     this.asyncVexxModel = new AsyncVexxModel(world, this);
     const vexx = Vexx.load(arrayBuffer);
@@ -120,7 +120,7 @@ export class VEXXLoader extends Loader {
     return world;
   }
 
-  override async import(buffer: ArrayBufferLike, filename: string) {
+  override async import(buffer: ArrayBuffer, filename: string) {
     if (this.asyncRcsModel === undefined) {
       console.error("Unexpected file: " + filename);
       return;
