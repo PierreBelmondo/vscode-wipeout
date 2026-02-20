@@ -6,7 +6,7 @@ import { FlyControls } from "./controls/FlyControls";
 import { GLTFExporter } from "./exporters/GLTFExporter";
 import { api } from "./api";
 
-import hangar from "./resources/hangar.jpg";
+//import hangar from "./resources/hangar.jpg";
 
 const _exporter = new GLTFExporter();
 
@@ -39,10 +39,12 @@ export class World {
   constructor() {
     this.scene.name = "World";
 
+    /*
     const background = new THREE.TextureLoader().load(hangar);
     background.mapping = THREE.EquirectangularReflectionMapping;
     background.encoding = THREE.sRGBEncoding;
     this.scene.background = background;
+    */
 
     const fov = 45;
     const aspect = window.innerWidth / window.innerHeight;
@@ -99,7 +101,7 @@ export class World {
   }
 
   emitSelected(object: THREE.Object3D<THREE.Event>) {
-    api.sceneSelected(object.uuid)
+    api.sceneSelected(object.uuid);
   }
 
   setupOrbitContols(element: HTMLElement) {
