@@ -62,12 +62,14 @@ export class FEPanel {
       switch (e.type) {
         case "ready": {
           const webviewUri = webviewPanel.asWebviewUri(uri);
+          /*
           const body = {
             mime: "application/xml+wipeout",
             uri: this._uri,
             webviewUri: webviewUri.toString(),
-          } as ThreeViewMessageImportBody;
-          this.postMessage(webviewPanel, "import", body);
+          } ;//as ThreeViewMessageLoadBody;
+          webviewPanel.postMessage("import", body);
+          */
           break;
         }
         case "log": {
