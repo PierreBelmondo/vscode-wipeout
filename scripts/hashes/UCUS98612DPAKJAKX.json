@@ -17,98 +17,98 @@
         },
         {
           "hash": 3361139617,
-          "filename": "Data/C856EBA1",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 3653940413,
-          "filename": "Data/D9CAB4BD",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Skin.xml",
+          "confidence": 9
         },
         {
           "hash": 2499956645,
-          "filename": "Data/95024FA5",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 2201915608,
-          "filename": "Data/833E90D8",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Images/background.mip",
+          "confidence": 9
         },
         {
           "hash": 323726841,
-          "filename": "Data/134BADF9",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Images/default_texture.mip",
+          "confidence": 9
         },
         {
           "hash": 4233147638,
-          "filename": "Data/FC50B4F6",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Images/screen.mip",
+          "confidence": 9
         },
         {
           "hash": 1891326838,
-          "filename": "Data/70BB5B76",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Images/screen_EN_US.mip",
+          "confidence": 9
         },
         {
           "hash": 2533719948,
-          "filename": "Data/97057F8C",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Images/screen_es_us.mip",
+          "confidence": 9
         },
         {
           "hash": 1646412759,
-          "filename": "Data/622243D7",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Images/screen_fr_us.mip",
+          "confidence": 9
         },
         {
           "hash": 4269704866,
-          "filename": "Data/FE7E86A2",
-          "confidence": 0
+          "filename": "Data/Skins/JakX/Images/texture.mip",
+          "confidence": 9
         },
         {
           "hash": 1604088552,
-          "filename": "Data/5F9C72E8",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/Images/jakship_3d.mip",
+          "confidence": 9
         },
         {
           "hash": 1233851396,
-          "filename": "Data/498B1404",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/Images/jakship_side.mip",
+          "confidence": 9
         },
         {
           "hash": 1432966144,
-          "filename": "Data/55695400",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/Images/jakship_top.mip",
+          "confidence": 9
         },
         {
           "hash": 3165830545,
-          "filename": "Data/BCB2BD91",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/handlingstats.xml",
+          "confidence": 9
         },
         {
           "hash": 3739850493,
-          "filename": "Data/DEE996FD",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 590223828,
-          "filename": "Data/232E19D4",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 2340606171,
-          "filename": "Data/8B82D0DB",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/Ship.vex",
+          "confidence": 9
         },
         {
           "hash": 2937612658,
-          "filename": "Data/AF186972",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/shipwreck.vex",
+          "confidence": 9
         },
         {
           "hash": 467283673,
-          "filename": "Data/1BDA2ED9",
-          "confidence": 0
+          "filename": "Data/Ships/Jak_X_1/VR/Ship.vex",
+          "confidence": 9
         }
       ]
     }
