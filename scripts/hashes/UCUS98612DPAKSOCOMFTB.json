@@ -17,98 +17,98 @@
         },
         {
           "hash": 2546696880,
-          "filename": "Data/97CB82B0",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 3941806591,
-          "filename": "Data/EAF331FF",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Skin.xml",
+          "confidence": 9
         },
         {
           "hash": 1178870566,
-          "filename": "Data/46442326",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 1986584682,
-          "filename": "Data/7668E06A",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Images/background.mip",
+          "confidence": 9
         },
         {
           "hash": 327750123,
-          "filename": "Data/138911EB",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Images/default_texture.mip",
+          "confidence": 9
         },
         {
           "hash": 2834989387,
-          "filename": "Data/A8FA814B",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Images/screen.mip",
+          "confidence": 9
         },
         {
           "hash": 4132246310,
-          "filename": "Data/F64D1326",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Images/screen_EN_US.mip",
+          "confidence": 9
         },
         {
           "hash": 301152220,
-          "filename": "Data/11F337DC",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Images/screen_es_us.mip",
+          "confidence": 9
         },
         {
           "hash": 3839101831,
-          "filename": "Data/E4D40B87",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Images/screen_fr_us.mip",
+          "confidence": 9
         },
         {
           "hash": 1274733478,
-          "filename": "Data/4BFAE3A6",
-          "confidence": 0
+          "filename": "Data/Skins/SocomFTB/Images/texture.mip",
+          "confidence": 9
         },
         {
           "hash": 2561449846,
-          "filename": "Data/98AC9F76",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/Images/socomship_3d.mip",
+          "confidence": 9
         },
         {
           "hash": 2029185637,
-          "filename": "Data/78F2EA65",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/Images/socomship_side.mip",
+          "confidence": 9
         },
         {
           "hash": 1108990638,
-          "filename": "Data/4219DAAE",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/Images/socomship_top.mip",
+          "confidence": 9
         },
         {
           "hash": 2428691468,
-          "filename": "Data/90C2E40C",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/handlingstats.xml",
+          "confidence": 9
         },
         {
           "hash": 1146106608,
-          "filename": "Data/445032F0",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 1486287928,
-          "filename": "Data/5896F438",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 713838238,
-          "filename": "Data/2A8C4E9E",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/Ship.vex",
+          "confidence": 9
         },
         {
           "hash": 3742795902,
-          "filename": "Data/DF16887E",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/shipwreck.vex",
+          "confidence": 9
         },
         {
           "hash": 1710353344,
-          "filename": "Data/65F1EBC0",
-          "confidence": 0
+          "filename": "Data/Ships/Socom_FTB/VR/Ship.vex",
+          "confidence": 9
         }
       ]
     }
