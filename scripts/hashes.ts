@@ -343,6 +343,7 @@ function resolveInteractive(tables: Table[]) {
       return;
     }
 
+    input = input.replace(/\\/g, "/");
     const hash = rehash(input);
     const entries = byHash.get(hash);
 
@@ -444,7 +445,7 @@ function resolveFromStdin(tables: Table[], skipConfirm: boolean) {
   });
 }
 
-function bruteforceFilenames(tables: Table[], window: number) {
+function bruteforceFilenames(tables: Table[], window: number, expandDirs = false) {
   // ── Incremental CRC32 — table built once, same algorithm as @core/utils/crc32
   // The library rebuilds its table on every call, so we copy the table-building
   // logic here to run it only once, then do inline processing.
@@ -501,6 +502,45 @@ function bruteforceFilenames(tables: Table[], window: number) {
             if (!knownDirs.has(dir.toLowerCase())) knownDirs.set(dir.toLowerCase(), dir);
           }
         }
+
+  // Also add all ancestor directories (e.g. a/b/c/d → a/b/c, a/b, a)
+  for (const [lcDir, origDir] of [...knownDirs]) {
+    const lcParts  = lcDir.split("/");
+    const origParts = origDir.split("/");
+    for (let i = 1; i < lcParts.length; i++) {
+      const lcParent   = lcParts.slice(0, i).join("/");
+      const origParent = origParts.slice(0, i).join("/");
+      if (!knownDirs.has(lcParent)) knownDirs.set(lcParent, origParent);
+    }
+  }
+
+  // Extract every unique path component from all known dirs, then extend each
+  // dir by one segment: knownDirs × knownParts → new candidate dirs
+  // e.g. dirs {a/b, x/y} + parts {a,b,x,y} → a/b/a, a/b/b, a/b/x, a/b/y, …
+  if (expandDirs) {
+    // Count how often each path component appears across all known dirs
+    const partCounts = new Map<string, number>();
+    const partOrig   = new Map<string, string>();
+    for (const [lcDir, origDir] of knownDirs) {
+      const lcParts   = lcDir.split("/");
+      const origParts = origDir.split("/");
+      for (let i = 0; i < lcParts.length; i++) {
+        partCounts.set(lcParts[i], (partCounts.get(lcParts[i]) ?? 0) + 1);
+        if (!partOrig.has(lcParts[i])) partOrig.set(lcParts[i], origParts[i]);
+      }
+    }
+    // Keep only the top 10% most frequent components
+    const sorted = [...partCounts.entries()].sort((a, b) => b[1] - a[1]);
+    const topN = Math.max(1, Math.ceil(sorted.length * 0.1));
+    const knownParts = new Map(sorted.slice(0, topN).map(([lc]) => [lc, partOrig.get(lc)!]));
+    console.log(`Dir expansion: using ${knownParts.size} / ${sorted.length} parts (top 10%)`);
+    for (const [lcDir, origDir] of [...knownDirs]) {
+      for (const [lcPart, origPart] of knownParts) {
+        const lcNew = `${lcDir}/${lcPart}`;
+        if (!knownDirs.has(lcNew)) knownDirs.set(lcNew, `${origDir}/${origPart}`);
+      }
+    }
+  }
 
   // Cross-product: every known stem × every known extension
   const nativeBases = knownBases.size;
@@ -574,6 +614,10 @@ function bruteforceFilenames(tables: Table[], window: number) {
   console.log(`Scanning ${knownDirs.size} × ${knownBases.size}` +
     ` = ${totalCombos.toLocaleString()} combinations against ${byHash.size} placeholder hashes…`);
 
+  let doneDirs = 0;
+  const totalDirs = dirStates.size;
+  const barWidth = Math.max(20, (process.stdout.columns ?? 80) - 42);
+
   for (const [lcDir, [origDir, dirCrc]] of dirStates) {
     for (const [lcBase, origBase] of knownBases) {
       const hash = crcFull(lcBase, dirCrc);
@@ -588,7 +632,15 @@ function bruteforceFilenames(tables: Table[], window: number) {
       ].filter(Boolean);
       ctx.candidates.push({ path: `${origDir}/${origBase}`, score, tags });
     }
+
+    doneDirs++;
+    const pct    = doneDirs / totalDirs;
+    const filled = Math.round(pct * barWidth);
+    const bar    = "=".repeat(filled) + (filled < barWidth ? ">" : "") +
+                   " ".repeat(Math.max(0, barWidth - filled - (filled < barWidth ? 1 : 0)));
+    process.stdout.write(`\r  [${bar}] ${(pct * 100).toFixed(1)}%`);
   }
+  process.stdout.write(`\r${" ".repeat(barWidth + 12)}\r`);
 
   // ── Display results ───────────────────────────────────────────────────────
   let foundCount = 0;
@@ -677,9 +729,10 @@ program
   .command("bruteforce")
   .description("Try to guess placeholder filenames using known patterns and incremental CRC32 (read-only)")
   .option("-w, --window <n>", "neighbor window size for directory/extension hints", "10")
-  .action((options: { window: string }) => {
+  .option("-e, --expand-dirs", "extend candidate dirs by one segment using all known path components")
+  .action((options: { window: string; expandDirs?: boolean }) => {
     const tables = loadTables();
-    bruteforceFilenames(tables, parseInt(options.window));
+    bruteforceFilenames(tables, parseInt(options.window), options.expandDirs ?? false);
   });
 
 program
