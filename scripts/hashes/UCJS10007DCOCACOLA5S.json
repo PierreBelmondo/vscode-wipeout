@@ -17,48 +17,48 @@
         },
         {
           "hash": 1257196410,
-          "filename": "Data/4AEF4B7A",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/Images/cokeship_3D.mip",
+          "confidence": 9
         },
         {
           "hash": 1442406887,
-          "filename": "Data/55F961E7",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/Images/cokeship_side.mip",
+          "confidence": 9
         },
         {
           "hash": 1266537809,
-          "filename": "Data/4B7DD551",
+          "filename": "Data/Ships/Coke_02/Images/4B7DD551.mip",
           "confidence": 0
         },
         {
           "hash": 4019929809,
-          "filename": "Data/EF9B42D1",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/handlingstats.xml",
+          "confidence": 9
         },
         {
           "hash": 986883522,
-          "filename": "Data/3AD2A5C2",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 4042087765,
-          "filename": "Data/F0ED5D55",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 3256788723,
-          "filename": "Data/C21EA6F3",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/Ship.vex",
+          "confidence": 9
         },
         {
           "hash": 3310307119,
-          "filename": "Data/C54F472F",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/shipwreck.vex",
+          "confidence": 9
         },
         {
           "hash": 2908240087,
-          "filename": "Data/AD5838D7",
-          "confidence": 0
+          "filename": "Data/Ships/Coke_02/VR/Ship.vex",
+          "confidence": 9
         }
       ]
     }
