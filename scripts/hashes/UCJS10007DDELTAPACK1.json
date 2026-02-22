@@ -217,118 +217,118 @@
         },
         {
           "hash": 604309712,
-          "filename": "Data/240508D0",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/Images/Track_3.mip",
+          "confidence": 9
         },
         {
           "hash": 426058080,
-          "filename": "Data/19652160",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/Images/Track_2.mip",
+          "confidence": 9
         },
         {
           "hash": 1589992368,
-          "filename": "Data/5EC55BB0",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/Images/Track_1.mip",
+          "confidence": 9
         },
         {
           "hash": 3477554699,
-          "filename": "Data/CF47460B",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/Definition.xml",
+          "confidence": 9
         },
         {
           "hash": 2384863504,
-          "filename": "Data/8E262110",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/screen_tt.xml",
+          "confidence": 9
         },
         {
           "hash": 1986463586,
-          "filename": "Data/76670762",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/screen_m.xml",
+          "confidence": 9
         },
         {
           "hash": 548807534,
-          "filename": "Data/20B6236E",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 1647934719,
-          "filename": "Data/62397CFF",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/stats.xml",
+          "confidence": 9
         },
         {
           "hash": 1083595733,
-          "filename": "Data/40965BD5",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/TrackStartup.xml",
+          "confidence": 9
         },
         {
           "hash": 1929076482,
-          "filename": "Data/72FB5F02",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 1926558881,
-          "filename": "Data/72D4F4A1",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/Images/Track_3.mip",
+          "confidence": 9
         },
         {
           "hash": 1337253137,
-          "filename": "Data/4FB4DD11",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/Images/Track_2.mip",
+          "confidence": 9
         },
         {
           "hash": 135571393,
-          "filename": "Data/0814A7C1",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/Images/Track_1.mip",
+          "confidence": 9
         },
         {
           "hash": 2891462579,
-          "filename": "Data/AC5837B3",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 1479271587,
-          "filename": "Data/582BE4A3",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/screen_m.xml",
+          "confidence": 9
         },
         {
           "hash": 1651220437,
-          "filename": "Data/626B9FD5",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/screen_tt.xml",
+          "confidence": 9
         },
         {
           "hash": 1599165089,
-          "filename": "Data/5F5152A1",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/stats.xml",
+          "confidence": 9
         },
         {
           "hash": 2782507401,
-          "filename": "Data/A5D9B189",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/TrackStartup.xml",
+          "confidence": 9
         },
         {
           "hash": 3903786703,
-          "filename": "Data/E8AF0ECF",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 1458144686,
-          "filename": "Data/56E985AE",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/track.vex",
+          "confidence": 9
         },
         {
           "hash": 1967060109,
-          "filename": "Data/753EF48D",
-          "confidence": 0
+          "filename": "Data/Environments/17_Iridia/enviridia.bnk",
+          "confidence": 9
         },
         {
           "hash": 1803660272,
-          "filename": "Data/6B81ABF0",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/track.vex",
+          "confidence": 9
         },
         {
           "hash": 2621950769,
-          "filename": "Data/9C47CB31",
-          "confidence": 0
+          "filename": "Data/Environments/15_Anulpha_Pass/envanulphapass.bnk",
+          "confidence": 9
         },
         {
           "hash": 1684664984,
