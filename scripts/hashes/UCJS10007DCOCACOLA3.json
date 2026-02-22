@@ -17,43 +17,43 @@
         },
         {
           "hash": 213577291,
-          "filename": "Data/0CBAEE4B",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 2660612258,
-          "filename": "Data/9E95B8A2",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/Skin.xml",
+          "confidence": 9
         },
         {
           "hash": 3486931815,
-          "filename": "Data/CFD65B67",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 2187565965,
-          "filename": "Data/82639B8D",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/Images/background.mip",
+          "confidence": 9
         },
         {
           "hash": 524717971,
-          "filename": "Data/1F468F93",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/Images/screen.mip",
+          "confidence": 9
         },
         {
           "hash": 3930792241,
-          "filename": "Data/EA4B2131",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/Images/screen_en_jap.mip",
+          "confidence": 9
         },
         {
           "hash": 3304699245,
-          "filename": "Data/C4F9B56D",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/Images/screen_ja_jap.mip",
+          "confidence": 9
         },
         {
           "hash": 3276080462,
-          "filename": "Data/C345054E",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola3/Images/texture.mip",
+          "confidence": 9
         },
         {
           "hash": 2615645812,
@@ -82,107 +82,107 @@
         },
         {
           "hash": 359772865,
-          "filename": "Data/1571B2C1",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/Images/Track_1.mip",
+          "confidence": 9
         },
         {
           "hash": 1389479953,
-          "filename": "Data/52D1C811",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/Images/Track_2.mip",
+          "confidence": 9
         },
         {
           "hash": 1873928609,
-          "filename": "Data/6FB1E1A1",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/Images/Track_3.mip",
+          "confidence": 9
         },
         {
           "hash": 3261651640,
-          "filename": "Data/C268DAB8",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 1701105053,
-          "filename": "Data/ClassicsNS/04_Mandrashee/Images/speedup_nomip_GLOW_KEY.tga",
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/screen_m.xml",
           "confidence": 9
         },
         {
           "hash": 2738343255,
-          "filename": "Data/A337CD57",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/screen_tt.xml",
+          "confidence": 9
         },
         {
           "hash": 79347254,
-          "filename": "Data/04BABE36",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/stats.xml",
+          "confidence": 9
         },
         {
           "hash": 1686046082,
-          "filename": "Data/647F0582",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 2906152111,
-          "filename": "Data/AD385CAF",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/TrackStartup.xml",
+          "confidence": 9
         },
         {
           "hash": 812271463,
-          "filename": "Data/306A4767",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/track.vex",
+          "confidence": 9
         },
         {
           "hash": 1479481546,
-          "filename": "Data/582F18CA",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_iridia/enviridia.bnk",
+          "confidence": 9
         },
         {
           "hash": 4051712555,
-          "filename": "Data/F1803A2B",
+          "filename": "Data/Gallery/F1803A2B.tga",
           "confidence": 0
         },
         {
           "hash": 3437237147,
-          "filename": "Data/CCE0139B",
+          "filename": "Data/Gallery/CCE0139B.tga",
           "confidence": 0
         },
         {
           "hash": 2336254283,
-          "filename": "Data/8B40694B",
+          "filename": "Data/Gallery/8B40694B.tga",
           "confidence": 0
         },
         {
           "hash": 3055567099,
-          "filename": "Data/B62040FB",
+          "filename": "Data/Gallery/B62040FB.tga",
           "confidence": 0
         },
         {
           "hash": 67149035,
-          "filename": "Data/04009CEB",
+          "filename": "Data/Gallery/04009CEB.tga",
           "confidence": 0
         },
         {
           "hash": 3815371721,
-          "filename": "Data/E369F3C9",
+          "filename": "Data/Gallery/E369F3C9.tga",
           "confidence": 0
         },
         {
           "hash": 3725187705,
-          "filename": "Data/DE09DA79",
+          "filename": "Data/Gallery/DE09DA79.tga",
           "confidence": 0
         },
         {
           "hash": 2578030761,
-          "filename": "Data/99A9A0A9",
+          "filename": "Data/Gallery/99A9A0A9.tga",
           "confidence": 0
         },
         {
           "hash": 2764671257,
-          "filename": "Data/A4C98919",
+          "filename": "Data/Gallery/A4C98919.tga",
           "confidence": 0
         },
         {
           "hash": 384390409,
-          "filename": "Data/16E95509",
+          "filename": "Data/Gallery/16E95509.tga",
           "confidence": 0
         }
       ]
