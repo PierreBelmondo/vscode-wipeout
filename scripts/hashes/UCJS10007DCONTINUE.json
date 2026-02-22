@@ -17,128 +17,128 @@
         },
         {
           "hash": 987776212,
-          "filename": "Data/3AE044D4",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 3451979230,
-          "filename": "Data/CDC105DE",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Skin.xml",
+          "confidence": 9
         },
         {
           "hash": 1449208020,
-          "filename": "Data/566128D4",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 3525874965,
-          "filename": "Data/D2289515",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/background.mip",
+          "confidence": 9
         },
         {
           "hash": 430099417,
-          "filename": "Data/19A2CBD9",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen.mip",
+          "confidence": 9
         },
         {
           "hash": 3087182018,
-          "filename": "Data/B802A8C2",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_de_eu.mip",
+          "confidence": 9
         },
         {
           "hash": 4061372631,
-          "filename": "Data/F213A0D7",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_en_eu.mip",
+          "confidence": 9
         },
         {
           "hash": 1724284351,
-          "filename": "Data/66C67DBF",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_en_jap.mip",
+          "confidence": 9
         },
         {
           "hash": 2122668012,
-          "filename": "Data/7E8557EC",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_EN_US.mip",
+          "confidence": 9
         },
         {
           "hash": 363693101,
-          "filename": "Data/15AD842D",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_es_eu.mip",
+          "confidence": 9
         },
         {
           "hash": 2570810134,
-          "filename": "Data/993B7316",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_es_us.mip",
+          "confidence": 9
         },
         {
           "hash": 3767187574,
-          "filename": "Data/E08AB876",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_fr_eu.mip",
+          "confidence": 9
         },
         {
           "hash": 1813794637,
-          "filename": "Data/6C1C4F4D",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_fr_us.mip",
+          "confidence": 9
         },
         {
           "hash": 4183588384,
-          "filename": "Data/F95C7E20",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_it_eu.mip",
+          "confidence": 9
         },
         {
           "hash": 1215621603,
-          "filename": "Data/4874E9E3",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_ja_jap.mip",
+          "confidence": 9
         },
         {
           "hash": 1430931844,
-          "filename": "Data/554A4984",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/texture.mip",
+          "confidence": 9
         },
         {
           "hash": 3796455044,
-          "filename": "Data/E2494E84",
-          "confidence": 0
+          "filename": "Data/Skins/Continue/Images/screen_EN_KO.mip",
+          "confidence": 9
         },
         {
           "hash": 153258966,
-          "filename": "Data/09228BD6",
-          "confidence": 0
+          "filename": "Data/Music/Continue1/album.mip",
+          "confidence": 9
         },
         {
           "hash": 3394588536,
-          "filename": "Data/CA554F78",
-          "confidence": 0
+          "filename": "Data/Music/Continue1/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 3249614041,
-          "filename": "Data/C1B12CD9",
-          "confidence": 0
+          "filename": "Data/Music/Continue1/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 2428562903,
-          "filename": "Data/90C0EDD7",
-          "confidence": 0
+          "filename": "Data/Music/Continue2/album.mip",
+          "confidence": 9
         },
         {
           "hash": 2580485372,
-          "filename": "Data/99CF14FC",
-          "confidence": 0
+          "filename": "Data/Music/Continue2/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 3056598569,
-          "filename": "Data/B62FFE29",
-          "confidence": 0
+          "filename": "Data/Music/Continue2/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 2680962155,
-          "filename": "Data/9FCC3C6B",
-          "confidence": 0
+          "filename": "Data/Music/Continue1/music.at3",
+          "confidence": 9
         },
         {
           "hash": 103701098,
-          "filename": "Data/062E5A6A",
-          "confidence": 0
+          "filename": "Data/Music/Continue2/music.at3",
+          "confidence": 9
         }
       ]
     }
