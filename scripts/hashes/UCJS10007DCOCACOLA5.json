@@ -17,43 +17,43 @@
         },
         {
           "hash": 2484705627,
-          "filename": "Data/9419995B",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 2025616358,
-          "filename": "Data/78BC73E6",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/Skin.xml",
+          "confidence": 9
         },
         {
           "hash": 997767147,
-          "filename": "Data/3B78B7EB",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 424464586,
-          "filename": "Data/194CD0CA",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/Images/background.mip",
+          "confidence": 9
         },
         {
           "hash": 567018025,
-          "filename": "Data/21CC0229",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/Images/screen.mip",
+          "confidence": 9
         },
         {
           "hash": 667029880,
-          "filename": "Data/27C21178",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/Images/screen_en_jap.mip",
+          "confidence": 9
         },
         {
           "hash": 158369060,
-          "filename": "Data/09708524",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/Images/screen_ja_jap.mip",
+          "confidence": 9
         },
         {
           "hash": 3905934673,
-          "filename": "Data/E8CFD551",
-          "confidence": 0
+          "filename": "Data/Skins/CocaCola6/Images/texture.mip",
+          "confidence": 9
         },
         {
           "hash": 2615645812,
@@ -82,107 +82,107 @@
         },
         {
           "hash": 1548884340,
-          "filename": "Data/5C521974",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/Images/Track_1.mip",
+          "confidence": 9
         },
         {
           "hash": 468870052,
-          "filename": "Data/1BF263A4",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/Images/Track_2.mip",
+          "confidence": 9
         },
         {
           "hash": 647121428,
-          "filename": "Data/26924A14",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/Images/Track_3.mip",
+          "confidence": 9
         },
         {
           "hash": 433996118,
-          "filename": "Data/19DE4156",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 3259269765,
-          "filename": "Data/C2448285",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/screen_m.xml",
+          "confidence": 9
         },
         {
           "hash": 2969335118,
-          "filename": "Data/B0FC754E",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/screen_tt.xml",
+          "confidence": 9
         },
         {
           "hash": 166233628,
-          "filename": "Data/09E8861C",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/stats.xml",
+          "confidence": 9
         },
         {
           "hash": 986023151,
-          "filename": "Data/3AC584EF",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 2657483723,
-          "filename": "Data/9E65FBCB",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/TrackStartup.xml",
+          "confidence": 9
         },
         {
           "hash": 1027112781,
-          "filename": "Data/3D387F4D",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/track.vex",
+          "confidence": 9
         },
         {
           "hash": 2254916411,
-          "filename": "Data/86674B3B",
-          "confidence": 0
+          "filename": "Data/Environments/BrandedTracks/coke_Khara_Descent/envkharadescent.bnk",
+          "confidence": 9
         },
         {
           "hash": 1376420768,
-          "filename": "Data/520A83A0",
+          "filename": "Data/Gallery/520A83A0.tga",
           "confidence": 0
         },
         {
           "hash": 1869261328,
-          "filename": "Data/6F6AAA10",
+          "filename": "Data/Gallery/6F6AAA10.tga",
           "confidence": 0
         },
         {
           "hash": 684380352,
-          "filename": "Data/28CAD0C0",
+          "filename": "Data/Gallery/28CAD0C0.tga",
           "confidence": 0
         },
         {
           "hash": 363526512,
-          "filename": "Data/15AAF970",
+          "filename": "Data/Gallery/15AAF970.tga",
           "confidence": 0
         },
         {
           "hash": 2810848608,
-          "filename": "Data/A78A2560",
+          "filename": "Data/Gallery/A78A2560.tga",
           "confidence": 0
         },
         {
           "hash": 2577408984,
-          "filename": "Data/99A023D8",
+          "filename": "Data/Gallery/99A023D8.tga",
           "confidence": 0
         },
         {
           "hash": 2764049000,
-          "filename": "Data/A4C00A68",
+          "filename": "Data/Gallery/A4C00A68.tga",
           "confidence": 0
         },
         {
           "hash": 3814748344,
-          "filename": "Data/E36070B8",
+          "filename": "Data/Gallery/E36070B8.tga",
           "confidence": 0
         },
         {
           "hash": 3724564744,
-          "filename": "Data/DE005908",
+          "filename": "Data/Gallery/DE005908.tga",
           "confidence": 0
         },
         {
           "hash": 1814070552,
-          "filename": "Data/6C208518",
+          "filename": "Data/Gallery/6C208518.tga",
           "confidence": 0
         },
         {
