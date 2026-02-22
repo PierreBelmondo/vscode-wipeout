@@ -217,118 +217,118 @@
         },
         {
           "hash": 3286320626,
-          "filename": "Data/C3E145F2",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/Images/Track_3.mip",
+          "confidence": 9
         },
         {
           "hash": 4269894722,
-          "filename": "Data/FE816C42",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/Images/Track_2.mip",
+          "confidence": 9
         },
         {
           "hash": 3105953426,
-          "filename": "Data/B9211692",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/Images/Track_1.mip",
+          "confidence": 9
         },
         {
           "hash": 945199880,
-          "filename": "Data/38569B08",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/Definition.xml",
+          "confidence": 9
         },
         {
           "hash": 660501297,
-          "filename": "Data/275E7331",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 539955429,
-          "filename": "Data/202F10E5",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/screen_m.xml",
+          "confidence": 9
         },
         {
           "hash": 4255940484,
-          "filename": "Data/FDAC7F84",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/screen_tt.xml",
+          "confidence": 9
         },
         {
           "hash": 2480492910,
-          "filename": "Data/93D9516E",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/TrackStartup.xml",
+          "confidence": 9
         },
         {
           "hash": 3886889723,
-          "filename": "Data/E7AD3AFB",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/stats.xml",
+          "confidence": 9
         },
         {
           "hash": 3942981477,
-          "filename": "Data/EB051F65",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 2866194559,
-          "filename": "Data/AAD6A87F",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/Images/Track_1.mip",
+          "confidence": 9
         },
         {
           "hash": 3983987375,
-          "filename": "Data/ED76D2AF",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/Images/Track_2.mip",
+          "confidence": 9
         },
         {
           "hash": 3491167007,
-          "filename": "Data/D016FB1F",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/Images/Track_3.mip",
+          "confidence": 9
         },
         {
           "hash": 1325322724,
-          "filename": "Data/4EFED1E4",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/screen.xml",
+          "confidence": 9
         },
         {
           "hash": 3837299419,
-          "filename": "Data/E4B88ADB",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/screen_m.xml",
+          "confidence": 9
         },
         {
           "hash": 1007285685,
-          "filename": "Data/3C09F5B5",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/screen_tt.xml",
+          "confidence": 9
         },
         {
           "hash": 1103958376,
-          "filename": "Data/41CD1168",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/stats.xml",
+          "confidence": 9
         },
         {
           "hash": 3516987822,
-          "filename": "Data/D1A0F9AE",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/TrackStartup.xml",
+          "confidence": 9
         },
         {
           "hash": 540390220,
-          "filename": "Data/2035B34C",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/stringtable.xml",
+          "confidence": 9
         },
         {
           "hash": 3548234666,
-          "filename": "Data/D37DC3AA",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/track.vex",
+          "confidence": 9
         },
         {
           "hash": 2057062512,
-          "filename": "Data/7A9C4870",
-          "confidence": 0
+          "filename": "Data/Environments/14_Koltiwa/envkoltiwa.bnk",
+          "confidence": 9
         },
         {
           "hash": 1964894265,
-          "filename": "Data/751DE839",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/track.vex",
+          "confidence": 9
         },
         {
           "hash": 289609218,
-          "filename": "Data/11431602",
-          "confidence": 0
+          "filename": "Data/Environments/16_Khara_Descent/envkharadescent.bnk",
+          "confidence": 9
         },
         {
           "hash": 4158209718,
