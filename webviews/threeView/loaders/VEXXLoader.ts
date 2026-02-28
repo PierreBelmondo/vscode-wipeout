@@ -435,33 +435,42 @@ export class VEXXLoader extends Loader {
     const group = new THREE.Group();
     group.name = node.name;
 
-    console.log(node);
-    
-    if (node.has_position) {
-      const m = new THREE.Matrix4();
-      m.makeTranslation(node.x, node.y, node.z);
-      group.applyMatrix4(m);
-    }
+    // Keys are frame numbers at 60fps — convert to seconds for Three.js
+    const FPS = 60;
 
-    let tracks: THREE.VectorKeyframeTrack[] = [];
+    const animTracks: THREE.KeyframeTrack[] = [];
+
     if (node.track1) {
-      const track1 = new THREE.VectorKeyframeTrack(".position", node.track1.keys, node.track1.values, THREE.InterpolateSmooth);
-      track1.createInterpolant();
-      tracks.push(track1);
+      // track1 values are rest + (raw/32767 * scale) — already include the rest position offset.
+      const times = node.track1.keys.map(k => k / FPS);
+      const posTrack = new THREE.VectorKeyframeTrack(".position", times, node.track1.values, THREE.InterpolateLinear);
+      animTracks.push(posTrack);
+    } else if (node.has_position) {
+      group.position.set(node.x, node.y, node.z);
     }
 
     if (node.track2) {
-      const track2 = new THREE.VectorKeyframeTrack(".position", node.track2.keys, node.track2.values, THREE.InterpolateSmooth);
-      track2.createInterpolant();
-      tracks.push(track2);
+      // track2 = rotation animation. Values are XYZ of a unit quaternion; W = sqrt(1 - x²-y²-z²).
+      const times = node.track2.keys.map(k => k / FPS);
+      const quatValues: number[] = [];
+      for (let i = 0; i < node.track2.values.length; i += 3) {
+        const x = node.track2.values[i];
+        const y = node.track2.values[i + 1];
+        const z = node.track2.values[i + 2];
+        const w = Math.sqrt(Math.max(0, 1 - x * x - y * y - z * z));
+        quatValues.push(x, y, z, w);
+      }
+      const rotTrack = new THREE.QuaternionKeyframeTrack(".quaternion", times, quatValues, THREE.InterpolateLinear);
+      animTracks.push(rotTrack);
     }
 
-    if (tracks.length > 0) {
-      const clip = new THREE.AnimationClip(group.name, 2, tracks);
+    if (animTracks.length > 0) {
+      const duration = Math.max(...animTracks.map(t => t.times[t.times.length - 1] ?? 0));
+      const clip = new THREE.AnimationClip(group.name, duration, animTracks);
       const mixer = new THREE.AnimationMixer(group);
       const action = mixer.clipAction(clip);
-      action.timeScale = 1;
-      //action.clampWhenFinished = true;
+      action.play();
+      mixer.update(0);  // snap to first keyframe immediately
       world.addAction(group.name, action, mixer);
     }
 
