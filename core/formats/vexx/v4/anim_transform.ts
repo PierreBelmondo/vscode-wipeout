@@ -17,10 +17,8 @@ export class VexxNodeAnimTransform extends VexxNode {
   count1 = 0;
   count2 = 0;
   has_position = 0;
-  track1_end = 0;  // body offset: end of track1 / start of track2 keys
-  unk6 = 0;
-  track1_start = 0;  // body offset: start of track1 keys
-  unk8 = 0;
+  track1_end = 0;
+  track1_start = 0;
 
   x = 0.0;
   y = 0.0;
@@ -38,14 +36,12 @@ export class VexxNodeAnimTransform extends VexxNode {
 
   override load(range: BufferRange): void {
     const rangeHeader = range.slice(0, 16);
-    this.unk1 = rangeHeader.getUint16(0);
-    this.count1 = rangeHeader.getUint16(2);
-    this.count2 = rangeHeader.getUint16(4);
+    this.unk1         = rangeHeader.getUint16(0);
+    this.count1       = rangeHeader.getUint16(2);
+    this.count2       = rangeHeader.getUint16(4);
     this.has_position = rangeHeader.getUint16(6);
-    this.track1_end = rangeHeader.getUint16(8);
-    this.unk6 = rangeHeader.getUint16(10);
-    this.track1_start = rangeHeader.getUint16(12);
-    this.unk8 = rangeHeader.getUint16(14);
+    this.track1_end   = rangeHeader.getUint32(8);
+    this.track1_start = rangeHeader.getUint32(12);
 
     let rangeData = range.slice(rangeHeader.size);
     if (this.has_position) {

@@ -34,7 +34,7 @@ function dumpAnimTransform(node: VexxNodeAnimTransform, file: string) {
   const childTypes = node.children.map(c => c.typeName).join(", ");
   console.log(`\n=== ${node.name} (${file})  parent: ${parentDesc}  children: [${childTypes}] ===`);
   console.log(`  unk1=${node.unk1}  count1=${node.count1}  count2=${node.count2}  has_position=${node.has_position}`);
-  console.log(`  track1_end=${node.track1_end}(0x${node.track1_end.toString(16)})  unk6=${node.unk6}  track1_start=${node.track1_start}(0x${node.track1_start.toString(16)})  unk8=${node.unk8}`);
+  console.log(`  track1_end=0x${node.track1_end.toString(16)}  track1_start=0x${node.track1_start.toString(16)}`);
   console.log(`  nodeHeaderSize=${node.header.size}  bodySize=${node.bodyRange.size}`);
   if (node.has_position) {
     console.log(`  position: (${node.x}, ${node.y}, ${node.z})`);
