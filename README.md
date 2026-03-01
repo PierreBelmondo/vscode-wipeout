@@ -1,32 +1,64 @@
 # Belmondo's Vision - WipEout Modding Tool
 
-Wipeout modding extension for Visual Studio Code
+WipEout modding extension for Visual Studio Code — supports PSX, PSP, PS2, PS3, and PS4 game files.
 
 ![GitHub](https://img.shields.io/github/license/PierreBelmondo/vscode-wipeout)
 
 ## Features
 
-* Unpack WAD with filenames (encrypted DLCs supported with Inflate/LZSS compression)
-* Unpack WAD/WAC with filenames
-* Unpack PSARC with Manifest and filenames
-* Load and render VEXX scenes (version 4 and 6)
-* Load and render RCSMODEL meshes
-* Load GTF textures (only DXT1 to DXT5, still buggy...)
-* Load DDS textures (experimental)
-* Load MIP textures
+### Archive unpacking
+
+| Format | Description |
+|--------|-------------|
+| **WAD** | WipEout PSP archive — LZSS/zlib compressed, XTEA-encrypted DLC support |
+| **WAC** | Hierarchical folder/file archive |
+| **PSARC** | PlayStation Archive v1.3 — deflate compressed, manifest-based (PS3/PS4) |
+| **BNK** | Sony SCREAM sound bank — exports PS-ADPCM audio to WAV (PS2/PS3/PSP/Vita) |
+
+Right-click any supported archive in the Explorer to unpack it.
+
+### 3D scene & model viewing
+
+| Format | Extension | Platform |
+|--------|-----------|----------|
+| **VEXX** | `.vex` | PSP / PS2 |
+| **RCS Model** | `.rcsmodel` | PS3 / PS4 |
+
+- Scene graph tree panel with node inspection
+- Keyframe animation playback (position, rotation, scale)
+- Material and texture reference browsing
+- 40+ VEXX node types (meshes, transforms, lights, collisions, particles, sounds, effects, …)
+
+### Texture viewing
+
+| Format | Extension | Platform | Compression |
+|--------|-----------|----------|-------------|
+| **GTF** | `.gtf` | PS3 | DXT1–DXT5, A8R8G8B8, and more |
+| **GNF** | `.gnf` | PS4 | BC7/BCn (WASM-accelerated) |
+| **DDS** | `.dds` | PC | DXT1/3/5, DX10/DXGI |
+| **MIP** | `.mip` | PSP | 4-bit / 8-bit indexed, swizzled |
+| **FNT** | `.fnt` | PSP/PS2 | Grayscale bitmap font glyphs |
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `WipEout: Unpack BNK` | Export sound bank waves to WAV |
+| `WipEout: Unpack WAD` | Extract WAD archive |
+| `WipEout: Unpack WAC` | Extract WAC archive |
+| `WipEout: Unpack PSARC` | Extract PSARC archive |
 
 ## Extension Settings
 
-nothing yet.
+Nothing yet.
 
 ## Known Issues
 
-* DXT5 alpha channel is buggy
-* S3TC/DXT decompression is slow
-* Not all VEXX nodes are parsed
+- DXT5 alpha channel is buggy
+- Not all VEXX node types are fully parsed
 
 ## Release Notes
 
-See CHANGELOG.md.
+See [CHANGELOG.md](CHANGELOG.md).
 
 **Enjoy!**
