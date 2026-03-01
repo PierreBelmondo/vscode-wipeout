@@ -37,7 +37,8 @@ Right-click any supported archive in the Explorer to unpack it.
 | **GNF** | `.gnf` | PS4 | BC7/BCn (WASM-accelerated) |
 | **DDS** | `.dds` | PC | DXT1/3/5, DX10/DXGI |
 | **MIP** | `.mip` | PSP | 4-bit / 8-bit indexed, swizzled |
-| **FNT** | `.fnt` | PSP/PS2 | Grayscale bitmap font glyphs |
+| **PCT** | `.pct` | PS2 | 4-bit / 8-bit indexed, GIF/GS DMA stream (billboard and font textures) |
+| **FNT** | `.fnt` | PSP/PS2/PS3 | Grayscale bitmap font glyphs |
 
 ## Commands
 

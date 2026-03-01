@@ -42,6 +42,7 @@ export class FEPanel {
       const column = editor.viewColumn || vscode.ViewColumn.One;
       const panel = vscode.window.createWebviewPanel(FEPanel.viewType, "FE Preview", column, {
         enableScripts: true,
+        localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "dist")],
       });
       FEPanel.currentPanel = new FEPanel(context, panel, editor.document.uri);
     }

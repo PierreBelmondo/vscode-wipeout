@@ -185,6 +185,16 @@
           }
         ],
         "priority": "default"
+      },
+      {
+        "viewType": "wipeout.view.pct",
+        "displayName": "PCT",
+        "selector": [
+          {
+            "filenamePattern": "*.pct"
+          }
+        ],
+        "priority": "default"
       }
     ],
     "views": {

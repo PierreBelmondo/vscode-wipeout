@@ -10,6 +10,7 @@ import { GNF } from "@core/formats/gnf";
 import { GTF } from "@core/formats/gtf";
 import { DDS } from "@core/formats/dds";
 import { FNT } from "@core/formats/fnt";
+import { PCT } from "@core/formats/pct";
 
 class ARGB {
   static convert(argb: Uint8Array | Uint8ClampedArray) {
@@ -71,6 +72,9 @@ class Editor {
         break;
       case "font/fnt":
         mipmaps = await this.loadFNT(buffer);
+        break;
+      case "image/pct":
+        mipmaps = await this.loadPCT(buffer);
         break;
     }
     mipmaps = await this.decompress(mipmaps);
@@ -166,7 +170,13 @@ class Editor {
   async loadFNT(buffer: ArrayBuffer): Promise<Mipmaps> {
     this.scaleY = 1;
     const fnt = await FNT.load(buffer);
-    return [fnt.image.mipmap];
+    return fnt.mipmap ? [fnt.mipmap] : [];
+  }
+
+  async loadPCT(buffer: ArrayBuffer): Promise<Mipmaps> {
+    this.scaleY = 1;
+    const pct = PCT.load(buffer);
+    return pct.mipmap ? [pct.mipmap] : [];
   }
 
   render(textures: Mipmaps) {
