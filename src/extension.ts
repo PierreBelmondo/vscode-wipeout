@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { BnkUnpackCommandProvider } from "./commands/bnk";
 import { PsarcUnpackCommandProvider } from "./commands/psarc";
 import { WacUnpackCommandProvider } from "./commands/wac";
 import { WadUnpackCommandProvider } from "./commands/wad";
@@ -14,6 +15,7 @@ import { FntModelEditorProvider } from "./views/font/FntModelEditorProvider";
 import { FEPanel } from "./views/FEPanel";
 
 export function activate(context: vscode.ExtensionContext) {
+  context.subscriptions.push(BnkUnpackCommandProvider.register(context));
   context.subscriptions.push(PsarcUnpackCommandProvider.register(context));
   context.subscriptions.push(WacUnpackCommandProvider.register(context));
   context.subscriptions.push(WadUnpackCommandProvider.register(context));
