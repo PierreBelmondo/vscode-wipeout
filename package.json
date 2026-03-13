@@ -234,7 +234,9 @@
     "package:webviews": "npm run package:webview-three && npm run package:webview-texture",
     "vsix": "vsce package",
     "lint": "eslint src --ext ts",
-    "test": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts"
+    "test": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts",
+    "test:vexx": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts vexx",
+    "test:gxt": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts gxt"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

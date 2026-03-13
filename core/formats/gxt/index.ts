@@ -8,22 +8,77 @@
  *
  * Supported formats:
  *   0x83000000  PVRTCII 4BPP (dominant in WipEout 2048)
- *   0x0C000000  U8U8U8U8 (RGBA32, uncompressed)
+ *   0x0C000000  U8U8U8U8 ABGR (RGBA32 uncompressed, default swizzle)
+ *   0x0C001000  U8U8U8U8 ARGB (RGBA32 uncompressed, ARGB swizzle — UI textures)
  *   0x85000000  UBC1 / DXT1 / BC1
+ *   0x86000000  UBC2 / DXT3 / BC2 (explicit 4-bit alpha — font/UI textures)
  *   0x87000000  UBC3 / DXT5 / BC3
+ *   0x98001000  U8U8U8 RGB (RGB888 uncompressed — splash screens)
+ *
+ * Texture type field (SceGxmTextureType):
+ *   0x00000000  SCE_GXM_TEXTURE_SWIZZLED — BCn blocks stored in Morton (Z-order) layout
+ *   0x60000000  SCE_GXM_TEXTURE_LINEAR   — blocks in raster scan order
  */
 
 import { BufferRange } from "@core/utils/range";
 import type { Mipmaps } from "@core/utils/mipmaps";
 import { PVRTC2 } from "@core/utils/pvrtc2";
 
-/* SceGxmTextureBaseFormat constants */
-const FMT_U8U8U8U8   = 0x0C000000;
-const FMT_PVRTII4BPP = 0x83000000;
-const FMT_UBC1       = 0x85000000;
-const FMT_UBC3       = 0x87000000;
+/* SceGxmTextureBaseFormat + swizzle constants */
+const FMT_U8U8U8U8_ABGR = 0x0C000000; // default swizzle: stored [A,B,G,R]
+const FMT_U8U8U8U8_ARGB = 0x0C001000; // ARGB swizzle:   stored [A,R,G,B]
+const FMT_PVRTII4BPP    = 0x83000000;
+const FMT_UBC1          = 0x85000000;
+const FMT_UBC2          = 0x86000000; // DXT3: explicit 4-bit alpha + BC1 colour
+const FMT_UBC3          = 0x87000000;
+const FMT_U8U8U8        = 0x98001000; // RGB888: stored [R,G,B], no alpha
 
-/* ── Inline BC1/BC3 decompression (DataView-based, no BufferRange) ── */
+/* ── Morton (Z-order) de-swizzle for block-compressed formats ── */
+
+/**
+ * Interleave bits of x and y to produce a Morton code (Z-order curve index).
+ * Used to map swizzled block storage order → raster order.
+ */
+function mortonIndex(x: number, y: number): number {
+  // PSVita GXM uses Y in even bit positions, X in odd — opposite of the common convention.
+  let z = 0;
+  for (let i = 0; i < 16; i++) {
+    z |= ((y >> i) & 1) << (2 * i);
+    z |= ((x >> i) & 1) << (2 * i + 1);
+  }
+  return z;
+}
+
+/**
+ * Re-order a swizzled (Morton) BCn data buffer into raster-scan block order.
+ * blockSize is 8 (BC1) or 16 (BC2/BC3).
+ *
+ * The PSVita stores all valid blocks of the (bw × bh) rectangle sorted by their
+ * Morton index — i.e. storage slot i holds the block whose Morton rank among all
+ * valid blocks is i.  We build that sorted mapping once, then scatter.
+ */
+function deswizzleBCn(width: number, height: number, data: ArrayBuffer, blockSize: number): ArrayBuffer {
+  const bw = Math.max(1, Math.ceil(width / 4));
+  const bh = Math.max(1, Math.ceil(height / 4));
+
+  // Build list of all (bx,by) pairs sorted by Morton index
+  const pairs: [number, number][] = [];
+  for (let by = 0; by < bh; by++)
+    for (let bx = 0; bx < bw; bx++)
+      pairs.push([bx, by]);
+  pairs.sort((a, b) => mortonIndex(a[0], a[1]) - mortonIndex(b[0], b[1]));
+
+  const src = new Uint8Array(data);
+  const dst = new Uint8Array(bw * bh * blockSize);
+  for (let i = 0; i < pairs.length; i++) {
+    const [bx, by] = pairs[i];
+    const rasterIdx = by * bw + bx;
+    dst.set(src.subarray(i * blockSize, (i + 1) * blockSize), rasterIdx * blockSize);
+  }
+  return dst.buffer;
+}
+
+/* ── Inline BC1/BC2/BC3 decompression (DataView-based, no BufferRange) ── */
 
 function decompressBC1(width: number, height: number, data: ArrayBuffer): Uint8ClampedArray {
   const view = new DataView(data);
@@ -64,6 +119,59 @@ function decompressBC1(width: number, height: number, data: ArrayBuffer): Uint8C
           image[dst + 1] = palette[idx * 4 + 1];
           image[dst + 2] = palette[idx * 4 + 2];
           image[dst + 3] = palette[idx * 4 + 3];
+        }
+      }
+    }
+  }
+  return image;
+}
+
+function decompressBC2(width: number, height: number, data: ArrayBuffer): Uint8ClampedArray {
+  const view = new DataView(data);
+  const bw = Math.max(1, Math.ceil(width / 4));
+  const bh = Math.max(1, Math.ceil(height / 4));
+  const image = new Uint8ClampedArray(width * height * 4);
+  let pos = 0;
+
+  for (let by = 0; by < bh; by++) {
+    for (let bx = 0; bx < bw; bx++) {
+      // Alpha block: 16×4-bit explicit alpha values packed into 8 bytes (LE)
+      const aLo = view.getUint32(pos, true);
+      const aHi = view.getUint32(pos + 4, true);
+      pos += 8;
+
+      // Colour block (same as BC1 without punch-through)
+      const c0 = view.getUint16(pos, true);
+      const c1 = view.getUint16(pos + 2, true);
+      const bits = view.getUint32(pos + 4, true);
+      pos += 8;
+
+      const r0 = (c0 >> 11) & 0x1f, g0 = (c0 >> 5) & 0x3f, b0 = c0 & 0x1f;
+      const r1 = (c1 >> 11) & 0x1f, g1 = (c1 >> 5) & 0x3f, b1 = c1 & 0x1f;
+
+      const palette = new Uint8Array(12);
+      palette[0] = (r0 << 3) | (r0 >> 2); palette[1] = (g0 << 2) | (g0 >> 4); palette[2] = (b0 << 3) | (b0 >> 2);
+      palette[3] = (r1 << 3) | (r1 >> 2); palette[4] = (g1 << 2) | (g1 >> 4); palette[5] = (b1 << 3) | (b1 >> 2);
+      palette[6] = (2 * palette[0] + palette[3] + 1) / 3; palette[7] = (2 * palette[1] + palette[4] + 1) / 3; palette[8] = (2 * palette[2] + palette[5] + 1) / 3;
+      palette[9] = (palette[0] + 2 * palette[3] + 1) / 3; palette[10] = (palette[1] + 2 * palette[4] + 1) / 3; palette[11] = (palette[2] + 2 * palette[5] + 1) / 3;
+
+      for (let py = 0; py < 4; py++) {
+        for (let px = 0; px < 4; px++) {
+          const x = bx * 4 + px, y = by * 4 + py;
+          if (x >= width || y >= height) continue;
+          const texelIdx = py * 4 + px;
+
+          // 4-bit alpha: two texels per byte
+          const aBit = texelIdx * 4;
+          const aRaw = aBit < 32 ? (aLo >> aBit) & 0xf : (aHi >> (aBit - 32)) & 0xf;
+          const alpha = (aRaw << 4) | aRaw; // expand 4-bit to 8-bit
+
+          const cIdx = (bits >> (2 * texelIdx)) & 3;
+          const dst = (y * width + x) * 4;
+          image[dst]     = palette[cIdx * 3];
+          image[dst + 1] = palette[cIdx * 3 + 1];
+          image[dst + 2] = palette[cIdx * 3 + 2];
+          image[dst + 3] = alpha;
         }
       }
     }
@@ -226,15 +334,53 @@ export class GXT {
         case FMT_PVRTII4BPP:
           rgba = PVRTC2.decompress(w, h, mipData, info.type === 0x00000000);
           break;
-        case FMT_U8U8U8U8:
-          rgba = new Uint8ClampedArray(mipData);
+        case FMT_U8U8U8U8_ABGR: {
+          // stored [A,B,G,R] → output [R,G,B,A]
+          const src = new Uint8Array(mipData);
+          rgba = new Uint8ClampedArray(src.length);
+          for (let i = 0; i < src.length; i += 4) {
+            rgba[i] = src[i + 3]; rgba[i + 1] = src[i + 2];
+            rgba[i + 2] = src[i + 1]; rgba[i + 3] = src[i];
+          }
           break;
-        case FMT_UBC1:
-          rgba = decompressBC1(w, h, mipData);
+        }
+        case FMT_U8U8U8U8_ARGB: {
+          // stored [A,R,G,B] → output [R,G,B,A]
+          const src = new Uint8Array(mipData);
+          rgba = new Uint8ClampedArray(src.length);
+          for (let i = 0; i < src.length; i += 4) {
+            rgba[i] = src[i + 1]; rgba[i + 1] = src[i + 2];
+            rgba[i + 2] = src[i + 3]; rgba[i + 3] = src[i];
+          }
           break;
-        case FMT_UBC3:
-          rgba = decompressBC3(w, h, mipData);
+        }
+        case FMT_UBC1: {
+          const blocks = info.type === 0x00000000 ? deswizzleBCn(w, h, mipData, 8) : mipData;
+          rgba = decompressBC1(w, h, blocks);
           break;
+        }
+        case FMT_UBC2: {
+          const blocks = info.type === 0x00000000 ? deswizzleBCn(w, h, mipData, 16) : mipData;
+          rgba = decompressBC2(w, h, blocks);
+          break;
+        }
+        case FMT_UBC3: {
+          const blocks = info.type === 0x00000000 ? deswizzleBCn(w, h, mipData, 16) : mipData;
+          rgba = decompressBC3(w, h, blocks);
+          break;
+        }
+        case FMT_U8U8U8: {
+          // stored [R,G,B] → output [R,G,B,255]
+          const src = new Uint8Array(mipData);
+          rgba = new Uint8ClampedArray(w * h * 4);
+          for (let i = 0; i < w * h; i++) {
+            rgba[i * 4]     = src[i * 3];
+            rgba[i * 4 + 1] = src[i * 3 + 1];
+            rgba[i * 4 + 2] = src[i * 3 + 2];
+            rgba[i * 4 + 3] = 255;
+          }
+          break;
+        }
         default:
           console.warn(`GXT: unsupported format 0x${info.format.toString(16)}`);
           return mipmaps;
@@ -263,13 +409,17 @@ export class GXT {
         const bh = Math.max(1, Math.ceil(h / 4));
         return bw * bh * 8;
       }
+      case FMT_UBC2:
       case FMT_UBC3: {
         const bw = Math.max(1, Math.ceil(w / 4));
         const bh = Math.max(1, Math.ceil(h / 4));
         return bw * bh * 16;
       }
-      case FMT_U8U8U8U8:
+      case FMT_U8U8U8U8_ABGR:
+      case FMT_U8U8U8U8_ARGB:
         return w * h * 4;
+      case FMT_U8U8U8:
+        return w * h * 3;
       default:
         return w * h * 4; // fallback
     }

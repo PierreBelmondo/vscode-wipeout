@@ -78,6 +78,7 @@ class Editor {
         mipmaps = await this.loadPCT(buffer);
         break;
       case "image/gxt":
+        this.scaleY = 1;
         mipmaps = this.loadGXT(buffer);
         break;
     }
