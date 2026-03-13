@@ -3,6 +3,10 @@ import { BufferRange } from "@core/utils/range";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
+// Reverse engineering progress: 50%
+// width/height/bpp/mipmaps/format/id/cmapSize/dataSize/external/name fully known.
+// alphaTest and diffuse tentative ("not sure").
+// Bytes [16-23], [32-39], [40-47], [52-55] not stored (raw body dump available in vexx.ts).
 export class VexxNodeTexture extends VexxNode {
   properties = {
     width: 128,

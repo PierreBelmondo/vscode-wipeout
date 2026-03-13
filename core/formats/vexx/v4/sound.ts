@@ -2,6 +2,8 @@ import { BufferRange } from "@core/utils/range";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
+// Reverse engineering progress: 40%
+// name1 and name2 confirmed; unknown1/unknown2 (float32×2) and unknown3 (32 bytes) not decoded.
 export class VexxNodeSound extends VexxNode {
   properties = {
     unknown1: 0.0,

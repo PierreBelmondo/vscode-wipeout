@@ -2,6 +2,8 @@ import { BufferRange } from "@core/utils/range";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
+// Reverse engineering progress: 10%
+// Only frameDuration (1/60 s) confirmed; 9 of 10 fields remain unknown (u32×3, f32×4, u16×2).
 export class VexxNodeCamera extends VexxNode {
   properties = {
     unknown1: 0,

@@ -5,6 +5,7 @@ export enum Vexx6NodeType {
   WORLD = 0x0f4,
   CAMERA = 0x0f7,
   CURVE_SHAPE = 0x101,
+  NURBS_CIRCLE_SHAPE = 0x108,
   MESH = 0x125,
   AMBIENT_LIGHT = 0x12c,
   NURBS_SURFACE = 0x123,
@@ -59,5 +60,8 @@ export enum Vexx6NodeType {
   CANON_FLASH = 0x3eb, // only in v6
   WING_TIP = 0x3ec, // only in v6
   TRACK_WALL_COLLISION = 0x3ed, // only in v6
-  ABSORB = 0x3ee // only in v6
+  ABSORB = 0x3ee, // only in v6
+  START_ATTACHMENT = 0x3ef, // only in v6 (PSVita 2048)
+  PILOT_ASSIST_DISABLE = 0x3f0, // only in v6 (PSVita 2048)
+  FOG_REGION = 0x3f3, // only in v6 (PSVita 2048)
 }

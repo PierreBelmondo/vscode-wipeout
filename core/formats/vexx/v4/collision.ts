@@ -66,6 +66,9 @@ class Block {
   }
 }
 
+// Reverse engineering progress: 70%
+// Outer block + Points structure fully parsed; Points.type semantics partially confirmed
+// (1=vertices, 2=triangle indices; type=3 "normals?" meaning not yet verified).
 export abstract class VexxNodeCollision extends VexxNode {
   signature = 0xffffff;
   blockCount = 0;
@@ -86,18 +89,21 @@ export abstract class VexxNodeCollision extends VexxNode {
   }
 }
 
+// Reverse engineering progress: 70%  (inherits VexxNodeCollision)
 export class VexxNodeFloorCollision extends VexxNodeCollision {
   constructor() {
     super(Vexx4NodeType.FLOOR_COLLISION);
   }
 }
 
+// Reverse engineering progress: 70%  (inherits VexxNodeCollision)
 export class VexxNodeWallCollision extends VexxNodeCollision {
   constructor() {
     super(Vexx4NodeType.WALL_COLLISION);
   }
 }
 
+// Reverse engineering progress: 70%  (inherits VexxNodeCollision)
 export class VexxNodeResetCollision extends VexxNodeCollision {
   constructor() {
     super(Vexx4NodeType.RESET_COLLISION);

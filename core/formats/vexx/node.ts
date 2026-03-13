@@ -1,5 +1,6 @@
 import { mat4 } from "gl-matrix";
 import { BufferRange } from "@core/utils/range";
+import { Vexx3NodeType } from "./v3/type";
 import { Vexx4NodeType as Vexx4NodeType } from "./v4/type";
 import { Vexx6NodeType } from "./v6/type";
 
@@ -50,7 +51,7 @@ export class VexxNodeHeader {
   }
 }
 
-export type VexxNodeType = Vexx4NodeType | Vexx6NodeType;
+export type VexxNodeType = Vexx3NodeType | Vexx4NodeType | Vexx6NodeType;
 
 type VexxNodePrototype = { new (): VexxNode };
 
@@ -62,6 +63,7 @@ type VexxNodeTypeInfo = {
 };
 
 export class VexxNode {
+  static prototypes3 = new Map<Vexx3NodeType, VexxNodeTypeInfo>();
   static prototypes4 = new Map<Vexx4NodeType, VexxNodeTypeInfo>();
   static prototypes6 = new Map<Vexx6NodeType, VexxNodeTypeInfo>();
 
@@ -78,6 +80,9 @@ export class VexxNode {
   children: VexxNode[] = [];
   parent?: VexxNode;
 
+  /** Errors collected during load(); empty when parsing succeeded cleanly. */
+  parseErrors: string[] = [];
+
   constructor(type: Vexx4NodeType | Vexx6NodeType | number = Vexx4NodeType._UNKNOWN) {
     this.header = new VexxNodeHeader(type);
   }
@@ -90,6 +95,11 @@ export class VexxNode {
     let root = "";
     if (this.parent) root = this.parent.path;
     return root + "/" + this.name;
+  }
+
+  static registerV3(type: Vexx3NodeType, prototype: VexxNodePrototype) {
+    const name = Vexx3NodeType[type];
+    VexxNode.prototypes3.set(type, { version: 3, type, name, prototype });
   }
 
   static registerV4(type: Vexx4NodeType, prototype: VexxNodePrototype) {
@@ -111,6 +121,8 @@ export class VexxNode {
 
     switch (version) {
       case 3:
+        typeInfo = this.prototypes3.get(type);
+        break;
       case 4:
         typeInfo = this.prototypes4.get(type);
         break;
@@ -123,7 +135,6 @@ export class VexxNode {
     }
 
     if (typeInfo === undefined) {
-      console.warn("Unknown VexxNode type", type);
       const instance = new VexxNode();
       instance.typeInfo = {
         version,
@@ -133,6 +144,7 @@ export class VexxNode {
       };
       instance.header = header;
       instance.range = range.slice(0, instance.header.size + instance.header.dataLength);
+      instance.parseErrors.push(`unknown node type 0x${type.toString(16).toUpperCase()}`);
       instance.load(instance.bodyRange);
       return instance;
     }
@@ -189,7 +201,9 @@ export class VexxNode {
 
   traverse(callback: (node: VexxNode) => void) {
     callback(this);
-    this.forEach(callback);
+    for (const child of this.children) {
+      child.traverse(callback);
+    }
   }
 
   dump(): any {

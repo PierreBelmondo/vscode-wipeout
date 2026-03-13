@@ -12,8 +12,9 @@ export class VexxKeyframeTrack {
   }
 }
 
+// Reverse engineering progress: 90%
 export class VexxNodeAnimTransform extends VexxNode {
-  unk1 = 0;
+  reserved = 0;
   count1 = 0;
   count2 = 0;
   has_position = 0;
@@ -36,7 +37,7 @@ export class VexxNodeAnimTransform extends VexxNode {
 
   override load(range: BufferRange): void {
     const rangeHeader = range.slice(0, 16);
-    this.unk1         = rangeHeader.getUint16(0);
+    this.reserved     = rangeHeader.getUint16(0);
     this.count1       = rangeHeader.getUint16(2);
     this.count2       = rangeHeader.getUint16(4);
     this.has_position = rangeHeader.getUint16(6);

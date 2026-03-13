@@ -3,6 +3,7 @@ import { vec4 } from "gl-matrix";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
 
+// Reverse engineering progress: 100%
 export class VexxNodeAmbientLight extends VexxNode {
   rgba = vec4.fromValues(0.3, 0.3, 0.3, 1.0);
 

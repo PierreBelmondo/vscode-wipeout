@@ -1,7 +1,8 @@
-import { VexxNode } from "../node";
+import { VexxNodeCollision } from "../v4/collision";
 import { Vexx6NodeType } from "./type";
 
-export class VexxNodeCageCollision extends VexxNode {
+// Reverse engineering progress: 70%
+export class VexxNodeCageCollision extends VexxNodeCollision {
   constructor() {
     super(Vexx6NodeType.CAGE_COLLISION);
   }

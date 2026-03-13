@@ -1,7 +1,9 @@
-import { VexxNode } from "../node";
+import { VexxNodeMatrix } from "../node";
 import { Vexx4NodeType } from "./type";
 
-export class VexxNodeParticleSystem extends VexxNode {
+// Reverse engineering progress: 100%
+// 4×4 transform matrix only (data:64); fully parsed via VexxNodeMatrix.
+export class VexxNodeParticleSystem extends VexxNodeMatrix {
   constructor() {
     super(Vexx4NodeType.PARTICLE_SYSTEM);
   }
