@@ -32,7 +32,7 @@ export class DXT1 {
 
   static decompressBlock(x: number, y: number, width: number, range: BufferRange, image: Uint8ClampedArray) {
     const color0 = range.getUint16(0);
-    const color1 = range.getUint16[2];
+    const color1 = range.getUint16(2);
     const colorCodes = range.getUint32(4);
 
     const r0 = (color0 & 0b1111100000000000) >>> 8;

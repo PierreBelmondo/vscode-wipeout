@@ -70,15 +70,15 @@ export class BufferRange {
   }
 
   getString(): string {
-    return textDecoder.decode(this.buffer).replace(/\0/g, "");
+    return textDecoder.decode(new Uint8Array(this._buffer, this._begin, this.size)).replace(/\0/g, "");
   }
 
   getCString(offset: number): string {
-    const charArray = new Uint8Array(this.buffer);
-    let i = offset;
-    while (i < this._end) if (charArray[i++] == 0) break;
-    const stringRange = this.slice(offset, i);
-    return textDecoder.decode(stringRange.buffer).replace(/\0/g, "");
+    const abs = this._begin + offset;
+    let end = abs;
+    const buf = new Uint8Array(this._buffer);
+    while (end < this._end && buf[end] !== 0) end++;
+    return textDecoder.decode(new Uint8Array(this._buffer, abs, end - abs));
   }
 
   getHexadecimal(): string {
@@ -123,6 +123,14 @@ export class BufferRange {
     const i = this._begin + offset;
     //if (i >= this._end) console.warn("Out of bounds access");
     return this._view.getUint32(i, this._littleEndian);
+  }
+
+  getUint64(offset: number): [lo: number, hi: number] {
+    const i = this._begin + offset;
+    if (this._littleEndian) {
+      return [this._view.getUint32(i, true), this._view.getUint32(i + 4, true)];
+    }
+    return [this._view.getUint32(i + 4, false), this._view.getUint32(i, false)];
   }
 
   getUint40(offset: number): number {
@@ -176,73 +184,78 @@ export class BufferRange {
   }
 
   getInt8Array(offset: number, length: number): Int8Array {
-    const range = this.slice(offset, offset + length);
-    return new Int8Array(range.buffer);
+    return new Int8Array(this._buffer, this._begin + offset, length);
   }
 
   getUint8Array(offset: number, length: number): Uint8Array {
-    const range = this.slice(offset, offset + length);
-    return new Uint8Array(range.buffer);
+    return new Uint8Array(this._buffer, this._begin + offset, length);
   }
 
   getUint8ClampedArray(offset: number, length: number): Uint8ClampedArray {
-    const range = this.slice(offset, offset + length);
-    return new Uint8ClampedArray(range.buffer);
+    return new Uint8ClampedArray(this._buffer, this._begin + offset, length);
   }
 
   getInt16Array(offset: number, length: number): Int16Array {
-    const range = this.slice(offset, offset + 2 * length);
-    if (!this._littleEndian) {
-      var view = new DataView(range.buffer);
-      let numbers: number[] = [];
-      for (let i = 0; i < length; i++) {
-        const number = view.getInt16(i * 2, this._littleEndian);
-        numbers.push(number);
-      }
-      return new Int16Array(numbers);
-    }
-    return new Int16Array(range.buffer);
+    const abs = this._begin + offset;
+    if (this._littleEndian) return new Int16Array(this._buffer, abs, length);
+    const out = new Int16Array(length);
+    for (let i = 0; i < length; i++) out[i] = this._view.getInt16(abs + i * 2, false);
+    return out;
   }
 
   getUint16Array(offset: number, length: number): Uint16Array {
-    const range = this.slice(offset, offset + 2 * length);
-    if (!this._littleEndian) {
-      var view = new DataView(range.buffer);
-      let numbers: number[] = [];
-      for (let i = 0; i < length; i++) {
-        const number = view.getUint16(i * 2, this._littleEndian);
-        numbers.push(number);
-      }
-      return new Uint16Array(numbers);
-    }
-    return new Uint16Array(range.buffer);
+    const abs = this._begin + offset;
+    if (this._littleEndian) return new Uint16Array(this._buffer, abs, length);
+    const out = new Uint16Array(length);
+    for (let i = 0; i < length; i++) out[i] = this._view.getUint16(abs + i * 2, false);
+    return out;
   }
 
   getUint32Array(offset: number, length: number): Uint32Array {
-    const range = this.slice(offset, offset + 4 * length);
-    if (!this._littleEndian) {
-      var view = new DataView(range.buffer);
-      let numbers: number[] = [];
-      for (let i = 0; i < length; i++) {
-        const number = view.getUint32(i * 4, this._littleEndian);
-        numbers.push(number);
-      }
-      return new Uint32Array(numbers);
-    }
-    return new Uint32Array(range.buffer);
+    const abs = this._begin + offset;
+    if (this._littleEndian) return new Uint32Array(this._buffer, abs, length);
+    const out = new Uint32Array(length);
+    for (let i = 0; i < length; i++) out[i] = this._view.getUint32(abs + i * 4, false);
+    return out;
   }
 
   getFloat32Array(offset: number, length: number): Float32Array {
-    const range = this.slice(offset, offset + 4 * length);
-    if (!this._littleEndian) {
-      var view = new DataView(range.buffer);
-      let numbers: number[] = [];
-      for (let i = 0; i < length; i++) {
-        const number = view.getFloat32(i * 4, this._littleEndian);
-        numbers.push(number);
-      }
-      return new Float32Array(numbers);
+    const abs = this._begin + offset;
+    if (this._littleEndian) return new Float32Array(this._buffer, abs, length);
+    const out = new Float32Array(length);
+    for (let i = 0; i < length; i++) out[i] = this._view.getFloat32(abs + i * 4, false);
+    return out;
+  }
+
+  getStridedInt8Array(offset: number, stride: number, itemSize: number, count: number): Int8Array {
+    const out = new Int8Array(count * itemSize);
+    const abs = this._begin + offset;
+    for (let i = 0; i < count; i++) {
+      const base = abs + i * stride;
+      for (let c = 0; c < itemSize; c++) out[i * itemSize + c] = this._view.getInt8(base + c);
     }
-    return new Float32Array(range.buffer);
+    return out;
+  }
+
+  getStridedInt16Array(offset: number, stride: number, itemSize: number, count: number): Int16Array {
+    const out = new Int16Array(count * itemSize);
+    const abs = this._begin + offset;
+    const le  = this._littleEndian;
+    for (let i = 0; i < count; i++) {
+      const base = abs + i * stride;
+      for (let c = 0; c < itemSize; c++) out[i * itemSize + c] = this._view.getInt16(base + c * 2, le);
+    }
+    return out;
+  }
+
+  getStridedFloat32Array(offset: number, stride: number, itemSize: number, count: number): Float32Array {
+    const out = new Float32Array(count * itemSize);
+    const abs = this._begin + offset;
+    const le  = this._littleEndian;
+    for (let i = 0; i < count; i++) {
+      const base = abs + i * stride;
+      for (let c = 0; c < itemSize; c++) out[i * itemSize + c] = this._view.getFloat32(base + c * 4, le);
+    }
+    return out;
   }
 }
