@@ -1,6 +1,10 @@
 import { BufferRange } from "@core/utils/range";
-import { VexxNode, VexxNodeType } from "./node";
+import { VexxNode } from "./node";
 
+import { Vexx3NodeType } from "./v3/type";
+import { Vexx3NodeAnimTransform } from "./v3/anim_transform";
+import { Vexx3NodeMesh } from "./v3/mesh";
+import { VexxNodeTextureV3 } from "./v3/texture";
 import { Vexx4NodeType } from "./v4/type";
 import { VexxNodeAirbrake } from "./v4/airbrake";
 import { VexxNodeAmbientLight } from "./v4/ambient_light";
@@ -58,6 +62,18 @@ import { VexxNodeSoundCone } from "./v6/sound_cone";
 import { VexxNodeWingTip } from "./v6/wingtip";
 import { VexxNodeTrackWallCollision } from "./v6/track_wall_collision";
 import { VexxNodeAbsorb } from "./v6/absorb";
+import { VexxNodeStartAttachment } from "./v6/start_attachment";
+import { VexxNodePilotAssistDisable } from "./v6/pilot_assist_disable";
+import { VexxNodeFogRegion } from "./v6/fog_region";
+
+VexxNode.registerV3(Vexx3NodeType.GROUP, VexxNodeGroup);
+VexxNode.registerV3(Vexx3NodeType.TRANSFORM, VexxNodeTransform);
+VexxNode.registerV3(Vexx3NodeType.WORLD, VexxNodeWorld);
+VexxNode.registerV3(Vexx3NodeType.CAMERA, VexxNodeCamera);
+VexxNode.registerV3(Vexx3NodeType.MESH, Vexx3NodeMesh);
+VexxNode.registerV3(Vexx3NodeType.AMBIENT_LIGHT, VexxNodeAmbientLight);
+VexxNode.registerV3(Vexx3NodeType.ANIM_TRANSFORM, Vexx3NodeAnimTransform);
+VexxNode.registerV3(Vexx3NodeType.TEXTURE, VexxNodeTextureV3);
 
 VexxNode.registerV4(Vexx4NodeType.AIRBRAKE, VexxNodeAirbrake);
 VexxNode.registerV4(Vexx4NodeType.AMBIENT_LIGHT, VexxNodeAmbientLight);
@@ -108,6 +124,9 @@ VexxNode.registerV4(Vexx4NodeType.WO_TRACK, VexxNodeWoTrack);
 VexxNode.registerV4(Vexx4NodeType.WORLD, VexxNodeWorld);
 
 VexxNode.registerV6(Vexx6NodeType.ABSORB, VexxNodeAbsorb);
+VexxNode.registerV6(Vexx6NodeType.FOG_REGION, VexxNodeFogRegion);
+VexxNode.registerV6(Vexx6NodeType.PILOT_ASSIST_DISABLE, VexxNodePilotAssistDisable);
+VexxNode.registerV6(Vexx6NodeType.START_ATTACHMENT, VexxNodeStartAttachment);
 VexxNode.registerV6(Vexx6NodeType.AIRBRAKE, VexxNodeAirbrake);
 VexxNode.registerV6(Vexx6NodeType.AMBIENT_LIGHT, VexxNodeAmbientLight);
 VexxNode.registerV6(Vexx6NodeType.ANIMATION_TRIGGER, VexxNodeAnimationTrigger);
@@ -119,6 +138,7 @@ VexxNode.registerV6(Vexx6NodeType.CANON_FLASH, VexxNodeCanonFlash);
 VexxNode.registerV6(Vexx6NodeType.CLOUD_CUBE, VexxNodeCloudCube);
 VexxNode.registerV6(Vexx6NodeType.CLOUD_GROUP, VexxNodeCloudGroup);
 VexxNode.registerV6(Vexx6NodeType.CURVE_SHAPE, VexxNodeCurveShape);
+VexxNode.registerV6(Vexx6NodeType.NURBS_CIRCLE_SHAPE, VexxNodeCurveShape);
 VexxNode.registerV6(Vexx6NodeType.DIRECTIONAL_LIGHT, VexxNodeDirectionalLight);
 VexxNode.registerV6(Vexx6NodeType.DYNAMIC_SHADOW_OCCLUDER, VexxNodeDynamicShadowOccluder);
 VexxNode.registerV6(Vexx6NodeType.ENGINE_FIRE, VexxNodeEngineFire);
@@ -207,6 +227,7 @@ export class Vexx {
   range = new BufferRange();
   header = new VexxHeader();
   root: VexxNode = new VexxNodeWorld();
+  parseErrors: string[] = [];
 
   get name(): string {
     return "VEXX";
@@ -226,10 +247,12 @@ export class Vexx {
     const texturesRange = ret.header.texturesRange();
 
     const totalSize = ret.header.size + nodesRange.size + texturesRange.size;
-    if (totalSize != buffer.byteLength) console.warn("Total expected size is different than file size");
+    if (totalSize != buffer.byteLength)
+      ret.parseErrors.push(`size mismatch: expected ${totalSize}, got ${buffer.byteLength}`);
 
     const node = Vexx.loadNode(nodesRange, ret.header.version);
-    if (!(node instanceof VexxNodeWorld)) console.warn("root node is not of type World ?");
+    if (!(node instanceof VexxNodeWorld))
+      ret.parseErrors.push(`root node is not WORLD (got 0x${node.header.type.toString(16).toUpperCase()})`);
     ret.root = node;
 
     if (texturesRange.size > 0) {
@@ -242,6 +265,13 @@ export class Vexx {
         texture.loadTexture();
       }
     }
+
+    ret.root.traverse((node) => {
+      if (node.parseErrors.length === 0) return;
+      const path = node.path;
+      for (const e of node.parseErrors)
+        ret.parseErrors.push(`[${node.typeName}] ${path}: ${e}`);
+    });
 
     return ret;
   }
@@ -269,8 +299,11 @@ export class Vexx {
     this.root.traverse(callback);
   }
 
+
   get textures(): VexxNodeTexture[] {
     switch (this.header.version) {
+      case 3:
+        return this.filter((n) => n.typeInfo.type == Vexx3NodeType.TEXTURE) as unknown as VexxNodeTexture[];
       case 4:
         return this.filter((n) => n.typeInfo.type == Vexx4NodeType.TEXTURE) as unknown as VexxNodeTexture[];
       case 6:
@@ -278,16 +311,5 @@ export class Vexx {
       default:
         return [];
     }
-  }
-
-  dumpNode(node: VexxNode, level = 0) {
-    console.log(" ".repeat(level * 2) + node.header.name + " (" + node.header.childrenCount + " children)");
-    for (const child of node.children) {
-      this.dumpNode(child, level + 1);
-    }
-  }
-
-  dump() {
-    this.dumpNode(this.root);
   }
 }
