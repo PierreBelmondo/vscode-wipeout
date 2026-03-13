@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-import { RcsModel, RcsModelMatrix, RcsModelMesh1, RcsModelMesh5, RcsModelMeshInfo } from "@core/formats/rcs";
+import { RcsModel, RcsModelMatrix, RcsModelMesh1, RcsModelMesh5, RcsModelMeshInfo } from "@core/formats/rcs/rcsmodel_ps3";
 import { BufferRange } from "@core/utils/range";
 
 class Output {
@@ -45,10 +45,9 @@ function buf2hex(buffer: ArrayBuffer) {
   return [...new Uint8Array(buffer)].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
-function read(path: string) {
+function read(path: string): ArrayBuffer {
   const buffer = fs.readFileSync(path);
-  const arrayBuffer = new Uint8Array(buffer, buffer.byteOffset, buffer.byteLength);
-  return arrayBuffer.buffer;
+  return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
 }
 
 function main(args: string[]) {
@@ -267,13 +266,12 @@ function main(args: string[]) {
 
           output.push();
           output.h2(`VBO`, submesh.vbo.range);
-          output.log("Vertices: " + submesh.vbo.vertices.length);
-          output.log("UVs: " + submesh.vbo.uv.length);
-          output.log("Normals: " + submesh.vbo.normals.length);
-          output.log("Colors: " + submesh.vbo.rgba.length);
+          for (const [name, values] of Object.entries(submesh.vbo.attributes)) {
+            output.log(`${name}: ${values.length}`);
+          }
           if (config.points) {
-            output.log("vertices: " + submesh.vbo.vertices);
-            output.log("normals: " + submesh.vbo.normals);
+            output.log("position: " + submesh.vbo.attributes["position"]);
+            output.log("normal: " + submesh.vbo.attributes["normal"]);
           }
           output.br();
           output.h2(`IBO`, submesh.ibo.range);
