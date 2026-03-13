@@ -9,6 +9,7 @@ import { RcsModelEditorProvider } from "./views/rcsmodel/EditorProvider";
 import { DdsModelEditorProvider } from "./views/texture/DdsModelEditorProvider";
 import { GnfModelEditorProvider } from "./views/texture/GnfModelEditorProvider";
 import { GtfModelEditorProvider } from "./views/texture/GtfModelEditorProvider";
+import { GxtModelEditorProvider } from "./views/texture/GxtModelEditorProvider";
 import { MipModelEditorProvider } from "./views/texture/MipModelEditorProvider";
 import { PctModelEditorProvider } from "./views/texture/PctModelEditorProvider";
 import { SceneGraphProvider, SceneGraphRefresh, SceneGraphShow, SceneGraphDump } from "./sceneGraph";
@@ -25,6 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(DdsModelEditorProvider.register(context));
   context.subscriptions.push(GnfModelEditorProvider.register(context));
   context.subscriptions.push(GtfModelEditorProvider.register(context));
+  context.subscriptions.push(GxtModelEditorProvider.register(context));
   context.subscriptions.push(FntModelEditorProvider.register(context));
   context.subscriptions.push(MipModelEditorProvider.register(context));
   context.subscriptions.push(PctModelEditorProvider.register(context));

@@ -29,14 +29,12 @@ export const glass_texture: MaterialFactory = {
   minTextures: 1,
   maxTextures: 1,
   make: (textures: THREE.Texture[]) => {
-    return new THREE.MeshPhongMaterial({
+    return new THREE.MeshPhysicalMaterial({
       side: THREE.DoubleSide,
-      color: 0x101010,
-      specular: 0xffffff,
-      transparent: true,
-      shininess: 90,
-      reflectivity: 1.0,
-      refractionRatio: 0.98,
+      color: 0xffffff,
+      transmission: 0.9,
+      roughness: 0.1,
+      ior: 1.5,
       map: textures[0],
     });
   },

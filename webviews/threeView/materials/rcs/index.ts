@@ -33,6 +33,13 @@ import { simpletextureandtexturealphauvoffsetscale } from "./simpletextureandtex
 import { tech_de_ra_rocks } from "./tech_de_ra_rocks";
 import { tracktexture_with_normal } from "./tracktexture_with_normal";
 
+// WipEout 2048 (PSVita)
+import { engine_additive_2048 } from "./2048/engine_additive";
+import { ship_glass_dg_2048 } from "./2048/ship_glass_dg";
+import { ship_lights_2048 } from "./2048/ship_lights";
+import { ship_paint_shiny_final_2048 } from "./2048/ship_paint_shiny_final";
+import { ship_tech_2048 } from "./2048/ship_tech";
+
 const FACTORIES = [
   basicalpha,
   basic_vertexemissive,
@@ -67,6 +74,12 @@ const FACTORIES = [
   simpletextureandtexturealphauvoffsetscale,
   tech_de_ra_rocks,
   tracktexture_with_normal,
+  // WipEout 2048
+  engine_additive_2048,
+  ship_glass_dg_2048,
+  ship_lights_2048,
+  ship_paint_shiny_final_2048,
+  ship_tech_2048,
 ];
 
 export function createMaterial(name: string, textures: THREE.Texture[]) {
@@ -91,20 +104,21 @@ export function createMaterial(name: string, textures: THREE.Texture[]) {
     return new THREE.MeshNormalMaterial({ name });
   } else {
     if (textures.length == 0) {
-      return new THREE.MeshPhongMaterial({
+      return new THREE.MeshStandardMaterial({
         name,
         side: THREE.DoubleSide,
         color: 0xffffff,
-        specular: 0xffffff,
+        roughness: 0.7,
+        metalness: 0.0,
       });
     } else if (textures.length > 0) {
-      return new THREE.MeshPhongMaterial({
+      return new THREE.MeshStandardMaterial({
         name,
         side: THREE.DoubleSide,
         color: 0xffffff,
-        specular: 0xffffff,
+        roughness: 0.7,
+        metalness: 0.0,
         map: textures[0],
-        specularMap: textures[0],
       });
     }
   }

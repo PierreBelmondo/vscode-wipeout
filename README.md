@@ -1,6 +1,6 @@
 # Belmondo's Vision - WipEout Modding Tool
 
-WipEout modding extension for Visual Studio Code — supports PSX, PSP, PS2, PS3, and PS4 game files.
+WipEout modding extension for Visual Studio Code — supports PSX, PSP, PS2, PS3, PSVita, PS4 and PS5 game files.
 
 ![GitHub](https://img.shields.io/github/license/PierreBelmondo/vscode-wipeout)
 
@@ -22,19 +22,24 @@ Right-click any supported archive in the Explorer to unpack it.
 | Format | Extension | Platform |
 |--------|-----------|----------|
 | **VEXX** | `.vex` | PSP / PS2 |
-| **RCS Model** | `.rcsmodel` | PS3 / PS4 |
+| **RCS Model** | `.rcsmodel` | PS3 / PSVita / PS5 |
 
 - Scene graph tree panel with node inspection
 - Keyframe animation playback (position, rotation, scale)
 - Material and texture reference browsing
 - 40+ VEXX node types (meshes, transforms, lights, collisions, particles, sounds, effects, …)
+- PS5/PSVita rcsmodel: scene graph parsing, geometry extraction, stride detection, material/texture pipeline
+- GNF texture loading with BC7 decompression and PS4 GCN macro-tile detiling (tiling mode 13)
+- GXT texture loading with PVRTC2 4BPP software decoder (Morton-order unswizzle)
+- PBR glass material (MeshPhysicalMaterial with transmission)
 
 ### Texture viewing
 
 | Format | Extension | Platform | Compression |
 |--------|-----------|----------|-------------|
 | **GTF** | `.gtf` | PS3 | DXT1–DXT5, A8R8G8B8, and more |
-| **GNF** | `.gnf` | PS4 | BC7/BCn (WASM-accelerated) |
+| **GNF** | `.gnf` | PS4 / PS5 | BC7/BCn (WASM-accelerated), macro-tile detiling |
+| **GXT** | `.gxt` | PSVita | PVRTC2 4BPP, U8U8U8U8, UBC1, UBC3 |
 | **DDS** | `.dds` | PC | DXT1/3/5, DX10/DXGI |
 | **MIP** | `.mip` | PSP | 4-bit / 8-bit indexed, swizzled |
 | **PCT** | `.pct` | PS2 | 4-bit / 8-bit indexed, GIF/GS DMA stream (billboard and font textures) |
@@ -57,6 +62,7 @@ Nothing yet.
 
 - DXT5 alpha channel is buggy
 - Not all VEXX node types are fully parsed
+- PS5 rcsmodel: not all 2048-era material shaders are implemented (falls back to generic Phong)
 
 ## Release Notes
 

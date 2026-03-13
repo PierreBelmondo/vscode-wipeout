@@ -18,6 +18,8 @@ export class RcsModelDocument extends Disposable implements vscode.CustomDocumen
     return vscode.Uri.joinPath(tmpUri, "..");
   }
 
+  public scene: any = {};
+
   private readonly _uri: vscode.Uri;
 
   private _root: vscode.Uri;

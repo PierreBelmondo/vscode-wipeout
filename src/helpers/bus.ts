@@ -1,12 +1,16 @@
 import * as vscode from "vscode";
-import { VexxDocument } from "views/vexx/Document";
 import { ThreeDocumentMessage, ThreeViewMessage } from "@core/api/rpc";
 
+export interface SceneDocument {
+  uri: vscode.Uri;
+  scene: any;
+}
+
 class Bus {
-  private readonly _onDidChangeActiveCustomDocument = new vscode.EventEmitter<VexxDocument>();
+  private readonly _onDidChangeActiveCustomDocument = new vscode.EventEmitter<SceneDocument>();
   public readonly onDidChangeActiveCustomDocument = this._onDidChangeActiveCustomDocument.event;
 
-  public fireDidChangeActiveCustomDocument(document: VexxDocument) {
+  public fireDidChangeActiveCustomDocument(document: SceneDocument) {
     this._onDidChangeActiveCustomDocument.fire(document);
   }
 

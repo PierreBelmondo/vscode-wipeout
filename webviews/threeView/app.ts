@@ -225,22 +225,32 @@ class Editor {
         this.world.setupGui();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
+        this.world.setupGuiTrackCamera();
         this.world.setupGuiBackgroundColor();
         this.world.setupGuiBloom();
+        this.world.setupGuiDebug();
         this.loadWorld();
         break;
       }
       case "model/vnd.wipeout.rcsmodel": {
-        const response = await fetch(body.webviewUri);
-        const buffer = await response.arrayBuffer();
-        this.loader = new RCSModelLoader();
-        this.loader.loadFromBuffer(this.world, buffer, body.uri);
-        this.world.emitScene();
-        this.world.setupGui();
-        this.world.setupGuiButtonExport();
-        this.world.setupGuiLayers();
-        this.world.setupGuiBackgroundColor();
-        this.loadWorld();
+        try {
+          const response = await fetch(body.webviewUri);
+          const buffer = await response.arrayBuffer();
+          api.log(`[rcsmodel] fetched ${buffer.byteLength} bytes, loading...`);
+          this.loader = new RCSModelLoader();
+          await this.loader.loadFromBuffer(this.world, buffer, body.uri);
+          api.log(`[rcsmodel] loaded, scene children: ${this.world.scene.children.length}`);
+          this.world.emitScene();
+          this.world.setupGui();
+          this.world.setupGuiButtonExport();
+          this.world.setupGuiLayers();
+          this.world.setupGuiBackgroundColor();
+          this.world.setupGuiDebug();
+          this.loadWorld();
+        } catch (e: any) {
+          api.log(`[rcsmodel] ERROR: ${e.message}\n${e.stack}`);
+          console.error("[rcsmodel] load error:", e);
+        }
         break;
       }
       case "application/xml+wipeout": {
@@ -267,8 +277,10 @@ class Editor {
         this.world.setupGui();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
+        this.world.setupGuiTrackCamera();
         this.world.setupGuiBackgroundColor();
         this.world.setupGuiBloom();
+        this.world.setupGuiDebug();
       }
     }
   }

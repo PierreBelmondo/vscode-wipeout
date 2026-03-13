@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { bus } from "./helpers/bus";
-import { VexxDocument } from "./views/vexx/Document";
+import { bus, SceneDocument } from "./helpers/bus";
 
 export class SceneGraphRefresh {
   static readonly commandType = "sceneGraph.refreshEntry";
@@ -42,7 +41,7 @@ export class SceneGraphDump {
   }
 }
 
-let currentDocument: VexxDocument | null = null;
+let currentDocument: SceneDocument | null = null;
 
 export class SceneGraphProvider implements vscode.TreeDataProvider<SceneItem> {
   static readonly treeDataProviderType = "sceneGraph";

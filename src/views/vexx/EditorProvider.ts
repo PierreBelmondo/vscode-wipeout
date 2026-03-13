@@ -72,13 +72,23 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
           break;
         case "require":
           let filename = e.filename as string;
-          const uri = this.resolveUri(document, filename);
+          let uri = this.resolveUri(document, filename);
           try {
             await vscode.workspace.fs.stat(uri);
             console.log(`Document requires external dependency: ${filename}`);
           } catch {
-            console.log(`Document requires missing dependency: ${filename} ${uri}`);
-            break;
+            // Case-insensitive fallback: first try filename-only, then full path walk
+            let resolved = await this.resolveUriCaseInsensitive(uri);
+            if (!resolved) {
+              resolved = await this.resolvePathCaseInsensitive(document.root, filename);
+            }
+            if (resolved) {
+              uri = resolved;
+              console.log(`Document requires external dependency (case-insensitive): ${uri.fsPath}`);
+            } else {
+              console.log(`Document requires missing dependency: ${filename} ${uri}`);
+              break;
+            }
           }
           const webviewUri = webviewPanel.webview.asWebviewUri(uri);
           const body = {
@@ -133,7 +143,7 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
       <html lang="en">
         <head>
           <meta charset="UTF-8">
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: vscode-resource: https:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:; connect-src https:; font-src data:;">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: vscode-resource: https:; script-src 'nonce-${nonce}' 'wasm-unsafe-eval'; style-src vscode-resource: 'unsafe-inline' http: https: data:; connect-src https: data:; font-src data:;">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>RCS Model</title>
         </head>
@@ -166,6 +176,42 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
       return vscode.Uri.parse(filename);
     }
     return vscode.Uri.joinPath(document.uri, "..", filename);
+  }
+
+  private async resolveUriCaseInsensitive(uri: vscode.Uri): Promise<vscode.Uri | null> {
+    // First try: only match the filename (fast path for correct directory case)
+    const dir = vscode.Uri.joinPath(uri, "..");
+    const target = path.basename(uri.fsPath).toLowerCase();
+    try {
+      const entries = await vscode.workspace.fs.readDirectory(dir);
+      for (const [name] of entries) {
+        if (name.toLowerCase() === target) {
+          return vscode.Uri.joinPath(dir, name);
+        }
+      }
+    } catch {}
+    return null;
+  }
+
+  /**
+   * Walk each path segment case-insensitively from a base URI.
+   * Returns the resolved URI or null if any segment is not found.
+   */
+  private async resolvePathCaseInsensitive(base: vscode.Uri, relativePath: string): Promise<vscode.Uri | null> {
+    const segments = relativePath.split("/").filter(s => s.length > 0);
+    let current = base;
+    for (const seg of segments) {
+      const target = seg.toLowerCase();
+      try {
+        const entries = await vscode.workspace.fs.readDirectory(current);
+        const match = entries.find(([name]) => name.toLowerCase() === target);
+        if (!match) return null;
+        current = vscode.Uri.joinPath(current, match[0]);
+      } catch {
+        return null;
+      }
+    }
+    return current;
   }
 }
 

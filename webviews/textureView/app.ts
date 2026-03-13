@@ -8,6 +8,7 @@ import { BC7 } from "@core/utils/bcdec";
 import { MIP } from "@core/formats/mip";
 import { GNF } from "@core/formats/gnf";
 import { GTF } from "@core/formats/gtf";
+import { GXT } from "@core/formats/gxt";
 import { DDS } from "@core/formats/dds";
 import { FNT } from "@core/formats/fnt";
 import { PCT } from "@core/formats/pct";
@@ -75,6 +76,9 @@ class Editor {
         break;
       case "image/pct":
         mipmaps = await this.loadPCT(buffer);
+        break;
+      case "image/gxt":
+        mipmaps = this.loadGXT(buffer);
         break;
     }
     mipmaps = await this.decompress(mipmaps);
@@ -152,7 +156,7 @@ class Editor {
   }
 
   async loadGNF(buffer: ArrayBuffer): Promise<Mipmaps> {
-    const gnf = GNF.load(buffer);
+    const gnf = await GNF.load(buffer);
     console.log(gnf);
     return gnf.mipmaps;
   }
@@ -177,6 +181,11 @@ class Editor {
     this.scaleY = 1;
     const pct = PCT.load(buffer);
     return pct.mipmap ? [pct.mipmap] : [];
+  }
+
+  loadGXT(buffer: ArrayBuffer): Mipmaps {
+    const gxt = GXT.load(buffer);
+    return gxt.mipmaps;
   }
 
   render(textures: Mipmaps) {

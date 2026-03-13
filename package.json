@@ -157,6 +157,16 @@
         "priority": "default"
       },
       {
+        "viewType": "wipeout.view.gxt",
+        "displayName": "GXT Texture",
+        "selector": [
+          {
+            "filenamePattern": "*.gxt"
+          }
+        ],
+        "priority": "default"
+      },
+      {
         "viewType": "wipeout.view.dds",
         "displayName": "DDS Texture",
         "selector": [
@@ -223,11 +233,8 @@
     "package:webview-texture": "vite build --mode production --config vite.webview-texture.config.ts",
     "package:webviews": "npm run package:webview-three && npm run package:webview-texture",
     "vsix": "vsce package",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

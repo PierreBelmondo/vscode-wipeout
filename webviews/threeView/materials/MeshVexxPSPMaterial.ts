@@ -9,11 +9,19 @@ import * as THREE from "three";
  *  - Flat shading: matches the PSP GU's per-face shading model.
  */
 export class MeshVexxPSPMaterial extends THREE.MeshPhongMaterial {
-  constructor(map: THREE.Texture) {
+  /**
+   * @param map        Diffuse texture.
+   * @param hasNormals Pass true when the geometry supplies a per-vertex normal
+   *                   attribute (vtxdef has NORMAL bits set).  When false the
+   *                   material falls back to flatShading so Three.js generates
+   *                   face normals via screen-space derivatives — without this
+   *                   geometry that has no normal attribute renders solid black.
+   */
+  constructor(map: THREE.Texture, hasNormals = false) {
     super({
       map,
       alphaTest: 0.5,
-      flatShading: true,
+      flatShading: !hasNormals,
       side: THREE.DoubleSide,
     });
 

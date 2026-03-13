@@ -77,6 +77,7 @@ export function mipmapsToTexture(mipmaps: Mipmaps): THREE.Texture {
   texture.wrapT = THREE.RepeatWrapping;
   texture.magFilter = THREE.LinearFilter;
   texture.minFilter = THREE.LinearFilter;
+  texture.anisotropy = 16;
   texture.needsUpdate = true;
 
   if (textures.length > 0 && texture instanceof THREE.DataTexture) {
