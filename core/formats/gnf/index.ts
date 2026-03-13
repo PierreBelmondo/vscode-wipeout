@@ -2,6 +2,7 @@ import { BufferRange } from "@core/utils/range";
 import { Mipmaps } from "@core/utils/mipmaps";
 import { BC7 } from "@core/utils/bcdec";
 import { GNMTexture } from "./gnm";
+import { detileBC7, tiledSize } from "./detile";
 
 class GNFHeader {
   range = new BufferRange();
@@ -44,7 +45,7 @@ export class GNF {
   textures = [] as GNMTexture[];
   mipmaps: Mipmaps = [];
 
-  static load(buffer: ArrayBuffer): GNF {
+  static async load(buffer: ArrayBuffer): Promise<GNF> {
     const ret = new GNF();
     ret.range = new BufferRange(buffer);
     ret.range.le = false;
@@ -62,11 +63,11 @@ export class GNF {
 
     const balign = ret.header.byte_alignement;
     const dataRange = ret.range.slice(balign);
-    ret.loadBC7(dataRange);
+    await ret.loadBC7(dataRange);
     return ret;
   }
 
-  loadBC7(dataRange: BufferRange) {
+  async loadBC7(dataRange: BufferRange) {
     this.mipmaps = [];
 
     let dataOffset = 0;
@@ -74,16 +75,34 @@ export class GNF {
       const texture = this.textures[i];
       let width = texture.width;
       let height = texture.height;
+      const pitch = texture.pitch;
+      const tiled = texture.tilingindex > 0;
+
+      let mipPitch = pitch;
       for (let j = texture.baselevel; j < texture.lastlevel; j++) {
-        const dataLength = BC7.size(width, height); 
-        const data = dataRange.getUint8Array(dataOffset, dataLength);
-        this.mipmaps.push({ type: "BC7", width, height, data });
-        width = width / 2;
-        height = height / 2;
-        dataOffset += dataLength;
-        dataOffset += this.header.byte_alignement - (dataOffset % this.header.byte_alignement);
+        const linearSize = BC7.size(width, height);
+
+        let bc7Blocks: Uint8Array;
+        if (tiled) {
+          const mipTiledSize = tiledSize(width, height, mipPitch);
+          const tiledData = dataRange.getUint8Array(dataOffset, Math.min(mipTiledSize, dataRange.size - dataOffset));
+          bc7Blocks = detileBC7(tiledData, width, height, mipPitch);
+          dataOffset += mipTiledSize;
+        } else {
+          bc7Blocks = dataRange.getUint8Array(dataOffset, linearSize);
+          dataOffset += linearSize;
+        }
+
+        // Decompress BC7 to RGBA via WASM
+        const rgba = await BC7.decompress(width, height, (bc7Blocks.buffer as ArrayBuffer).slice(bc7Blocks.byteOffset, bc7Blocks.byteOffset + bc7Blocks.byteLength));
+        this.mipmaps.push({ type: "RGBA", width, height, data: rgba });
+
+        width = Math.max(1, width / 2);
+        height = Math.max(1, height / 2);
+        mipPitch = Math.max(1, mipPitch / 2);
+        const align = this.header.byte_alignement;
+        dataOffset += (align - (dataOffset % align)) % align;
       }
-      console.warn("Not loading the rest of the texture offset is: " + dataOffset);
       break;
     }
   }
