@@ -485,6 +485,7 @@ function dumpWoSpot(out: Output, node: VexxNodeWoSpot) {
 
 function dumpWoTrack(out: Output, node: VexxNodeWoTrack) {
   out.kv("sectionCount", node.sectionCount);
+  out.kv("_unknown", buf2hex(node._unknown.getArrayBuffer(0, node._unknown.size)));
   out.kv("lanes", node.lanes.length);
   for (const [i, lane] of node.lanes.entries()) {
     out.log(`  lane[${i}]: points=${lane.pointCount}  scale=${lane.scale.toFixed(4)}`);
