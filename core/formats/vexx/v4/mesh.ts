@@ -27,8 +27,13 @@ export class VexxNodeMesh extends VexxNode {
   override load(range: BufferRange): void {
     this.info = VexxNodeMeshHeader.load(range);
     const dataRange = range.slice(this.info.size);
-    if ((this.info.reserved1 == 0x00 && this.info.reserved2 == 0xff) ||
-        (this.info.reserved1 == 0xff && this.info.reserved2 == 0x00)) {
+
+    // External nodes have no inline geometry: their chunk area is a stub whose vtxdef
+    // field is 0.  Inline nodes always have vtxdef != 0.
+    const chunkStart = this.info.chunkStart;
+    const isExternalNode = chunkStart === 0 || range.slice(chunkStart).getUint16(10) === 0;
+
+    if (isExternalNode) {
       this.externalId = dataRange.getUint32(0);
 
       let chunkLinksRange = dataRange.slice(48);
@@ -45,14 +50,12 @@ export class VexxNodeMesh extends VexxNode {
         materialsRange = materialsRange.slice(material.size);
       }
 
-      const chunkStart = this.info.chunkStart;
-      if (chunkStart == 0) {
-        console.error("Failed to load shape info");
-        return;
-      }
-
+      // chunkStart is guaranteed non-zero (checked in isExternalNode above)
       let chunksRange = range.slice(chunkStart);
       while (chunksRange.size > 64) {
+        // vtxdef=0 means end-of-data (padding or external link stub) — stop silently.
+        if (chunksRange.getUint16(10) === 0) break;
+
         const chunk = VexxNodeMeshChunk.load(chunksRange, this.typeInfo.version);
 
         if (chunk.parseError) {
