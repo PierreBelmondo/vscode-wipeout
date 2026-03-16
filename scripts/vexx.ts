@@ -23,6 +23,7 @@ import { VexxNodeWoTrack } from "@core/formats/vexx/v4/wo_track";
 import { VexxNodeDirectionalLight } from "@core/formats/vexx/v4/directional_light";
 import { VexxNodeQuake } from "@core/formats/vexx/v4/quake";
 import { VexxNodeFogCube } from "@core/formats/vexx/v4/fog_cube";
+import { VexxNodeBlob } from "@core/formats/vexx/v4/blob";
 import { VexxNodeLodGroup } from "@core/formats/vexx/v4/lod_group";
 import { VexxNodeShadow } from "@core/formats/vexx/v4/shadow";
 import { VexxNodeDynamicShadowOccluder } from "@core/formats/vexx/v4/dynamic_shadow_occluder";
@@ -128,6 +129,11 @@ function dumpNodeDetail(out: Output, node: VexxNode) {
     out.kv("radius", node.radius.toFixed(4));
   } else if (node instanceof VexxNodeDynamicShadowOccluder) {
     dumpConvexHull(out, node);
+  } else if (node instanceof VexxNodeBlob) {
+    out.log(`size             ${node.width}x${node.height}`);
+    out.log(`bpp              ${node.bpp}`);
+    out.log(`mipmaps          ${node.mipmapCount}`);
+    out.log(`filename         ${node.filename}`);
   } else if (node instanceof VexxNodeLodGroup) {
     dumpLodGroup(out, node);
   } else if (node instanceof VexxNodeMatrix) {

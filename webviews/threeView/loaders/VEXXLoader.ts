@@ -5,6 +5,7 @@ import { Loader } from ".";
 import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
 import { MeshVexxPSPBasicMaterial } from "../materials/MeshVexxPSPBasicMaterial";
 import { MeshVexxPSPMaterial } from "../materials/MeshVexxPSPMaterial";
+import { MeshCausticMaterial } from "../materials/MeshCausticMaterial";
 import { MeshVexxSeaMaterial } from "../materials/MeshVexxSeaMaterial";
 import { mipmapsToTexture } from "../utils";
 import { RCSModelLoader } from "./RCSMODELLoader";
@@ -77,6 +78,7 @@ import { VexxNodeShadow } from "@core/formats/vexx/v4/shadow";
 import { VexxNodeWoPoint } from "@core/formats/vexx/v4/wo_point";
 import { VexxNodeWoSpot } from "@core/formats/vexx/v4/wo_spot";
 import { VexxNodeWoTrack } from "@core/formats/vexx/v4/wo_track";
+import { VexxNodeBlob } from "@core/formats/vexx/v4/blob";
 import { VexxNodeAbsorb } from "@core/formats/vexx/v6/absorb";
 import { VexxNodeWingTip } from "@core/formats/vexx/v6/wingtip";
 
@@ -280,6 +282,8 @@ export class VEXXLoader extends Loader {
   }
 
   private loadTextures(world: World, vexx: Vexx) {
+    const causticTextures: THREE.Texture[] = [];
+
     for (const vexxTexture of vexx.textures) {
       if (vexxTexture.mipmaps.length === 0) continue;
       const texture = mipmapsToTexture(vexxTexture.mipmaps);
@@ -296,6 +300,15 @@ export class VEXXLoader extends Loader {
         envTex.needsUpdate = true;
         world.userdata.envMap = envTex;
       }
+
+      // Collect caustic frame textures (Data/Tex/caustics/save.XX.tga)
+      if (/caustics[/\\]save\.\d+/i.test(vexxTexture.name)) {
+        causticTextures.push(texture);
+      }
+    }
+
+    if (causticTextures.length > 0) {
+      world.userdata.causticTextures = causticTextures;
     }
   }
 
@@ -336,8 +349,8 @@ export class VEXXLoader extends Loader {
       case "ANIM_TRANSFORM":
         object = this.loadAnimTransform(world, node as VexxNodeAnimTransform | Vexx3NodeAnimTransform);
         break;
-      case "BLOB": // TODO
-        object = this.loadControlPoint(world, node);
+      case "BLOB":
+        object = this.loadBlob(world, node as VexxNodeBlob);
         layer = "Blobs";
         break;
       case "CAMERA":
@@ -444,7 +457,7 @@ export class VEXXLoader extends Loader {
         layer = "Reset collisions";
         layerGroup = "Collisions";
         break;
-      case "SEA": // TODO
+      case "SEA":
         object = this.loadMesh(world, node as VexxNodeSea);
         layer = "Sea";
         break;
@@ -693,6 +706,7 @@ export class VEXXLoader extends Loader {
         if (node instanceof VexxNodeSea || node instanceof VexxNodeSeaReflect) {
           material = new MeshVexxSeaMaterial(map);
           material.name = `SeaMaterial_${textureId}`;
+          world.addTickMaterial(material as MeshVexxSeaMaterial);
         } else if (node.typeName === "SKYCUBE") {
           material = new MeshSkyMaterial(map);
           material.name = "SkyMaterial_" + textureId;
@@ -709,6 +723,28 @@ export class VEXXLoader extends Loader {
       if (node.typeName == "SKYCUBE") mesh.frustumCulled = false;
       mesh.layers.set(0);
       group.add(mesh);
+    }
+
+    // Add caustic overlay to track meshes; the shader's depth fade handles visibility
+    const causticMaps = world.userdata.causticTextures as THREE.Texture[] | undefined;
+    if (node.typeName === "MESH" && causticMaps && causticMaps.length > 0) {
+      // Reuse a single caustic material for all underwater meshes
+      if (!world.materials["_caustic"]) {
+        const mat = new MeshCausticMaterial(causticMaps);
+        mat.name = "CausticOverlay";
+        world.materials["_caustic"] = mat;
+        world.addTickMaterial(mat);
+      }
+      const causticMat = world.materials["_caustic"];
+
+      const baseMeshes = group.children.filter((c): c is THREE.Mesh => c instanceof THREE.Mesh);
+      for (const child of baseMeshes) {
+        const overlay = new THREE.Mesh(child.geometry, causticMat);
+        overlay.name = child.name + "__caustic";
+        overlay.renderOrder = 2;
+        overlay.layers.set(0);
+        group.add(overlay);
+      }
     }
 
     return group;
@@ -975,5 +1011,32 @@ export class VEXXLoader extends Loader {
 
   private loadControlPoint(world: World, node: VexxNode): THREE.Object3D {
     return this.createControlPoint(node.name);
+  }
+
+  private loadBlob(world: World, node: VexxNodeBlob): THREE.Object3D {
+    if (node.mipmaps.length === 0) {
+      return this.createControlPoint(node.name);
+    }
+    const texture = mipmapsToTexture(node.mipmaps);
+    texture.name = node.name;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+    material.name = `BlobMaterial_${node.name}`;
+
+    const geometry = new THREE.PlaneGeometry(node.width, node.height);
+    geometry.rotateX(-Math.PI / 2); // lay flat (XZ plane)
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = node.name;
+    mesh.renderOrder = 2;
+    return mesh;
   }
 }
