@@ -72,6 +72,11 @@ export class Wad {
 
   static load(buffer: ArrayBuffer): Wad {
     const range = new BufferRange(buffer);
+
+    // Big-endian PSP WAD (PS3 F1 Championship Edition): the version field reads
+    // as 0x01000000 rather than 1. Flip the range and take the normal path.
+    if (range.getUint32(0) === 0x01000000) range.le = false;
+
     const magic = range.getUint32(0);
 
     if (magic === 1) return Wad.loadPSP(range);
