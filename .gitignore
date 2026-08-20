@@ -4,3 +4,4 @@ node_modules
 .vscode-test/
 *.vsix
 *.tsbuildinfo
+core/tests/test-report.txt
