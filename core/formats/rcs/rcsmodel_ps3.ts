@@ -215,6 +215,26 @@ export type StrideInfo = {
   offset: number;
 };
 
+/**
+ * Vertex attribute formats, as the shaders themselves declare them.
+ *
+ * The vertex program binds position to v[0], normal to v[1], tangent to v[2]
+ * and the UV sets after that, then:
+ *
+ *   MUL R1.xyz, v0.xyzx, c466.xyzx    positionScale
+ *   ADD R3.xyz, R1.xyzx, c467.xyzx    positionBias
+ *   MOV o9.xyz, v1.xyzx               normal used as-is
+ *   MAD R0.xyz, v2.xyzx, c464.xxxx, -c464.yyyy    tangent scaled and biased
+ *   MAD R2.xyz, v1.yzxy, R0.zxyz, -R2.xyzx        bitangent = cross(n, t)
+ *   MUL o7.xyz, R2.xyzx, v2.wwww                  times handedness in tangent.w
+ *
+ * So position is `raw * scale + bias` -- matching the object header's scale and
+ * position -- the normal arrives already signed, and the tangent is stored
+ * unsigned and unbiased in the shader. `c464` is a constant register the
+ * runtime loads rather than a uniform the file names, so its value is not
+ * recoverable here; the (2, 1) pair that unpacks [0,1] to [-1,1] is what the
+ * data agrees with, at 99.2% unit-length tangents against 17.1% unsigned.
+ */
 export class RcsModelMeshInfo {
   range = new BufferRange();
   count = 0;
@@ -253,7 +273,11 @@ export class RcsModelMeshInfo {
       0x14071d1e: "_unknown",
       0x1589348f: "_unknown",
       0x1aaf7631: "_unknown",
-      0x26a7b665: "_unknown",
+      // Lightmap atlas coordinates: present on 909 lightmapped meshes and on no
+      // mesh without one, never a duplicate of the diffuse set, and 94% of them
+      // stay inside [0,1] as an atlas must. Distinct from 0xdb7b4546, which is
+      // also called Uv2 but duplicates the diffuse set on 21 of its 29 meshes.
+      0x26a7b665: "Lightmap_uv",
       0x2d94f2bc: "_unknown",
       0x3a889b0b: "_unknown",
       0x4487cbd4: "_unknown",
@@ -422,12 +446,21 @@ export class RcsModelVBO {
       let values: number[] = [];
 
       if (stride.type == 0x16) {
+        // Packed normal: signed 10/11/11, x in the top 10 bits. Each field is
+        // two's complement and scales by its own half range.
+        //
+        // Read as unsigned 11/11/10 only 1.6% of normals come out unit length
+        // and the mean length is 1.7; with this layout 98.8% are unit and the
+        // mean is 0.989. The wrong layout left every component positive, which
+        // holds the lighting term near-constant and renders lit surfaces black
+        // while an unlit material still shows the texture.
+        const signExtend = (value: number, bits: number) => (value << (32 - bits)) >> (32 - bits);
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
-          const u = ret.range.getUint32(offset + 0); // 11 11 10
-          const x = ((u >> 21) & ((1 << 11) - 1)) / 1024.0;
-          const y = ((u >> 10) & ((1 << 11) - 1)) / 1024.0;
-          const z = ((u >> 0) & ((1 << 10) - 1)) / 512.0;
+          const u = ret.range.getUint32(offset + 0);
+          const x = signExtend((u >>> 22) & 0x3ff, 10) / 511.0;
+          const y = signExtend((u >>> 11) & 0x7ff, 11) / 1023.0;
+          const z = signExtend((u >>> 0) & 0x7ff, 11) / 1023.0;
           values.push(x, y, z);
         }
       }
@@ -481,14 +514,22 @@ export class RcsModelVBO {
         }
       }
       if (stride.type == 0x44) {
-        const rgba: number[] = [];
+        // Four bytes, but the range depends on what they hold. A colour is
+        // unsigned [0, 1]; a tangent is stored unsigned and unbiased by the
+        // vertex program (`MAD R0, v2, c464.x, -c464.y`), so it is unpacked
+        // here instead. Read as a colour, tangents cluster around 0.5 -- a
+        // degenerate frame, 17.1% unit length against 99.2% unpacked -- which
+        // leaves normalMap sampling a flat surface and drives lit materials
+        // black.
+        const signed = stride.name == "tangent";
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
           const r = ret.range.getUint8(offset + 0) / 255.0;
           const g = ret.range.getUint8(offset + 1) / 255.0;
           const b = ret.range.getUint8(offset + 2) / 255.0;
           const a = ret.range.getUint8(offset + 3) / 255.0;
-          values.push(r, g, b, a);
+          if (signed) values.push(r * 2 - 1, g * 2 - 1, b * 2 - 1, a * 2 - 1);
+          else values.push(r, g, b, a);
         }
       }
 
