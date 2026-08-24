@@ -1,13 +1,15 @@
 import * as THREE from "three";
 
 import { api } from "../api";
+import { GTF } from "@core/formats/gtf";
 import { Loader } from ".";
+import { isFrontEndScene, parseScreenSetting, SKIN_XML, DEFAULT_SCREEN_SETTING } from "../frontendSkin";
 import { MeshSkyMaterial } from "../materials/MeshSkyMaterial";
 import { MeshVexxPSPBasicMaterial } from "../materials/MeshVexxPSPBasicMaterial";
 import { MeshVexxPSPMaterial } from "../materials/MeshVexxPSPMaterial";
 import { MeshCausticMaterial } from "../materials/MeshCausticMaterial";
 import { MeshVexxSeaMaterial } from "../materials/MeshVexxSeaMaterial";
-import { mipmapsToTexture } from "../utils";
+import { facesToCubeTexture, mipmapsToTexture } from "../utils";
 import { RCSModelLoader } from "./RCSMODELLoader";
 import { World } from "../worlds";
 
@@ -50,7 +52,7 @@ import { Vexx } from "@core/formats/vexx";
 import { VexxNode, VexxNodeMatrix } from "@core/formats/vexx/node";
 import { VexxNodeAirbrake } from "@core/formats/vexx/v4/airbrake";
 import { VexxNodeAmbientLight } from "@core/formats/vexx/v4/ambient_light";
-import { VexxNodeAnimTransform } from "@core/formats/vexx/v4/anim_transform";
+import { VexxNodeAnimTransform, VEXX_KEYFRAME_FLOAT32 } from "@core/formats/vexx/v4/anim_transform";
 import { Vexx3NodeAnimTransform } from "@core/formats/vexx/v3/anim_transform";
 import { VexxNodeCamera } from "@core/formats/vexx/v4/camera";
 import { VexxNodeCollision } from "@core/formats/vexx/v4/collision";
@@ -198,13 +200,56 @@ class AsyncRcsModel {
 
   async load(buffer: ArrayBuffer, filename: string) {
     this.rcsModelLoader.loadFromBuffer(this.world, buffer, filename);
+
+    // Reparent each loaded object under the VEXX MESH node that references it.
+    //
+    // Index the objects first: walking scene.children while calling
+    // scene.remove() mutates the very array being iterated, so every object
+    // sitting right after a reparented one was skipped and left at the scene
+    // root with the VEXX node's transform never applied. On a ship (8 objects)
+    // that is easy to miss; on 01_vineta_k/track it drops most of the track.
+    const byExternalId = new Map<number, THREE.Object3D[]>();
+    for (const object of this.world.scene.children) {
+      const id = object.userData.externalId;
+      // 0 is a valid id, so test for presence rather than truthiness.
+      if (id === undefined || id === null) continue;
+      const list = byExternalId.get(id);
+      if (list) list.push(object);
+      else byExternalId.set(id, [object]);
+    }
+
     for (const asyncRcsMesh of this.asyncRcsMeshes) {
-      const externalId = asyncRcsMesh.vexxMesh.externalId;
-      for (const object of this.world.scene.children) {
-        if (!object.userData.externalId) continue;
-        if (object.userData.externalId != externalId) continue;
+      const objects = byExternalId.get(asyncRcsMesh.vexxMesh.externalId);
+      if (!objects) continue;
+      for (const object of objects) {
         this.world.scene.remove(object);
+
+        // The .rcsmodel object header carries a world-space position, and the
+        // VEXX node the mesh hangs under may carry the same placement again.
+        // Reparenting then applies it twice — the speedup/weapon pads on a
+        // track land at roughly double their coordinates.
+        //
+        // Only deduplicate when the parent actually places the mesh somewhere:
+        // a ship's parts hang directly off the scene root, so their parent sits
+        // at the origin and their own small offsets (0.08 .. 2.1) are the real
+        // layout, not a duplicate.
+        asyncRcsMesh.object.updateWorldMatrix(true, false);
+        const parentPos = new THREE.Vector3().setFromMatrixPosition(asyncRcsMesh.object.matrixWorld);
+        if (parentPos.lengthSq() > 1e-6) {
+          const rel = object.position.distanceTo(parentPos);
+          // A duplicate is the *same* world position, so the gap is tiny next to
+          // how far from the origin the placement is.
+          if (rel < parentPos.length() * 0.02) object.position.set(0, 0, 0);
+        }
+
         asyncRcsMesh.object.add(object);
+        // Layers are assigned while the .vex loads, which is before this
+        // .rcsmodel arrives — so the geometry would keep layer 0 while the
+        // camera only enables the layers the VEXX nodes were put on, and stay
+        // invisible. Inherit the layer of the node that owns it.
+        const layers = asyncRcsMesh.object.layers.mask;
+        object.layers.mask = layers;
+        object.traverse((sub) => { sub.layers.mask = layers; });
       }
     }
   }
@@ -243,17 +288,50 @@ class AsyncVexxModel {
 export class VEXXLoader extends Loader {
   asyncVexxModel: AsyncVexxModel;
   asyncRcsModel?: AsyncRcsModel;
+  /** import() gets no world argument, so keep the one we loaded into. */
+  private _world?: World;
 
   override async loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {
     world.userdata.filename = filename;
+    this._world = world;
+
+    // The front-end background is drawn as an edge-detected white page rather
+    // than as shaded geometry (see FrontEndEdgePass). skin.xml decides both
+    // which scenes get that treatment and with what parameters; until it
+    // arrives, fall back to the values the shipped game uses.
+    if (isFrontEndScene(filename)) {
+      world.userdata.screenSetting = DEFAULT_SCREEN_SETTING;
+      world.settings.frontendEdges = true;
+      api.require(SKIN_XML);
+    }
+
     this.asyncVexxModel = new AsyncVexxModel(world, this);
     const vexx = Vexx.load(arrayBuffer);
     this.loadTextures(world, vexx);
     this.loadScene(world, vexx);
+
+    // An environment keeps its sky beside the scene rather than naming it, so
+    // ask for it directly. The name stays relative: the editor resolves a bare
+    // name against the document's own directory.
+    api.require("sky.gtf");
+
     return world;
   }
 
   override async import(buffer: ArrayBuffer, filename: string) {
+    if (filename.replace(/\\/g, "/").toLowerCase().endsWith("skin.xml")) {
+      const skin = new TextDecoder().decode(buffer);
+      const world = this._world;
+      if (world) {
+        world.userdata.screenSetting = parseScreenSetting(skin, "Main Menu");
+        world.settings.frontendEdges = isFrontEndScene(world.userdata.filename ?? "", skin);
+      }
+      return;
+    }
+    if (filename.replace(/\\/g, "/").toLowerCase().endsWith("sky.gtf")) {
+      this.loadSky(buffer);
+      return;
+    }
     if (this.asyncRcsModel === undefined) {
       console.error("Unexpected file: " + filename);
       return;
@@ -269,6 +347,31 @@ export class VEXXLoader extends Loader {
     } else {
       this.asyncRcsModel.import(buffer, filename);
     }
+  }
+
+  /**
+   * The environment sky is a cube map. Sampled as a flat texture it renders
+   * black, so it is rebuilt from its six faces and used as the background.
+   */
+  private loadSky(buffer: ArrayBuffer) {
+    const world = this._world;
+    if (!world) {
+      api.log(`[sky] arrived but no world`);
+      return;
+    }
+    const gtf = GTF.load(buffer);
+    api.log(`[sky] loaded: isCube=${gtf.isCube} faces=${gtf.faces.length} ${gtf.header.width}x${gtf.header.height} ${gtf.header.formatName} mips=${gtf.mipmaps.length}`);
+    if (!gtf.isCube) {
+      api.log(`[VEXXLoader] sky.gtf is not a cube map`);
+      return;
+    }
+    const cube = facesToCubeTexture(gtf.faces);
+    if (!cube) {
+      api.log(`[VEXXLoader] sky.gtf has ${gtf.faces.length} faces, cannot build a cube`);
+      return;
+    }
+    world.scene.background = cube;
+    api.log(`[sky] background set`);
   }
 
   require(world: World, object3d: THREE.Object3D, node: VexxNodeMesh) {
@@ -636,15 +739,30 @@ export class VEXXLoader extends Loader {
     }
 
     if (node.track2) {
-      // track2 = rotation animation. Values are XYZ of a unit quaternion; W = sqrt(1 - x²-y²-z²).
+      // track2 = rotation animation, in one of two encodings (node.keyframeFormat):
+      //   5 = float32 unit quaternions stored (w, x, y, z)
+      //   0 = int16 XYZ of a unit quaternion; W = sqrt(1 - x²-y²-z²)
+      // THREE.QuaternionKeyframeTrack wants (x, y, z, w) either way.
       const times = node.track2.keys.map(k => k / FPS);
       const quatValues: number[] = [];
-      for (let i = 0; i < node.track2.values.length; i += 3) {
-        const x = node.track2.values[i];
-        const y = node.track2.values[i + 1];
-        const z = node.track2.values[i + 2];
-        const w = Math.sqrt(Math.max(0, 1 - x * x - y * y - z * z));
-        quatValues.push(x, y, z, w);
+      // v3 has no keyframeFormat field; it is always the int16 encoding.
+      const keyframeFormat = "keyframeFormat" in node ? node.keyframeFormat : 0;
+      if (keyframeFormat == VEXX_KEYFRAME_FLOAT32) {
+        for (let i = 0; i < node.track2.values.length; i += 4) {
+          const w = node.track2.values[i];
+          const x = node.track2.values[i + 1];
+          const y = node.track2.values[i + 2];
+          const z = node.track2.values[i + 3];
+          quatValues.push(x, y, z, w);
+        }
+      } else {
+        for (let i = 0; i < node.track2.values.length; i += 3) {
+          const x = node.track2.values[i];
+          const y = node.track2.values[i + 1];
+          const z = node.track2.values[i + 2];
+          const w = Math.sqrt(Math.max(0, 1 - x * x - y * y - z * z));
+          quatValues.push(x, y, z, w);
+        }
       }
       const rotTrack = new THREE.QuaternionKeyframeTrack(".quaternion", times, quatValues, THREE.InterpolateLinear);
       animTracks.push(rotTrack);

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import { Mipmaps } from "@core/utils/mipmaps";
+import { DXT1, DXT3, DXT5 } from "@core/utils/dxt";
 
 export function generateMissingMipmaps(mipmaps: Mipmaps) {
   let last = mipmaps[mipmaps.length - 1];
@@ -26,6 +27,66 @@ export function generateMissingMipmaps(mipmaps: Mipmaps) {
     }
   }
   return mipmaps;
+}
+
+/**
+ * Build a cube texture from the six faces of a GTF cube.
+ *
+ * Environment skies ship as cube maps; sampling one as a flat 2D texture is
+ * what left them black. Three.js r149 has no compressed cube texture, so the
+ * faces are decoded to RGBA here.
+ */
+export function facesToCubeTexture(faces: Mipmaps[]): THREE.CubeTexture | undefined {
+  if (faces.length !== 6) return undefined;
+
+  const images: THREE.DataTexture[] = [];
+  for (const face of faces) {
+    const level = face[0];
+    if (!level) return undefined;
+
+    let rgba: Uint8ClampedArray;
+    switch (level.type) {
+      case "DXT1":
+        rgba = DXT1.decompress(level.width, level.height, toArrayBuffer(level.data));
+        break;
+      case "DXT3":
+        rgba = DXT3.decompress(level.width, level.height, toArrayBuffer(level.data));
+        break;
+      case "DXT5":
+        rgba = DXT5.decompress(level.width, level.height, toArrayBuffer(level.data));
+        break;
+      case "RGBA":
+        rgba = new Uint8ClampedArray(level.data);
+        break;
+      case "ARGB":
+        rgba = convertARGBtoRGBA(level.data);
+        break;
+      default:
+        console.warn(`Cube face format ${level.type} is not supported`);
+        return undefined;
+    }
+    // Each face has to be a DataTexture, not a bare {data, width, height}:
+    // WebGLTextures decides how to upload a cube by reading
+    // `texture.image[0].isDataTexture`, then takes `texture.image[i].image` for
+    // the pixels. A plain object fails that test and every face is skipped
+    // with texImage2D, leaving the cube empty and the sky unrendered.
+    const face2 = new THREE.DataTexture(rgba as unknown as Uint8ClampedArray<ArrayBuffer>, level.width, level.height, THREE.RGBAFormat);
+    face2.needsUpdate = true;
+    images.push(face2);
+  }
+
+  const texture = new THREE.CubeTexture(images as unknown as HTMLImageElement[]);
+  texture.format = THREE.RGBAFormat;
+  texture.type = THREE.UnsignedByteType;
+  texture.magFilter = THREE.LinearFilter;
+  texture.minFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function toArrayBuffer(data: Uint8Array | Uint8ClampedArray): ArrayBuffer {
+  return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) as ArrayBuffer;
 }
 
 export function mipmapsToTexture(mipmaps: Mipmaps): THREE.Texture {

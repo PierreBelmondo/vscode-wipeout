@@ -5,8 +5,8 @@ import { GTF } from "@core/formats/gtf";
 import { GXT } from "@core/formats/gxt";
 import { GNF } from "@core/formats/gnf";
 import { Loader } from ".";
-import { mipmapsToTexture } from "../utils";
-import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelTexture, RcsModelVBO } from "@core/formats/rcs";
+import { facesToCubeTexture, mipmapsToTexture } from "../utils";
+import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelPart, RcsModelTexture, RcsModelVBO } from "@core/formats/rcs";
 import { RcsModelPS5, RcsModelPS5Material, RcsModelPS5Texture } from "@core/formats/rcs/rcsmodel_ps5";
 import { World } from "../worlds";
 import { createMaterial } from "../materials/rcs";
@@ -50,8 +50,22 @@ class AsyncMaterial {
     this.textureChannels.push({ filename, texture: null });
   }
 
+  /** A slot with no file: keeps later channels at their real slot index. */
+  registerEmptyChannel() {
+    this.textureChannels.push({ filename: "", texture: null });
+  }
+
+  /**
+   * Called once every channel has been registered. A material finishes here
+   * when it is waiting for nothing: either it declares no channels at all, or
+   * every channel it declares is an empty slot. Those never receive a texture,
+   * so import() is never called for them and they would stay without a shader
+   * -- cf_constantcolourglow has two empty channels and nothing else, which
+   * left 19 meshes on the default material.
+   */
   linked() {
-    if (this.textureChannels.length == 0) this.finish();
+    const waiting = this.textureChannels.some((channel) => channel.filename != "");
+    if (!waiting) this.finish();
   }
 
   async load(buffer: ArrayBuffer) {
@@ -64,7 +78,10 @@ class AsyncMaterial {
       if (this.textureChannels[i].filename == texture.name) {
         this.textureChannels[i].texture = texture;
       }
-      if (this.textureChannels[i].texture == null) fullyLoaded = false;
+      // Empty channels never receive a texture; they must not hold up finish().
+      if (this.textureChannels[i].filename != "" && this.textureChannels[i].texture == null) {
+        fullyLoaded = false;
+      }
     }
 
     if (fullyLoaded) this.finish();
@@ -77,9 +94,26 @@ class AsyncMaterial {
 
     if (this.material) {
       this.world.materials[this.material.id] = this.material;
+      // Materials that animate (scrolling water UVs, and so on) expose tick().
+      const animated = this.material as unknown as { tick?: (delta: number) => void };
+      if (typeof animated.tick === "function") {
+        this.world.addTickMaterial(animated as { tick: (delta: number) => void });
+      }
+      // The sky doubles as a cheap ambient reflection. MeshPhongMaterial
+      // combines an envMap with MultiplyOperation by default, which would
+      // darken every surface by the sky's own colour, so it is added faintly
+      // instead -- and never over a material that set its own envMap from a
+      // reflection channel of its own.
       if (this.world.scene.background) {
-        if (this.material instanceof THREE.MeshPhongMaterial || this.material instanceof THREE.MeshStandardMaterial) {
-          this.material.envMap = this.world.scene.background as THREE.Texture;
+        const phong = this.material instanceof THREE.MeshPhongMaterial ? this.material : undefined;
+        const standard = this.material instanceof THREE.MeshStandardMaterial ? this.material : undefined;
+        const material = phong ?? standard;
+        if (material && !material.envMap) {
+          material.envMap = this.world.scene.background as THREE.Texture;
+          if (phong) {
+            phong.combine = THREE.AddOperation;
+            phong.reflectivity = 0.05;
+          }
         }
       }
       for (const mesh of this.meshes) {
@@ -144,8 +178,11 @@ export class RCSModelLoader extends Loader {
   asyncMaterials: AsyncMaterial[] = [];
   asyncTextures: AsyncTexture[] = [];
   asyncTextureLookup: { [filename: string]: number } = {};
+  skyFilename = "";
+  private world?: World;
 
   override async loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {
+    this.world = world;
     world.userdata.filename = filename;
     const magic = new DataView(arrayBuffer).getUint32(0, true);
     api.log(`[RCSModelLoader] loading ${filename} (${arrayBuffer.byteLength} bytes, magic=0x${magic.toString(16)})`);
@@ -160,6 +197,12 @@ export class RCSModelLoader extends Loader {
     } else {
       const model = RcsModel.load(arrayBuffer);
       api.log(`[RCSModelLoader] PS3: ${model.objects.length} objects, ${model.materials.length} materials`);
+      // The environment's sky sits beside the model rather than being named by
+      // it, so ask for it directly. The name must stay relative: the editor
+      // resolves a bare name against the document's own directory, while an
+      // absolute path is handed to Uri.parse and never found.
+      this.skyFilename = "sky.gtf";
+      api.require(this.skyFilename);
       this.loadMaterials(world, model);
       this.loadScene(world, model);
       for (const asyncMaterial of this.asyncMaterials) {
@@ -175,21 +218,35 @@ export class RCSModelLoader extends Loader {
   }
 
   override async import(buffer: ArrayBuffer, filename: string) {
+    // Deliver to EVERY waiting consumer, not just the first match. A model
+    // reuses the same .rcsmaterial across many material entries — 01_vineta_k
+    // has 805 entries for only 69 distinct files, with jd_simplespecular alone
+    // used 192 times. Returning after the first match left 736 of them without
+    // their shader, so their meshes kept the default material and the track
+    // surface never appeared. The same holds for textures shared between
+    // materials.
     if (filename.endsWith(".rcsmaterial")) {
       for (const asyncMaterial of this.asyncMaterials) {
-        if (asyncMaterial.match(filename)) {
-          await asyncMaterial.load(buffer);
-          return;
-        }
+        if (asyncMaterial.match(filename)) await asyncMaterial.load(buffer);
+      }
+      return;
+    }
+    if (this.skyFilename && filename === this.skyFilename) {
+      // The sky is a cube map. Sampled as a flat texture it renders black, so
+      // it is built from its six faces and used as the scene background.
+      const gtf = GTF.load(buffer);
+      const cube = gtf.isCube ? facesToCubeTexture(gtf.faces) : undefined;
+      if (cube && this.world) {
+        this.world.scene.background = cube;
+        api.log(`[RCSModelLoader] sky: ${gtf.faces.length} faces ${gtf.header.width}x${gtf.header.height}`);
+      } else {
+        api.log(`[RCSModelLoader] sky ${filename} is not a usable cube map`);
       }
       return;
     }
     if (filename.endsWith(".gtf") || filename.endsWith(".gxt") || filename.endsWith(".gnf")) {
       for (const asyncTexture of this.asyncTextures) {
-        if (asyncTexture.match(filename)) {
-          await asyncTexture.load(buffer);
-          return;
-        }
+        if (asyncTexture.match(filename)) await asyncTexture.load(buffer);
       }
       return;
     }
@@ -202,7 +259,16 @@ export class RCSModelLoader extends Loader {
       //asyncMaterial.require();
 
       for (const rcsTexture of rcsMaterial.textures) {
-        if (!rcsTexture.filename.startsWith("data")) continue; // filter out
+        // Slots that hold no file (the empty lightmap placeholder, and the
+        // rgba-constant slots) are skipped — but skipping them silently shifts
+        // every later channel down, so a material like and_rocktosand
+        //   [blend | (empty lightmap) | rock | sand]
+        // would hand make() [blend, rock, sand] with no way to tell that the
+        // gap was in the middle. Record the gap instead.
+        if (!rcsTexture.filename.startsWith("data")) {
+          asyncMaterial.registerEmptyChannel();
+          continue;
+        }
         const asyncTexture = this.loadTexture(world, rcsTexture);
         asyncTexture.linkAsyncMaterial(asyncMaterial);
       }
@@ -240,23 +306,43 @@ export class RCSModelLoader extends Loader {
 
     const name = `Object_${object.header.id}`;
 
-    if (object.mesh instanceof RcsModelMesh1) {
-      const mesh = this.loadMesh1(world, object.mesh, material);
+    let first: THREE.Object3D | null = null;
+    if (object.mesh instanceof RcsModelMesh1) first = this.loadMesh1(world, object.mesh, material);
+    if (object.mesh instanceof RcsModelMesh5) first = this.loadMesh5(world, object.mesh, material);
+    if (first === null) return null;
+
+    first.userData = userData;
+    first.name = name;
+    first.position.set(position[0], position[1], position[2]);
+    first.scale.set(scale[0], scale[1], scale[2]);
+
+    // Most objects are a single mesh, and wrapping those in a group would add a
+    // level to the scene graph for nothing.
+    if (object.parts.length === 0) return first;
+
+    // The rest of the model: sibling parts, each with its own material and
+    // placement, so each is positioned from its own record rather than the
+    // object header's.
+    const group = new THREE.Group();
+    group.userData = userData;
+    group.name = name;
+    group.add(first);
+
+    object.parts.forEach((part, index) => {
+      const mesh = this.loadPart(world, rcs, part);
       mesh.userData = userData;
-      mesh.name = name;
-      mesh.position.set(position[0], position[1], position[2]);
-      mesh.scale.set(scale[0], scale[1], scale[2]);
-      return mesh;
-    }
-    if (object.mesh instanceof RcsModelMesh5) {
-      const mesh = this.loadMesh5(world, object.mesh, material);
-      mesh.userData = userData;
-      mesh.name = name;
-      mesh.position.set(position[0], position[1], position[2]);
-      mesh.scale.set(scale[0], scale[1], scale[2]);
-      return mesh;
-    }
-    return null;
+      mesh.name = `${name}_part${index + 1}`;
+      group.add(mesh);
+    });
+
+    return group;
+  }
+
+  private loadPart(world: World, rcs: RcsModel, part: RcsModelPart): THREE.Object3D {
+    const mesh = this.loadMesh5(world, part.mesh, rcs.materials[part.material_id]);
+    mesh.position.set(part.position[0], part.position[1], part.position[2]);
+    mesh.scale.set(part.scale[0], part.scale[1], part.scale[2]);
+    return mesh;
   }
 
   loadMesh1(world: World, rcsMesh: RcsModelMesh1, rcsMaterial: RcsModelMaterial): THREE.Mesh {
@@ -387,7 +473,13 @@ export class RCSModelLoader extends Loader {
       geometry.setAttribute("normal", new THREE.Float32BufferAttribute(vbo.attributes["normal"], 3));
     }
     if (vbo.has("tangent")) {
-      geometry.setAttribute("tangent", new THREE.Float32BufferAttribute(vbo.attributes["tangent"], 3));
+      // The VBO stores 4 components per vertex (xyz + handedness in w), which is
+      // also what THREE wants. Declaring it as 3 made every tangent read
+      // straddle two vertices, so normalMap was silently wrong or dropped —
+      // and any material using one drew nothing.
+      const tangent = vbo.attributes["tangent"];
+      const itemSize = tangent.length / (vbo.attributes["position"].length / 3) === 4 ? 4 : 3;
+      geometry.setAttribute("tangent", new THREE.Float32BufferAttribute(tangent, itemSize));
     }
     if (vbo.has("uv1")) {
       geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["uv1"], 2));
@@ -395,11 +487,27 @@ export class RCSModelLoader extends Loader {
     if (vbo.has("Uv1")) {
       geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["Uv1"], 2));
     }
-    if (vbo.has("Uv2")) {
-      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["Uv2"], 2));
+    // Other names the exporter uses for the same diffuse channel. Without these
+    // the mesh reaches Three.js with no "uv" attribute at all, so its texture
+    // never shows.
+    for (const alias of ["map1", "Diffuse_uv", "diffuseUV", "diffuseUv"]) {
+      if (!geometry.getAttribute("uv") && vbo.has(alias)) {
+        geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes[alias], 2));
+      }
+    }
+    if (!geometry.getAttribute("uv2") && vbo.has("map2")) {
+      geometry.setAttribute("uv2", new THREE.Float32BufferAttribute(vbo.attributes["map2"], 2));
+    }
+    // Three.js reads lightMap from "uv2". Two elements claim that slot: the
+    // real lightmap atlas (Lightmap_uv) and a second set also named Uv2 that
+    // usually just repeats the diffuse coordinates, so the atlas wins.
+    if (vbo.has("Lightmap_uv")) {
+      geometry.setAttribute("uv2", new THREE.Float32BufferAttribute(vbo.attributes["Lightmap_uv"], 2));
+    } else if (vbo.has("Uv2")) {
+      geometry.setAttribute("uv2", new THREE.Float32BufferAttribute(vbo.attributes["Uv2"], 2));
     }
     if (vbo.has("Uv3")) {
-      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["Uv3"], 2));
+      geometry.setAttribute("uv3", new THREE.Float32BufferAttribute(vbo.attributes["Uv3"], 2));
     }
     if (vbo.has("VertexColour1")) {
       geometry.setAttribute("color", new THREE.Float32BufferAttribute(vbo.attributes["VertexColour1"], 4));
