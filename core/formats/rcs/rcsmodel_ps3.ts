@@ -35,7 +35,23 @@ class RcsModelObjectHeader {
   unknown4 = 0;
   unknown5 = 0;
   unknown6 = 0;
-  offset_unknown = 0;
+  /**
+   * Offset of the object's part table: one mesh pointer per material.
+   *
+   * A "mesh pointer" addresses the record 32 bytes into an object -- the same
+   * place the object table's own entries reach through +32 -- so the fields it
+   * names are material_id at +0, the 0xffffffff sentinel at +8, position at
+   * +16, scale at +32 and the mesh header at +48.
+   *
+   * The first pointer is the mesh the object header already describes; the
+   * rest are sibling parts of the same model, each with its own material and
+   * placement. They are not levels of detail: their materials always differ
+   * from the parent's, their bounding boxes overlap it, and their triangle
+   * counts do not decrease. One building in 01_vineta_k is split into twelve
+   * parts -- metal, concrete, brickwork, light strips -- with consecutive
+   * material ids.
+   */
+  part_table_offset = 0;
   unknown7 = 0;
   material_id = 0;
   unknown8 = 0;
@@ -56,7 +72,7 @@ class RcsModelObjectHeader {
     ret.unknown4 = ret.range.getUint32(12);
     ret.unknown5 = ret.range.getUint32(16);
     ret.unknown6 = ret.range.getUint32(20);
-    ret.offset_unknown = ret.range.getUint32(24);
+    ret.part_table_offset = ret.range.getUint32(24);
     ret.unknown7 = ret.range.getUint32(28);
     ret.material_id = ret.range.getUint32(32);
     ret.unknown8 = ret.range.getUint32(36);
@@ -68,9 +84,41 @@ class RcsModelObjectHeader {
     return ret;
   }
 
-  getUnknown(): RcsModelObjectUnknown {
-    const range = this.range.reset(this.offset_unknown);
-    return RcsModelObjectUnknown.load(range);
+  /**
+   * The part table's mesh pointers, in file order.
+   *
+   * The table has no count: it runs to the end of the object's region, which
+   * the next object header terminates. Most objects list a single mesh, but a
+   * table can hold a dozen -- obj[667] of 01_vineta_k has 12.
+   */
+  getPartOffsets(): number[] {
+    const range = this.range.reset();
+    const offsets = [] as number[];
+    for (let at = this.part_table_offset; at + 4 <= range.end; at += 4) {
+      const pointer = range.getUint32(at);
+      if (!RcsModelObjectHeader.isMeshPointer(range, pointer)) break;
+      offsets.push(pointer);
+    }
+    return offsets;
+  }
+
+  /**
+   * A mesh pointer addresses a record 32 bytes into an object, so the fields it
+   * names are material_id at +0, the 0xffffffff sentinel at +8, position at
+   * +16, scale at +32 and the mesh header at +48.
+   */
+  static isMeshPointer(range: BufferRange, pointer: number): boolean {
+    if (pointer <= 0 || pointer + 64 > range.end) return false;
+    if (range.getUint32(pointer + 8) !== 0xffffffff) return false;
+
+    const submeshCount = range.getUint32(pointer + 48);
+    const submeshOffset = range.getUint32(pointer + 52);
+    if (submeshCount <= 0 || submeshCount >= 4096) return false;
+    if (submeshOffset <= 0 || submeshOffset + 16 > range.end) return false;
+
+    // Every submesh header is signed 0x83 and closes its first 16 bytes with a
+    // 0xffffffff sentinel.
+    return range.getUint32(submeshOffset) >>> 24 === 0x83 && range.getUint32(submeshOffset + 12) === 0xffffffff;
   }
 
   getMatrix(): RcsModelMatrix {
@@ -81,19 +129,53 @@ class RcsModelObjectHeader {
   }
 }
 
+/**
+ * One entry of an object's part table: a mesh with its own material.
+ *
+ * The pointer addresses a record 32 bytes into an object, so material_id sits
+ * at +0, the sentinel at +8, position at +16, scale at +32 and the mesh header
+ * at +48.
+ */
+export class RcsModelPart {
+  range = new BufferRange();
+
+  material_id = 0;
+  position = [0, 0, 0, 0];
+  scale = [1, 1, 1, 1];
+  mesh = new RcsModelMesh5();
+
+  static load(range: BufferRange, pointer: number): RcsModelPart {
+    const ret = new RcsModelPart();
+    ret.range = range.slice(pointer, pointer + 64);
+
+    ret.material_id = ret.range.getUint32(0);
+    ret.position = [ret.range.getFloat32(16), ret.range.getFloat32(20), ret.range.getFloat32(24), ret.range.getFloat32(28)];
+    ret.scale = [ret.range.getFloat32(32), ret.range.getFloat32(36), ret.range.getFloat32(40), ret.range.getFloat32(44)];
+    ret.mesh = RcsModelMesh5.load(range.reset(pointer + 48));
+
+    return ret;
+  }
+}
+
 export class RcsModelObject {
   range = new BufferRange();
 
   header = new RcsModelObjectHeader();
   mesh = null as null | RcsModelMesh1 | RcsModelMesh5;
   matrix = new RcsModelMatrix();
-  //unknown = new RcsModelObjectUnknown();
+
+  /**
+   * The object's further parts, past the one the header describes. Each
+   * carries its own material and placement rather than inheriting the
+   * object's.
+   */
+  parts = [] as RcsModelPart[];
 
   static load(range: BufferRange): RcsModelObject {
     let ret = new RcsModelObject();
     ret.range = range.slice(0, 80);
     ret.header = RcsModelObjectHeader.load(ret.range);
-    ret.range.end = ret.header.offset_unknown;
+    ret.range.end = ret.header.part_table_offset;
 
     switch (ret.header.type) {
       case 1:
@@ -107,9 +189,21 @@ export class RcsModelObject {
         break;
     }
 
-    //ret.unknown = ret.header.getUnknown();
     ret.matrix = ret.header.getMatrix();
+    ret.loadParts(range);
     return ret;
+  }
+
+  /**
+   * Load every mesh the part table lists past the first, which the object
+   * header already describes. Each pointer names a record whose mesh header
+   * sits at +48.
+   */
+  private loadParts(range: BufferRange) {
+    const offsets = this.header.getPartOffsets();
+    for (const pointer of offsets.slice(1)) {
+      this.parts.push(RcsModelPart.load(range.reset(), pointer));
+    }
   }
 }
 
