@@ -110,6 +110,20 @@ export class GTF {
   header = new GTFHeader();
   mipmaps: Mipmaps = [];
 
+  /**
+   * The six faces of a cube texture, +X -X +Y -Y +Z -Z, each with its own mip
+   * chain. Empty for ordinary 2D textures.
+   *
+   * A cube stores its faces one after another in the data block, so the plain
+   * `mipmaps` list above only ever describes the first face; sampling that as a
+   * 2D texture is what left environment skyboxes black.
+   */
+  faces: Mipmaps[] = [];
+
+  get isCube(): boolean {
+    return this.header.isCube;
+  }
+
   static load(buffer: ArrayBuffer): GTF {
     const ret = new GTF();
     ret.range = new BufferRange(buffer);
@@ -166,7 +180,34 @@ export class GTF {
         break;
     }
 
+    ret.splitCubeFaces();
+
     return ret;
+  }
+
+  /**
+   * A cube's data block holds six consecutive faces. The format loaders read a
+   * single face's worth of mips, so re-read the remaining five here.
+   */
+  private splitCubeFaces() {
+    if (!this.header.isCube) return;
+    if (this.mipmaps.length === 0) return;
+
+    const faceSize = this.mipmaps.reduce((total, mipmap) => total + mipmap.data.length, 0);
+    if (faceSize === 0 || this.header.data.size < faceSize * 6) return;
+
+    const dataRange = this.header.data;
+    for (let face = 0; face < 6; face++) {
+      const base = face * faceSize;
+      let offset = 0;
+      const chain: Mipmaps = [];
+      for (const mipmap of this.mipmaps) {
+        const data = dataRange.getUint8Array(base + offset, mipmap.data.length);
+        chain.push({ type: mipmap.type, width: mipmap.width, height: mipmap.height, data });
+        offset += mipmap.data.length;
+      }
+      this.faces.push(chain);
+    }
   }
 
   loadA8R8G8B8() {
