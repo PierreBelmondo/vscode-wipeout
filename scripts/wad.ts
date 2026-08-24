@@ -68,11 +68,11 @@ program
   .argument("<file>", "Path to the .WAD file")
   .action((file: string) => {
     const wadPath = path.resolve(file);
-    const outDir = path.dirname(wadPath);
 
     const buffer = fs.readFileSync(wadPath);
     const arraybuffer = toArrayBuffer(buffer);
     const wad = Wad.load(arraybuffer);
+    const outDir = path.join(path.dirname(wadPath), wad.subdirFor(path.basename(wadPath)));
 
     console.log(`Extracting ${wad.count} files from ${wadPath} to ${outDir}`);
 
@@ -86,11 +86,11 @@ program
   });
 
 function extractWad(wadPath: string) {
-  const outDir = path.dirname(wadPath);
   const buffer = fs.readFileSync(wadPath);
   const arraybuffer = toArrayBuffer(buffer);
   const wad = Wad.load(arraybuffer);
-  console.log(`Extracting ${wad.count} files from ${wadPath}`);
+  const outDir = path.join(path.dirname(wadPath), wad.subdirFor(path.basename(wadPath)));
+  console.log(`Extracting ${wad.count} files from ${wadPath} to ${outDir}`);
   for (const entry of wad.files) {
     const outPath = path.join(outDir, entry.filename);
     fs.mkdirSync(path.dirname(outPath), { recursive: true });

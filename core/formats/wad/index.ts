@@ -70,6 +70,22 @@ export class Wad {
 
   files: WadFile[] = [];
 
+  /**
+   * WipEout WADs are rooted at "Data/" and unpack cleanly beside the archive.
+   * Others (PS3 F1) are rooted at the top level, so unpacking them next to the
+   * archive spills their tree into the WAD's own folder — and lets sibling WADs
+   * overwrite each other, since the same placeholder name is a different asset
+   * in each. Callers nest those under `sub`.
+   */
+  get rooted(): boolean {
+    return this.files.every((f) => f.filename.startsWith("Data/"));
+  }
+
+  /** Sub-directory an extractor should unpack into: "" when already rooted. */
+  subdirFor(wadFilename: string): string {
+    return this.rooted ? "" : wadFilename.replace(/\.[^./\\]*$/, "");
+  }
+
   static load(buffer: ArrayBuffer): Wad {
     const range = new BufferRange(buffer);
 

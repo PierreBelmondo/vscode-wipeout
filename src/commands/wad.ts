@@ -31,11 +31,13 @@ export class WadUnpackCommandProvider {
 
               const psarc = Wad.load(buffer);
               const outfiles = psarc.files;
+              const prefix = psarc.subdirFor(basename);
+
               for (let i = 0; i < outfiles.length; i++) {
                 const outfile = outfiles[i];
                 const increment = Math.round(100.0 / outfiles.length);
                 progress.report({ increment , message: `${outfile.filename}` });
-                await this.exportFile(dirname, outfile);
+                await this.exportFile(dirname, outfile, prefix);
               }
             }
           );
@@ -53,8 +55,8 @@ export class WadUnpackCommandProvider {
     return ab;
   }
 
-  static async exportFile(workdir: vscode.Uri, file: WadFile) {
-    const fileUri = vscode.Uri.joinPath(workdir, file.filename);
+  static async exportFile(workdir: vscode.Uri, file: WadFile, prefix = "") {
+    const fileUri = vscode.Uri.joinPath(workdir, prefix, file.filename);
     const pathUri = vscode.Uri.joinPath(fileUri, "..");
     await vscode.workspace.fs.createDirectory(pathUri);
     await vscode.workspace.fs.writeFile(fileUri, new Uint8Array(file.content));

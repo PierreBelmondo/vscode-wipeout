@@ -445,7 +445,7 @@ function resolveFromStdin(tables: Table[], skipConfirm: boolean) {
   });
 }
 
-function bruteforceFilenames(tables: Table[], window: number, expandDirs = false) {
+function bruteforceFilenames(tables: Table[], window: number, expandDirs = false, combine = 0, minScore = 0) {
   // ── Incremental CRC32 — table built once, same algorithm as @core/utils/crc32
   // The library rebuilds its table on every call, so we copy the table-building
   // logic here to run it only once, then do inline processing.
@@ -554,6 +554,49 @@ function bruteforceFilenames(tables: Table[], window: number, expandDirs = false
     }
   }
 
+  // Token recombination: split known stems on separators and case boundaries,
+  // then re-join the most frequent tokens with "_" and with no separator.
+  // "FlagSpain" + "Swiss" → FlagSwiss, Flag_Swiss, … — names that never appear
+  // whole in the DB but are built from vocabulary that does.
+  if (combine > 0) {
+    const tokenCounts = new Map<string, number>();
+    const tokenOrig   = new Map<string, string>();
+    for (const origBase of knownBases.values()) {
+      const dot  = origBase.lastIndexOf(".");
+      const stem = dot >= 0 ? origBase.slice(0, dot) : origBase;
+      // split on separators, then on lower→Upper and letter→digit boundaries
+      for (const chunk of stem.split(/[_\-. ]+/)) {
+        if (!chunk) continue;
+        for (const tok of chunk.split(/(?<=[a-z])(?=[A-Z])|(?<=[A-Za-z])(?=\d)|(?<=\d)(?=[A-Za-z])/)) {
+          if (tok.length < 2 || /^\d+$/.test(tok)) continue;
+          const lc = tok.toLowerCase();
+          tokenCounts.set(lc, (tokenCounts.get(lc) ?? 0) + 1);
+          if (!tokenOrig.has(lc)) tokenOrig.set(lc, tok);
+        }
+      }
+    }
+    const vocab = [...tokenCounts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, combine)
+      .map(([lc]) => [lc, tokenOrig.get(lc)!] as const);
+
+    const beforeCombine = knownBases.size;
+    for (const [lcA, origA] of vocab) {
+      for (const [lcB, origB] of vocab) {
+        for (const sep of ["_", ""]) {
+          const lcStem   = lcA + sep + lcB;
+          const origStem = origA + sep + origB;
+          for (const [lcExt, origExt] of knownExts) {
+            const lcNew = lcStem + lcExt;
+            if (!knownBases.has(lcNew)) knownBases.set(lcNew, origStem + origExt);
+          }
+        }
+      }
+    }
+    console.log(`Token combine: ${vocab.length} tokens (of ${tokenCounts.size}) →` +
+      ` ${(knownBases.size - beforeCombine).toLocaleString()} extra basenames`);
+  }
+
   console.log(`Patterns: ${knownDirs.size} dirs, ${knownBases.size} basenames` +
     ` (${nativeBases} native + ${knownBases.size - nativeBases} cross-product,` +
     ` ${knownExts.size} extensions)`);
@@ -643,21 +686,32 @@ function bruteforceFilenames(tables: Table[], window: number, expandDirs = false
   process.stdout.write(`\r${" ".repeat(barWidth + 12)}\r`);
 
   // ── Display results ───────────────────────────────────────────────────────
+  // Expected random collisions: a 32-bit CRC hits any given target with
+  // probability 2^-32, so a big candidate space produces noise on its own.
+  const expected = (totalCombos * byHash.size) / 2 ** 32;
+  if (expected >= 0.5)
+    console.log(`Warning: ${totalCombos.toLocaleString()} candidates × ${byHash.size} hashes` +
+      ` ⇒ ~${expected.toFixed(1)} random collisions expected. Prefer --min-score 2.`);
+
   let foundCount = 0;
+  let hidden = 0;
   for (const [hash, ctx] of byHash) {
-    if (!ctx.candidates.length) continue;
-    ctx.candidates.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
+    const shown = ctx.candidates.filter(c => c.score >= minScore);
+    hidden += ctx.candidates.length - shown.length;
+    if (!shown.length) continue;
+    shown.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
 
     foundCount++;
     const mult = ctx.count > 1 ? ` ×${ctx.count}` : "";
     console.log(`  ${phash(hash)}${mult}  (placeholder: ${ctx.hint})`);
-    for (const { path, tags } of ctx.candidates) {
+    for (const { path, tags } of shown) {
       const tagStr = tags.length ? `  [${tags.join(", ")}]` : "";
       console.log(`    → ${path}${tagStr}`);
     }
   }
 
-  console.log(`\nCandidates found for ${foundCount} / ${byHash.size} placeholder hashes.`);
+  console.log(`\nCandidates found for ${foundCount} / ${byHash.size} placeholder hashes.` +
+    (hidden ? ` (${hidden.toLocaleString()} below --min-score ${minScore} hidden)` : ""));
   if (foundCount > 0) console.log(`Note: CRC32 has ~1 in 4 billion false-positive rate — verify candidates before committing.`);
 }
 
@@ -730,9 +784,16 @@ program
   .description("Try to guess placeholder filenames using known patterns and incremental CRC32 (read-only)")
   .option("-w, --window <n>", "neighbor window size for directory/extension hints", "10")
   .option("-e, --expand-dirs", "extend candidate dirs by one segment using all known path components")
-  .action((options: { window: string; expandDirs?: boolean }) => {
-    const tables = loadTables();
-    bruteforceFilenames(tables, parseInt(options.window), options.expandDirs ?? false);
+  .option("-t, --table <code>", "restrict to one table, so candidates come only from that game's own paths")
+  .option("-c, --combine <n>", "recombine the n most frequent name tokens in pairs, joined by \"_\" and by nothing", "0")
+  .option("-m, --min-score <n>", "only show candidates scoring at least n (2 = matches a neighbour dir)", "0")
+  .action((options: { window: string; expandDirs?: boolean; table?: string; combine: string; minScore: string }) => {
+    let tables = loadTables();
+    if (options.table) {
+      tables = tables.filter(t => t.data.code.toLowerCase() === options.table!.toLowerCase());
+      if (tables.length === 0) throw new Error(`no table with code ${options.table}`);
+    }
+    bruteforceFilenames(tables, parseInt(options.window), options.expandDirs ?? false, parseInt(options.combine), parseInt(options.minScore));
   });
 
 program
