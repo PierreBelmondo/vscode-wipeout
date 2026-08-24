@@ -10,6 +10,8 @@ import { api } from "./api";
 import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "@core/api/rpc";
 import { EffectComposer } from "./postprocessing/EffectComposer";
 import { RenderPass } from "./postprocessing/RenderPass";
+import { FrontEndEdgePass } from "./postprocessing/FrontEndEdgePass";
+import { DEFAULT_SCREEN_SETTING, ScreenSetting } from "./frontendSkin";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";
 import { ShaderPass } from "./postprocessing/ShaderPass";
 
@@ -45,6 +47,9 @@ class WorldRenderer {
   private _passFinal: ShaderPass;
   private _effectComposerBloom: EffectComposer;
   private _effectComposerFinal: EffectComposer;
+  private _passEdges: FrontEndEdgePass;
+  private _passEdgeScene: RenderPass;
+  private _effectComposerEdges: EffectComposer;
 
   private _world: World;
 
@@ -86,6 +91,36 @@ class WorldRenderer {
     this._effectComposerFinal = new EffectComposer(this._renderer);
     this._effectComposerFinal.addPass(this._passScene);
     this._effectComposerFinal.addPass(this._passFinal);
+
+    // Front-end edge look: needs a depth attachment the edge detector can read.
+    // The detector differences face IDs, so the buffer must hold them verbatim:
+    // nearest filtering (linear would blend neighbouring IDs into false edges)
+    // and no tone mapping (Reinhard would compress them together).
+    //
+    // Size it in device pixels: EffectComposer forces _pixelRatio to 1 when it
+    // is handed a target, so a CSS-sized buffer would be resampled up to the
+    // canvas and blend IDs across every triangle edge.
+    const dpr = window.devicePixelRatio;
+    const edgeW = Math.floor(window.innerWidth * dpr);
+    const edgeH = Math.floor(window.innerHeight * dpr);
+    const edgeTarget = new THREE.WebGLRenderTarget(edgeW, edgeH, {
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
+    });
+    // 24-bit depth. UnsignedShortType (16-bit) is not enough for this scene:
+    // surfaces that sit close together resolve to the same depth value, so the
+    // winner flips as the camera moves and face IDs bleed into each other.
+    edgeTarget.depthTexture = new THREE.DepthTexture(edgeW, edgeH);
+    edgeTarget.depthTexture.type = THREE.UnsignedInt248Type;
+    edgeTarget.depthTexture.format = THREE.DepthStencilFormat;
+    this._effectComposerEdges = new EffectComposer(this._renderer, edgeTarget);
+    this._passEdges = new FrontEndEdgePass(this._world.camera, edgeW, edgeH);
+    // Its own RenderPass: _passScene is shared with the other two composers, and
+    // this one draws flat face IDs through scene.overrideMaterial rather than
+    // the scene's real materials.
+    this._passEdgeScene = new RenderPass(this._world.scene, this._world.camera, this._passEdges.idMaterial);
+    this._effectComposerEdges.addPass(this._passEdgeScene);
+    this._effectComposerEdges.addPass(this._passEdges);
   }
 
   get domElement(): HTMLCanvasElement {
@@ -96,6 +131,9 @@ class WorldRenderer {
     this._world = world;
     this._passScene.scene = world.scene;
     this._passScene.camera = world.camera;
+    this._passEdgeScene.scene = world.scene;
+    this._passEdgeScene.camera = world.camera;
+    this._passEdges.setCamera(world.camera);
   }
 
   get world(): World {
@@ -108,6 +146,9 @@ class WorldRenderer {
     this._passFinal.setSize(width, height);
     this._effectComposerBloom.setSize(width, height);
     this._effectComposerFinal.setSize(width, height);
+    const edgeDpr = window.devicePixelRatio;
+    this._passEdges.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
+    this._effectComposerEdges.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
   }
 
   readonly bloomMatrials = [
@@ -117,6 +158,34 @@ class WorldRenderer {
   ]
 
   render() {
+    if (this._world.settings.frontendEdges) {
+      // Drive the detector from the <Main> values skin.xml carries for this
+      // screen; VEXXLoader parks them on userdata when it loads the file.
+      const setting: ScreenSetting = this._world.userdata.screenSetting ?? DEFAULT_SCREEN_SETTING;
+      this._passEdges.setScreenSetting(setting.edgeLevel, setting.fillLevel, setting.edgeWidth);
+
+      // Face IDs must reach the detector unmodified: no tone mapping, and no
+      // texture sampling (the white texture's mip chain is not uniformly white,
+      // which tinted distant faces and invented edges there).
+      const toneMapping = this._renderer.toneMapping;
+      this._renderer.toneMapping = THREE.NoToneMapping;
+
+      // World.scene.background is the environment sky, not a colour. Drawn into
+      // the ID buffer it gives the detector a fully textured backdrop to find
+      // edges in, and its colours bleed into the ID comparison. Swap it out for
+      // the page white skin.xml clears to:
+      //   <ScreenClear><Values Colour="0x00ffffff">
+      const background = this._world.scene.background;
+      this._world.scene.background = null;
+      this._renderer.setClearColor(0xffffff);
+
+      this._effectComposerEdges.render();
+
+      this._world.scene.background = background;
+      this._renderer.toneMapping = toneMapping;
+      return;
+    }
+
     if (this._world.settings.bloom) {
       const beforeBloom = (obj: THREE.Object3D) => {
         if (obj instanceof THREE.Mesh) {
@@ -223,6 +292,7 @@ class Editor {
         }
         this.world.emitScene();
         this.world.setupGui();
+        this.world.setupGuiCamera();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
         this.world.setupGuiTrackCamera();
@@ -242,7 +312,8 @@ class Editor {
           api.log(`[rcsmodel] loaded, scene children: ${this.world.scene.children.length}`);
           this.world.emitScene();
           this.world.setupGui();
-          this.world.setupGuiButtonExport();
+          this.world.setupGuiCamera();
+        this.world.setupGuiButtonExport();
           this.world.setupGuiLayers();
           this.world.setupGuiBackgroundColor();
           this.world.setupGuiDebug();
@@ -275,6 +346,7 @@ class Editor {
       if (body.uri.endsWith(".vex")) {
         this.world.emitScene();
         this.world.setupGui();
+        this.world.setupGuiCamera();
         this.world.setupGuiButtonExport();
         this.world.setupGuiLayers();
         this.world.setupGuiTrackCamera();

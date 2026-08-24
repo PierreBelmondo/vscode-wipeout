@@ -8,7 +8,6 @@ import { VertexNormalsHelper } from "./helpers/VertexNormalsHelper";
 import { api } from "./api";
 import type { WoTrackPoint } from "@core/formats/vexx/v4/wo_track";
 
-//import hangar from "./resources/hangar.jpg";
 
 const _exporter = new GLTFExporter();
 
@@ -28,7 +27,7 @@ export class World {
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
-  settings = { layers: {}, airbrakes: {}, actions: {}, backgroundColor: "#000000", bloom: false, showNormals: false, normalsSize: 0.1 };
+  settings = { layers: {}, airbrakes: {}, actions: {}, backgroundColor: "#000000", bloom: false, frontendEdges: false, showNormals: false, showBoxes: false, normalsSize: 0.1 };
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
   userdata: any = {};
@@ -40,6 +39,12 @@ export class World {
   private _actions: { name: string; mixer: THREE.AnimationMixer; action: THREE.AnimationAction }[] = [];
   private _tickMaterials: { tick: (delta: number) => void }[] = [];
   private _normalsHelpers: VertexNormalsHelper[] = [];
+  private _boxHelpers: THREE.Object3D[] = [];
+
+  // Scene-camera state: when set, the render camera copies this camera's
+  // animated world transform every frame instead of being user-controlled.
+  private _sceneCamera: THREE.Camera | null = null;
+  private _freeCameraState: { position: THREE.Vector3; quaternion: THREE.Quaternion } | null = null;
 
   // Track camera state
   private _trackCameraActive = false;
@@ -48,13 +53,6 @@ export class World {
 
   constructor() {
     this.scene.name = "World";
-
-    /*
-    const background = new THREE.TextureLoader().load(hangar);
-    background.mapping = THREE.EquirectangularReflectionMapping;
-    background.encoding = THREE.sRGBEncoding;
-    this.scene.background = background;
-    */
 
     const fov = 45;
     const aspect = window.innerWidth / window.innerHeight;
@@ -132,6 +130,79 @@ export class World {
     this.gui.onChange(this.emitUpdate.bind(this));
   }
 
+  /**
+   * Camera selector. "Free camera" is the usual user-controlled one; the other
+   * entries are CAMERA nodes from the scene, which sit under an ANIM_TRANSFORM
+   * and so carry the file's own camera animation.
+   */
+  setupGuiCamera() {
+    const cameras: THREE.Camera[] = [];
+    this.scene.traverse((obj) => {
+      if ((obj as THREE.Camera).isCamera) cameras.push(obj as THREE.Camera);
+    });
+    if (cameras.length === 0) return;
+
+    const FREE = "Free camera";
+    // Scene camera names are not unique — 01_vineta_k/track.vex has 13 cameras
+    // all called "pasted__cameraShape". Duplicate entries in a lil-gui dropdown
+    // are ambiguous (indexOf would always resolve to the first), so suffix any
+    // repeat with its index.
+    const seen = new Map<string, number>();
+    const names = [FREE];
+    for (let i = 0; i < cameras.length; i++) {
+      const base = cameras[i].name || `camera${i}`;
+      const n = (seen.get(base) ?? 0) + 1;
+      seen.set(base, n);
+      names.push(n === 1 ? base : `${base} #${n}`);
+    }
+    this.settings["camera"] = FREE;
+
+    this.gui
+      .add(this.settings, "camera", names)
+      .name("Camera")
+      .onChange((value: string) => {
+        if (value === FREE) {
+          for (const cam of cameras) for (const child of cam.children) child.visible = true;
+          this._sceneCamera = null;
+          if (this.controls instanceof OrbitControls) this.controls.enabled = true;
+          // Put the user back where they were before taking the scene camera.
+          if (this._freeCameraState) {
+            this.camera.position.copy(this._freeCameraState.position);
+            this.camera.quaternion.copy(this._freeCameraState.quaternion);
+          }
+          return;
+        }
+        const index = names.indexOf(value) - 1;
+        const target = cameras[index];
+        if (!target) return;
+        if (!this._sceneCamera) {
+          this._freeCameraState = {
+            position: this.camera.position.clone(),
+            quaternion: this.camera.quaternion.clone(),
+          };
+        }
+        this._sceneCamera = target;
+        if (this.controls instanceof OrbitControls) this.controls.enabled = false;
+        this._applySceneCamera();
+      });
+  }
+
+  /** Copy the selected scene camera's animated world transform. */
+  private _applySceneCamera() {
+    const cam = this._sceneCamera;
+    if (!cam) return;
+    // The frustum helper and control point live under the camera, so looking
+    // through it would put them in front of the lens.
+    for (const child of cam.children) {
+      if (child.name.startsWith(".CameraHelper_") || child.type === "Object3D") child.visible = false;
+    }
+    cam.updateWorldMatrix(true, false);
+    cam.matrixWorld.decompose(this.camera.position, this.camera.quaternion, new THREE.Vector3());
+    // Keep the viewer's own lens: the CAMERA node's fov/near/far are not
+    // decoded yet (loadCamera hardcodes 45 / 32 / 34).
+    this.camera.updateMatrixWorld();
+  }
+
   setupGuiButtonExport() {
     this.settings["Export to glTF"] = () => {
       _exporter.parse(
@@ -172,6 +243,12 @@ export class World {
       .onChange(() => {
         this.emitUpdate();
       });
+    this.gui
+      .add(this.settings, "frontendEdges")
+      .name("Front-end edges")
+      .onChange(() => {
+        this.emitUpdate();
+      });
   }
 
   setupGuiDebug() {
@@ -185,6 +262,17 @@ export class World {
         this.emitUpdate();
       });
     folder
+      .add(this.settings, "showBoxes")
+      .name("Show mesh bounds")
+      .onChange((value: boolean) => {
+        this._removeBoxHelpers();
+        // Report either way: unticking should still say what it found, so the
+        // diagnostic does not depend on which state the box happened to be in.
+        if (value) this._addBoxHelpers();
+        else this._reportTrackMeshes();
+        this.emitUpdate();
+      });
+    folder
       .add(this.settings, "normalsSize", 0, 1, 0.01)
       .name("Normal size")
       .onChange((value: number) => {
@@ -194,6 +282,110 @@ export class World {
           this.emitUpdate();
         }
       });
+  }
+
+  /**
+   * One wireframe box per mesh, in world space. Useful when geometry is loaded
+   * and positioned but nothing shows: a box with no surface inside it means the
+   * mesh is there but not drawing.
+   */
+  private _addBoxHelpers() {
+    this.scene.updateMatrixWorld(true);
+    this._reportTrackMeshes(true);
+  }
+
+  /** Log what the renderer would do with the track meshes. */
+  private _reportTrackMeshes(addHelpers = false) {
+    this.scene.updateMatrixWorld(true);
+
+    /** Nearest named ancestor, so a mesh can be attributed to its VEXX node. */
+    const owner = (obj: THREE.Object3D) => {
+      for (let o: THREE.Object3D | null = obj; o; o = o.parent)
+        if (o.name && !o.name.startsWith(".") && !/^Object_/.test(o.name)) return o.name;
+      return "";
+    };
+
+    const box = new THREE.Box3();
+    let n = 0;
+    this.scene.traverse((obj) => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      if (obj.name.startsWith(".")) return;
+      // Only the track surface. "collision_trackwall" also matches "track", and
+      // its 112 collision meshes would swamp the 48 real ones.
+      if (!/wohdtrack/i.test(owner(obj))) return;
+      if (addHelpers) {
+        const helper = new THREE.BoxHelper(obj, 0x00ff00);
+        helper.name = ".BoxHelper";
+        this.scene.add(helper);
+        this._boxHelpers.push(helper);
+      }
+      obj.geometry.computeBoundingBox();
+      if (obj.geometry.boundingBox) box.union(obj.geometry.boundingBox.clone().applyMatrix4(obj.matrixWorld));
+      n++;
+    });
+    // Also report what the renderer would actually draw for these meshes.
+    let drawn = 0, noIndex = 0, zeroIdx = 0, hidden = 0, matMissing = 0;
+    this.scene.traverse((obj) => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      if (!/track|wohdtrack/i.test(owner(obj))) return;
+      const g = obj.geometry as THREE.BufferGeometry;
+      const mat = obj.material as THREE.Material;
+      if (!g.index) noIndex++;
+      else if (g.index.count === 0) zeroIdx++;
+      if (!obj.visible) hidden++;
+      if (!mat || mat.visible === false) matMissing++;
+      const range = g.drawRange;
+      if (g.index && g.index.count > 0 && obj.visible && mat?.visible !== false &&
+          range.count !== 0) drawn++;
+    });
+    api.log(`[bounds] drawable=${drawn} noIndex=${noIndex} emptyIndex=${zeroIdx} ` +
+            `hidden=${hidden} materialHidden=${matMissing}`);
+
+    // Layer test: a mesh on a layer the camera does not enable is skipped by
+    // the renderer, while a BoxHelper added to the scene root stays on layer 0
+    // and is drawn regardless — which is exactly the paradox here.
+    const camMask = this.camera.layers.mask;
+    const byLayer = new Map<number, number>();
+    let onCamera = 0, offCamera = 0;
+    this.scene.traverse((obj) => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      if (!/track|wohdtrack/i.test(owner(obj))) return;
+      byLayer.set(obj.layers.mask, (byLayer.get(obj.layers.mask) ?? 0) + 1);
+      if ((obj.layers.mask & camMask) !== 0) onCamera++; else offCamera++;
+    });
+    const layerName = (mask: number) => {
+      const names: string[] = [];
+      for (const [name, id] of Object.entries(this._layers))
+        if (mask & (1 << (id as number))) names.push(name);
+      return names.join(",") || (mask === 1 ? "(default layer 0)" : "?");
+    };
+    api.log(`[bounds] camera mask=0x${camMask.toString(16)} ` +
+            `onEnabledLayer=${onCamera} onDisabledLayer=${offCamera}`);
+    api.log(`[bounds] known layers: ${Object.entries(this._layers).map(([n, i]) => `${n}=${i}`).join(", ")}`);
+    for (const [mask, count] of byLayer)
+      api.log(`[bounds]   ${count} meshes on layer mask 0x${mask.toString(16)} "${layerName(mask)}"` +
+              `${(mask & camMask) === 0 ? "  <-- NOT DRAWN" : ""}`);
+    // Who actually owns the layer-19 meshes? Report their VEXX ancestry.
+    const owners = new Map<string, number>();
+    this.scene.traverse((obj) => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      if (obj.layers.mask !== 0x80000) return;
+      const chain: string[] = [];
+      for (let o: THREE.Object3D | null = obj; o && chain.length < 4; o = o.parent)
+        if (o.name && !o.name.startsWith(".")) chain.push(o.name);
+      const key = chain.reverse().join(" > ");
+      owners.set(key, (owners.get(key) ?? 0) + 1);
+    });
+    api.log(`[bounds] layer-19 meshes belong to ${owners.size} distinct paths:`);
+    for (const [k, c] of [...owners].slice(0, 8)) api.log(`[bounds]   x${c}  ${k}`);
+
+    api.log(`[bounds] ${n} track meshes` +
+            (box.isEmpty() ? "" : `, world bbox ${box.min.toArray().map(v => v.toFixed(0))} .. ${box.max.toArray().map(v => v.toFixed(0))}`));
+  }
+
+  private _removeBoxHelpers() {
+    for (const h of this._boxHelpers) this.scene.remove(h);
+    this._boxHelpers = [];
   }
 
   private _addNormalsHelpers(size: number) {
@@ -324,6 +516,7 @@ export class World {
     for (const action of this._actions) action.mixer.update(delta);
     for (const mat of this._tickMaterials) mat.tick(delta);
     if (this._trackCameraActive) this._updateTrackCamera(delta);
+    if (this._sceneCamera) this._applySceneCamera();
   }
 
   setupGuiTrackCamera() {
