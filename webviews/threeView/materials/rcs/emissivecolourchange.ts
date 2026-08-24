@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { MaterialFactory } from "./_abstract";
 
+/**
+ * Permutation: Static[0] of 100 — the lit, Ambient, no-shadow, no-spot
+ *   point of the matrix (see _abstract.ts). The others are TODO.
+ */
 export const emissivecolourchange: MaterialFactory = {
   name: "emissivecolourchange.rcsmaterial",
   minTextures: 0,
