@@ -568,7 +568,7 @@ export class RCSModelLoader extends Loader {
     // Other names the exporter uses for the same diffuse channel. Without these
     // the mesh reaches Three.js with no "uv" attribute at all, so its texture
     // never shows.
-    for (const alias of ["map1", "Diffuse_uv", "diffuseUV", "diffuseUv"]) {
+    for (const alias of ["map1", "Diffuse_uv", "diffuseUV", "diffuseUv", "crowdUV"]) {
       if (!geometry.getAttribute("uv") && vbo.has(alias)) {
         geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes[alias], 2));
       }

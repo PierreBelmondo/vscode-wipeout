@@ -26,6 +26,14 @@ export const cf_cheap_crowd: MaterialFactory = {
       side: THREE.DoubleSide,
       ...(map ? { map: map } : {}),
       ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
+      // The crowd atlases are cutout sprites -- crowdavatars.gtf is 45% fully
+      // transparent, crowd_avatars_22x4.gtf 53% -- so without an alpha test the
+      // spectators render as solid quads with the gaps filled in.
+      // Cutout, not blended: alpha-blending these sorts badly against the
+      // track and, with DoubleSide, drops them out entirely. Same convention
+      // as cf_tree.ts and fence_alpha.ts.
+      transparent: false,
+      alphaTest: 0.5,
       specular: new THREE.Color(SPECULAR_COLOR),
       shininess: SPECULAR_SHININESS,
     });

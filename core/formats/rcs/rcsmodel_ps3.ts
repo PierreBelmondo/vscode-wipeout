@@ -269,6 +269,12 @@ export class RcsModelMeshInfo {
       0x2003d7e6: "map1",
       0xb90a865c: "map2",
       0x77783981: "Smoke",
+      // The crowd meshes' diffuse UV. Type 35 at offset 10 -- byte-identical to
+      // Uv1's layout -- and used only by nr_crowd_bustle and cf_cheap_crowd,
+      // whose 1360 meshes carry no other UV channel. Left unnamed, those meshes
+      // reached Three with no "uv" attribute at all, so the crowd sampled the
+      // atlas at (0,0) and the spectators never appeared.
+      0xb67dc4be: "crowdUV",
       0x1aefe524: "_unknown",
       0x14071d1e: "_unknown",
       0x1589348f: "_unknown",
@@ -291,7 +297,6 @@ export class RcsModelMeshInfo {
       0xab616fd7: "_unknown",
       0xb0528e1e: "_unknown",
       0xb28abe47: "_unknown",
-      0xb67dc4be: "_unknown",
       0xc3602a42: "_unknown",
       0xce5cd9d9: "_unknown",
       0xd021dd49: "_unknown",
