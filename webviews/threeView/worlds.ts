@@ -6,6 +6,7 @@ import { FlyControls } from "./controls/FlyControls";
 import { GLTFExporter } from "./exporters/GLTFExporter";
 import { VertexNormalsHelper } from "./helpers/VertexNormalsHelper";
 import { api } from "./api";
+import { DEFAULT_RENDER_SETTINGS, TONE_MAPPINGS } from "./renderSettings";
 import type { WoTrackPoint } from "@core/formats/vexx/v4/wo_track";
 
 
@@ -27,7 +28,7 @@ export class World {
   controls: OrbitControls | FlyControls;
   gui: GUI;
 
-  settings = { layers: {}, airbrakes: {}, actions: {}, backgroundColor: "#000000", bloom: false, frontendEdges: false, showNormals: false, showBoxes: false, normalsSize: 0.1 };
+  settings = { layers: {}, airbrakes: {}, actions: {}, backgroundColor: "#000000", bloom: false, frontendEdges: false, showNormals: false, showBoxes: false, normalsSize: 0.1, ...DEFAULT_RENDER_SETTINGS };
   textures: { [id: number | string]: THREE.Texture } = {};
   materials: { [id: number | string]: THREE.Material } = {};
   userdata: any = {};
@@ -249,6 +250,105 @@ export class World {
       .onChange(() => {
         this.emitUpdate();
       });
+  }
+
+  /**
+   * The lighting and grading tunables.
+   *
+   * None of these are read from the game files (see renderSettings.ts), so the
+   * only way to settle them is to look at the result. They apply live: the
+   * light controls retarget the scene's lights, and the material controls walk
+   * every material already built and re-apply, because materials are created
+   * once when a model loads and would otherwise keep the value they were born
+   * with.
+   */
+  setupGuiRendering() {
+    const folder = this.gui.addFolder("Rendering").close();
+
+    folder
+      .add(this.settings, "toneMapping", Object.keys(TONE_MAPPINGS))
+      .name("Tone mapping")
+      .onChange(() => this.emitUpdate());
+    folder
+      .add(this.settings, "exposure", 0.1, 3.0, 0.05)
+      .name("Exposure")
+      .onChange(() => this.emitUpdate());
+    folder
+      .add(this.settings, "srgbOutput")
+      .name("sRGB output")
+      .onChange(() => this.emitUpdate());
+    folder
+      .add(this.settings, "bloomGrading")
+      .name("Grade bloom pass")
+      .onChange(() => this.emitUpdate());
+
+    folder
+      .add(this.settings, "ambientIntensity", 0.0, 2.0, 0.05)
+      .name("Ambient")
+      .onChange((value: number) => {
+        this.scene.traverse((obj) => {
+          if (obj instanceof THREE.AmbientLight) obj.intensity = value;
+        });
+        this.emitUpdate();
+      });
+    folder
+      .add(this.settings, "directionalIntensity", 0.0, 3.0, 0.05)
+      .name("Directional")
+      .onChange((value: number) => {
+        // Only the model's own key light. The six faint fill lights World adds
+        // are named .WorldDirectionalLight* and are deliberately left alone.
+        this.scene.traverse((obj) => {
+          if (obj instanceof THREE.DirectionalLight && !obj.name.startsWith(".World")) obj.intensity = value;
+        });
+        this.emitUpdate();
+      });
+
+    folder
+      .add(this.settings, "lightmapIntensity", 0.0, 4.0, 0.05)
+      .name("Lightmap")
+      .onChange((value: number) => {
+        this._forEachMaterial((material) => {
+          if ("lightMap" in material && (material as THREE.MeshPhongMaterial).lightMap) {
+            (material as THREE.MeshPhongMaterial).lightMapIntensity = value;
+          }
+        });
+        this.emitUpdate();
+      });
+
+    folder
+      .addColor(this.settings, "specularColor")
+      .name("Specular")
+      .onChange((value: string) => {
+        this._forEachMaterial((material) => {
+          const phong = material as THREE.MeshPhongMaterial;
+          if (phong.specular) phong.specular.set(value);
+        });
+        this.emitUpdate();
+      });
+    folder
+      .add(this.settings, "specularShininess", 1, 200, 1)
+      .name("Shininess")
+      .onChange((value: number) => {
+        this._forEachMaterial((material) => {
+          const phong = material as THREE.MeshPhongMaterial;
+          if (phong.shininess !== undefined) phong.shininess = value;
+        });
+        this.emitUpdate();
+      });
+  }
+
+  /** Every material in the scene, including each entry of a material array. */
+  private _forEachMaterial(fn: (material: THREE.Material) => void) {
+    const seen = new Set<THREE.Material>();
+    this.scene.traverse((obj) => {
+      if (!(obj instanceof THREE.Mesh)) return;
+      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+      for (const material of materials) {
+        if (!material || seen.has(material)) continue;
+        seen.add(material);
+        fn(material);
+      }
+    });
   }
 
   setupGuiDebug() {

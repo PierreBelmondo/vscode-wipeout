@@ -13,6 +13,7 @@ import { RenderPass } from "./postprocessing/RenderPass";
 import { FrontEndEdgePass } from "./postprocessing/FrontEndEdgePass";
 import { DEFAULT_SCREEN_SETTING, ScreenSetting } from "./frontendSkin";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";
+import { TONE_MAPPINGS } from "./renderSettings";
 import { ShaderPass } from "./postprocessing/ShaderPass";
 
 const textDecoder = new TextDecoder();
@@ -24,12 +25,38 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }`;
 
+// The bloom composite draws straight to the screen. With bloom OFF the scene is
+// rendered directly to the canvas and the renderer applies tone mapping and the
+// output encoding itself; this pass has to do the same or toggling bloom would
+// visibly change the exposure and gamma of the whole scene.
+//
+// Do NOT define the maths here. Three injects `tonemapping_pars_fragment` and
+// `encodings_pars_fragment` into every non-raw ShaderMaterial, and emits two
+// wrappers alongside them:
+//
+//   vec3 toneMapping( vec3 )          -- only when toneMapping != NoToneMapping
+//   vec4 linearToOutputTexel( vec4 )  -- always
+//
+// Declaring our own ACESFilmicToneMapping/LinearTosRGB redefined those chunks'
+// functions, so the fragment shader failed to link ("function already has a
+// body") and the pass drew nothing. Calling the wrappers also means this pass
+// follows the toolbox's tone-mapping dropdown for free.
+//
+// TONE_MAPPING is defined by the render loop whenever the wrapper exists.
 const fragmentShader = `
 uniform sampler2D baseTexture;
 uniform sampler2D bloomTexture;
 varying vec2 vUv;
+
 void main() {
-  gl_FragColor = ( texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv ) );
+  vec4 color = texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv );
+  #ifdef BLOOM_GRADING
+    #ifdef TONE_MAPPING
+      color = vec4( toneMapping( color.rgb ), color.a );
+    #endif
+    color = linearToOutputTexel( color );
+  #endif
+  gl_FragColor = color;
 }
 `;
 
@@ -60,7 +87,22 @@ class WorldRenderer {
     this._renderer.setClearColor(0x000000);
     this._renderer.setPixelRatio(window.devicePixelRatio);
     this._renderer.setSize(window.innerWidth, window.innerHeight);
-    this._renderer.toneMapping = THREE.ReinhardToneMapping;
+    // Colour management. The game's textures are authored in sRGB, and until
+    // now nothing declared that: they were sampled as if linear, so every
+    // texel was already too bright before a single light touched it. In r149
+    // the API is `outputEncoding` / `texture.encoding` (`outputColorSpace`
+    // arrives later), and render targets stay Linear -- the conversion happens
+    // on the final pass to screen, which is exactly where the composer's last
+    // pass draws.
+    this._renderer.outputEncoding = THREE.sRGBEncoding;
+
+    // ACES rather than Reinhard. Reinhard is `x / (1 + x)`: at exposure 1 it
+    // maps a fully lit surface to 0.5 while leaving shadows near where they
+    // started, so it compresses highlights far harder than darks -- which is
+    // what flattened the specular lobe and left the scene looking washed out.
+    // ACES holds its midtones and rolls off only the top end.
+    this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this._renderer.toneMappingExposure = 1.0;
 
     this._passScene = new RenderPass(this._world.scene, this._world.camera);
 
@@ -82,6 +124,7 @@ class WorldRenderer {
         },
         vertexShader,
         fragmentShader,
+        // Filled in by render(), which knows the current renderer state.
         defines: {},
       }),
       "baseTexture"
@@ -158,6 +201,35 @@ class WorldRenderer {
   ]
 
   render() {
+    // The toolbox owns these (see renderSettings.ts): apply whatever it holds
+    // before drawing, so a change takes effect on the next frame. Both are
+    // renderer state rather than per-material, so they are set here rather
+    // than walked over the scene.
+    // Guard every read: a World built before these settings existed, or any
+    // path that swaps in a bare settings object, would otherwise write
+    // `undefined` into toneMappingExposure and the shader's exposure uniform --
+    // which multiplies the whole image by NaN and renders pure black.
+    const settings = this._world.settings;
+    const toneMapping = TONE_MAPPINGS[settings.toneMapping];
+    this._renderer.toneMapping = toneMapping !== undefined ? toneMapping : THREE.ACESFilmicToneMapping;
+    const exposure = typeof settings.exposure === "number" && isFinite(settings.exposure) ? settings.exposure : 1.0;
+    this._renderer.toneMappingExposure = exposure;
+    this._renderer.outputEncoding = settings.srgbOutput === false ? THREE.LinearEncoding : THREE.sRGBEncoding;
+
+    // Keep the composite's defines in step with the renderer. TONE_MAPPING
+    // tracks whether Three emitted its `toneMapping()` wrapper at all -- it
+    // omits it for NoToneMapping, and calling a function that was never
+    // declared fails to link.
+    const material = this._passFinal.material as THREE.ShaderMaterial;
+    const wanted: { [name: string]: string } = {};
+    if (settings.bloomGrading !== false) wanted["BLOOM_GRADING"] = "";
+    if (this._renderer.toneMapping !== THREE.NoToneMapping) wanted["TONE_MAPPING"] = "";
+    const names = ["BLOOM_GRADING", "TONE_MAPPING"];
+    if (names.some((name) => (name in material.defines) !== (name in wanted))) {
+      material.defines = wanted;
+      material.needsUpdate = true;
+    }
+
     if (this._world.settings.frontendEdges) {
       // Drive the detector from the <Main> values skin.xml carries for this
       // screen; VEXXLoader parks them on userdata when it loads the file.
@@ -298,6 +370,7 @@ class Editor {
         this.world.setupGuiTrackCamera();
         this.world.setupGuiBackgroundColor();
         this.world.setupGuiBloom();
+        this.world.setupGuiRendering();
         this.world.setupGuiDebug();
         this.loadWorld();
         break;
@@ -316,7 +389,8 @@ class Editor {
         this.world.setupGuiButtonExport();
           this.world.setupGuiLayers();
           this.world.setupGuiBackgroundColor();
-          this.world.setupGuiDebug();
+          this.world.setupGuiRendering();
+        this.world.setupGuiDebug();
           this.loadWorld();
         } catch (e: any) {
           api.log(`[rcsmodel] ERROR: ${e.message}\n${e.stack}`);
@@ -352,6 +426,7 @@ class Editor {
         this.world.setupGuiTrackCamera();
         this.world.setupGuiBackgroundColor();
         this.world.setupGuiBloom();
+        this.world.setupGuiRendering();
         this.world.setupGuiDebug();
       }
     }
