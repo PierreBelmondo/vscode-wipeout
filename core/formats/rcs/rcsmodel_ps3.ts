@@ -1,4 +1,5 @@
 import { BufferRange } from "@core/utils/range";
+import { Stride } from "./ids";
 import { GTF } from "@core/formats/gtf";
 import { vec4 } from "gl-matrix";
 
@@ -441,7 +442,26 @@ export class RcsModelSubmesh {
 
 export class RcsModelVBO {
   range = new BufferRange();
+  /**
+   * Vertex streams by NAME, kept for existing callers and for debugging.
+   *
+   * It cannot represent a stream whose id we have no name for: every such
+   * stream lands on the same `"_unknown"` key and all but the last is lost.
+   * Prefer `byId`, which is always complete.
+   */
   attributes: { [name: string]: number[] } = {};
+  /**
+   * Vertex streams by their raw 32-bit id -- the file's own identity for them.
+   *
+   * The id is the identity; a name is debug metadata we may or may not have
+   * recovered. Keying off names cost us real geometry: 1360 crowd meshes lost
+   * their UVs because 0xb67dc4be had no entry in the lookup table, and 192 more
+   * lost theirs to names the loader's alias list did not happen to include.
+   * See core/formats/rcs/ids.ts.
+   */
+  byId = new Map<number, number[]>();
+  /** The stride record each id came from, for its element type and for debugging. */
+  strideById = new Map<number, StrideInfo>();
 
   static load(range: BufferRange, info: RcsModelMeshInfo, count: number): RcsModelVBO {
     let ret = new RcsModelVBO();
@@ -526,7 +546,10 @@ export class RcsModelVBO {
         // degenerate frame, 17.1% unit length against 99.2% unpacked -- which
         // leaves normalMap sampling a flat surface and drives lit materials
         // black.
-        const signed = stride.name == "tangent";
+        // Keyed on the id, not the spelling: a variant naming this stream
+        // differently would otherwise skip the unpack silently and render as a
+        // degenerate tangent frame.
+        const signed = stride.id == Stride.tangent;
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
           const r = ret.range.getUint8(offset + 0) / 255.0;
@@ -544,6 +567,8 @@ export class RcsModelVBO {
       }
 
       ret.attributes[stride.name] = values;
+      ret.byId.set(stride.id, values);
+      ret.strideById.set(stride.id, stride);
     }
     return ret;
   }

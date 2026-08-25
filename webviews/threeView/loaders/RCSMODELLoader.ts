@@ -11,6 +11,7 @@ import { RcsModelPS5, RcsModelPS5Material, RcsModelPS5Texture } from "@core/form
 import { World } from "../worlds";
 import { createMaterial } from "../materials/rcs";
 import { channelSlot } from "../materials/rcs/_channels";
+import { Stride, StreamKind, streamKind } from "@core/formats/rcs/ids";
 import { VertexNormalsHelper } from "../helpers/VertexNormalsHelper";
 
 /**
@@ -165,6 +166,11 @@ class AsyncMaterial {
 
     if (this.material) {
       this.world.materials[this.material.id] = this.material;
+      // A transcribed material carries its own lighting maths, so it needs the
+      // scene's lights pushed into its uniforms each frame; Three does that
+      // automatically only for its built-in materials.
+      const raw = this.material as unknown as { attachScene?: (scene: THREE.Scene) => void };
+      if (typeof raw.attachScene === "function") raw.attachScene(this.world.scene);
       // Materials that animate (scrolling water UVs, and so on) expose tick().
       const animated = this.material as unknown as { tick?: (delta: number) => void };
       if (typeof animated.tick === "function") {
@@ -559,18 +565,42 @@ export class RCSModelLoader extends Loader {
       const itemSize = tangent.length / (vbo.attributes["position"].length / 3) === 4 ? 4 : 3;
       geometry.setAttribute("tangent", new THREE.Float32BufferAttribute(tangent, itemSize));
     }
-    if (vbo.has("uv1")) {
-      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["uv1"], 2));
+    // The diffuse uv, resolved by stride id rather than by name.
+    //
+    // The exporter spells this channel many different ways -- Uv1, uv1, map1,
+    // Diffuse_uv, diffuseUV, diffuseUVs, Uvset1, cellUV, crowdUV -- and keying
+    // off the spelling meant any id we had not named, or had named something
+    // not on the list, produced a mesh with no "uv" attribute at all and a
+    // texture that could never show. That cost 1360 crowd meshes their UVs and
+    // 192 more besides. Ids are the file's own identity for these streams, so
+    // they are what we match on; see core/formats/rcs/ids.ts.
+    const PREFERRED_UV = [
+      Stride.Uv1, Stride.uv1, Stride.map1, Stride.Diffuse_uv,
+      Stride.diffuseUV, Stride.diffuseUVs, Stride.Uvset1, Stride.crowdUV,
+    ];
+    for (const id of PREFERRED_UV) {
+      const values = vbo.byId.get(id);
+      if (values && !geometry.getAttribute("uv")) {
+        geometry.setAttribute("uv", new THREE.Float32BufferAttribute(values, 2));
+      }
     }
-    if (vbo.has("Uv1")) {
-      geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes["Uv1"], 2));
-    }
-    // Other names the exporter uses for the same diffuse channel. Without these
-    // the mesh reaches Three.js with no "uv" attribute at all, so its texture
-    // never shows.
-    for (const alias of ["map1", "Diffuse_uv", "diffuseUV", "diffuseUv", "crowdUV"]) {
-      if (!geometry.getAttribute("uv") && vbo.has(alias)) {
-        geometry.setAttribute("uv", new THREE.Float32BufferAttribute(vbo.attributes[alias], 2));
+    // Nothing preferred matched: if the mesh carries exactly one texture-
+    // coordinate stream, whatever its id, that is unambiguously the one. This
+    // is what rescues Uv2/Uv3/Lightmap_uv/cellUV-only meshes (hologram,
+    // pb_rooftop_das_g_r and 190 others) without having to name every id first.
+    // Meshes with several coordinate sets are left alone rather than guessed at.
+    if (!geometry.getAttribute("uv")) {
+      // Lightmap_uv is known to be the lightmap's own atlas coordinate, so it
+      // is never the diffuse set and does not make the choice ambiguous. That
+      // leaves e.g. Lightmap_uv+Uv2 (164 meshes) with exactly one candidate.
+      const texCoords = [...vbo.strideById.values()].filter(
+        (stride) =>
+          streamKind(stride.id, stride.type) === StreamKind.TexCoord &&
+          stride.id !== Stride.Lightmap_uv
+      );
+      if (texCoords.length === 1) {
+        const values = vbo.byId.get(texCoords[0].id);
+        if (values) geometry.setAttribute("uv", new THREE.Float32BufferAttribute(values, 2));
       }
     }
     if (!geometry.getAttribute("uv2") && vbo.has("map2")) {
