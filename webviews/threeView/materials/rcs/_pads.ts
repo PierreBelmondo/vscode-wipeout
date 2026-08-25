@@ -22,15 +22,32 @@ import { DXT1, DXT3, DXT5 } from "@core/utils/dxt";
  *   if they ever become reachable from the node setup.
  */
 
+/**
+ * How hard the glow is driven.
+ *
+ * The emissive has to go well past 1.0 to read as a glow, because the viewer
+ * grades with Reinhard at a low exposure: a peak of 0.82 lands at only 0.41 on
+ * screen once tone mapping and the sRGB transfer have taken their cut, which
+ * looks like a tinted surface rather than something emitting light. At this
+ * multiplier the peak lands around 0.73 — bright, without blowing out. Colours
+ * stay unclamped in THREE.Color, so the tone mapper does the limiting.
+ */
+const PAD_EMISSIVE_GAIN = 6.0;
+
 /** Weapon pickup pads glow red. */
-export const PAD_EMISSIVE_WEAPON = 0xd02020;
+export const PAD_EMISSIVE_WEAPON = new THREE.Color(0xd02020).multiplyScalar(PAD_EMISSIVE_GAIN);
 
 /** Speed boost pads glow blue. */
-export const PAD_EMISSIVE_SPEED = 0x2060d0;
+export const PAD_EMISSIVE_SPEED = new THREE.Color(0x2060d0).multiplyScalar(PAD_EMISSIVE_GAIN);
 
-/** How fast the pads cycle, in radians/second, and how deep the dip goes. */
-export const PAD_PULSE_RATE = 2.2;
-export const PAD_PULSE_DEPTH = 0.45;
+/**
+ * How fast the pads cycle, in radians/second, and how deep the dip goes.
+ *
+ * ~1s per cycle, dipping to a third of peak — a visible throb rather than the
+ * slow 2.9s swell this started at.
+ */
+export const PAD_PULSE_RATE = 6.5;
+export const PAD_PULSE_DEPTH = 0.65;
 
 /**
  * Turn the `_ne` map into an emissive mask Three can use.
