@@ -119,7 +119,7 @@ export class DXT3 {
   static decompressBlock(x: number, y: number, width: number, range: BufferRange, image: Uint8ClampedArray) {
     const alphaData = range.getUint8Array(0, 8)
     const color0 = range.getUint16(8);
-    const color1 = range.getUint16[10];
+    const color1 = range.getUint16(10);
     const colorCodes = range.getUint32(12);
 
     const r0 = (color0 & 0b1111100000000000) >>> 8;
@@ -134,9 +134,13 @@ export class DXT3 {
         const b = 4 * j + i;
         let colorCode = (colorCodes >>> (2 * b)) & 0b011;
 
+        // 4 bits per texel, low nibble first. Scale 0..15 to 0..255 by
+        // replicating the nibble (15 -> 255), not by leaving it as 0..15,
+        // which read as very nearly transparent everywhere.
         let alpha = alphaData[Math.floor(b / 2)];
         if (b % 2) alpha >>>= 4;
         alpha &= 0b1111;
+        alpha = (alpha << 4) | alpha;
         
         let color = { r: 0, g: 0, b: 0, a: 0 };
         switch (colorCode) {
