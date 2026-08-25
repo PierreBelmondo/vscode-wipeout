@@ -25,20 +25,26 @@ import { DXT1, DXT3, DXT5 } from "@core/utils/dxt";
 /**
  * How hard the glow is driven.
  *
- * The emissive has to go well past 1.0 to read as a glow, because the viewer
- * grades with Reinhard at a low exposure: a peak of 0.82 lands at only 0.41 on
- * screen once tone mapping and the sRGB transfer have taken their cut, which
- * looks like a tinted surface rather than something emitting light. At this
- * multiplier the peak lands around 0.73 — bright, without blowing out. Colours
- * stay unclamped in THREE.Color, so the tone mapper does the limiting.
+ * Modest, because the viewer grades with Reinhard, which compresses each
+ * channel independently: driving the emissive hard pushes all three toward 1.0
+ * together and the hue washes out to white. At gain 6 the speed pad's
+ * blue-to-red ratio collapsed from 6.5 in the source colour to 1.84 on screen,
+ * which is why the pads read as white-blue rather than blue.
+ *
+ * The saturation is carried by the colours below instead -- see there.
  */
-const PAD_EMISSIVE_GAIN = 6.0;
+const PAD_EMISSIVE_GAIN = 2.5;
 
-/** Weapon pickup pads glow red. */
-export const PAD_EMISSIVE_WEAPON = new THREE.Color(0xd02020).multiplyScalar(PAD_EMISSIVE_GAIN);
-
-/** Speed boost pads glow blue. */
-export const PAD_EMISSIVE_SPEED = new THREE.Color(0x2060d0).multiplyScalar(PAD_EMISSIVE_GAIN);
+/**
+ * Weapon pickup pads glow red, speed pads blue.
+ *
+ * The off-hue channel is zero rather than a small value. Reinhard pulls a dim
+ * channel up proportionally more than a bright one, so any red left in the blue
+ * pad is what turns it white under compression; leaving it at zero keeps the
+ * hue whatever the exposure does.
+ */
+export const PAD_EMISSIVE_WEAPON = new THREE.Color(0xff2000).multiplyScalar(PAD_EMISSIVE_GAIN);
+export const PAD_EMISSIVE_SPEED = new THREE.Color(0x0030ff).multiplyScalar(PAD_EMISSIVE_GAIN);
 
 /**
  * How fast the pads cycle, in radians/second, and how deep the dip goes.
