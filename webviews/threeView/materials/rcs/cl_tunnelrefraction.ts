@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/01_vineta_k/materials/cl_tunnelrefraction.rcsmaterial
@@ -24,16 +24,21 @@ export const cl_tunnelrefraction: MaterialFactory = {
   minTextures: 1,
   maxTextures: 5,
   make: (textures: THREE.Texture[]) => {
-    const [map, lightMap, map1, map2, map3] = textures;
-    return new THREE.MeshPhongMaterial({
+    const [map, lightMap] = textures;
+    // Same refraction bindings as mt_tunnelrefraction — screenSpaceRefractionTex,
+    // `distortion` and `refractProject` — so it gets the same treatment: see
+    // that factory for why transmission stands in for the engine's
+    // screen-space lookup.
+    const material = new THREE.MeshPhysicalMaterial({
       side: THREE.DoubleSide,
-      ...(map ? { map: map } : {}),
-      ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      ...(map1 ? { map: map1 } : {}),
-      ...(map2 ? { map: map2 } : {}),
-      ...(map3 ? { map: map3 } : {}),
-      specular: new THREE.Color(SPECULAR_COLOR),
-      shininess: SPECULAR_SHININESS,
+      ...(map ? { map } : {}),
+      ...(lightMap ? { lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
+      transmission: 0.9,
+      ior: 1.33,
+      roughness: 0.1,
+      metalness: 0.0,
     });
+    material.thickness = 0.5;
+    return material;
   },
 };
