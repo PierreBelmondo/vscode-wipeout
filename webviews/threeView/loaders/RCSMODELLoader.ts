@@ -210,8 +210,14 @@ export class RCSModelLoader extends Loader {
       }
     }
 
-    world.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    // Ambient was 0.6, which is flat and unshadowed: it lifted every surface
+    // off black, so nothing was dark enough for a highlight to read against --
+    // the scene came out bright and uniformly saturated with no visible
+    // specular. Six more directionals at 0.1 from World's constructor add
+    // roughly 0.3 on top of these two. Let the directional do the shading and
+    // keep ambient as fill.
+    world.scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
     dirLight.position.set(1, 2, 3);
     world.scene.add(dirLight);
     return world;
