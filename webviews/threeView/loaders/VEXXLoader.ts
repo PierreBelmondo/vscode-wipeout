@@ -169,6 +169,20 @@ function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean
   return new THREE.MeshPhongMaterial({ map, alphaTest: 0.5, side: THREE.DoubleSide });
 }
 
+/**
+ * Does this object hang under something the scene animates?
+ *
+ * VEXXLoader marks the groups it builds for ANIM_TRANSFORM and AIRBRAKE nodes,
+ * because a mesh under one of those is positioned relative to a pivot that
+ * moves, rather than placed in the world outright.
+ */
+function hasAnimatedAncestor(object: THREE.Object3D): boolean {
+  for (let node: THREE.Object3D | null = object; node; node = node.parent) {
+    if (node.userData?.animatedPivot) return true;
+  }
+  return false;
+}
+
 class AsyncRcsMesh {
   world: World;
   vexxMesh: VexxNodeMesh;
@@ -224,22 +238,23 @@ class AsyncRcsModel {
       for (const object of objects) {
         this.world.scene.remove(object);
 
-        // The .rcsmodel object header carries a world-space position, and the
-        // VEXX node the mesh hangs under may carry the same placement again.
-        // Reparenting then applies it twice — the speedup/weapon pads on a
-        // track land at roughly double their coordinates.
+        // The .rcsmodel object header holds a WORLD-space placement, and
+        // rendering the .rcsmodel on its own puts every object — pads included
+        // — exactly where it belongs. The VEXX node it hangs under carries its
+        // own transform, so simply re-parenting applies a placement that is
+        // already baked in a second time: it moved the track pads 34–40 units
+        // and tilted them with the node's rotation.
         //
-        // Only deduplicate when the parent actually places the mesh somewhere:
-        // a ship's parts hang directly off the scene root, so their parent sits
-        // at the origin and their own small offsets (0.08 .. 2.1) are the real
-        // layout, not a duplicate.
-        asyncRcsMesh.object.updateWorldMatrix(true, false);
-        const parentPos = new THREE.Vector3().setFromMatrixPosition(asyncRcsMesh.object.matrixWorld);
-        if (parentPos.lengthSq() > 1e-6) {
-          const rel = object.position.distanceTo(parentPos);
-          // A duplicate is the *same* world position, so the gap is tiny next to
-          // how far from the origin the placement is.
-          if (rel < parentPos.length() * 0.02) object.position.set(0, 0, 0);
+        // Cancel the parent chain so the world placement survives — but only
+        // under a STATIC parent. Where an ancestor is animated the node is a
+        // pivot the animation swings the mesh around (an AIRBRAKE is exactly
+        // this: an identity node sitting at the hinge, which the airbrake
+        // slider rotates). There the header position is the offset from that
+        // pivot and has to stay a local offset, or the mesh swings through a
+        // wildly wrong arc.
+        if (!hasAnimatedAncestor(asyncRcsMesh.object)) {
+          asyncRcsMesh.object.updateWorldMatrix(true, false);
+          object.applyMatrix4(new THREE.Matrix4().copy(asyncRcsMesh.object.matrixWorld).invert());
         }
 
         asyncRcsMesh.object.add(object);
@@ -664,7 +679,11 @@ export class VEXXLoader extends Loader {
     }
 
     if (!("format" in object.userData)) {
-      object.userData = { format: "VEXX", type: node.typeName };
+      // Merge rather than replace: loaders set their own userData flags before
+      // returning (animatedPivot, externalId), and assigning a fresh object
+      // here would drop them.
+      object.userData.format = "VEXX";
+      object.userData.type = node.typeName;
     }
 
     if (layer) {
@@ -723,6 +742,9 @@ export class VEXXLoader extends Loader {
   private loadAnimTransform(world: World, node: VexxNodeAnimTransform | Vexx3NodeAnimTransform): THREE.Object3D {
     const group = new THREE.Group();
     group.name = node.name;
+    // A moving pivot: meshes below this are placed relative to it, not in the
+    // world. See hasAnimatedAncestor.
+    group.userData.animatedPivot = true;
 
     // Keys are frame numbers at 60fps — convert to seconds for Three.js
     const FPS = 60;
@@ -968,6 +990,9 @@ export class VEXXLoader extends Loader {
   private loadAirbrake(world: World, node: VexxNodeAirbrake): THREE.Object3D {
     const object = this.loadNodeGeneric(world, node);
     object.name = node.name;
+    // The hinge the airbrake slider rotates: the mesh under it must keep its
+    // offset from this pivot. See hasAnimatedAncestor.
+    object.userData.animatedPivot = true;
     world.addAirbrake(object);
     return object;
   }
