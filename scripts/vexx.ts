@@ -4,6 +4,7 @@ import { sync as globSync } from "glob";
 import { Command } from "commander";
 
 import { BufferRange } from "@core/utils/range";
+import { instrumentCoverage, reportCoverage } from "./coverage";
 import { Vexx } from "@core/formats/vexx";
 import { VexxNode, VexxNodeMatrix } from "@core/formats/vexx/node";
 import { VexxNodeMesh } from "@core/formats/vexx/v4/mesh";
@@ -1190,6 +1191,72 @@ program
       if (reports.length === 0) { console.log("No mesh chunks with normals found."); }
     } else {
       program.help();
+    }
+  });
+
+program
+  .command("coverage <files...>")
+  .description("Report how many bytes of each .vex the parser actually interprets")
+  .option("--per-type", "Break the unread bytes down by the node type they fall in")
+  .action((files: string[], opts: { perType?: boolean }) => {
+    for (const file of files) {
+      const abs = path.resolve(file);
+      const buffer = fs.readFileSync(abs);
+      const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
+
+      const hits = instrumentCoverage(arrayBuffer.byteLength);
+      const vexx = Vexx.load(arrayBuffer);
+
+      let nodes = 0;
+      const types = new Map<string, number>();
+      const walk = (node: VexxNode) => {
+        nodes++;
+        types.set(node.typeName, (types.get(node.typeName) ?? 0) + 1);
+        for (const child of node.children) walk(child);
+      };
+      walk(vexx.root);
+
+      console.log(path.basename(abs));
+      console.log(`  nodes       : ${nodes} (${types.size} distinct types)`);
+      const { gaps } = reportCoverage(hits, buffer);
+
+      if (opts.perType) {
+        // Attribute each gap to the node whose range contains it. A node's
+        // range covers its own header and data, so the innermost containing
+        // node is the one that failed to read those bytes.
+        const owners: { name: string; begin: number; end: number }[] = [];
+        const collect = (node: VexxNode) => {
+          const range = (node as unknown as { range?: BufferRange }).range;
+          const begin = (range as unknown as { _begin?: number })?._begin;
+          if (range && begin !== undefined) {
+            owners.push({ name: node.typeName, begin, end: begin + range.size });
+          }
+          for (const child of node.children) collect(child);
+        };
+        collect(vexx.root);
+
+        const perType = new Map<string, { bytes: number; nodes: Set<string> }>();
+        for (const gap of gaps) {
+          let best: { name: string; begin: number; end: number } | null = null;
+          for (const owner of owners) {
+            if (gap.offset < owner.begin || gap.offset >= owner.end) continue;
+            // innermost = smallest containing range
+            if (!best || owner.end - owner.begin < best.end - best.begin) best = owner;
+          }
+          const key = best ? best.name : "(outside any node)";
+          const entry = perType.get(key) ?? { bytes: 0, nodes: new Set<string>() };
+          entry.bytes += gap.length;
+          if (best) entry.nodes.add(`${best.begin}`);
+          perType.set(key, entry);
+        }
+
+        console.log(`  unread bytes by node type:`);
+        const rows = [...perType.entries()].sort((a, b) => b[1].bytes - a[1].bytes);
+        for (const [name, entry] of rows.slice(0, 20)) {
+          console.log(`    ${name.padEnd(26)} ${String(entry.bytes).padStart(9)} bytes  in ${entry.nodes.size} node(s)`);
+        }
+      }
+      console.log();
     }
   });
 
