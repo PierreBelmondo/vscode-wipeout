@@ -67,6 +67,24 @@ export const TEXTURE_CHANNELS: { [id: number]: { name: string; slot: string | nu
   0x9fc347ff: { name: "Spec", slot: "specularMap" }, // x48
   0x2f1fc695: { name: "alpha", slot: "alphaMap" }, // x40
   0xc2aa6655: { name: "texture1", slot: "map" }, // x14
+
+  // Recovered by hashing candidate names with the engine's own hash (`rcshash`)
+  // and checking the result against the ids the .rcsmodel files actually carry.
+  // Counts are occurrences across the 16 shipped tracks. These are exact hash
+  // matches, not inferences from texture filenames.
+  0x20c3e476: { name: "SpecularTexture", slot: "specularMap" }, // x642
+  0xb1f2a176: { name: "EmissiveTexture", slot: "emissiveMap" }, // x255
+  0x739a786e: { name: "NormalTexture", slot: "normalMap" }, // x165
+  0x499f4be9: { name: "base_texture", slot: "map" }, // x64
+  0x67981e49: { name: "dirt", slot: null }, // x64 -- the overlay layer of
+  // *_overlay materials; a second diffuse multiplied over base_texture, which
+  // Three has no slot for on a Phong material.
+  0x994bbcf1: { name: "facing_texture", slot: null }, // x64 -- fresnel ramp,
+  // sampled by view angle rather than uv.
+  0xfad8b460: { name: "smokeTexture", slot: null }, // x65
+  0x173fbce2: { name: "Multiply", slot: null }, // x30
+  0x1202d8df: { name: "Emiss_Mask", slot: "emissiveMap" }, // x73
+  0xfd669142: { name: "Colour_Alpha", slot: "alphaMap" }, // x17
 };
 
 /** The Three.js slot a channel feeds, or null when it has no equivalent. */
