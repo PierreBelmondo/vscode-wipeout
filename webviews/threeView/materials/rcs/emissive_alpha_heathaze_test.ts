@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
-import { PulsingMaterial } from "./_animated";
 
 /**
  * data/environments/tech_de_ra/materials/emissive_alpha_heathaze_test.rcsmaterial
@@ -22,8 +21,35 @@ import { PulsingMaterial } from "./_animated";
  * TODO: this factory maps the material's texture channels onto a Phong
  *   approximation. The shader's own lighting maths has not been transcribed.
  *
- * Animated: the shader takes the engine's `time` uniform and modulates the
- * emissive term with it, so the glow pulses (see _animated.ts).
+ * Not animated, despite the name. The fragment programs were checked for a
+ * surviving use of the engine's `time` uniform (#906b67ba) and there is none.
+ *
+ * The plainest Static permutation that mentions it at all is idx 3 (FP-off
+ * 001d50, crc=20cb81d5), which declares `time` at 001da4+0054 as
+ * `#906b67ba U time c[122]` and genuinely fetches it -- but then throws the
+ * result away:
+ *
+ *     MOVR R2.zw, f[TEX4].xxxy                          ; the UV
+ *     MULR R0.xy, R2.zwzz, {?, time, 0, 0}.xyxx         ; UV scaled by time
+ *     MULR R0.xy, R0, {0, 0, 0, 0}.x                    ; ...times 0.0
+ *     MADR R0.zw, R2.x, {0, 0, 0, 0}.x, R0.xxxy         ; still 0
+ *     TEXR R0.x, R0.zwzz, TEX0                          ; sampled at (0, 0)
+ *
+ * The literal 0.0 multiply kills the time-scaled term before it can reach the
+ * sample, so nothing visible moves. The same MULR-by-{4,1,0,0}-then-MULR-by-
+ * {0,0,0,0} shape recurs with plain literals in place of `time` (e.g. the
+ * ZAlphaOnly permutation, idx 1 at FP-off 0016e0), which marks it as a
+ * disabled distortion branch left in by the permutation combiner rather than a
+ * real heathaze.
+ *
+ * The richer no-shadow Static permutation this factory would actually use
+ * (idx 15/18, FP-off 004a20, crc=fc1406e4) declares `time` at 004ad4+00b4 but
+ * never names it in any of the ~150 instructions from 004bf0 to 005240.
+ *
+ * An earlier revision of this file used PulsingMaterial and described an
+ * emissive pulse; no permutation was found in which `time` drives a surviving
+ * colour or UV term, so that has been removed. If a live heathaze exists it
+ * would be in a Shadow/Spot permutation this project does not implement.
  */
 export const emissive_alpha_heathaze_test: MaterialFactory = {
   name: "emissive_alpha_heathaze_test.rcsmaterial",
@@ -31,7 +57,7 @@ export const emissive_alpha_heathaze_test: MaterialFactory = {
   maxTextures: 7,
   make: (textures: THREE.Texture[]) => {
     const [map, map1, lightMap, map2, map3, map4, map5] = textures;
-    return new PulsingMaterial({
+    return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       ...(map ? { map: map } : {}),
       ...(map1 ? { map: map1 } : {}),

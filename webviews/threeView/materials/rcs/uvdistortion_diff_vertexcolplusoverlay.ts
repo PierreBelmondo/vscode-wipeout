@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
-import { ScrollingMaterial } from "./_animated";
 
 /**
  * data/environments/amphiseum/materials/uvdistortion_diff_vertexcolplusoverlay.rcsmaterial
@@ -19,14 +18,36 @@ import { ScrollingMaterial } from "./_animated";
  * Channel names come from the shader's own sampler table (see _channels.ts),
  * not from the texture filenames, which are unreliable.
  *
+ * Not animated, despite the name. The uniform table does declare the engine's
+ * clock -- at FP-off 001cd4 the table carries
+ *
+ *     001cd4+0054:  #906b67ba  U  time      c[190]  02010001
+ *     001d3e+00be:  0004       #906b67ba  R  time   c[4]
+ *
+ * but those are only the declaration and the loader's patch-site relocation
+ * line: `time` is never an instruction operand. The UV offset the material's
+ * name refers to comes from its own static `Distortion` uniform instead:
+ *
+ *     MOVR R2.w, {?, ?, Distortion, ?}.x
+ *     MADR R1.zw, R2.w, {0(0), 0(0), 0(0), 0(0)}.x, R3
+ *     MADR R2.zw, R2.w, {0(0), 0(0), 0(0), 0(0)}.x, R3
+ *     TEXR H0.xyzw, R3.zwzz, TEX1
+ *     TEXR R3.w, R3.zwzz, TEX0
+ *
+ * so the sample coordinate is displaced by a constant, not by a clock, and the
+ * result is a still image. Grepping all 21 permutations (Ambient,
+ * AmbientShadow, ZAlphaOnly, the prelit, zone, shadow and lightmap variants),
+ * VP and FP alike, for `time` as an operand returns nothing -- it is dead code
+ * everywhere it is declared. An earlier version of this factory used
+ * ScrollingMaterial on the strength of a disassembler that mis-rendered those
+ * patch-site reads as real uniform loads; that claim was wrong and is gone.
+ *
  * Permutation: the lit, Ambient, no-shadow, no-spot point of the matrix
  *   (see _abstract.ts). The others are TODO.
  *
  * TODO: this factory maps the material's texture channels onto a Phong
- *   approximation. The shader's own lighting maths has not been transcribed.
- *
- * Animated: the shader takes the engine's `time` uniform and offsets the
- * sample coordinate with it, so the texture channels scroll (see _animated.ts).
+ *   approximation. The shader's own lighting maths, including the `Distortion`
+ *   coordinate offset, has not been transcribed.
  */
 export const uvdistortion_diff_vertexcolplusoverlay: MaterialFactory = {
   name: "uvdistortion_diff_vertexcolplusoverlay.rcsmaterial",
@@ -34,7 +55,7 @@ export const uvdistortion_diff_vertexcolplusoverlay: MaterialFactory = {
   maxTextures: 10,
   make: (textures: THREE.Texture[]) => {
     const [map, map1, emissiveMap, lightMap, map2, map3, map4, map5, map6, map7] = textures;
-    return new ScrollingMaterial({
+    return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       ...(map ? { map: map } : {}),
       ...(map1 ? { map: map1 } : {}),

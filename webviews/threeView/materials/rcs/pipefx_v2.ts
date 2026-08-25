@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
-import { PulsingMaterial } from "./_animated";
 
 /**
  * data/environments/amphiseum/materials/pipefx_v2.rcsmaterial
@@ -21,11 +20,45 @@ import { PulsingMaterial } from "./_animated";
  * Permutation: the lit, Ambient, no-shadow, no-spot point of the matrix
  *   (see _abstract.ts). The others are TODO.
  *
+ * Not animated. `time` is *declared* by this permutation but never *read*, so
+ * this material is deliberately a plain Phong and not one of the classes in
+ * _animated.ts. The evidence, permutation by permutation:
+ *
+ *   idx 2 (Static, "Ambient", FP @0x001cf0) binds the clock in its uniform
+ *   table:
+ *
+ *       001d38+0048:  #906b67ba  U  time  c[140]  02010001
+ *
+ *   and the whole disassembly contains exactly two instructions whose printed
+ *   constant group mentions that name:
+ *
+ *       001e10+0120:  MULR R0.y, R0.w, {?, time, ?, ?}.x
+ *       0056b0+01b0:  MADR R1.z, R3.w, {?, 0x00000000(0), time, ?}.x, R1.x
+ *
+ *   Both swizzle `.x`, which per fp_print_const/fp_print_swz (rcs/format/sho/fp.c)
+ *   selects the FIRST word of the printed four-word group. `time` sits at word 2
+ *   and word 3 respectively, so neither instruction reads it -- each reads the
+ *   neighbouring unresolved `?` uniform in the same block. The name only appears
+ *   in the text because the printer labels the whole group.
+ *
+ *   idx 3 (Static, the richest binding set -- directionalLight0Direction/Colour,
+ *   fogColour, constantAmbientColour and `time`, FP @0x002120, no shadow, no
+ *   spot) declares `time` at 00218c+006c, but its code block 0x002250..0x002590
+ *   contains no textual occurrence of `time` at all.
+ *
+ * An earlier revision of this file claimed the shader "modulates the emissive
+ * term with time, so the glow pulses" and wrapped the result in
+ * PulsingMaterial. That claim came from the two `.x`-swizzled lines above and
+ * does not survive reading the swizzle index; it has been removed.
+ *
+ * TODO: identify the `?` uniforms adjacent to `time` (c[132], c[192]) that the
+ *   two MULR/MADR above actually read. They are unnamed hashes here, not
+ *   literal zero, and could still be an animation value -- but nothing in this
+ *   material proves it. They would need to be resolved against the hash tables
+ *   elsewhere in the codebase.
+ *
  * TODO: this factory maps the material's texture channels onto a Phong
  *   approximation. The shader's own lighting maths has not been transcribed.
- *
- * Animated: the shader takes the engine's `time` uniform and modulates the
- * emissive term with it, so the glow pulses (see _animated.ts).
  */
 export const pipefx_v2: MaterialFactory = {
   name: "pipefx_v2.rcsmaterial",
@@ -33,7 +66,7 @@ export const pipefx_v2: MaterialFactory = {
   maxTextures: 9,
   make: (textures: THREE.Texture[]) => {
     const [map, map1, map2, lightMap, map3, map4, map5, map6, map7] = textures;
-    return new PulsingMaterial({
+    return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       ...(map ? { map: map } : {}),
       ...(map1 ? { map: map1 } : {}),

@@ -1,49 +1,90 @@
 import * as THREE from "three";
 import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
-import { PulsingMaterial } from "./_animated";
+import { ScrollingMaterial } from "./_animated";
 
 /**
- * data/environments/02_track/materials/mageffect08.rcsmaterial
+ * data/environments/*\/materials/mageffect08.rcsmaterial
  *
- *   tex[0] #28e981a4                    ds_magstrip_leadin_cs.gtf, ds_magleadin_cs.gtf, ds_magstrip_stretch_cs.gtf   -> map
- *   tex[1] #1202d8df                    ds_magstrip_leadin_mask.gtf, ds_magwall_leadin_illum.gtf, ds_emiss_mask_stretch.gtf   -> map
- *   tex[2] Normal                       ds_magstrip_leadin_n.gtf, ds_magleadin_n.gtf, ds_magstrip_stretch_n.gtf   -> normalMap
- *   tex[3] Wave                         ds_wave_c.gtf, ds_mag_wave_c.gtf   -> unused
- *   tex[4] lightmap                     ile_mesh_combine1-lmap.gtf, ile_mesh_combine8-lmap.gtf, ile_mesh_combine7-lmap.gtf   -> lightMap
- *   tex[5] Colour                       (no file)   -> unused
- *   tex[6] #220cf0e6                    (no file)   -> map
- *   tex[7] #81e0e773                    (no file)   -> map
- *   tex[8] #220cf0e6                    (no file)   -> map
+ *   tex[0] #28e981a4  ds_magstrip_*_cs.gtf, ds_magwall_*_cs.gtf   diffuse
+ *   tex[1] #1202d8df  ds_emiss_mask*.gtf, ds_mag*_illum.gtf       emissive mask
+ *   tex[2] Normal     ds_magstrip_*_n.gtf, ds_magwall_*_n.gtf     normal map
+ *   tex[3] Wave       ds_wave_c.gtf                               scrolling wave
+ *   tex[4] lightmap   lmaps/*-lmap.gtf
+ *   tex[5] Colour     (no file)                                   tint uniform
  *
- * Channel names come from the shader's own sampler table (see _channels.ts),
- * not from the texture filenames, which are unreliable.
+ * Animated: the vertex program scrolls the UV fed to the Wave sampler on both
+ * axes identically, via `time` (c[464], hash #906b67ba) broadcast through its
+ * `.xxxx` swizzle:
  *
- * Permutation: the lit, Ambient, no-shadow, no-spot point of the matrix
- *   (see _abstract.ts). The others are TODO.
+ *   VERTEX crc=f70e2fe1 uniform table:
+ *      006e88+0038:  #220cf0e6  U  ?                      c[463]  02010001
+ *      006eb8+0068:  #906b67ba  U  time                   c[464]  02010001
  *
- * TODO: this factory maps the material's texture channels onto a Phong
- *   approximation. The shader's own lighting maths has not been transcribed.
+ *   vp code:
+ *      007000+01b0:  ADD R2.xyz, -R4.xyzx, c465.xyzx
+ *      007030+01e0:  MUL R5.xy, R5.xyxx, c463.xxxx
+ *      007040+01f0:  ADD o14(TEX7).xy, R5.xyxx, c464.xxxx
  *
- * Animated: the shader takes the engine's `time` uniform and modulates the
- * emissive term with it, so the glow pulses (see _animated.ts).
+ *   (R5.x came from v3.x [Uvset1.u]; R5.y from -v3.y+c462.z, i.e. Uvset1.v)
+ *
+ *   FRAGMENT crc=e4f1cf7a samples with that coordinate:
+ *      007500+03f0:  TEXR H1.xyz, f[TEX7], TEX3
+ *
+ * So the Uvset1-derived base UV is scaled by uniform c463 (unnamed, not a
+ * literal) and `time` is added identically to both x and y via the .xxxx
+ * broadcast, then used to sample the Wave texture (tex[3]) directly -- both
+ * axes scroll together at the same rate along a diagonal, not per-axis
+ * independently. This pattern recurs identically across effectively every
+ * permutation in this shader file, always feeding the Wave sampler.
+ *
+ * No literal constant is combined with time in this instruction -- both
+ * operands (c463 and c464) are named/unnamed uniforms, not baked literals,
+ * so there is nothing to apply as an explicit scale constant the way
+ * ShieldMaterial applies its 3.0.
+ *
+ * The previous version of this factory used a bespoke MagStripMaterial that
+ * scrolled the wave along U only and blended it against the emissive mask in
+ * script (an FP-blend pattern that does not match this evidence, which shows
+ * a plain two-axis UV scroll feeding a direct texture sample). Three.js's
+ * Phong material has no separate "Wave" slot, so the wave is bound as `map`
+ * here and scrolled by ScrollingMaterial; the diffuse and emissive mask are
+ * assigned after construction so they are excluded from the scroll and stay
+ * registered with the mesh.
+ *
+ * Permutation: Static[5] of 130 -- the lit, Ambient, no-shadow, no-spot point
+ *   of the matrix (see _abstract.ts). The others are TODO.
+ *
+ * TODO: `Colour` is a per-draw tint uniform with no file; the emissive colour
+ *   here is a neutral white so the wave and mask supply the variation.
  */
 export const mageffect08: MaterialFactory = {
   name: "mageffect08.rcsmaterial",
   minTextures: 1,
   maxTextures: 9,
   make: (textures: THREE.Texture[]) => {
-    const [map, map1, normalMap, _unused3, lightMap, _unused5, map2, map3, map4] = textures;
-    return new PulsingMaterial({
-      side: THREE.DoubleSide,
-      ...(map ? { map: map } : {}),
-      ...(map1 ? { map: map1 } : {}),
-      ...(normalMap ? { normalMap: normalMap } : {}),
-      ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      ...(map2 ? { map: map2 } : {}),
-      ...(map3 ? { map: map3 } : {}),
-      ...(map4 ? { map: map4 } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
-    });
+    const [map, emissiveMask, normalMap, wave, lightMap] = textures;
+    const material = new ScrollingMaterial(
+      {
+        side: THREE.DoubleSide,
+        ...(wave ? { map: wave } : {}),
+        ...(normalMap ? { normalMap } : {}),
+        ...(lightMap ? { lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
+        emissive: new THREE.Color(0xffffff),
+        emissiveIntensity: 0.6,
+        specular: new THREE.Color(0x222222),
+        shininess: 30,
+      },
+      0.05,
+      0.05,
+    );
+
+    // Diffuse and the emissive mask do not scroll -- assign them after
+    // construction so ScrollingMaterial's clone-and-offset pass (which only
+    // touches map/emissiveMap/alphaMap/specularMap present at construction
+    // time) does not pick them up.
+    if (map) material.map ? (material.alphaMap = map) : (material.map = map);
+    if (emissiveMask) material.emissiveMap = emissiveMask;
+
+    return material;
   },
 };

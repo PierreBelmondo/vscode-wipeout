@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
-import { ScrollingMaterial } from "./_animated";
 
 /**
  * data/environments/tech_de_ra/materials/adverts/scanlinebillboard_alphaboost.rcsmaterial
@@ -19,14 +18,47 @@ import { ScrollingMaterial } from "./_animated";
  * Channel names come from the shader's own sampler table (see _channels.ts),
  * not from the texture filenames, which are unreliable.
  *
- * Permutation: the lit, Ambient, no-shadow, no-spot point of the matrix
- *   (see _abstract.ts). The others are TODO.
+ * Permutation: Static, Ambient (idx 2, FP-off 001870, FPsz 0320) -- the lit,
+ *   Ambient, no-shadow, no-spot point of the matrix (see _abstract.ts). The
+ *   others are TODO.
+ *
+ * NOT animated, despite the name. This permutation *declares* the engine clock
+ * in its uniform table and the header resolves it to a constant slot:
+ *
+ *     F  #906b67ba  time                       c0000004
+ *     0018b8+0048: #906b67ba  U  time  c[140]  02010001
+ *     0018fc+008c: 0000                        #906b67ba  R  time  c[0]
+ *
+ * but no instruction in the fragment program body (001960..001b70, `-- fp code --`
+ * through `; END`) ever names it as an operand. Every constant read in that block
+ * prints as a raw literal -- 0, 0.5, 1.0 -- e.g.
+ *
+ *     001980+0110: MULR R2.w, R0.y, {0x00000000(0), ?, ?, ?}.x
+ *     001aa0+0230: SLTH, H0, {0(0), 0x3f000000(0.5), 0, 0}.y
+ *     001af0+0280: ADDH H3.xyz, -H0, {0x3f800000(1), 0, 0, 0}.x
+ *     001b70+0300: MULH H0.xyz, H2, {0, 0, 0, 0}          ; END
+ *
+ * and all four texture fetches read only the interpolated UVs:
+ *
+ *     TEXR H0.xyz, f[TEX3], TEX0
+ *     TEXR R1.yz,  R0.zwzz, TEX1
+ *     TEXR H4.xyz, R2,      TEX2
+ *     TEXR H1.xyz, R0.zwzz, TEX1
+ *
+ * This is not a disassembler limitation: elsewhere in the same file (FP offset
+ * 0066a0) a genuinely-read patched constant *is* resolved inline by name --
+ * `MOVH H0.w, {fogColour, Constant1, 0, 0}.x` -- so the resolver would have
+ * printed `time` here if anything read it. An earlier revision of this factory
+ * wrapped the material in ScrollingMaterial on the strength of a stale dump;
+ * there is no scroll, no time-based UV offset and no time-based colour
+ * modulation in the implemented permutation, so it is a plain Phong.
  *
  * TODO: this factory maps the material's texture channels onto a Phong
  *   approximation. The shader's own lighting maths has not been transcribed.
  *
- * Animated: the shader takes the engine's `time` uniform and offsets the
- * sample coordinate with it, so the texture channels scroll (see _animated.ts).
+ * TODO: the richer Static permutations (idx 3-8) bind `time` to other constant
+ *   indices alongside fogColour and extra texture slots; their FP bodies were
+ *   not traced, so one of those may yet animate.
  */
 export const scanlinebillboard_alphaboost: MaterialFactory = {
   name: "scanlinebillboard_alphaboost.rcsmaterial",
@@ -34,7 +66,7 @@ export const scanlinebillboard_alphaboost: MaterialFactory = {
   maxTextures: 10,
   make: (textures: THREE.Texture[]) => {
     const [map, map1, lightMap, map2, map3, map4, map5, map6, map7, map8] = textures;
-    return new ScrollingMaterial({
+    return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       ...(map ? { map: map } : {}),
       ...(map1 ? { map: map1 } : {}),

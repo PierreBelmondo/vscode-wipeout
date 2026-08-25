@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
-import { PulsingMaterial } from "./_animated";
 
 /**
  * data/environments/amphiseum/materials/and_arrowmaterial.rcsmaterial
@@ -19,14 +18,38 @@ import { PulsingMaterial } from "./_animated";
  * Channel names come from the shader's own sampler table (see _channels.ts),
  * not from the texture filenames, which are unreliable.
  *
+ * Not animated. This material used to be built as a `PulsingMaterial` on the
+ * claim that the shader modulated its emissive term with `time`; the
+ * disassembly does not support that. `time` (hash #906b67ba) is declared at
+ * c[0] in the fragment program's uniform table, but the permutation this
+ * factory implements -- idx 2 "Ambient", Static backend, no shadow, no spot,
+ * FP off=001410 crc=aecae2c9 -- never reads it. Its whole body (0014d0-001690)
+ * only ever touches genuine inline zero literals:
+ *
+ *     0014d0+00c0: MOVR R0.zw, f[TEX4].xxxy
+ *     0014e0+00d0: MOVR R0.x, {0x00000000(0), ...}.x
+ *     001500+00f0: MULR R2.w, R0.x, {0x00000000(0), ...}.x
+ *     001590+0180: TEXR H0.xyz, f[TEX3].zwzz, TEX0
+ *     001690+0280: MULH H0.xyz, H0, {0x00000000(0), ...}   ; END
+ *
+ * The next-richer Static permutation (idx 3, FP off=0018c0, crc=a7fd00ca) does
+ * name `time`, but multiplies it by a hardcoded zero, so it is dead code:
+ *
+ *     0019b0+00f0: MOVR R1.x, {0x00000000(0), ...}.x
+ *     0019d0+0110: MADR R0.y, R1.x, {time, ?, 0, 0}.x, R0   ; R0.y unchanged
+ *
+ * The same pattern recurs verbatim at 001fb0+0110 (crc=f1cf820c). The vertex
+ * programs do read `time` from c464, but every such MAD lands in an output TEX
+ * channel (o10/TEX3.zw, o11/TEX4.zw) that the Ambient FP only feeds into those
+ * zero-multiplies -- it is never used as a TEXR coordinate. So no permutation
+ * this viewer implements has `time` reaching colour, UV or position, and a
+ * plain Phong material is the honest approximation.
+ *
  * Permutation: the lit, Ambient, no-shadow, no-spot point of the matrix
  *   (see _abstract.ts). The others are TODO.
  *
  * TODO: this factory maps the material's texture channels onto a Phong
  *   approximation. The shader's own lighting maths has not been transcribed.
- *
- * Animated: the shader takes the engine's `time` uniform and modulates the
- * emissive term with it, so the glow pulses (see _animated.ts).
  */
 export const and_arrowmaterial: MaterialFactory = {
   name: "and_arrowmaterial.rcsmaterial",
@@ -34,7 +57,7 @@ export const and_arrowmaterial: MaterialFactory = {
   maxTextures: 10,
   make: (textures: THREE.Texture[]) => {
     const [map, map1, lightMap, map2, map3, map4, map5, map6, map7, map8] = textures;
-    return new PulsingMaterial({
+    return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       ...(map ? { map: map } : {}),
       ...(map1 ? { map: map1 } : {}),

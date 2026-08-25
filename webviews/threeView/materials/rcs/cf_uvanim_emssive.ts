@@ -13,14 +13,27 @@ import { ScrollingMaterial } from "./_animated";
  * Channel names come from the shader's own sampler table (see _channels.ts),
  * not from the texture filenames, which are unreliable.
  *
- * Permutation: the lit, Ambient, no-shadow, no-spot point of the matrix
- *   (see _abstract.ts). The others are TODO.
+ * Permutation: idx 53, the lit, Ambient, no-shadow, no-spot point of the
+ *   matrix (see _abstract.ts). The others are TODO. VP block @0x0069d0, FP
+ *   block @0x005ec0.
  *
  * TODO: this factory maps the material's texture channels onto a Phong
  *   approximation. The shader's own lighting maths has not been transcribed.
  *
- * Animated: the shader takes the engine's `time` uniform and offsets the
- * sample coordinate with it, so the texture channels scroll (see _animated.ts).
+ * Animated: the vertex program scrolls Texture1's UV on both axes from
+ * `time` (c[467], hash #906b67ba), one MAD per axis, each with its own
+ * per-axis speed uniform:
+ *
+ *     MOV R1.x, c467.xxxx                          ; R1.x = time
+ *     MAD o7(TEX0).y, R1.xxxx, c465.xxxx, v1.yyyy   ; V' = time * rateV + V
+ *     MAD o7(TEX0).x, R1.xxxx, c466.xxxx, v1.xxxx   ; U' = time * rateU + U
+ *     ...
+ *     TEXR H0.xyz, f[TEX0], TEX0                    ; sample at (U', V')
+ *
+ * c465.x (hash #2481ef75) is the V-axis rate and c466.x (hash #87d769dc) is
+ * the U-axis rate; both are genuine per-permutation uniform reads (not
+ * literals), so the true speeds are not recoverable from the SHO -- only
+ * that both axes scroll, unlike the single-axis default in _animated.ts.
  */
 export const cf_uvanim_emssive: MaterialFactory = {
   name: "cf_uvanim_emssive.rcsmaterial",
@@ -28,14 +41,18 @@ export const cf_uvanim_emssive: MaterialFactory = {
   maxTextures: 4,
   make: (textures: THREE.Texture[]) => {
     const [map, lightMap, map1, map2] = textures;
-    return new ScrollingMaterial({
-      side: THREE.DoubleSide,
-      ...(map ? { map: map } : {}),
-      ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      ...(map1 ? { map: map1 } : {}),
-      ...(map2 ? { map: map2 } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
-    });
+    return new ScrollingMaterial(
+      {
+        side: THREE.DoubleSide,
+        ...(map ? { map: map } : {}),
+        ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
+        ...(map1 ? { map: map1 } : {}),
+        ...(map2 ? { map: map2 } : {}),
+        specular: new THREE.Color(0x222222),
+        shininess: 30,
+      },
+      0.05,
+      0.05,
+    );
   },
 };

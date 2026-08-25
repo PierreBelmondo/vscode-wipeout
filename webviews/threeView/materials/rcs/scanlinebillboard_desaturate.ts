@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
-import { ScrollingMaterial } from "./_animated";
 
 /**
  * data/environments/tech_de_ra/materials/adverts/scanlinebillboard_desaturate.rcsmaterial
@@ -20,13 +19,37 @@ import { ScrollingMaterial } from "./_animated";
  * not from the texture filenames, which are unreliable.
  *
  * Permutation: the lit, Ambient, no-shadow, no-spot point of the matrix
- *   (see _abstract.ts). The others are TODO.
+ *   (Idx 2, Backend=Static, fp at 0x0011f0, fp size 0x320; see _abstract.ts).
+ *   The others are TODO.
+ *
+ * NOT animated. The permutation implemented here *declares* the engine's `time`
+ * uniform in its constant table:
+ *
+ *     001238+0048: #906b67ba  U  time  c[140]  02010001
+ *
+ * but never reads it. All 35 fragment instructions in the 0x0f0-0x310 code block
+ * were scanned and none name `time`. The one instruction that looks like a
+ * time-driven coordinate offset is:
+ *
+ *     001300+0110: MULR R1.xy, R0.zwzz, {0x00000000(0), ?, ?, ?}.x
+ *
+ * The identical bytecode (`06020200 5c001c9d 00020000 c8000001`) appears in a
+ * richer sibling permutation (Idx 3/7, fp at 0x0016a0) where more uniforms
+ * resolve to names:
+ *
+ *     0017d0+0130: MULR R1.xy, R0.zwzz, {fogColour, ?, ?, time}.x
+ *
+ * proving the constant's layout is [fogColour, ?, ?, time] and that the `.x`
+ * swizzle selects fogColour, not the `.w` slot where `time` lives. `time` is
+ * declared but dead here, so this factory does NOT extend ScrollingMaterial (an
+ * earlier revision claimed a UV scroll; that claim was unsupported).
+ *
+ * The scanline/desaturate maths itself is in the FP: ADDH/MADH about H3.x
+ * desaturates the diffuse sample towards its red channel, and an SLTH against
+ * 0.5 plus a screen-blend combine layers the scanline texture over it.
  *
  * TODO: this factory maps the material's texture channels onto a Phong
  *   approximation. The shader's own lighting maths has not been transcribed.
- *
- * Animated: the shader takes the engine's `time` uniform and offsets the
- * sample coordinate with it, so the texture channels scroll (see _animated.ts).
  */
 export const scanlinebillboard_desaturate: MaterialFactory = {
   name: "scanlinebillboard_desaturate.rcsmaterial",
@@ -34,7 +57,7 @@ export const scanlinebillboard_desaturate: MaterialFactory = {
   maxTextures: 10,
   make: (textures: THREE.Texture[]) => {
     const [map, map1, lightMap, map2, map3, map4, map5, map6, map7, map8] = textures;
-    return new ScrollingMaterial({
+    return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       ...(map ? { map: map } : {}),
       ...(map1 ? { map: map1 } : {}),
