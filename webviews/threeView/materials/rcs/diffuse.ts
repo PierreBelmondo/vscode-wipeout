@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/01_vineta_k/materials/diffuse.rcsmaterial
@@ -40,11 +40,16 @@ import { MaterialFactory } from "./_abstract";
 export const diffuse: MaterialFactory = {
   name: "diffuse.rcsmaterial",
   minTextures: 1,
-  maxTextures: 1,
+  // Half of this material's uses bind a second texture — a `*-lmap.gtf` — that
+  // maxTextures: 1 both warned about and threw away, so those meshes rendered
+  // with no baked lighting at all.
+  maxTextures: 2,
   make: (textures: THREE.Texture[]) => {
+    const [map, lightMap] = textures;
     return new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
-      map: textures[0],
+      ...(map ? { map } : {}),
+      ...(lightMap ? { lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
     });
   },
 };

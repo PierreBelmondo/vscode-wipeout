@@ -22,7 +22,7 @@ import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory
  */
 export const temp_glass: MaterialFactory = {
   name: "temp_glass.rcsmaterial",
-  minTextures: 1,
+  minTextures: 0,
   maxTextures: 6,
   make: (textures: THREE.Texture[]) => {
     const [lightMap, map, _unused2, map1, map2, map3] = textures;

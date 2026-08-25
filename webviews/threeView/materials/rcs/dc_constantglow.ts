@@ -18,7 +18,7 @@ import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory
  */
 export const dc_constantglow: MaterialFactory = {
   name: "dc_constantglow.rcsmaterial",
-  minTextures: 1,
+  minTextures: 0,
   maxTextures: 2,
   make: (textures: THREE.Texture[]) => {
     const [lightMap, map] = textures;

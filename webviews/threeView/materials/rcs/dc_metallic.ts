@@ -21,7 +21,7 @@ import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory
  */
 export const dc_metallic: MaterialFactory = {
   name: "dc_metallic.rcsmaterial",
-  minTextures: 1,
+  minTextures: 0,
   maxTextures: 5,
   make: (textures: THREE.Texture[]) => {
     const [lightMap, map, map1, map2, map3] = textures;
