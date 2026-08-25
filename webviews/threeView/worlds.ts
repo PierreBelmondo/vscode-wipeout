@@ -82,8 +82,12 @@ export class World {
       opacity: 0.5,
     });
 
+    // Six lights down ±X, ±Y and ±Z: an omnidirectional wash that is ambient
+    // light by another name. It predates the Rendering folder's Ambient
+    // control and double-counts the indirect the baked lightmaps already
+    // carry, so it defaults to off and is driven by the Fill slider.
     for (let i = 0; i < 6; i++) {
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, DEFAULT_RENDER_SETTINGS.fillIntensity);
       const x = (i % 3 == 0 ? 1 : 0) * (i > 2 ? -1 : 1);
       const y = (i % 3 == 1 ? 1 : 0) * (i > 2 ? -1 : 1);
       const z = (i % 3 == 2 ? 1 : 0) * (i > 2 ? -1 : 1);
@@ -304,7 +308,15 @@ export class World {
       });
 
     folder
-      .add(this.settings, "lightmapIntensity", 0.0, 4.0, 0.05)
+      .add(this.settings, "fillIntensity", 0.0, 0.5, 0.01)
+      .name("Fill")
+      .onChange((value: number) => {
+        for (const light of this.directionalLights) light.intensity = value;
+        this.emitUpdate();
+      });
+
+    folder
+      .add(this.settings, "lightmapIntensity", 0.0, 8.0, 0.05)
       .name("Lightmap")
       .onChange((value: number) => {
         this._forEachMaterial((material) => {
@@ -326,7 +338,7 @@ export class World {
         this.emitUpdate();
       });
     folder
-      .add(this.settings, "specularShininess", 1, 200, 1)
+      .add(this.settings, "specularShininess", 1, 400, 1)
       .name("Shininess")
       .onChange((value: number) => {
         this._forEachMaterial((material) => {
