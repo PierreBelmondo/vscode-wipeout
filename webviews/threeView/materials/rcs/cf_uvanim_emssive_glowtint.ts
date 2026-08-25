@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -72,8 +72,8 @@ export const cf_uvanim_emssive_glowtint: MaterialFactory = {
         ...(map1 ? { map: map1 } : {}),
         ...(map2 ? { map: map2 } : {}),
         ...(map3 ? { map: map3 } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       // U from c466, V from c465 -- both MADs are live, so neither rate is 0.
       0.05,

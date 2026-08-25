@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/05_ubermall/materials/nr_lcd_strips_alpha.rcsmaterial
@@ -30,8 +30,8 @@ export const nr_lcd_strips_alpha: MaterialFactory = {
       ...(map1 ? { map: map1 } : {}),
       ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
       ...(alphaMap ? { alphaMap: alphaMap } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

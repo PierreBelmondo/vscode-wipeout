@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -71,8 +71,8 @@ export const mageffect08: MaterialFactory = {
         ...(lightMap ? { lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
         emissive: new THREE.Color(0xffffff),
         emissiveIntensity: 0.6,
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       0.05,
       0.05,

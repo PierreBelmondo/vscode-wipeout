@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/01_vineta_k/materials/cf_anulpha_glow.rcsmaterial
@@ -57,8 +57,8 @@ export const cf_anulpha_glow: MaterialFactory = {
       ...(map ? { map: map } : {}),
       ...(emissiveMap ? { emissiveMap: emissiveMap } : {}),
       ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

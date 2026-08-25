@@ -1,3 +1,5 @@
+import { DEFAULT_RENDER_SETTINGS } from "../../renderSettings";
+
 /**
  * A `.rcsmaterial` is not one shader: it ships every *permutation* the engine
  * might need, precompiled. `diffuse_vcol` has 52, `lambert` has 100+.
@@ -52,7 +54,26 @@
  * TODO: read the real `prelitScale`/`prelitBias` values per material instead
  *   of one global factor.
  */
-export const LIGHTMAP_INTENSITY = 1.0;
+export const LIGHTMAP_INTENSITY = DEFAULT_RENDER_SETTINGS.lightmapIntensity;
+
+/**
+ * Default specular response.
+ *
+ * The engine scales specular by `prelitScaleSpecular` and derives the exponent
+ * from it with LG2/EXP in the fragment program. That uniform ships no value in
+ * the .rcsmaterial -- it is set per node at runtime -- so the real strength is
+ * genuinely not readable from these files. These are therefore a *viewer
+ * convention*, not decompiled values.
+ *
+ * The previous defaults (0x222222 at shininess 30) were a near-matte surface:
+ * 0.13 reflectance with a very broad lobe. Combined with a tone mapper that
+ * compressed highlights, specular was effectively invisible. This is brighter
+ * and tighter so the highlight reads.
+ *
+ * TODO: read `prelitScaleSpecular` per node if it ever becomes reachable.
+ */
+export const SPECULAR_COLOR = DEFAULT_RENDER_SETTINGS.specularColor;
+export const SPECULAR_SHININESS = DEFAULT_RENDER_SETTINGS.specularShininess;
 
 export type MaterialFactory = {
   name: string;

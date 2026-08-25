@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/10_sebenco_climb/materials/track_coloured_specular.rcsmaterial
@@ -30,8 +30,8 @@ export const track_coloured_specular: MaterialFactory = {
       ...(normalMap ? { normalMap: normalMap } : {}),
       ...(specularMap ? { specularMap: specularMap } : {}),
       ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

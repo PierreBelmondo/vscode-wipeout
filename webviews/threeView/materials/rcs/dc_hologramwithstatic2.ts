@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { CrossScrollMaterial } from "./_animated";
 
 /**
@@ -80,8 +80,8 @@ export const dc_hologramwithstatic2: MaterialFactory = {
         side: THREE.DoubleSide,
         ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
         ...(gradient ? { emissive: new THREE.Color(0xffffff) } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       texture1,
       gradient,

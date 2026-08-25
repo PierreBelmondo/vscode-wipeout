@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/tech_de_ra/materials/lambert_spec_mult.rcsmaterial
@@ -32,8 +32,8 @@ export const lambert_spec_mult: MaterialFactory = {
       ...(map1 ? { map: map1 } : {}),
       ...(map2 ? { map: map2 } : {}),
       ...(map3 ? { map: map3 } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/*\/materials/vertxclr_simplespec.rcsmaterial
@@ -20,8 +20,8 @@ export const vertxclr_simplespec: MaterialFactory = {
       vertexColors: true,
       ...(map ? { map } : {}),
       ...(lightMap ? { lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      specular: new THREE.Color(0x333333),
-      shininess: 40,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

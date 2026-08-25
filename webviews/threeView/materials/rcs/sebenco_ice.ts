@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/10_sebenco_climb/materials/sebenco_ice.rcsmaterial
@@ -55,8 +55,8 @@ export const sebenco_ice: MaterialFactory = {
       ...(map11 ? { map: map11 } : {}),
       ...(map12 ? { map: map12 } : {}),
       ...(map13 ? { map: map13 } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

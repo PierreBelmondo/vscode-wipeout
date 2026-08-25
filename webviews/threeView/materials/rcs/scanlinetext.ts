@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -75,8 +75,8 @@ export const scanlinetext: MaterialFactory = {
         ...(map3 ? { map: map3 } : {}),
         ...(map4 ? { map: map4 } : {}),
         ...(map5 ? { map: map5 } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       0.05, // rateU: U is the scrolled axis per the VP trace
       0, // rateV: V is the raw base UV, untouched by time

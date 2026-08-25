@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -73,8 +73,8 @@ export const nr_crowd_bustle: MaterialFactory = {
         ...(crowdnoise ? { map: crowdnoise } : {}),
         ...(map2 ? { map: map2 } : {}),
         ...(map3 ? { map: map3 } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       // One scalar drives both axes, so u and v get the same rate.
       CROWD_SCROLL_SCALE,

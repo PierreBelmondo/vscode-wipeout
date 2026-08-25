@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/*\/materials/jd_simplespecular.rcsmaterial
@@ -21,8 +21,8 @@ export const jd_simplespecular: MaterialFactory = {
       side: THREE.DoubleSide,
       ...(map ? { map } : {}),
       ...(lightMap ? { lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      specular: new THREE.Color(0x333333),
-      shininess: 40,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

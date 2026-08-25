@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -75,8 +75,8 @@ export const sign_emissive_glow2uv: MaterialFactory = {
         side: THREE.DoubleSide,
         ...(map ? { map: map } : {}),
         ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       0.0,
       V_SCROLL_RATE * V_SCROLL_SCALE,

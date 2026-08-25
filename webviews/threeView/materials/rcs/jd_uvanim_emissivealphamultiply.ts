@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { MaterialFactory } from "./_abstract";
+import { SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -83,8 +83,8 @@ export const jd_uvanim_emissivealphamultiply: MaterialFactory = {
       {
         side: THREE.DoubleSide,
         ...(map ? { map: map } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       0.05,
       0.05,

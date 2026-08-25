@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/amphiseum/materials/biodome_reflect.rcsmaterial
@@ -40,8 +40,8 @@ export const biodome_reflect: MaterialFactory = {
       ...(map4 ? { map: map4 } : {}),
       ...(map5 ? { map: map5 } : {}),
       ...(map6 ? { map: map6 } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

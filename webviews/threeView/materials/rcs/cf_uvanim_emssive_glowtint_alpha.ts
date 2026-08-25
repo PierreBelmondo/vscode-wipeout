@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -83,8 +83,8 @@ export const cf_uvanim_emssive_glowtint_alpha: MaterialFactory = {
         ...(map2 ? { map: map2 } : {}),
         ...(map3 ? { map: map3 } : {}),
         ...(map4 ? { map: map4 } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       // U from c466 (#87d769dc), V from c465 (#2481ef75) -- both MADs are live,
       // so neither rate is 0. No literal scale exists on either MAD.

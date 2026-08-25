@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/*\/materials/mt_uvanim_diffuse_emissive2.rcsmaterial
@@ -56,8 +56,8 @@ export const mt_uvanim_diffuse_emissive2: MaterialFactory = {
       ...(lightMap ? { lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
       ...(glow ? { emissiveMap: glow } : {}),
       emissive: new THREE.Color(0xffbb2b),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

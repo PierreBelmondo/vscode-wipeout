@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/10_sebenco_climb/materials/and_diffuse_2nduvfor_alpha.rcsmaterial
@@ -28,8 +28,8 @@ export const and_diffuse_2nduvfor_alpha: MaterialFactory = {
       ...(alphaMap ? { alphaMap: alphaMap } : {}),
       ...(map ? { map: map } : {}),
       ...(lightMap ? { lightMap: lightMap, lightMapIntensity: LIGHTMAP_INTENSITY } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

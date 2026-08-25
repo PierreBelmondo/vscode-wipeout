@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 import { ScrollingMaterial } from "./_animated";
 
 /**
@@ -79,8 +79,8 @@ export const animlights: MaterialFactory = {
         // tex[1] (#dba0a35a) is the one the shader scrolls, so it is the `map`
         // that wins: ScrollingMaterial only offsets the channel it holds.
         ...(map1 ? { map: map1 } : {}),
-        specular: new THREE.Color(0x222222),
-        shininess: 30,
+        specular: new THREE.Color(SPECULAR_COLOR),
+        shininess: SPECULAR_SHININESS,
       },
       // U scrolls, V does not -- TEX3.x is the only component time reaches.
       0.05,

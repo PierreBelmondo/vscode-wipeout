@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/amphiseum/materials/and_arrowmaterial.rcsmaterial
@@ -69,8 +69,8 @@ export const and_arrowmaterial: MaterialFactory = {
       ...(map6 ? { map: map6 } : {}),
       ...(map7 ? { map: map7 } : {}),
       ...(map8 ? { map: map8 } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };

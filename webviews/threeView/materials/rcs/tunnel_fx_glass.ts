@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LIGHTMAP_INTENSITY, MaterialFactory } from "./_abstract";
+import { LIGHTMAP_INTENSITY, SPECULAR_COLOR, SPECULAR_SHININESS, MaterialFactory } from "./_abstract";
 
 /**
  * data/environments/talons_junction/materials/tunnel_fx_glass.rcsmaterial
@@ -41,8 +41,8 @@ export const tunnel_fx_glass: MaterialFactory = {
       ...(map3 ? { map: map3 } : {}),
       ...(map4 ? { map: map4 } : {}),
       ...(map5 ? { map: map5 } : {}),
-      specular: new THREE.Color(0x222222),
-      shininess: 30,
+      specular: new THREE.Color(SPECULAR_COLOR),
+      shininess: SPECULAR_SHININESS,
     });
   },
 };
