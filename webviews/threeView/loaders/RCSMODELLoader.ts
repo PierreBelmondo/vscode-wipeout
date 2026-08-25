@@ -10,9 +10,79 @@ import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, 
 import { RcsModelPS5, RcsModelPS5Material, RcsModelPS5Texture } from "@core/formats/rcs/rcsmodel_ps5";
 import { World } from "../worlds";
 import { createMaterial } from "../materials/rcs";
+import { channelSlot } from "../materials/rcs/_channels";
 import { VertexNormalsHelper } from "../helpers/VertexNormalsHelper";
 
+/**
+ * Slots whose texture holds colour rather than data.
+ *
+ * The game authors its colour textures in sRGB. Nothing declared that, so they
+ * were sampled as if linear -- every texel already too bright before a light
+ * touched it, which is most of why the scene looked washed out. Normal,
+ * specular and light maps are *data*, not colour, and must stay linear or
+ * their values are wrong.
+ *
+ * A texture is shared between materials and can serve different roles, so this
+ * cannot be decided when the file loads; it is only knowable once the slot is.
+ */
+const COLOUR_SLOTS = new Set(["map", "emissiveMap", "envMap"]);
+
+/** Tag a texture for the slot it is about to fill. See COLOUR_SLOTS. */
+export function encodeForSlot(texture: THREE.Texture, slot: string) {
+  const encoding = COLOUR_SLOTS.has(slot) ? THREE.sRGBEncoding : THREE.LinearEncoding;
+  if (texture.encoding !== encoding) {
+    texture.encoding = encoding;
+    texture.needsUpdate = true;
+  }
+}
+
+/**
+ * Bind textures to the Three.js slots the *shaders* name, for slots the
+ * material factory left empty.
+ *
+ * Until now textures reached `make()` as a positional array and each factory
+ * destructured it by guesswork (`const [map, lightMap] = textures`). The
+ * engine does not work that way: every sampler carries an id, and that id says
+ * what the texture is for. Across the 16 shipped tracks the .rcsmodel files
+ * name 1591 specular, emissive and normal channels that no factory bound, so
+ * those maps were loaded, handed over in an arbitrary slot and dropped --
+ * which is why the scene had almost no specular response.
+ *
+ * This runs *after* the factory, and only fills a slot that is still empty. A
+ * factory that deliberately routes a texture somewhere (the animated
+ * materials, the ones with hand-read shader evidence) keeps its choice; this
+ * only recovers what would otherwise have been discarded.
+ *
+ * `needsUpdate` is required: the material was already built, and adding a map
+ * changes the shader permutation Three compiles for it.
+ */
+function applyChannelSlots(material: THREE.Material, channels: TextureChannel[]) {
+  const target = material as unknown as Record<string, unknown>;
+  let bound = 0;
+  for (const channel of channels) {
+    if (!channel.texture) continue;
+    const slot = channelSlot(channel.id);
+    if (!slot) continue;
+    // Only slots this material type actually has: assigning `specularMap` to a
+    // MeshBasicMaterial would be silently ignored, and assigning to a material
+    // that never declared the property would not create a valid uniform.
+    if (!(slot in target)) continue;
+    if (target[slot]) continue;
+    encodeForSlot(channel.texture, slot);
+    target[slot] = channel.texture;
+    bound++;
+  }
+  // Slots the factory filled itself still need their encoding declared.
+  for (const slot of ["map", "emissiveMap", "envMap", "normalMap", "specularMap", "lightMap", "alphaMap", "aoMap"]) {
+    const texture = target[slot];
+    if (texture instanceof THREE.Texture) encodeForSlot(texture, slot);
+  }
+  if (bound > 0) material.needsUpdate = true;
+}
+
 type TextureChannel = {
+  /** The shader's own sampler id for this slot. See materials/rcs/_channels.ts. */
+  id: number;
   filename: string;
   texture: THREE.Texture | null;
 };
@@ -46,13 +116,13 @@ class AsyncMaterial {
     return this.rcsMaterial.filename == filename;
   }
 
-  registerTexture(filename: string) {
-    this.textureChannels.push({ filename, texture: null });
+  registerTexture(id: number, filename: string) {
+    this.textureChannels.push({ id, filename, texture: null });
   }
 
   /** A slot with no file: keeps later channels at their real slot index. */
-  registerEmptyChannel() {
-    this.textureChannels.push({ filename: "", texture: null });
+  registerEmptyChannel(id: number) {
+    this.textureChannels.push({ id, filename: "", texture: null });
   }
 
   /**
@@ -91,6 +161,7 @@ class AsyncMaterial {
     console.log(`Creating shader for ${this.basename}, textures: ${this.textureChannels.map(tc => tc.filename + '=' + (tc.texture ? 'loaded' : 'null')).join(', ')}`);
     const textures = this.textureChannels.map((tc) => tc.texture);
     this.material = createMaterial(this.basename, textures);
+    if (this.material) applyChannelSlots(this.material, this.textureChannels);
 
     if (this.material) {
       this.world.materials[this.material.id] = this.material;
@@ -143,7 +214,8 @@ class AsyncTexture {
   }
 
   linkAsyncMaterial(asyncMaterial: AsyncMaterial) {
-    asyncMaterial.registerTexture(this.rcsTexture.filename);
+    const id = "id" in this.rcsTexture ? this.rcsTexture.id : 0;
+    asyncMaterial.registerTexture(id, this.rcsTexture.filename);
     this.asyncMaterials.push(asyncMaterial);
   }
 
@@ -272,7 +344,7 @@ export class RCSModelLoader extends Loader {
         // would hand make() [blend, rock, sand] with no way to tell that the
         // gap was in the middle. Record the gap instead.
         if (!rcsTexture.filename.startsWith("data")) {
-          asyncMaterial.registerEmptyChannel();
+          asyncMaterial.registerEmptyChannel(rcsTexture.id);
           continue;
         }
         const asyncTexture = this.loadTexture(world, rcsTexture);
