@@ -1,5 +1,8 @@
 import * as THREE from "three";
 
+import { rcsHash } from "@core/formats/rcs/ids";
+import { MaterialFactory } from "./_abstract";
+
 import { aa_defuse_reflect } from "./aa_defuse_reflect";
 import { aa_glass_reflect_opacity_normal } from "./aa_glass_reflect_opacity_normal";
 import { ab_diff_spec_facing } from "./ab_diff_spec_facing";
@@ -759,8 +762,24 @@ const FACTORIES = [
   ship_tech_2048,
 ];
 
+/**
+ * Factories by the engine's hash of their name, built once.
+ *
+ * Two reasons to key on the hash rather than the string. It is the identity the
+ * format itself uses -- every name in a .rcsmodel or .rcsmaterial is stored as
+ * CRC32 of the authored name, so matching on the hash matches the way the
+ * engine does. And it turns a 371-entry linear scan, run once per material of
+ * every model loaded, into a single map lookup.
+ *
+ * The string name is kept on the factory for debugging and for the warnings
+ * below; it is no longer what selects the factory.
+ */
+const FACTORIES_BY_HASH = new Map<number, MaterialFactory>(
+  FACTORIES.map((factory) => [rcsHash(factory.name), factory])
+);
+
 export function createMaterial(name: string, textures: THREE.Texture[]) {
-  const factory = FACTORIES.find((factory) => factory.name == name);
+  const factory = FACTORIES_BY_HASH.get(rcsHash(name));
 
   if (factory) {
     // Texture channels can contain gaps (slots with no file), so count real
