@@ -471,21 +471,31 @@ export class RcsModelVBO {
       let values: number[] = [];
 
       if (stride.type == 0x16) {
-        // Packed normal: signed 10/11/11, x in the top 10 bits. Each field is
-        // two's complement and scales by its own half range.
+        // Packed normal: RSX CMP (X11Y11Z10N) -- x in the LOW 11 bits, y in
+        // the middle 11, z in the top 10. Each field is two's complement and
+        // scales by its own half range.
         //
-        // Read as unsigned 11/11/10 only 1.6% of normals come out unit length
-        // and the mean length is 1.7; with this layout 98.8% are unit and the
-        // mean is 0.989. The wrong layout left every component positive, which
-        // holds the lighting term near-constant and renders lit surfaces black
-        // while an unlit material still shows the texture.
+        // Two wrong layouts preceded this one, and each survived the test used
+        // on it:
+        //  - unsigned 11/11/10: only 1.6% of normals unit length, mean 1.7 --
+        //    caught by the length check.
+        //  - signed with x@22/z@0 (x and z SWAPPED): 98.8% unit, mean 0.989 --
+        //    unit length cannot see a field swap, because length does not care
+        //    which axis a component lands on. What it did to the scene: ground
+        //    normals (0,1,0) keep y in the middle field and survive, so the
+        //    track lit correctly -- but wall normals live in the xz-plane and
+        //    came out rotated up to 90 degrees, so sun-facing walls measured
+        //    N.L < 0 and the unclamped diffuse term SUBTRACTED, turning them
+        //    black as the sun rose. Face-vs-vertex alignment on a picked wall
+        //    read 0.37 where a correct decode reads ~1; that mid-range value
+        //    is the swap's signature (pure inversion reads -1).
         const signExtend = (value: number, bits: number) => (value << (32 - bits)) >> (32 - bits);
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
           const u = ret.range.getUint32(offset + 0);
-          const x = signExtend((u >>> 22) & 0x3ff, 10) / 511.0;
+          const x = signExtend((u >>> 0) & 0x7ff, 11) / 1023.0;
           const y = signExtend((u >>> 11) & 0x7ff, 11) / 1023.0;
-          const z = signExtend((u >>> 0) & 0x7ff, 11) / 1023.0;
+          const z = signExtend((u >>> 22) & 0x3ff, 10) / 511.0;
           values.push(x, y, z);
         }
       }
@@ -529,35 +539,54 @@ export class RcsModelVBO {
         }
       }
       if (stride.type == 0x43) {
+        // FOUR HALF-FLOATS, 8 bytes -- not four bytes.
+        //
+        // The stride type encodes <component count><RSX vertex type> in its
+        // nibbles: 0x23 = 2xF16 (the Uv1 pairs), 0x35 = 3xS16 (position),
+        // 0x16 = 1xCMP (the packed normal), 0x44 = 4xUB, 0x42 = 4xF32. So
+        // 0x43 is 4xF16 -- and the field's 8 bytes fit the stride exactly
+        // (2rocksandblend's v8: offset 14 in a 22-byte vertex).
+        //
+        // Two wrong reads preceded this one, each half-plausible: as raw u8
+        // the values spanned 0..255 and nitro_perspex's canopy tiled its
+        // textures into dense noise; normalised by 255 they became bounded
+        // garbage that flattened 2rocksandblend's terrain UVs to [0, 1]. As
+        // f16 the stream reads exactly as designed: xy is the tiled detail uv
+        // (vineta_k's terrain runs to +-12), zw the [0, 1] blend-mask uv.
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
-          const r = ret.range.getUint8(offset + 0);
-          const g = ret.range.getUint8(offset + 1);
-          const b = ret.range.getUint8(offset + 2);
-          const a = ret.range.getUint8(offset + 3);
-          values.push(r, g, b, a);
+          values.push(
+            ret.range.getFloat16(offset + 0),
+            ret.range.getFloat16(offset + 2),
+            ret.range.getFloat16(offset + 4),
+            ret.range.getFloat16(offset + 6)
+          );
         }
       }
       if (stride.type == 0x44) {
-        // Four bytes, but the range depends on what they hold. A colour is
-        // unsigned [0, 1]; a tangent is stored unsigned and unbiased by the
-        // vertex program (`MAD R0, v2, c464.x, -c464.y`), so it is unpacked
-        // here instead. Read as a colour, tangents cluster around 0.5 -- a
-        // degenerate frame, 17.1% unit length against 99.2% unpacked -- which
-        // leaves normalMap sampling a flat surface and drives lit materials
-        // black.
-        // Keyed on the id, not the spelling: a variant naming this stream
-        // differently would otherwise skip the unpack silently and render as a
-        // degenerate tangent frame.
-        const signed = stride.id == Stride.tangent;
+        // Four unsigned bytes, normalised to [0, 1] -- exactly as RSX
+        // VERTEX_UB delivers them, for colours AND tangents alike.
+        //
+        // A signed pre-unpack for tangents (`v * 2 - 1`) used to live here,
+        // compensating for the shader-side `MAD v2, c464.x, -c464.y` whose
+        // constants the viewer never fed. Those constants turn out to be
+        // embedded in each vertex program's own preamble -- slot 464 =
+        // (2, 1, 0, 0); see sho_vp_defaults_parse in rcsdump -- and now reach
+        // the bank, so the shader unpacks its own data the way the hardware
+        // ran it. Pre-unpacked input would be unpacked TWICE.
+        //
+        // That also settles the w handedness the pre-unpack used to guess at:
+        // raw w = 0 through the shader's own `w * 2 - 1` is -1, full stop. The
+        // earlier "0 selects the right-handed frame" reading was measured while
+        // the packed-NORMAL decode still had its x and z fields swapped, and
+        // was that bug's compensating error.
         for (let i = 0; i < count; i++) {
           const offset = i * info.align + stride.offset;
           const r = ret.range.getUint8(offset + 0) / 255.0;
           const g = ret.range.getUint8(offset + 1) / 255.0;
           const b = ret.range.getUint8(offset + 2) / 255.0;
           const a = ret.range.getUint8(offset + 3) / 255.0;
-          if (signed) values.push(r * 2 - 1, g * 2 - 1, b * 2 - 1, a * 2 - 1);
-          else values.push(r, g, b, a);
+          values.push(r, g, b, a);
         }
       }
 
