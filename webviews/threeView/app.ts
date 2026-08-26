@@ -84,6 +84,27 @@ class WorldRenderer {
     this._world = world;
 
     this._renderer = new THREE.WebGLRenderer({ antialias: true });
+
+    // Report shader compile/link failures.
+    //
+    // Nothing was reporting them, and a raw ShaderMaterial that fails to link
+    // draws with whatever the renderer falls back to -- which looks exactly
+    // like a shader that runs but ignores every uniform. These programs are
+    // machine-translated from RSX bytecode, so a GLSL-level mistake in the
+    // emitter is a live possibility and has to be visible rather than inferred.
+    this._renderer.debug.checkShaderErrors = true;
+    // r149's WebGLDebug type predates onShaderError; the runtime supports it.
+    (this._renderer.debug as unknown as {
+      onShaderError?: (gl: WebGLRenderingContext, p: WebGLProgram, vs: WebGLShader, fs: WebGLShader) => void;
+    }).onShaderError = (gl, program, vs, fs) => {
+      const status = (sh: WebGLShader) => gl.getShaderInfoLog(sh)?.trim() ?? "";
+      const vlog = status(vs);
+      const flog = status(fs);
+      const plog = gl.getProgramInfoLog(program)?.trim() ?? "";
+      api.log(`[shader] LINK FAILED${plog ? `: ${plog}` : ""}`);
+      if (vlog) api.log(`[shader]   vertex: ${vlog.split("\n")[0]}`);
+      if (flog) api.log(`[shader]   fragment: ${flog.split("\n")[0]}`);
+    };
     this._renderer.setClearColor(0x000000);
     this._renderer.setPixelRatio(window.devicePixelRatio);
     this._renderer.setSize(window.innerWidth, window.innerHeight);
@@ -197,7 +218,7 @@ class WorldRenderer {
   readonly bloomMatrials = [
     "emissive_bloom.rcsmaterial",
     "detonator_emissive_bloom.rcsmaterial",
-    "flame_test.rcsmaterial",    
+    "flame_test.rcsmaterial",
   ]
 
   render() {
@@ -229,6 +250,16 @@ class WorldRenderer {
       material.defines = wanted;
       material.needsUpdate = true;
     }
+
+    // The generated RCS materials are RAW ShaderMaterials, so Three injects
+    // none of its colour-management chunks into them: they write the shading
+    // maths's own LINEAR result straight to the target. Everything else in the
+    // scene is converted for output -- by Three for its built-in materials, or
+    // by the bloom composite, which applies toneMapping + linearToOutputTexel
+    // to what it composites. So the RCS materials convert themselves, and only
+    // on the path where nothing downstream will do it for them; converting
+    // twice washes the scene out as surely as not converting at all leaves it
+    // dark.
 
     if (this._world.settings.frontendEdges) {
       // Drive the detector from the <Main> values skin.xml carries for this
@@ -262,7 +293,11 @@ class WorldRenderer {
       const beforeBloom = (obj: THREE.Object3D) => {
         if (obj instanceof THREE.Mesh) {
           if (obj.material instanceof THREE.ShaderMaterial) {
-            if (obj.material.uniforms) {
+            // Only the hand-written materials declare this. A generated one is
+            // a raw ShaderMaterial built from the game's own program and has no
+            // such uniform, so indexing it unguarded threw on every such mesh
+            // the moment bloom was switched on.
+            if (obj.material.uniforms?.["bloomActive"]) {
               obj.material.uniforms["bloomActive"].value = true;
             }
           } else if (obj.material instanceof THREE.Material) {
@@ -277,7 +312,7 @@ class WorldRenderer {
       const afterBloom = (obj: THREE.Object3D) => {
         if (obj instanceof THREE.Mesh) {
           if (obj.material instanceof THREE.ShaderMaterial) {
-            if (obj.material.uniforms) {
+            if (obj.material.uniforms?.["bloomActive"]) {
               obj.material.uniforms["bloomActive"].value = false;
             }
           } else if (obj.material instanceof THREE.Material) {

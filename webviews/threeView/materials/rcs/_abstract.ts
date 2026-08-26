@@ -80,4 +80,21 @@ export type MaterialFactory = {
   minTextures: number;
   maxTextures: number;
   make: (textures: THREE.Texture[]) => THREE.Material;
+  /**
+   * Build from channels keyed by their engine id, when the factory has one.
+   *
+   * The positional `make` is what the 371 hand-written factories use: they were
+   * written against "tex[0] is the diffuse, tex[1] the specular", which holds
+   * because the loader registers channels in slot order. A generated material
+   * cannot rely on that -- its shader binds samplers by texture unit, and which
+   * channel id lands on which unit is the permutation's choice -- so it takes
+   * the ids instead. Optional so nothing else has to change.
+   */
+  /**
+   * @param streams the vertex stream ids every mesh using this material
+   * carries, when known. Two permutations can sample the same textures and be
+   * told apart only by the attributes they read, so the picker needs this to
+   * choose between them rather than falling back on file order.
+   */
+  makeById?: (channels: Map<number, THREE.Texture>, streams?: Set<number>) => THREE.Material;
 };

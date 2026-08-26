@@ -101,3 +101,32 @@ export function streamKind(id: number, type: number): StreamKind {
 export function rcsHash(name: string): number {
   return crc32(name, 0x04c11db7, 0xffffffff, 0);
 }
+
+/**
+ * How many components the decoder pushes per vertex for a stride type.
+ *
+ * The VBO decode writes a different number of floats per element depending on
+ * the stride's encoding -- 3 for a packed int16 position, 2 for a float16 UV
+ * pair, 4 for a colour -- and a consumer building a THREE.BufferAttribute needs
+ * that count to set itemSize. Reading it back from `values.length / vertexCount`
+ * works but breaks on an empty stream, so it is stated here beside the ids.
+ *
+ * Returns 0 for a type the decoder does not handle, which is how a caller can
+ * tell "no data" from "one component".
+ */
+export function streamComponents(type: number): number {
+  switch (type) {
+    case 0x23: // float16 pair (UV)
+      return 2;
+    case 0x16: // packed signed 10/11/11 (normal)
+    case 0x35: // int16 triple (position)
+      return 3;
+    case 0x22: // float16 quad
+    case 0x42: // float32 quad
+    case 0x43: // uint8 quad
+    case 0x44: // uint8 quad, colour or tangent
+      return 4;
+    default:
+      return 0;
+  }
+}

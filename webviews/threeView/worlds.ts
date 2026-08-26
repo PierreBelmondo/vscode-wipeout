@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GUI } from "lil-gui";
+import { invalidateSceneLights } from "./materials/rcs/_generated";
 
 import { OrbitControls } from "./controls/OrbitControls";
 import { FlyControls } from "./controls/FlyControls";
@@ -8,6 +9,8 @@ import { VertexNormalsHelper } from "./helpers/VertexNormalsHelper";
 import { api } from "./api";
 import { DEFAULT_RENDER_SETTINGS, TONE_MAPPINGS } from "./renderSettings";
 import type { WoTrackPoint } from "@core/formats/vexx/v4/wo_track";
+import { EnvKey, type EnvSettings } from "@core/formats/rcs/envsettings";
+import { liveUniformNames, setUniformOverride, getUniformOverride, reportOverrideReach, DRIVEN_UNIFORMS } from "./materials/rcs";
 
 
 const _exporter = new GLTFExporter();
@@ -44,6 +47,14 @@ export class World {
 
   // Scene-camera state: when set, the render camera copies this camera's
   // animated world transform every frame instead of being user-controlled.
+  /**
+   * The track's .envsettings, once loaded.
+   *
+   * Materials read fog and prelit values from here rather than inventing them;
+   * undefined until the file arrives, and for formats that ship none.
+   */
+  envSettings?: EnvSettings;
+
   private _sceneCamera: THREE.Camera | null = null;
   private _freeCameraState: { position: THREE.Vector3; quaternion: THREE.Quaternion } | null = null;
 
@@ -115,6 +126,229 @@ export class World {
 
   emitSelected(object: THREE.Object3D<THREE.Event>) {
     api.sceneSelected(object.uuid);
+
+    // What was clicked is usually the child mesh a Group holds, and only the
+    // Group carries the `Object_<id>` name -- so a bare uuid identifies nothing
+    // you can look up in the files. Walk up for the first named ancestor and
+    // report that, along with the material, which is what a rendering problem
+    // actually needs to be traced back to a .rcsmaterial.
+    let named: THREE.Object3D | null = object;
+    while (named && !named.name) named = named.parent;
+
+    const mesh = object as THREE.Mesh;
+    const material = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+    const parts = [
+      named?.name || "(unnamed)",
+      object.name && object.name !== named?.name ? `/ ${object.name}` : "",
+      material ? `material=${material.name || material.type}` : "",
+    ].filter(Boolean);
+
+    const geometry = mesh.geometry as THREE.BufferGeometry | undefined;
+    const verts = geometry?.getAttribute("position")?.count;
+    // How much of THIS mesh faces the sun the lightmaps were baked from.
+    //
+    // The lightmap is ground truth -- the engine baked it with the track's own
+    // sun -- so a surface that reads as LIT in the bake while scoring near 0
+    // here means the normals and the sun direction disagree, which is exactly
+    // what makes a lit wall grow darker as the Sun scale is raised.
+    //
+    // Computed HERE rather than at load: the geometry is decoded before the
+    // .envsettings arrives, so the sun is not known yet when the streams are
+    // built. At pick time both are available, and the light is read from the
+    // scene so it reflects whatever the toolbox has done to it since.
+    const facing = (() => {
+      // Prefer the shader's own normal stream over Three's `normal` attribute:
+      // a generated material binds its inputs as v0..v8 from geometry.userData,
+      // and the mesh that draws may not carry a conventional `normal` at all.
+      const streams = geometry?.userData?.rcsStreams as Map<number, THREE.BufferAttribute> | undefined;
+      const nrm =
+        (streams?.get(3732576027) as THREE.BufferAttribute | undefined) ??
+        (geometry?.getAttribute("normal") as THREE.BufferAttribute | undefined);
+      if (!nrm || typeof nrm.getX !== "function") return "no-normals";
+      let sun: THREE.DirectionalLight | null = null;
+      this.scene.traverse((o) => {
+        if (!sun && o instanceof THREE.DirectionalLight && !o.name.startsWith(".World")) sun = o;
+      });
+      if (!sun) return "no-sun";
+      // Exactly what the SHADER computes, or the number is not comparable to
+      // what is on screen. Two things were wrong before:
+      //
+      //  - the light: sceneLights() hands the shader the NEGATED light
+      //    position, so measuring against the position itself reported the
+      //    opposite sign from the dot the shader actually takes;
+      //  - the normal: bindModelMatrix now transforms it into world space in
+      //    the vertex program, so the raw attribute is in model space and
+      //    disagrees with the shader wherever the mesh is rotated.
+      const L = (sun as THREE.DirectionalLight).position.clone().normalize().negate();
+      const nm = new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld);
+      const n = new THREE.Vector3();
+      let pos = 0;
+      // The distribution, not just the sign: the fragment's diffuse term is the
+      // UNCLAMPED dot scaled by the sun colour (which ships as HDR, ~4.0), so a
+      // mean of -0.3 is a -1.2 subtraction against a prelit term well under 1.
+      // The percentage alone cannot show that.
+      let mean = 0, min = 1, max = -1;
+      for (let i = 0; i < nrm.count; i++) {
+        n.set(nrm.getX(i), nrm.getY(i), nrm.getZ(i)).applyMatrix3(nm).normalize();
+        const d = n.dot(L);
+        if (d > 0) pos++;
+        mean += d;
+        if (d < min) min = d;
+        if (d > max) max = d;
+      }
+      mean /= nrm.count || 1;
+      // Face-vs-vertex alignment: the one orientation check unit length cannot
+      // do. Face normals from the positions and indices, dotted against the
+      // decoded vertex normals. ~+1 = decode agrees with the geometry;
+      // ~-1 = THIS MESH'S NORMALS ARE INVERTED (or its winding is), which is
+      // exactly what turns a sun-facing wall black: the unclamped N.L goes
+      // negative and the sun subtracts. Signed per winding, so read |value|.
+      let align = "n/a";
+      const posAttr = geometry?.getAttribute("position") as THREE.BufferAttribute | undefined;
+      const index = geometry?.index;
+      if (posAttr && index) {
+        const pa = new THREE.Vector3(), pb = new THREE.Vector3(), pc = new THREE.Vector3();
+        const e1 = new THREE.Vector3(), e2 = new THREE.Vector3(), f = new THREE.Vector3();
+        let sum = 0, cnt = 0;
+        for (let t = 0; t + 2 < index.count && cnt < 5000; t += 3) {
+          const [ia, ib, ic] = [index.getX(t), index.getX(t + 1), index.getX(t + 2)];
+          pa.fromBufferAttribute(posAttr, ia);
+          pb.fromBufferAttribute(posAttr, ib);
+          pc.fromBufferAttribute(posAttr, ic);
+          f.crossVectors(e1.subVectors(pb, pa), e2.subVectors(pc, pa));
+          const fl = f.length();
+          if (fl < 1e-9) continue;
+          n.set(
+            nrm.getX(ia) + nrm.getX(ib) + nrm.getX(ic),
+            nrm.getY(ia) + nrm.getY(ib) + nrm.getY(ic),
+            nrm.getZ(ia) + nrm.getZ(ib) + nrm.getZ(ic)
+          );
+          const nl = n.length();
+          if (nl < 1e-6) continue;
+          sum += f.dot(n) / (fl * nl);
+          cnt++;
+        }
+        if (cnt) align = (sum / cnt).toFixed(2);
+      }
+      return `${((100 * pos) / nrm.count).toFixed(1)}% meanNL=${mean.toFixed(2)} [${min.toFixed(2)}..${max.toFixed(2)}] L=(${L.x.toFixed(2)},${L.y.toFixed(2)},${L.z.toFixed(2)}) faceAlign=${align}`;
+    })();
+    api.log(`[picked] ${parts.join(" ")}${verts ? ` verts=${verts}` : ""} facingSun=${facing}`);
+
+    // The blend state, since "it looks transparent" is usually decided here
+    // rather than in the shader.
+    if (material) {
+      const m = material as THREE.Material & { uniforms?: Record<string, { value: unknown }> };
+      const alphaTest = m.uniforms?.u_alphaTest?.value;
+      api.log(
+        `[picked]   transparent=${m.transparent} opacity=${m.opacity}` +
+          ` depthWrite=${m.depthWrite} u_alphaTest=${alphaTest ?? "n/a"}`
+      );
+
+      // Which permutation ran, and every colour-valued uniform it reads.
+      //
+      // A surface whose texture is visibly right but tinted is being MULTIPLIED
+      // by something, and the only candidates are the uniforms -- a shader
+      // declares them, `declaredUniforms` invents a neutral for whatever
+      // nothing else fills in, and a wrong neutral tints every pixel uniformly.
+      // Printing the values is the only way to tell which one it is; deriving
+      // it from the shader text has repeatedly pointed at the wrong term.
+      const variant = m.userData?.variant as
+        | {
+            permutation?: number;
+            samplers?: { unit: number; name: string }[];
+            attributes?: { reg: number; name: string }[];
+          }
+        | undefined;
+      if (variant) {
+        api.log(`[picked]   permutation=${variant.permutation} samplers=${variant.samplers?.map((s) => `${s.unit}:${s.name}`).join(" ")}`);
+      }
+      // A throw anywhere below must not silently truncate the pick log -- two
+      // rounds of debugging were spent on output that stopped mid-block.
+      try {
+      // ONE LINE each. Several rounds of these diagnostics arrived truncated a
+      // few lines in -- the log pipeline drops later lines -- so each section
+      // is a single api.log call, and the pick block stays readable end to end.
+      //
+      // Attributes: as BOUND on this geometry, with value ranges. An attribute
+      // the shader declares but the geometry lacks reads the constant (0,0,0,1)
+      // -- a missing a_v4 samples the lightmap at ONE texel for the whole mesh.
+      if (geometry) {
+        const attrs: string[] = [];
+        for (const [aname, attr] of Object.entries(geometry.attributes)) {
+          if (!aname.startsWith("a_v")) continue;
+          const a = attr as THREE.BufferAttribute;
+          let lo = Infinity, hi = -Infinity;
+          const items = Math.min(a.count, 2000);
+          for (let i = 0; i < items; i++) {
+            for (let c = 0; c < a.itemSize; c++) {
+              const v = a.array[i * a.itemSize + c] as number;
+              if (v < lo) lo = v;
+              if (v > hi) hi = v;
+            }
+          }
+          // The stream NAME from the permutation's own binding table, so a
+          // range that makes no sense for its role reads as such -- a "Uv1"
+          // spanning thousands is a decode fault; the same range on a packed
+          // engine stream may be by design.
+          const bname = variant?.attributes?.find((b) => `a_v${b.reg}` === aname)?.name;
+          attrs.push(`${aname}${bname ? `=${bname}` : ""}(${a.itemSize}x${a.count} [${lo.toFixed(2)}..${hi.toFixed(2)}])`);
+        }
+        if (attrs.length) api.log(`[picked]   attrs: ${attrs.join(" ")}`);
+      }
+      // Samplers: the file each slot resolved to and its upload encoding.
+      // "(fallback)" marks the viewer's stand-in for an engine render target --
+      // a live reflection term sampling a flat fallback is a whole-surface
+      // wash. sRGB on a DATA texture is invisible everywhere else.
+      {
+        const texes: string[] = [];
+        for (const [name, u] of Object.entries(m.uniforms ?? {})) {
+          if (!name.startsWith("TEX")) continue;
+          const t = u?.value as THREE.Texture | null;
+          if (t && (t as THREE.Texture).isTexture) {
+            const enc = t.encoding === THREE.sRGBEncoding ? "sRGB" : t.encoding === THREE.LinearEncoding ? "linear" : `enc${t.encoding}`;
+            texes.push(`${name}=${t.name.split("/").pop() || "(fallback)"}/${enc}`);
+          }
+        }
+        if (texes.length) api.log(`[picked]   tex: ${texes.join(" ")}`);
+      }
+      } catch (e) {
+        api.log(`[picked]   (diagnostics failed: ${e})`);
+      }
+      const fmt = (v: unknown) => {
+        const q = v as { x?: number; y?: number; z?: number; w?: number; isVector4?: boolean; isVector3?: boolean };
+        if (q && (q.isVector4 || q.isVector3)) {
+          const p = (n?: number) => (n ?? 0).toFixed(2);
+          return `(${p(q.x)},${p(q.y)},${p(q.z)}${q.isVector4 ? `,${p(q.w)}` : ""})`;
+        }
+        return typeof v === "number" ? v.toFixed(2) : undefined;
+      };
+      // One line, same truncation defence as above.
+      const us: string[] = [];
+      for (const [name, u] of Object.entries(m.uniforms ?? {})) {
+        if (name.startsWith("TEX") || name.startsWith("viewProj")) continue;
+        const s = fmt(u?.value);
+        if (s) us.push(`${name}=${s}`);
+      }
+      if (us.length) api.log(`[picked]   u: ${us.join(" ")}`);
+
+      // The fog term, evaluated here the way the shader evaluates it.
+      //
+      // A surface that has gone flat is usually fully fogged, and the factor is
+      // exp(-(distance * density)^2) -- so the two things worth seeing are the
+      // distance the shader actually receives and what it turns into. The
+      // distance is the clip-space w, which for this projection is the view
+      // depth of the mesh's own origin; close enough for a diagnostic.
+      const fogUniform = m.uniforms?.fogColour?.value as THREE.Vector4 | undefined;
+      if (fogUniform) {
+        const world = object.getWorldPosition(new THREE.Vector3());
+        const distance = world.distanceTo(this.camera.getWorldPosition(new THREE.Vector3()));
+        const factor = Math.exp(-Math.pow(distance * fogUniform.w, 2));
+        api.log(
+          `[picked]   fog: distance=${distance.toFixed(1)} density=${fogUniform.w}` +
+            ` factor=${factor.toFixed(4)} -> ${((1 - factor) * 100).toFixed(0)}% fog colour`
+        );
+      }
+    }
   }
 
   setupOrbitContols(element: HTMLElement) {
@@ -286,67 +520,194 @@ export class World {
       .name("Grade bloom pass")
       .onChange(() => this.emitUpdate());
 
+    // Ambient / Directional / Fill / Lightmap / Specular / Shininess used to
+    // live here. They were guesses at values the game files turned out to
+    // carry: a track's .envsettings gives the sun's colour and direction, the
+    // constant ambient, the fog and the prelit scales, and the generated
+    // materials read those directly. Four of the six drove properties only
+    // Three's built-in materials have (lightMapIntensity, specular, shininess,
+    // the fill lights), so they did nothing at all for the 441 generated ones
+    // while still looking live. See setupGuiEnvironment.
+  }
+
+  /**
+   * The track's own environment values, once its .envsettings has loaded.
+   *
+   * Read-only on purpose: these are what the engine shipped, so the useful
+   * thing is seeing them, not inventing alternatives. The scale control is the
+   * exception -- it exists because a viewer has no tone-mapping pipeline
+   * identical to the game's, so the sun sometimes needs trimming.
+   */
+  setupGuiEnvironment() {
+    if (this._envFolder) {
+      this._envFolder.destroy();
+      this._envFolder = null;
+    }
+    const env = this.envSettings;
+    if (!env) return;
+
+    const folder = this.gui.addFolder("Environment").close();
+    this._envFolder = folder;
+
+    const show = (label: string, value: string) => {
+      const holder = { [label]: value };
+      folder.add(holder, label).disable();
+    };
+    const fmt = (v: number[] | undefined, digits = 3) =>
+      v ? v.map((n) => n.toFixed(digits)).join(", ") : "-";
+
+    // Through EnvKey, not raw strings: the files come in two generations and
+    // half the tracks spell these keys the older way, which a literal misses.
+    show("Sun colour", fmt(env.get(EnvKey.sunColour)));
+    show("Sun direction", fmt(env.get(EnvKey.sunDirection), 6));
+    show("Ambient", fmt(env.get(EnvKey.constantAmbient)));
+    show("Fog colour", fmt(env.get(EnvKey.fogColour)));
+    show("Fog density", fmt(env.get(EnvKey.fogDensity), 5));
+    show("Prelit scale", fmt(env.get(EnvKey.prelitAmbientScale)));
+
+    folder
+      .add(this.settings, "directionalIntensity", 0.0, 3.0, 0.05)
+      .name("Sun scale")
+      .onChange((value: number) => {
+        // Scales the track's own sun rather than replacing it: the colour
+        // carries the engine's brightness (up to 4.0, an HDR value), and this
+        // is the multiplier on top.
+        this.scene.traverse((obj) => {
+          if (obj instanceof THREE.DirectionalLight && !obj.name.startsWith(".World")) {
+            obj.intensity = value;
+          }
+        });
+        invalidateSceneLights();
+        this.emitUpdate();
+      });
     folder
       .add(this.settings, "ambientIntensity", 0.0, 2.0, 0.05)
-      .name("Ambient")
+      .name("Ambient scale")
       .onChange((value: number) => {
         this.scene.traverse((obj) => {
           if (obj instanceof THREE.AmbientLight) obj.intensity = value;
         });
+        invalidateSceneLights();
         this.emitUpdate();
       });
-    folder
-      .add(this.settings, "directionalIntensity", 0.0, 3.0, 0.05)
-      .name("Directional")
-      .onChange((value: number) => {
-        // Only the model's own key light. The six faint fill lights World adds
-        // are named .WorldDirectionalLight* and are deliberately left alone.
-        this.scene.traverse((obj) => {
-          if (obj instanceof THREE.DirectionalLight && !obj.name.startsWith(".World")) obj.intensity = value;
-        });
-        this.emitUpdate();
-      });
+  }
 
-    folder
-      .add(this.settings, "fillIntensity", 0.0, 0.5, 0.01)
-      .name("Fill")
-      .onChange((value: number) => {
-        for (const light of this.directionalLights) light.intensity = value;
-        this.emitUpdate();
-      });
+  private _envFolder: ReturnType<GUI["addFolder"]> | null = null;
+  private _uniformsFolder: ReturnType<GUI["addFolder"]> | null = null;
+  /** Refreshers for the disabled, per-frame-driven uniform controls. */
+  private _uniformProbes: (() => void)[] = [];
 
-    folder
-      .add(this.settings, "lightmapIntensity", 0.0, 8.0, 0.05)
-      .name("Lightmap")
-      .onChange((value: number) => {
-        this._forEachMaterial((material) => {
-          if ("lightMap" in material && (material as THREE.MeshPhongMaterial).lightMap) {
-            (material as THREE.MeshPhongMaterial).lightMapIntensity = value;
-          }
-        });
-        this.emitUpdate();
-      });
+  /**
+   * A control per uniform the loaded materials actually declare.
+   *
+   * These are the values the engine fed from render state the viewer does not
+   * model. `declaredUniforms` guesses a neutral for each from its name -- 1 for
+   * anything that looks multiplicative, 0 for a bias -- and a wrong guess tints
+   * or blackens every surface that shader draws, uniformly. Which uniform is at
+   * fault cannot be read off the shader text, so this makes it something you
+   * drag rather than something to derive.
+   *
+   * Built from the live materials, not a fixed list: 114 distinct names appear
+   * across the corpus and which are in play depends on the track. Call after a
+   * model has loaded.
+   */
+  setupGuiUniforms() {
+    if (this._uniformsFolder) {
+      this._uniformsFolder.destroy();
+      this._uniformsFolder = null;
+    }
+    this._uniformProbes = [];
+    const live = liveUniformNames();
+    if (!live.size) return;
 
-    folder
-      .addColor(this.settings, "specularColor")
-      .name("Specular")
-      .onChange((value: string) => {
-        this._forEachMaterial((material) => {
-          const phong = material as THREE.MeshPhongMaterial;
-          if (phong.specular) phong.specular.set(value);
-        });
+    const folder = this.gui.addFolder("Shader uniforms").close();
+    this._uniformsFolder = folder;
+
+    // Materials stream in, so the folder can be built before the last one
+    // exists. Rebuilding is cheap and keeps overrides, which live in the
+    // material layer rather than in these controls.
+    folder.add({ refresh: () => this.setupGuiUniforms() }, "refresh").name("rescan materials");
+
+    // Split by whether anything actually drives the value. A uniform fed from
+    // the camera, the clock, the mesh transform, the lights or the track's
+    // .envsettings is rewritten every frame or every draw, so an override on it
+    // is undone immediately -- the slider looks dead and invites the conclusion
+    // that the uniform does not matter. The ones worth dragging are the others:
+    // the values `declaredUniforms` invented from the name alone.
+    const names = [...live.keys()].sort();
+    const guessed = names.filter((n) => !DRIVEN_UNIFORMS.has(n));
+    const driven = names.filter((n) => DRIVEN_UNIFORMS.has(n));
+    const drivenFolder = driven.length ? folder.addFolder("driven (read-only sources)").close() : null;
+
+    for (const name of [...guessed, ...driven]) {
+      const current = getUniformOverride(name) ?? live.get(name)!;
+      const parent = DRIVEN_UNIFORMS.has(name) ? drivenFolder! : folder;
+      const sub = parent.addFolder(name).close();
+      // Held per control so a drag on one channel keeps the others.
+      const state = { x: current.x, y: current.y, z: current.z, w: current.w };
+      // The value BEFORE any slider touched it, kept here as well as in the
+      // material layer: reset has to put the controls back too, or the sliders
+      // keep showing the dragged numbers and the next drag on any one channel
+      // pushes the stale others straight back in.
+      const pristine = { x: current.x, y: current.y, z: current.z, w: current.w };
+      const controllers: { updateDisplay: () => void }[] = [];
+      let reported = false;
+      const push = () => {
+        setUniformOverride(name, new THREE.Vector4(state.x, state.y, state.z, state.w));
+        // Once per slider: says whether the value is reaching any shader at all.
+        if (!reported) { reported = true; reportOverrideReach(name); }
         this.emitUpdate();
-      });
-    folder
-      .add(this.settings, "specularShininess", 1, 400, 1)
-      .name("Shininess")
-      .onChange((value: number) => {
-        this._forEachMaterial((material) => {
-          const phong = material as THREE.MeshPhongMaterial;
-          if (phong.shininess !== undefined) phong.shininess = value;
-        });
-        this.emitUpdate();
-      });
+      };
+      // -2..4 rather than 0..1: several of these are HDR intensities the
+      // engine drives well above 1, and a few are signed.
+      for (const axis of ["x", "y", "z", "w"] as const) {
+        // fogColour.w is not a colour channel: it is the fog DENSITY, and the
+        // shaders read it as `distance * fogColour.w` before squaring and
+        // exponentiating. The shipped values are around 0.0002-0.00175, so on
+        // the colour range a single step saturates the fog completely and the
+        // surface snaps to flat fog colour -- which reads as the texture
+        // vanishing the moment the slider is touched.
+        const isDensity = name === "fogColour" && axis === "w";
+        const c = isDensity
+          ? sub.add(state, axis, 0, 0.005, 0.00005).name("w (density)").onChange(push)
+          : name === "prelitBias"
+            // An EXPONENT, not a colour: the lightmapped shaders compute
+            // pow(lightmap, prelitBias). Values below 1 lift dark texels much
+            // more than bright ones, which is the curve a too-black shadow
+            // wants, and the whole useful range sits between 0 and 1 -- far
+            // too fine to find on a -2..4 slider stepping by 0.01.
+            ? sub.add(state, axis, 0.05, 2, 0.005).onChange(push)
+            : sub.add(state, axis, -2, 4, 0.01).onChange(push);
+        // Per-frame sources win: tick() rewrites these from the camera and the
+        // clock, so the control shows the live value rather than pretending to
+        // set it. fogColour and the light/ambient uniforms are the exception --
+        // they come from the .envsettings, which an override is meant to beat,
+        // and applyUniformOverrides re-asserts after every settings pass.
+        if (name === "eyePositionWorldSpace" || name === "time" || name === "positionScale" || name === "positionBias") {
+          c.disable();
+          const source = live.get(name)!;
+          this._uniformProbes.push(() => {
+            state[axis] = source[axis];
+            c.updateDisplay();
+          });
+        }
+        controllers.push(c);
+      }
+      sub
+        .add(
+          {
+            reset: () => {
+              setUniformOverride(name, null);
+              // Put the controls back as well as the uniform.
+              Object.assign(state, pristine);
+              for (const c of controllers) c.updateDisplay();
+              this.emitUpdate();
+            },
+          },
+          "reset"
+        )
+        .name("reset to default");
+    }
   }
 
   /** Every material in the scene, including each entry of a material array. */
@@ -365,6 +726,7 @@ export class World {
 
   setupGuiDebug() {
     const folder = this.gui.addFolder("Debug").close();
+
     folder
       .add(this.settings, "showNormals")
       .name("Show normals")
@@ -569,7 +931,13 @@ export class World {
       const folder = this.gui.addFolder("Animations").close();
 
       for (const action of this._actions) {
-        this.settings.actions[action.name] = false;
+        // The loader calls play() as soon as it builds the clip, so an action
+        // IS running by the time this folder is built. Initialising the toggle
+        // to false without stopping it left the control disagreeing with the
+        // scene: every box read "off" while every animation ran, and the first
+        // click -- which the user means as "start this" -- stopped it instead.
+        // Report the truth rather than inventing a default.
+        this.settings.actions[action.name] = action.action.isRunning();
         folder.add(this.settings.actions, action.name).onChange((value: number) => {
           if (value) {
             action.action.reset();
@@ -621,12 +989,52 @@ export class World {
   }
 
   addTickMaterial(mat: { tick: (delta: number) => void }) {
+    // Materials are shared between the entries that name the same file, so the
+    // same instance is offered here many times -- 805 times for 68 materials on
+    // 01_vineta_k. Ticking one repeatedly does the same work over and over.
+    if (this._tickMaterials.includes(mat)) return;
     this._tickMaterials.push(mat);
   }
+
+  /** One-shot report of what the frame loop is actually driving. */
+  private _tickReported = false;
 
   updateAnimations(delta: number) {
     for (const action of this._actions) action.mixer.update(delta);
     for (const mat of this._tickMaterials) mat.tick(delta);
+    // Says whether anything is being animated at all, and whether the clock is
+    // moving -- "the animations are broken" has three separate causes (nothing
+    // registered, tick not running, the uniform not reaching the shader) and
+    // this distinguishes them without another round of guessing.
+    if (!this._tickReported && this._tickMaterials.length) {
+      this._tickReported = true;
+      const withClock = this._tickMaterials.filter(
+        (m) => (m as unknown as { uniforms?: Record<string, unknown> }).uniforms?.["time"]
+      ).length;
+      const running = this._actions.filter((a) => a.action.isRunning()).length;
+      const weighted = this._actions.filter((a) => a.action.getEffectiveWeight() > 0).length;
+      const durations = this._actions.map((a) => a.action.getClip().duration);
+      const zeroLength = durations.filter((d) => !(d > 0)).length;
+      api.log(
+        `[anim] ${this._actions.length} mixer actions (${running} running,` +
+          ` ${weighted} weighted, ${zeroLength} zero-duration,` +
+          ` maxDur=${Math.max(0, ...durations).toFixed(2)}s),` +
+          ` ${this._tickMaterials.length} tick materials (${withClock} declare 'time'),` +
+          ` delta=${delta.toFixed(4)}`
+      );
+    }
+    // The driven uniforms' controls are disabled probes, so they have to be
+    // refreshed from the material or they show whatever was there when the
+    // folder was built. Guarded because this is a DEBUG readout: a controller
+    // destroyed by a folder rebuild must not take the camera updates below it
+    // -- or the whole frame loop -- down with it.
+    if (this._uniformsFolder) {
+      try {
+        for (const refresh of this._uniformProbes) refresh();
+      } catch {
+        this._uniformProbes = [];
+      }
+    }
     if (this._trackCameraActive) this._updateTrackCamera(delta);
     if (this._sceneCamera) this._applySceneCamera();
   }
