@@ -10,6 +10,10 @@ class API {
   }
 
   log(message: any) {
+    // Mirrored to the webview console: the postMessage bridge drops lines under
+    // load -- pick diagnostics repeatedly arrived truncated a few lines in --
+    // and the console never does.
+    console.log(message);
     vscode.postMessage({ type: "log", message });
   }
 
