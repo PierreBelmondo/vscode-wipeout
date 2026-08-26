@@ -633,15 +633,35 @@ export class RcsModelTexture {
   offset_filename = 0;
   filename = "";
 
+  /**
+   * The channel's value, when it is a CONSTANT rather than a texture.
+   *
+   * A material's channel table holds both. `type == 0` with the flag at offset
+   * 28 set means the slot is a shader constant and `offset_filename` points at
+   * a float4 instead of a path -- glass_texture's Refbrightness is 0.2 and its
+   * SpecScale 115.0, both stored exactly here.
+   *
+   * These were being discarded: the loader saw no filename, registered an
+   * "empty channel" and moved on, so the shader's uniform of that name fell to
+   * whatever neutral `declaredUniforms` invented -- 1.0 for Refbrightness,
+   * which is 5x the authored value and blows the reflection out.
+   */
+  colour: [number, number, number, number] | null = null;
+
   static load(range: BufferRange): RcsModelTexture {
     const ret = new RcsModelTexture();
     ret.range = range.slice(0, 32);
     ret.id = ret.range.getUint32(0);
     ret.type = ret.range.getUint32(4);
     ret.offset_filename = ret.range.getUint32(24);
+    const isColour = ret.range.getUint32(28) !== 0;
 
     if (ret.offset_filename == 0) ret.filename = "";
-    else {
+    else if (ret.type === 0 && isColour) {
+      const c = ret.range.reset().slice(ret.offset_filename, 16);
+      ret.colour = [c.getFloat32(0), c.getFloat32(4), c.getFloat32(8), c.getFloat32(12)];
+      ret.filename = "";
+    } else {
       ret.filename = ret.range.reset().getCString(ret.offset_filename);
       if (!ret.filename.startsWith("data/")) ret.filename = "";
     }
