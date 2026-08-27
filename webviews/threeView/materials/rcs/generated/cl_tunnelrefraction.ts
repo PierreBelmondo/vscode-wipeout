@@ -12,7 +12,7 @@ import { MaterialFactory } from "../_abstract";
 import { Permutation } from "../_raw";
 import { GeneratedRcsMaterial } from "../_generated";
 import { makeVariant, pickVariant, GeneratedVariant } from "../_variant";
-import { S_23461726fbf1, S_27ade436b05a, S_32aa860a0800, S_332d8015e82b, S_45b89c232945, S_6e53d10cf777, S_7a891589dfbc, S_9a3900cc5f38, S_a80d059a8b78, S_ae0a36284c7b, S_bb73c4e55eae, S_c317c6dd315c, S_d3f741805424, S_dd9e4f3c6d58 } from "./_shaders";
+import { S_27ade436b05a, S_332d8015e82b, S_36316d46e7e1, S_3d809b1c22ff, S_45b89c232945, S_49537d7c4a6c, S_64acc961ba62, S_7a891589dfbc, S_a9c9197ed8c4, S_ae0a36284c7b, S_bb73c4e55eae, S_d3f741805424, S_d485799e9581, S_dead2e0b2728 } from "./_shaders";
 
 const VARIANTS: GeneratedVariant[] = [
   {
@@ -20,7 +20,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 2,
     backend: "Static",
     vert: S_27ade436b05a,
-    frag: S_c317c6dd315c,
+    frag: S_36316d46e7e1,
     attributes: [{ id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }, { id: 4116404738, reg: 3, name: "?" }],
     samplers: [{ id: 1104507554, unit: 0, name: "?" }, { id: 2292244373, unit: 1, name: "screenSpaceRefractionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -32,7 +32,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 5,
     backend: "Static",
     vert: S_ae0a36284c7b,
-    frag: S_23461726fbf1,
+    frag: S_d485799e9581,
     attributes: [{ id: 2257551913, reg: 4, name: "SpuVertexColours" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }, { id: 4116404738, reg: 3, name: "?" }],
     samplers: [{ id: 1104507554, unit: 0, name: "?" }, { id: 2292244373, unit: 1, name: "screenSpaceRefractionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -56,7 +56,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 4,
     backend: "Static",
     vert: S_bb73c4e55eae,
-    frag: S_dd9e4f3c6d58,
+    frag: S_64acc961ba62,
     attributes: [{ id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }, { id: 4116404738, reg: 3, name: "?" }],
     samplers: [{ id: 1104507554, unit: 0, name: "?" }, { id: 2292244373, unit: 3, name: "screenSpaceRefractionTex" }, { id: 2615985957, unit: 1, name: "directionalLight0ShadowTex" }, { id: 2770045716, unit: 2, name: "directionalLight0LightmapTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -68,7 +68,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 6,
     backend: "Static",
     vert: S_7a891589dfbc,
-    frag: S_6e53d10cf777,
+    frag: S_a9c9197ed8c4,
     attributes: [{ id: 2257551913, reg: 4, name: "SpuVertexColours" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }, { id: 4116404738, reg: 3, name: "?" }],
     samplers: [{ id: 1104507554, unit: 0, name: "?" }, { id: 2292244373, unit: 3, name: "screenSpaceRefractionTex" }, { id: 2615985957, unit: 1, name: "directionalLight0ShadowTex" }, { id: 2770045716, unit: 2, name: "directionalLight0LightmapTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -80,7 +80,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 7,
     backend: "Static",
     vert: S_d3f741805424,
-    frag: S_9a3900cc5f38,
+    frag: S_dead2e0b2728,
     attributes: [{ id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }, { id: 4116404738, reg: 3, name: "?" }],
     samplers: [{ id: 15054457, unit: 3, name: "zoneTexInnerNearest" }, { id: 527402403, unit: 4, name: "zoneTexVis" }, { id: 1104507554, unit: 0, name: "?" }, { id: 2292244373, unit: 1, name: "screenSpaceRefractionTex" }, { id: 3588227281, unit: 2, name: "zoneTexInner" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -92,7 +92,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 9,
     backend: "Static",
     vert: S_ae0a36284c7b,
-    frag: S_a80d059a8b78,
+    frag: S_49537d7c4a6c,
     attributes: [{ id: 2257551913, reg: 4, name: "SpuVertexColours" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }, { id: 4116404738, reg: 3, name: "?" }],
     samplers: [{ id: 15054457, unit: 3, name: "zoneTexInnerNearest" }, { id: 527402403, unit: 4, name: "zoneTexVis" }, { id: 1104507554, unit: 0, name: "?" }, { id: 2292244373, unit: 1, name: "screenSpaceRefractionTex" }, { id: 3588227281, unit: 2, name: "zoneTexInner" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -104,7 +104,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 8,
     backend: "Static",
     vert: S_bb73c4e55eae,
-    frag: S_32aa860a0800,
+    frag: S_3d809b1c22ff,
     attributes: [{ id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }, { id: 4116404738, reg: 3, name: "?" }],
     samplers: [{ id: 15054457, unit: 5, name: "zoneTexInnerNearest" }, { id: 527402403, unit: 6, name: "zoneTexVis" }, { id: 1104507554, unit: 0, name: "?" }, { id: 2292244373, unit: 3, name: "screenSpaceRefractionTex" }, { id: 2615985957, unit: 1, name: "directionalLight0ShadowTex" }, { id: 2770045716, unit: 2, name: "directionalLight0LightmapTex" }, { id: 3588227281, unit: 4, name: "zoneTexInner" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],

@@ -56,7 +56,54 @@ const CUTOUT_MATERIALS = new Set<string>([
  * glow, scaled by globalAlphaScaler -- and the surface is meant to read as
  * tinted glass, not painted hull.
  */
-const BLEND_MATERIALS = new Set<string>(["nitro_perspex_new.rcsmaterial"]);
+type BlendMode = "alpha" | "additive";
+const BLEND_MATERIALS = new Map<string, BlendMode>([
+  ["nitro_perspex_new.rcsmaterial", "alpha"],
+  // Ship glass: its fragment program carries the diffuse texture's alpha
+  // (ag_systems_glass.gtf, DXT5) unchanged to the end as the coverage value.
+  ["glass_texture.rcsmaterial", "alpha"],
+  // Engine exhaust. Coverage is the vertex alpha times a fresnel rim fade,
+  // and the colour is a flame texture on black scaled by a constant -- a
+  // glow, which only reads right ADDED to the scene: alpha-blending it would
+  // darken everything around the flame with the texture's black. The
+  // texture's own alpha is not coverage at all; the program uses it to
+  // offset the second uv lookup, a flow distortion.
+  ["flame_test.rcsmaterial", "additive"],
+]);
+
+/**
+ * Values for the constants the ENGINE injects into a fragment program.
+ *
+ * A fragment program's constants live inline in its microcode and are patched
+ * at load time. Most patch sites map to a named uniform; ~0.19% belong to a
+ * register with no name in the mapping table -- constants the engine writes
+ * from its own state (viewport, projection) rather than from material data.
+ * rcsdump emits those as `u_engine<reg>`, and the viewer's generic neutral
+ * (1, or 0 for anything feeding a texture coordinate) is wrong for the ones
+ * that encode a projection: zero collapses the sample to a single texel.
+ *
+ * The register number is per PROGRAM, so `u_engine2` means different things
+ * in different shaders and a global override cannot express it. This table
+ * is keyed by material, and each value is READ OFF THE PROGRAM's own use of
+ * the constant -- mt_tunnelrefraction's u_engine2 does `R1.xy *= .w;
+ * R1.zw = .xy; uv = (R1.x + R1.z, R1.w - R1.y)`, which is ndc * 0.5 + 0.5
+ * with the y-flip of a top-left-origin render target, so (0.5, 0.5, s, 0.5);
+ * .z scales the refraction direction and starts at 1 for tuning.
+ *
+ * Opt-in and explicit, like the cutout and blend lists: a value here is
+ * viewer knowledge about one material, never a guess applied everywhere.
+ */
+const ENGINE_CONSTANTS: Record<string, Record<string, [number, number, number, number]>> = {
+  "mt_tunnelrefraction.rcsmaterial": { u_engine2: [0.5, 0.5, 1.0, 0.5] },
+  // Same idiom, but the projection lands on register 3 in most permutations
+  // and on register 1 in one; a name the picked program does not declare is
+  // simply an unused uniform, so both are listed.
+  "cl_tunnelrefraction.rcsmaterial": { u_engine3: [0.5, 0.5, 1.0, 0.5], u_engine1: [0.5, 0.5, 1.0, 0.5] },
+  // reflectplane_dc_seawater's three "engine" rows turned out to be rows 1-3
+  // of a named mat4 (reflectProject) whose registers unused parameters had
+  // squatted on; rcsdump now names them and the composer binds the matrix,
+  // so nothing is needed here.
+};
 
 export type GeneratedVariant = {
   /** The .rcsmaterial this came from, for the cutout list above. */
@@ -382,6 +429,11 @@ function commonUniforms(): Record<string, THREE.IUniform> {
     // to be bound is the matrix -- binding the columns would leave the mat4 at
     // zero and collapse every vertex to the origin.
     viewProj: { value: new THREE.Matrix4() },
+    // The refraction materials' own projection, rewritten from four
+    // fragment-side rows the same way; written per frame alongside viewProj,
+    // which is what it is in this viewer.
+    refractProject: { value: new THREE.Matrix4() },
+    reflectProject: { value: new THREE.Matrix4() },
     // Likewise rewritten from four columns; see MATRIX_UNIFORMS in _compose.ts.
     // `world` is the mesh's own transform, written per draw alongside
     // rcsModelMatrix. ambientShadowMatrix belongs to a shadow pass the viewer
@@ -496,10 +548,36 @@ export function makeVariant(
   // (tick()'s `if (clock)` silently skipped, freezing all 529 clock-reading
   // shaders), and every other invented neutral -- Constant1, Refbrightness --
   // sampled as GLSL zero instead.
-  const vertGlsl = variant.vert.decls.map(declText).join("\n") + "\n" + variant.vert.body;
-  const fragGlsl = variant.frag.decls.map(declText).join("\n") + "\n" + variant.frag.body;
-  Object.assign(uniforms, declaredUniforms(vertGlsl, uniforms));
-  Object.assign(uniforms, declaredUniforms(fragGlsl, uniforms));
+  // The position register, from the permutation's own binding table, so the
+  // composer can transform it by the full modelMatrix -- the scale/bias pair
+  // the body computes with cannot carry an animated pivot's rotation.
+  const positionAttr = variant.attributes.find((a) => a.name === "position");
+  const positionReg = positionAttr ? `v${positionAttr.reg}` : null;
+
+  // Compose first, then scan the COMPOSED text for uniforms to invent. The
+  // scan used to run over the raw declarations, so the four `world_N` columns
+  // the composer folds into one `mat4 world` were each given a vec4 neutral
+  // as well -- four uniforms the shader never declares, cluttering every pick
+  // log and every toolbox with values nothing reads.
+  const vertSrc = PHONG_OVERRIDE
+    ? phongVertex(variant.vert, phongRegs(variant.attributes))
+    : composeVertex(variant.vert, { position: positionReg });
+  const fragSrc = PHONG_OVERRIDE
+    ? phongFragment(diffuseUnit(variant.samplers))
+    : composeFragment(variant.frag, BLEND_MATERIALS.has(variant.material));
+  Object.assign(uniforms, declaredUniforms(vertSrc, uniforms));
+  Object.assign(uniforms, declaredUniforms(fragSrc, uniforms));
+  // Engine-injected constants this material is known to need; see
+  // ENGINE_CONSTANTS. After declaredUniforms, so a known value replaces the
+  // invented neutral rather than being replaced by it.
+  // A "material#permutation" key wins over the material-wide one: register
+  // numbers are per program, and a material whose permutations put the same
+  // constant on different registers needs one entry per permutation.
+  const engineConstants =
+    ENGINE_CONSTANTS[`${variant.material}#${variant.permutation}`] ?? ENGINE_CONSTANTS[variant.material] ?? {};
+  for (const [name, v] of Object.entries(engineConstants)) {
+    uniforms[name] = { value: new THREE.Vector4(v[0], v[1], v[2], v[3]) };
+  }
 
   // Alpha cutout: opt-in per material, never inferred.
   //
@@ -522,36 +600,40 @@ export function makeVariant(
   // here. Being wrong now means a sprite draws as a solid quad -- visible, and
   // obviously wrong -- instead of geometry silently disappearing.
   const writesAlpha = CUTOUT_MATERIALS.has(variant.material);
-  const blends = BLEND_MATERIALS.has(variant.material);
+  const blendMode = BLEND_MATERIALS.get(variant.material);
+  const blends = blendMode !== undefined;
   // The shader does the discard itself -- Three's alphaTest only sets a
   // #define whose chunk a raw ShaderMaterial never includes -- so the threshold
   // is passed as a uniform. Zero disables it for materials that blend.
   uniforms.u_alphaTest = { value: writesAlpha ? 0.5 : 0.0 };
 
-  // The position register, from the permutation's own binding table, so the
-  // composer can transform it by the full modelMatrix -- the scale/bias pair
-  // the body computes with cannot carry an animated pivot's rotation.
-  const positionAttr = variant.attributes.find((a) => a.name === "position");
-  const positionReg = positionAttr ? `v${positionAttr.reg}` : null;
-
-  // The Phong bisect. Everything above -- channels, ids, streams, uniforms,
-  // the picked permutation -- is untouched; only the shading is replaced. See
-  // PHONG_OVERRIDE in _compose.ts for what each outcome tells us.
-  const phong = PHONG_OVERRIDE;
+  // The shaders were composed above (see vertSrc/fragSrc); PHONG_OVERRIDE in
+  // _compose.ts swaps in the bisect there. Everything else -- channels, ids,
+  // streams, uniforms, the picked permutation -- is the same either way.
   const built = new GeneratedRcsMaterial(
     {
-      side: THREE.DoubleSide,
-      vertexShader: phong
-        ? phongVertex(variant.vert, phongRegs(variant.attributes))
-        : composeVertex(variant.vert, { position: positionReg }),
-      fragmentShader: phong
-        ? phongFragment(diffuseUnit(variant.samplers))
-        : composeFragment(variant.frag, blends),
+      // Front faces only, as RSX draws these by default. DoubleSide made the
+      // tunnel's outer shell occlude its own windows from the inside: the
+      // screen-space refraction target rendered the shell's BACK faces behind
+      // the glass, so the windows showed the tunnel interior instead of the
+      // world outside. Winding is consistent with the decoded normals
+      // (face-vs-vertex alignment 0.99), so FrontSide is the visible side.
+      side: THREE.FrontSide,
+      vertexShader: vertSrc,
+      fragmentShader: fragSrc,
       uniforms,
       ...(writesAlpha ? { transparent: false, alphaTest: 0.5 } : {}),
       // Blend materials draw with their computed alpha over what is already
       // there; no depth write, so the hull behind the canopy still renders.
-      ...(blends ? { transparent: true, depthWrite: false } : {}),
+      ...(blends
+        ? {
+            transparent: true,
+            depthWrite: false,
+            // Additive = src * srcAlpha + dst: the computed coverage still
+            // scales the glow, it just never darkens what is behind it.
+            blending: blendMode === "additive" ? THREE.AdditiveBlending : THREE.NormalBlending,
+          }
+        : {}),
     },
     Permutation.LitLightmapped,
     variant.bank,

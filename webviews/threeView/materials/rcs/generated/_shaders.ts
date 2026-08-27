@@ -43762,7 +43762,7 @@ export const S_27ade436b05a: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_c317c6dd315c: ShaderParts = {
+export const S_36316d46e7e1: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -43771,11 +43771,14 @@ export const S_c317c6dd315c: ShaderParts = {
     {"kind":"varying","type":"vec4","name":"v_TEX4"},
     {"kind":"uniform","type":"sampler2D","name":"TEX0","comment":"?"},
     {"kind":"uniform","type":"sampler2D","name":"TEX1","comment":"screenSpaceRefractionTex"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"u_512f8e65"},
+    {"kind":"uniform","type":"vec4","name":"u_engine7"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
   params: [],
@@ -43798,24 +43801,24 @@ export const S_c317c6dd315c: ShaderParts = {
   R0.xyz = (R0 * R2.wwww + R1).xyz;
   R1.x = (vec4(dot(vec3(R0), vec3(R0)))).x;
   R0.xyz = ((R0 * inversesqrt(R1.xxxx))).xyz;
-  R1.w = ((-R0.xxxx) * vec4(0, 0, 0, 0).zzzz + R1).w;
-  R1.x = ((-R0.yyyy) * vec4(0, 0, 0, 0).zzzz + v_TEX1.wwww).x;
-  R0.w = ((-R0.zzzz) * vec4(0, 0, 0, 0).zzzz + R0).w;
-  R1.xyz = (R1.xxxx * u_78575769.xywz).xyz;
+  R1.w = ((-R0.xxxx) * u_engine1.zzzz + R1).w;
+  R1.x = ((-R0.yyyy) * u_engine1.zzzz + v_TEX1.wwww).x;
+  R0.w = ((-R0.zzzz) * u_engine1.zzzz + R0).w;
+  R1.xyz = (R1.xxxx * refractProject_1.xywz).xyz;
   H0.w = (vec4(0, 0, 0, 0).zzzz).w;
-  R1.xyz = (R1.wwww * refractProject.xywz + R1).xyz;
-  R1.xyz = (R0.wwww * constantAmbientColour.xywz + R1).xyz;
-  R1.xyz = (R1 + distortion.xywz).xyz;
+  R1.xyz = (R1.wwww * refractProject_0.xywz + R1).xyz;
+  R1.xyz = (R0.wwww * refractProject_2.xywz + R1).xyz;
+  R1.xyz = (R1 + refractProject_3.xywz).xyz;
   H0.xyz = (u_512f8e65).xyz;
   R0.w = (R1.zzzz).w;
-  R1.xy = (R1 * vec4(0, 0, 0, 0).wwww).xy;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.xy = (R1 * u_engine1.wwww).xy;
+  R1.zw = (u_engine1.xxxy).zw;
   R1.xy = ((R1 / R0.wwww)).xy;
   R0.zw = (R1.xxxy * vec4(1, -1, 0, 0).xxxy + R1).zw;
   H1.xyz = (texture2D(TEX1, vec2(R0.zwzz))).xyz;
   H1.xyz = (H1 * vec4(2, 0, 0, 0).xxxx).xyz;
-  H1.xyz = (H1 * vec4(0, 0, 0, 0)).xyz;
-  H0.xyz = (H0 * vec4(0, 0, 0, 0) + H1).xyz;
+  H1.xyz = (H1 * u_engine7).xyz;
+  H0.xyz = (H0 * u_engine0 + H1).xyz;
   if (u_alphaTest > 0.0 && H0.w < u_alphaTest) discard;
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
@@ -43879,7 +43882,7 @@ export const S_ae0a36284c7b: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_23461726fbf1: ShaderParts = {
+export const S_d485799e9581: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -43891,13 +43894,16 @@ export const S_23461726fbf1: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX1","comment":"screenSpaceRefractionTex"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
+    {"kind":"uniform","type":"vec4","name":"u_engine3"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"vec4","name":"u_512f8e65"},
+    {"kind":"uniform","type":"vec4","name":"u_engine10"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
   params: [],
@@ -43933,26 +43939,26 @@ export const S_23461726fbf1: ShaderParts = {
   R3.xyz = ((R3 * inversesqrt(R0.yyyy))).xyz;
   R2.w = clamp01(vec4(dot(vec3(R2), vec3(R3)))).w;
   R0.y = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).y;
-  H1.xyz = (R0.yyyy * H1 + vec4(0, 0, 0, 0)).xyz;
+  H1.xyz = (R0.yyyy * H1 + u_engine0).xyz;
   H1.xyz = (v_TEX0 + H1).xyz;
-  R1.w = ((-R2.yyyy) * vec4(0, 0, 0, 0).zzzz + R1.yyyy).w;
+  R1.w = ((-R2.yyyy) * u_engine3.zzzz + R1.yyyy).w;
   R1.y = (log2(R2.wwww)).y;
-  R3.xyz = (R1.wwww * u_78575769.xywz).xyz;
-  R3.w = ((-R2.xxxx) * vec4(0, 0, 0, 0).zzzz + R1.xxxx).w;
-  R2.w = ((-R2.zzzz) * vec4(0, 0, 0, 0).zzzz + R1.zzzz).w;
-  R2.xyz = (R3.wwww * refractProject.xywz + R3).xyz;
-  R2.xyz = (R2.wwww * constantAmbientColour.xywz + R2).xyz;
+  R3.xyz = (R1.wwww * refractProject_1.xywz).xyz;
+  R3.w = ((-R2.xxxx) * u_engine3.zzzz + R1.xxxx).w;
+  R2.w = ((-R2.zzzz) * u_engine3.zzzz + R1.zzzz).w;
+  R2.xyz = (R3.wwww * refractProject_0.xywz + R3).xyz;
+  R2.xyz = (R2.wwww * refractProject_2.xywz + R2).xyz;
   R2.w = (R1.yyyy * vec4(0, 0, 32, 0).zzzz).w;
   R2.w = (exp2(R2.wwww)).w;
-  R2.xyz = (R2 + distortion.xywz).xyz;
+  R2.xyz = (R2 + refractProject_3.xywz).xyz;
   R1.w = clamp01(R0.yyyy).w;
   R0.y = (R2.wwww * R1.wwww).y;
-  R1.zw = (R2.xxxy * vec4(0, 0, 0, 0).wwww).zw;
+  R1.zw = (R2.xxxy * u_engine3.wwww).zw;
   H2.xyz = (R0.yyyy * directionalLight0Colour).xyz;
   R2.w = (R0.xxxx * fogColour).w;
   R2.x = (R2.zzzz).x;
   R0.xy = ((R1.zwzz / R2)).xy;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.zw = (u_engine3.xxxy).zw;
   R0.xy = (R0 * vec4(1, -1, 0, 0).xyxx + R1.zwzz).xy;
   R1.w = ((-R2) * R2).w;
   H2.xyz = (H2 * u_3dd66fff).xyz;
@@ -43963,7 +43969,7 @@ export const S_23461726fbf1: ShaderParts = {
   R1.xyz = ((-fogColour) * R1.wwww + fogColour).xyz;
   H0.w = (vec4(0, 0, 0, 0)).w;
   H0.xyz = (H0 * vec4(2, 0, 0, 0).xxxx).xyz;
-  H0.xyz = (H0 * vec4(0, 0, 0, 0) + H1).xyz;
+  H0.xyz = (H0 * u_engine10 + H1).xyz;
   H0.xyz = (R1.wwww * H0 + R1).xyz;
   if (u_alphaTest > 0.0 && H0.w < u_alphaTest) discard;
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
@@ -44034,7 +44040,7 @@ export const S_bb73c4e55eae: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_dd9e4f3c6d58: ShaderParts = {
+export const S_64acc961ba62: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -44047,14 +44053,17 @@ export const S_dd9e4f3c6d58: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"directionalLight0LightmapTex"},
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"screenSpaceRefractionTex"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"vec4","name":"u_512f8e65"},
+    {"kind":"uniform","type":"vec4","name":"u_engine10"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
   params: [],
@@ -44088,37 +44097,37 @@ export const S_dd9e4f3c6d58: ShaderParts = {
   R1.w = clamp01(exp2(R1.wwww)).w;
   R2.xyz = ((R1 * inversesqrt(R2.xxxx))).xyz;
   R2.w = (R2).w;
-  R3.y = ((-R2.zzzz) * vec4(0, 0, 0, 0).zzzz + R3.wwww).y;
-  R2.w = ((-R2.xxxx) * vec4(0, 0, 0, 0).zzzz + R2).w;
+  R3.y = ((-R2.zzzz) * u_engine3.zzzz + R3.wwww).y;
+  R2.w = ((-R2.xxxx) * u_engine3.zzzz + R2).w;
   R0.xyz = (R0 + directionalLight0DirectionWorldSpace).xyz;
   R0.w = (R0).w;
   R3.z = (vec4(dot(vec3(R0), vec3(R0)))).z;
-  R3.w = ((-R2.yyyy) * vec4(0, 0, 0, 0).zzzz + R0).w;
-  R1.xyz = (R3.wwww * u_78575769.xywz).xyz;
+  R3.w = ((-R2.yyyy) * u_engine3.zzzz + R0).w;
+  R1.xyz = (R3.wwww * refractProject_1.xywz).xyz;
   R2.w = (R2).w;
-  R1.xyz = (R2.wwww * refractProject.xywz + R1).xyz;
+  R1.xyz = (R2.wwww * refractProject_0.xywz + R1).xyz;
   R0.xyz = ((R0 * inversesqrt(R3.zzzz))).xyz;
   R3.x = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).x;
   R0.x = clamp01(vec4(dot(vec3(R2), vec3(R0)))).x;
-  R1.xyz = (R3.yyyy * constantAmbientColour.xywz + R1).xyz;
+  R1.xyz = (R3.yyyy * refractProject_2.xywz + R1).xyz;
   R0.w = clamp01(R3.xxxx).w;
   R0.z = (texture2D(TEX2, vec2(v_TEX0))).z;
   CC0.z = (texture2D(TEX2, vec2(v_TEX0))).z;
   R3.y = (log2(R0.xxxx)).y;
-  R1.xyz = (R1 + distortion.xywz).xyz;
-  R2.zw = (R1.xxxy * vec4(0, 0, 0, 0).wwww).zw;
+  R1.xyz = (R1 + refractProject_3.xywz).xyz;
+  R2.zw = (R1.xxxy * u_engine3.wwww).zw;
   R1.x = (R3.yyyy * vec4(32, 0, 0, 0).xxxx).x;
   R0.x = mix(vec4(R0), vec4((texture2D(TEX1, vec2(v_TEX0)))), vec4(greaterThan(vec4(lessThan(CC0.zzzz, vec4(0.0))) + vec4(greaterThan(CC0.zzzz, vec4(0.0))), vec4(0.0)))).x;
   R1.y = (R1.zzzz).y;
   R1.z = (exp2(R1.xxxx)).z;
   R1.xy = ((R2.zwzz / R1.yyyy)).xy;
-  R2.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R2.zw = (u_engine3.xxxy).zw;
   R1.xy = (R1 * vec4(1, -1, 0, 0).xyxx + R2.zwzz).xy;
   R1.z = (R1 * R0.wwww).z;
   R0.z = (R0.xxxx * R0).z;
   H0.xyz = (R3.xxxx * directionalLight0Colour).xyz;
   R2.w = (R0.zzzz * R1.zzzz).w;
-  H0.xyz = (H0 * R0.zzzz + vec4(0, 0, 0, 0)).xyz;
+  H0.xyz = (H0 * R0.zzzz + u_engine0).xyz;
   H1.xyz = (texture2D(TEX3, vec2(R1))).xyz;
   H1.xyz = (H1 * vec4(2, 0, 0, 0).xxxx).xyz;
   H0.w = (R2 * directionalLight0Colour).w;
@@ -44127,7 +44136,7 @@ export const S_dd9e4f3c6d58: ShaderParts = {
   H2.xyz = (H2 * u_3dd66fff).xyz;
   H0.xyz = (H0 * u_512f8e65 + H2).xyz;
   R1.xyz = ((-fogColour) * R1.wwww + fogColour).xyz;
-  H0.xyz = (H1 * vec4(0, 0, 0, 0) + H0).xyz;
+  H0.xyz = (H1 * u_engine10 + H0).xyz;
   H0.xyz = (R1.wwww * H0 + R1).xyz;
   if (u_alphaTest > 0.0 && H0.w < u_alphaTest) discard;
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
@@ -44202,7 +44211,7 @@ export const S_7a891589dfbc: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_6e53d10cf777: ShaderParts = {
+export const S_a9c9197ed8c4: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -44215,15 +44224,18 @@ export const S_6e53d10cf777: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX1","comment":"directionalLight0ShadowTex"},
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"directionalLight0LightmapTex"},
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"screenSpaceRefractionTex"},
+    {"kind":"uniform","type":"vec4","name":"u_engine3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"vec4","name":"u_512f8e65"},
+    {"kind":"uniform","type":"vec4","name":"u_engine10"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
   params: [],
@@ -44253,25 +44265,25 @@ export const S_6e53d10cf777: ShaderParts = {
   R0.xyz = (R1.yzwx * R0.zzzz + R0.xywz).xyz;
   R0.w = (vec4(dot(vec3(R0), vec3(R0)))).w;
   R0.xyz = ((R0 * inversesqrt(R0.wwww))).xyz;
-  R2.w = ((-R0.yyyy) * vec4(0, 0, 0, 0).zzzz + R2.yyyy).w;
+  R2.w = ((-R0.yyyy) * u_engine3.zzzz + R2.yyyy).w;
   R2.y = (vec4(dot(vec3(v_TEX3), vec3(v_TEX3)))).y;
   R0.w = (vec4(dot(vec3(R0), vec3(directionalLight0DirectionWorldSpace)))).w;
-  R3.xyz = (R2.wwww * u_78575769.xywz).xyz;
-  R1.w = ((-R0.xxxx) * vec4(0, 0, 0, 0).zzzz + R2.xxxx).w;
-  R1.yzw = (R1.wwww * refractProject.xxyw + R3.xxyz).yzw;
+  R3.xyz = (R2.wwww * refractProject_1.xywz).xyz;
+  R1.w = ((-R0.xxxx) * u_engine3.zzzz + R2.xxxx).w;
+  R1.yzw = (R1.wwww * refractProject_0.xxyw + R3.xxyz).yzw;
   R3.xyz = ((v_TEX3 * inversesqrt(R2.yyyy))).xyz;
   R2.xyw = (R3.xyzz + directionalLight0DirectionWorldSpace.xyzz).xyw;
-  R3.w = ((-R0.zzzz) * vec4(0, 0, 0, 0).zzzz + R2.zzzz).w;
+  R3.w = ((-R0.zzzz) * u_engine3.zzzz + R2.zzzz).w;
   R2.z = (vec4(dot(vec3(R2.xywz), vec3(R2.xywz)))).z;
-  R3.xyz = (R3.wwww * constantAmbientColour.xywz + R1.yzww).xyz;
+  R3.xyz = (R3.wwww * refractProject_2.xywz + R1.yzww).xyz;
   R2.xyz = ((R2.xywz * inversesqrt(R2.zzzz))).xyz;
   R3.w = clamp01(vec4(dot(vec3(R0), vec3(R2)))).w;
-  R0.xyz = (R3 + distortion.xywz).xyz;
-  R2.zw = (R0.xxxy * vec4(0, 0, 0, 0).wwww).zw;
+  R0.xyz = (R3 + refractProject_3.xywz).xyz;
+  R2.zw = (R0.xxxy * u_engine3.wwww).zw;
   R0.y = (R0.zzzz).y;
   R0.yz = ((R2.zzww / R0.yyyy)).yz;
   R1.y = (log2(R3.wwww)).y;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.zw = (u_engine3.xxxy).zw;
   R0.x = (texture2D(TEX1, vec2(v_TEX0))).x;
   CC0.x = (texture2D(TEX1, vec2(v_TEX0))).x;
   R2.x = clamp01(R0.wwww).x;
@@ -44285,7 +44297,7 @@ export const S_6e53d10cf777: ShaderParts = {
   R1.w = (R0.xxxx * R0.zzzz).w;
   H1.xyz = (texture2D(TEX3, vec2(R0.ywzw))).xyz;
   H0.w = (R1 * directionalLight0Colour).w;
-  H0.xyz = (H5 * R0.xxxx + vec4(0, 0, 0, 0)).xyz;
+  H0.xyz = (H5 * R0.xxxx + u_engine0).xyz;
   H0.xyz = (v_TEX1 + H0).xyz;
   R1.w = (R1.xxxx * fogColour).w;
   H2.xyz = (H0.wwww * directionalLight0Colour).xyz;
@@ -44296,7 +44308,7 @@ export const S_6e53d10cf777: ShaderParts = {
   H1.xyz = (H1 * vec4(2, 0, 0, 0).xxxx).xyz;
   H0.w = (vec4(0, 0, 0, 0).yyyy).w;
   R0.x = clamp01(exp2(R2.wwww)).x;
-  H1.xyz = (H1 * vec4(0, 0, 0, 0) + H4).xyz;
+  H1.xyz = (H1 * u_engine10 + H4).xyz;
   R1.xyz = ((-fogColour) * R0.xxxx + fogColour).xyz;
   H0.xyz = (R0.xxxx * H1 + R1).xyz;
   if (u_alphaTest > 0.0 && H0.w < u_alphaTest) discard;
@@ -44358,7 +44370,7 @@ export const S_d3f741805424: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_9a3900cc5f38: ShaderParts = {
+export const S_dead2e0b2728: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -44370,16 +44382,19 @@ export const S_9a3900cc5f38: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"zoneTexInner"},
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"zoneTexInnerNearest"},
     {"kind":"uniform","type":"sampler2D","name":"TEX4","comment":"zoneTexVis"},
-    {"kind":"uniform","type":"vec4","name":"zoneEffectInner"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"zoneBaseAltInner"},
+    {"kind":"uniform","type":"vec4","name":"u_engine3"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"zoneBaseInner"},
+    {"kind":"uniform","type":"vec4","name":"u_engine8"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
     {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"vec4","name":"zoneColourTint"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
@@ -44413,13 +44428,13 @@ export const S_9a3900cc5f38: ShaderParts = {
   R2.w = (vec4(dot(vec3(R0), vec3(R0)))).w;
   R0.xyz = ((R0 * inversesqrt(R2.wwww))).xyz;
   R2.w = (vec4(dot(vec3(R1), vec3(R1)))).w;
-  R0.w = ((-R0.zzzz) * vec4(0, 0, 0, 0).zzzz + R0).w;
-  R1.w = ((-R0.yyyy) * vec4(0, 0, 0, 0).zzzz + R1).w;
-  R3.xyz = (R1.wwww * zoneEffectInner.xywz).xyz;
-  R3.w = ((-R0.xxxx) * vec4(0, 0, 0, 0).zzzz + R3).w;
-  R3.xyz = (R3.wwww * refractProject.xywz + R3).xyz;
+  R0.w = ((-R0.zzzz) * u_engine3.zzzz + R0).w;
+  R1.w = ((-R0.yyyy) * u_engine3.zzzz + R1).w;
+  R3.xyz = (R1.wwww * refractProject_1.xywz).xyz;
+  R3.w = ((-R0.xxxx) * u_engine3.zzzz + R3).w;
+  R3.xyz = (R3.wwww * refractProject_0.xywz + R3).xyz;
   R0.w = (R0).w;
-  R3.xyz = (R0.wwww * zoneBaseAltInner.xywz + R3).xyz;
+  R3.xyz = (R0.wwww * refractProject_2.xywz + R3).xyz;
   R1.xyz = ((R1 * inversesqrt(R2.wwww))).xyz;
   R1.w = (vec4(dot(vec3((-R1)), vec3(R2)))).w;
   R0.w = ((-abs(R1)) + vec4(0, 0, 0, 1)).w;
@@ -44434,23 +44449,23 @@ export const S_9a3900cc5f38: ShaderParts = {
   R0.w = (R1 * vec4(0, 0, 0, 10)).w;
   R1.w = (exp2(R0.wwww)).w;
   R1.xyz = (R1.xxxx * distortion).xyz;
-  R3.xyz = (R3 + u_78575769.xywz).xyz;
+  R3.xyz = (R3 + refractProject_3.xywz).xyz;
   R3.w = (v_TEX3).w;
   H2.xyz = (R1.wwww * zoneBaseInner + R1).xyz;
   R1.zw = (v_TEX4.xxxy).zw;
-  R3.xy = (R3 * vec4(0, 0, 0, 0).wwww).xy;
-  R1.zw = ((-R1) * vec4(0, 0, 0, 0).xxxy + vec4(0, 0, 0, 0).xxxy).zw;
+  R3.xy = (R3 * u_engine3.wwww).xy;
+  R1.zw = ((-R1) * u_engine8.xxxy + u_engine8.xxxy).zw;
   R2.w = (texture2D(TEX3, vec2(R1.zwzz))).w;
   H1.xyz = (directionalLight0Colour).xyz;
   R3.w = (R3).w;
   H3.xyz = (texture2D(TEX2, vec2(R1.zwzz))).xyz;
   H2.xyz = (H3 * constantAmbientColour + H2).xyz;
   R1.w = (R3 * fogColour).w;
-  H1.xyz = (R0.xxxx * H1 + vec4(0, 0, 0, 0)).xyz;
+  H1.xyz = (R0.xxxx * H1 + u_engine0).xyz;
   R2.y = (R3.zzzz).y;
   R2.x = (log2(R2.xxxx)).x;
   R3.xy = ((R3 / R2.yyyy)).xy;
-  R3.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R3.zw = (u_engine3.xxxy).zw;
   R1.w = ((-R1) * R1).w;
   R3.xy = (R3 * vec4(1, -1, 0, 0).xyxx + R3.zwzz).xy;
   H1.xyz = (H1 * H2).xyz;
@@ -44479,7 +44494,7 @@ export const S_9a3900cc5f38: ShaderParts = {
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_a80d059a8b78: ShaderParts = {
+export const S_49537d7c4a6c: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -44495,13 +44510,16 @@ export const S_a80d059a8b78: ShaderParts = {
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
     {"kind":"uniform","type":"vec4","name":"zoneBaseInner"},
-    {"kind":"uniform","type":"vec4","name":"zoneEffectInner"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
+    {"kind":"uniform","type":"vec4","name":"u_engine3"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"u_engine8"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
     {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
-    {"kind":"uniform","type":"vec4","name":"zoneBaseAltInner"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"vec4","name":"zoneColourTint"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
@@ -44553,32 +44571,32 @@ export const S_a80d059a8b78: ShaderParts = {
   R0.w = (vec4(dot(vec3(R2), vec3(R2)))).w;
   R2.xyz = ((R2 * inversesqrt(R0.wwww))).xyz;
   R2.w = clamp01(vec4(dot(vec3(R0), vec3(R2)))).w;
-  R0.w = ((-R0.yyyy) * vec4(0, 0, 0, 0).zzzz + R3.yyyy).w;
+  R0.w = ((-R0.yyyy) * u_engine3.zzzz + R3.yyyy).w;
   R4.x = (vec4(dot(vec3(R0), vec3(directionalLight0DirectionWorldSpace)))).x;
-  R0.x = ((-R0) * vec4(0, 0, 0, 0).zzzz + R3).x;
-  R2.xyz = (R0.wwww * zoneEffectInner.xywz).xyz;
-  R0.w = ((-R0.zzzz) * vec4(0, 0, 0, 0).zzzz + R3.zzzz).w;
-  R2.xyz = (R0.xxxx * refractProject.xywz + R2).xyz;
+  R0.x = ((-R0) * u_engine3.zzzz + R3).x;
+  R2.xyz = (R0.wwww * refractProject_1.xywz).xyz;
+  R0.w = ((-R0.zzzz) * u_engine3.zzzz + R3.zzzz).w;
+  R2.xyz = (R0.xxxx * refractProject_0.xywz + R2).xyz;
   R2.w = (log2(R2.wwww)).w;
   R0.x = (v_TEX5).x;
-  R4.zw = ((-R4) * vec4(0, 0, 0, 0).xxxy + vec4(0, 0, 0, 0).xxxy).zw;
+  R4.zw = ((-R4) * u_engine8.xxxy + u_engine8.xxxy).zw;
   R0.x = (R0 * fogColour.wwww).x;
   H3.xyz = (texture2D(TEX2, vec2(R4.zwzz))).xyz;
   H6.xyz = (H3 * constantAmbientColour + H2).xyz;
   R1.w = ((-R0.xxxx) * R0.xxxx).w;
   H2.xyz = (directionalLight0Colour).xyz;
   R1.w = (R1 * vec4(0, 0, 0, 1.44269)).w;
-  H2.xyz = (R4.xxxx * H2 + vec4(0, 0, 0, 0)).xyz;
+  H2.xyz = (R4.xxxx * H2 + u_engine0).xyz;
   H2.xyz = (v_TEX0 + H2).xyz;
   H2.xyz = (H2 * H6).xyz;
   R4.w = (texture2D(TEX3, vec2(R4.zwzz))).w;
-  R2.xyz = (R0.wwww * zoneBaseAltInner.xywz + R2).xyz;
+  R2.xyz = (R0.wwww * refractProject_2.xywz + R2).xyz;
   R2.w = (R2 * vec4(0, 0, 32, 0).zzzz).w;
-  R2.xyz = (R2 + u_78575769.xywz).xyz;
+  R2.xyz = (R2 + refractProject_3.xywz).xyz;
   R4.z = (R2).z;
-  R3.zw = (R2.xxxy * vec4(0, 0, 0, 0).wwww).zw;
+  R3.zw = (R2.xxxy * u_engine3.wwww).zw;
   R2.xyz = (texture2D(TEX4, vec2(R4.wwww))).xyz;
-  R3.xy = (vec4(0, 0, 0, 0).xyxx).xy;
+  R3.xy = (u_engine3.xyxx).xy;
   R0.zw = ((R3 / R4.zzzz)).zw;
   R3.xy = (R0.zwzz * vec4(1, -1, 0, 0).xyxx + R3).xy;
   R0.x = (exp2(R2.wwww)).x;
@@ -44602,7 +44620,7 @@ export const S_a80d059a8b78: ShaderParts = {
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_32aa860a0800: ShaderParts = {
+export const S_3d809b1c22ff: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -44621,12 +44639,15 @@ export const S_32aa860a0800: ShaderParts = {
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
     {"kind":"uniform","type":"vec4","name":"zoneBaseInner"},
+    {"kind":"uniform","type":"vec4","name":"u_engine3"},
+    {"kind":"uniform","type":"vec4","name":"u_engine8"},
     {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"zoneEffectInner"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"zoneBaseAltInner"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"vec4","name":"zoneColourTint"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
@@ -44682,35 +44703,35 @@ export const S_32aa860a0800: ShaderParts = {
   R0.xyz = ((R0 * inversesqrt(R0.wwww))).xyz;
   R3.w = (R3).w;
   R0.x = clamp01(vec4(dot(vec3(R4), vec3(R0)))).x;
-  R3.w = ((-R4.zzzz) * vec4(0, 0, 0, 0).zzzz + R3).w;
+  R3.w = ((-R4.zzzz) * u_engine3.zzzz + R3).w;
   R0.zw = (v_TEX5.xxxy).zw;
-  R0.y = ((-R4.xxxx) * vec4(0, 0, 0, 0).zzzz + R1.wwww).y;
-  R4.x = ((-R4.yyyy) * vec4(0, 0, 0, 0).zzzz + R4.wwww).x;
-  R0.zw = ((-R0) * vec4(0, 0, 0, 0).xxxy + vec4(0, 0, 0, 0).xxxy).zw;
+  R0.y = ((-R4.xxxx) * u_engine3.zzzz + R1.wwww).y;
+  R4.x = ((-R4.yyyy) * u_engine3.zzzz + R4.wwww).x;
+  R0.zw = ((-R0) * u_engine8.xxxy + u_engine8.xxxy).zw;
   H2.xyz = (texture2D(TEX4, vec2(R0.zwzz))).xyz;
   H2.xyz = (H2 * constantAmbientColour + H6).xyz;
   R1.z = (texture2D(TEX2, vec2(v_TEX0))).z;
   CC0.z = (texture2D(TEX2, vec2(v_TEX0))).z;
-  R3.xyz = (R4.xxxx * zoneEffectInner.xywz).xyz;
+  R3.xyz = (R4.xxxx * refractProject_1.xywz).xyz;
   R1.z = (R1).z;
   R4.x = mix(vec4(R4), vec4((texture2D(TEX1, vec2(v_TEX0)))), vec4(greaterThan(vec4(lessThan(CC0.zzzz, vec4(0.0))) + vec4(greaterThan(CC0.zzzz, vec4(0.0))), vec4(0.0)))).x;
   R4.w = (R4.xxxx * R1.zzzz).w;
   R4.y = clamp01(abs(R4) + vec4(-0.5, 0, 0, 0).xxxx).y;
   H3.xyz = (R2.xxxx * directionalLight0Colour).xyz;
-  H3.xyz = (R4.wwww * H3 + vec4(0, 0, 0, 0)).xyz;
+  H3.xyz = (R4.wwww * H3 + u_engine0).xyz;
   H2.xyz = (H3 * H2).xyz;
-  R3.xyz = (R0.yyyy * refractProject.xywz + R3).xyz;
+  R3.xyz = (R0.yyyy * refractProject_0.xywz + R3).xyz;
   R1.z = (log2(R0.xxxx)).z;
   R0.w = (texture2D(TEX5, vec2(R0.zwzz))).w;
-  R3.xyz = (R3.wwww * zoneBaseAltInner.xywz + R3).xyz;
+  R3.xyz = (R3.wwww * refractProject_2.xywz + R3).xyz;
   R3.w = (R1.zzzz * vec4(0, 0, 32, 0).zzzz).w;
-  R3.xyz = (R3 + u_78575769.xywz).xyz;
-  R0.xy = (R3 * vec4(0, 0, 0, 0).wwww).xy;
+  R3.xyz = (R3 + refractProject_3.xywz).xyz;
+  R0.xy = (R3 * u_engine3.wwww).xy;
   R3.z = (R3).z;
   R1.zw = ((R0.xxxy / R3.zzzz)).zw;
   R0.y = (exp2(R3.wwww)).y;
   R0.x = clamp01(R2).x;
-  R3.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R3.zw = (u_engine3.xxxy).zw;
   R4.x = ((-gl_FragCoord.zzzz) + vec4(0, 0, 1, 0).zzzz).x;
   R3.xy = (R1.zwzz * vec4(1, -1, 0, 0).xyxx + R3.zwzz).xy;
   R3.w = (R0.yyyy * R0.xxxx).w;
@@ -134866,7 +134887,7 @@ export const S_076670febca4: ShaderParts = {
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_0c8b5d4e365e: ShaderParts = {
+export const S_004c7512e93d: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -134876,10 +134897,13 @@ export const S_0c8b5d4e365e: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX0","comment":"?"},
     {"kind":"uniform","type":"sampler2D","name":"TEX1","comment":"DiffuseTexture"},
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"screenSpaceRefractionTex"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"u_engine2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
   params: [],
@@ -134905,31 +134929,31 @@ export const S_0c8b5d4e365e: ShaderParts = {
   R0.xyz = (R0 + R1).xyz;
   R1.x = (vec4(dot(vec3(R0), vec3(R0)))).x;
   R0.xyz = ((R0 * inversesqrt(R1.xxxx))).xyz;
-  R0.x = ((-R0) * vec4(0, 0, 0, 0).zzzz + R0.wwww).x;
-  R0.w = ((-R0.zzzz) * vec4(0, 0, 0, 0).zzzz + R1).w;
-  R2.w = ((-R0.yyyy) * vec4(0, 0, 0, 0).zzzz + v_TEX1).w;
-  R1.xyz = (R2.wwww * u_78575769.xywz).xyz;
-  R1.xyz = (R0.xxxx * refractProject.xywz + R1).xyz;
-  R1.xyz = (R0.wwww * constantAmbientColour.xywz + R1).xyz;
-  R1.xyz = (R1 + distortion.xywz).xyz;
+  R0.x = ((-R0) * u_engine2.zzzz + R0.wwww).x;
+  R0.w = ((-R0.zzzz) * u_engine2.zzzz + R1).w;
+  R2.w = ((-R0.yyyy) * u_engine2.zzzz + v_TEX1).w;
+  R1.xyz = (R2.wwww * refractProject_1.xywz).xyz;
+  R1.xyz = (R0.xxxx * refractProject_0.xywz + R1).xyz;
+  R1.xyz = (R0.wwww * refractProject_2.xywz + R1).xyz;
+  R1.xyz = (R1 + refractProject_3.xywz).xyz;
   R0.w = (R1.zzzz).w;
   H0 = (texture2D(TEX1, vec2(v_TEX4)));
-  R1.xy = (R1 * vec4(0, 0, 0, 0).wwww).xy;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.xy = (R1 * u_engine2.wwww).xy;
+  R1.zw = (u_engine2.xxxy).zw;
   R1.xy = ((R1 / R0.wwww)).xy;
   R0.zw = (R1.xxxy * vec4(0, 0, 1, -1) + R1).zw;
-  H2.xy = (H0.wwww * vec4(0, 0, 0, 0).xyxx).xy;
-  H0.w = (H0 * vec4(0, 0, 0, 0).zzzz).w;
+  H2.xy = (H0.wwww * u_engine0.xyxx).xy;
+  H0.w = (H0 * u_engine0.zzzz).w;
   H1.xyz = (texture2D(TEX2, vec2(R0.zwzz))).xyz;
   H1.xy = (H1 * H2).xy;
   H1.z = (H1 * H0.wwww).z;
-  H0.xyz = (H0 * vec4(0, 0, 0, 0) + H1).xyz;
+  H0.xyz = (H0 * u_engine1 + H1).xyz;
   H0.w = (vec4(0, 0, 0, 0)).w;
   if (u_alphaTest > 0.0 && H0.w < u_alphaTest) discard;
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_4b43c9e47248: ShaderParts = {
+export const S_9a9c1f26ee75: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -134942,11 +134966,14 @@ export const S_4b43c9e47248: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"screenSpaceRefractionTex"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
+    {"kind":"uniform","type":"vec4","name":"u_engine4"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
@@ -134986,33 +135013,33 @@ export const S_4b43c9e47248: ShaderParts = {
   R1.yzw = ((R1 * inversesqrt(R0.wwww))).yzw;
   R2.w = (vec4(dot(vec3(R0), vec3(R0)))).w;
   R0.xyz = ((R0 * inversesqrt(R2.wwww))).xyz;
-  R0.w = ((-R1) * vec4(0, 0, 0, 0).zzzz + R2.zzzz).w;
+  R0.w = ((-R1) * u_engine4.zzzz + R2.zzzz).w;
   R2.w = clamp01(vec4(dot(vec3(R1.yzww), vec3(R0)))).w;
   R2.z = (vec4(dot(vec3(R1.yzww), vec3(directionalLight0DirectionWorldSpace)))).z;
-  R2.y = ((-R1.zzzz) * vec4(0, 0, 0, 0).zzzz + R2).y;
+  R2.y = ((-R1.zzzz) * u_engine4.zzzz + R2).y;
   H3.xyz = (directionalLight0Colour).xyz;
-  R0.xyz = (R2.yyyy * u_78575769.xywz).xyz;
-  R3.z = ((-R1.yyyy) * vec4(0, 0, 0, 0) + R2.xxxx).z;
-  R0.xyz = (R3.zzzz * refractProject.xywz + R0).xyz;
+  R0.xyz = (R2.yyyy * refractProject_1.xywz).xyz;
+  R3.z = ((-R1.yyyy) * u_engine4 + R2.xxxx).z;
+  R0.xyz = (R3.zzzz * refractProject_0.xywz + R0).xyz;
   R3.z = (log2(R2.wwww)).z;
-  R0.xyz = (R0.wwww * constantAmbientColour.xywz + R0).xyz;
+  R0.xyz = (R0.wwww * refractProject_2.xywz + R0).xyz;
   R0.w = clamp01(R2.zzzz).w;
-  R0.xyz = (R0 + distortion.xywz).xyz;
-  H3.xyz = (R2.zzzz * H3 + vec4(0, 0, 0, 0)).xyz;
+  R0.xyz = (R0 + refractProject_3.xywz).xyz;
+  H3.xyz = (R2.zzzz * H3 + u_engine1).xyz;
   R1.x = (R3.zzzz * vec4(32, 0, 0, 0).xxxx).x;
-  R2.zw = (R0.xxxy * vec4(0, 0, 0, 0).wwww).zw;
+  R2.zw = (R0.xxxy * u_engine4.wwww).zw;
   H0 = (texture2D(TEX1, vec2(R3)));
   R1.x = (exp2(R1.xxxx)).x;
   R0.w = (R1.xxxx * R0).w;
   H2.xyz = (v_TEX0 + H3).xyz;
   H0.xyz = (H0 * H2).xyz;
   R1.w = (R0.zzzz).w;
-  H4.xyz = (H0.wwww * vec4(0, 0, 0, 0)).xyz;
+  H4.xyz = (H0.wwww * u_engine0).xyz;
   R0.w = (R0).w;
   H1.xyz = (R0.wwww * directionalLight0Colour).xyz;
   H0.w = (vec4(0, 0, 0, 0)).w;
   R1.xy = ((R2.zwzz / R1.wwww)).xy;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.zw = (u_engine4.xxxy).zw;
   H0.xyz = (H1 * u_3dd66fff + H0).xyz;
   R0.w = (R3 * vec4(0, 0, 0, 1.44269)).w;
   R1.xy = (R1 * vec4(1, -1, 0, 0).xyxx + R1.zwzz).xy;
@@ -135097,7 +135124,7 @@ export const S_773620f2aae4: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_764ffc3aeac6: ShaderParts = {
+export const S_b421cc3adfcb: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -135109,11 +135136,14 @@ export const S_764ffc3aeac6: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX1","comment":"DiffuseTexture"},
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"screenSpaceRefractionTex"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
@@ -135150,23 +135180,23 @@ export const S_764ffc3aeac6: ShaderParts = {
   R3.xyz = (v_TEX3).xyz;
   R0.w = (vec4(dot(vec3(R2), vec3(R2)))).w;
   R2.xyz = ((R2 * inversesqrt(R0.wwww))).xyz;
-  R2.w = ((-R2.yyyy) * vec4(0, 0, 0, 0).zzzz + R3.yyyy).w;
+  R2.w = ((-R2.yyyy) * u_engine1.zzzz + R3.yyyy).w;
   R1.w = (vec4(dot(vec3(R1), vec3(R1)))).w;
   R1.xyz = ((R1 * inversesqrt(R1.wwww))).xyz;
-  R1.w = ((-R2.xxxx) * vec4(0, 0, 0, 0).zzzz + R3.xxxx).w;
+  R1.w = ((-R2.xxxx) * u_engine1.zzzz + R3.xxxx).w;
   R1.x = clamp01(vec4(dot(vec3(R2), vec3(R1)))).x;
-  R3.xyw = (R2.wwww * u_78575769).xyw;
-  R3.xyw = (R1.wwww * refractProject + R3).xyw;
+  R3.xyw = (R2.wwww * refractProject_1).xyw;
+  R3.xyw = (R1.wwww * refractProject_0 + R3).xyw;
   R1.xy = (R1).xy;
   R1.z = (log2(R1.xxxx)).z;
   R0.w = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).w;
-  R1.w = ((-R2.zzzz) * vec4(0, 0, 0, 0).zzzz + R3.zzzz).w;
-  R3.xyz = (R1.wwww * distortion.xywz + R3.xywz).xyz;
+  R1.w = ((-R2.zzzz) * u_engine1.zzzz + R3.zzzz).w;
+  R3.xyz = (R1.wwww * refractProject_2.xywz + R3.xywz).xyz;
   R3.w = clamp01(R0).w;
   H2.xyz = (R0.wwww * directionalLight0Colour).xyz;
-  R3.xyz = (R3 + vec4(0, 0, 0, 0).xywz).xyz;
+  R3.xyz = (R3 + refractProject_3.xywz).xyz;
   R1.w = (R1.zzzz * vec4(0, 0, 32, 0).zzzz).w;
-  R2.xy = (R3 * vec4(0, 0, 0, 0).wwww).xy;
+  R2.xy = (R3 * u_engine1.wwww).xy;
   R2.zw = (v_TEX5.xxxy).zw;
   H1.xyz = (R2.zzzz * H2 + R0).xyz;
   R2.w = (R2 * fogColour).w;
@@ -135177,10 +135207,10 @@ export const S_764ffc3aeac6: ShaderParts = {
   R3.w = (R3.xxxx * R3).w;
   R2.w = ((-R2) * R2).w;
   R2.z = (R2 * R3.wwww).z;
-  H0.xyz = (H0.wwww * vec4(0, 0, 0, 0)).xyz;
+  H0.xyz = (H0.wwww * u_engine0).xyz;
   H0.w = (vec4(0, 0, 0, 0)).w;
   R3.w = (R3.zzzz).w;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.zw = (u_engine1.xxxy).zw;
   R1.xy = ((R2 / R3.wwww)).xy;
   H4.w = (R2.zzzz * directionalLight0Colour).w;
   H4.xyz = (H4.wwww * directionalLight0Colour).xyz;
@@ -135273,7 +135303,7 @@ export const S_460e3c8adabd: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_d4471c82d2c8: ShaderParts = {
+export const S_1ac5360b1f04: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -135287,10 +135317,13 @@ export const S_d4471c82d2c8: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"screenSpaceRefractionTex"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
@@ -135334,22 +135367,22 @@ export const S_d4471c82d2c8: ShaderParts = {
   R3.w = (R3.xxxx * fogColour).w;
   R1.xyz = ((R1 * inversesqrt(R0.wwww))).xyz;
   R1.w = clamp01(vec4(dot(vec3(R2), vec3(R1)))).w;
-  R0.w = ((-R2.yyyy) * vec4(0, 0, 0, 0).zzzz + R0.yyyy).w;
+  R0.w = ((-R2.yyyy) * u_engine1.zzzz + R0.yyyy).w;
   R0.y = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).y;
-  R0.x = ((-R2) * vec4(0, 0, 0, 0).zzzz + R0).x;
-  R1.xyz = (R0.wwww * u_78575769.xywz).xyz;
-  R0.w = ((-R2.zzzz) * vec4(0, 0, 0, 0).zzzz + R0.zzzz).w;
-  R1.xyz = (R0.xxxx * refractProject.xywz + R1).xyz;
+  R0.x = ((-R2) * u_engine1.zzzz + R0).x;
+  R1.xyz = (R0.wwww * refractProject_1.xywz).xyz;
+  R0.w = ((-R2.zzzz) * u_engine1.zzzz + R0.zzzz).w;
+  R1.xyz = (R0.xxxx * refractProject_0.xywz + R1).xyz;
   R1.w = (log2(R1.wwww)).w;
-  R1.xyz = (R0.wwww * distortion.xywz + R1).xyz;
+  R1.xyz = (R0.wwww * refractProject_2.xywz + R1).xyz;
   R0.w = (R1 * vec4(0, 0, 32, 0).zzzz).w;
-  R1.xyz = (R1 + vec4(0, 0, 0, 0).xywz).xyz;
+  R1.xyz = (R1 + refractProject_3.xywz).xyz;
   H4.xyz = (R0.yyyy * directionalLight0Colour).xyz;
   R1.w = (R1.zzzz).w;
-  R1.xy = (R1 * vec4(0, 0, 0, 0).wwww).xy;
+  R1.xy = (R1 * u_engine1.wwww).xy;
   R2.z = (exp2(R0.wwww)).z;
   R1.xy = ((R1 / R1.wwww)).xy;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.zw = (u_engine1.xxxy).zw;
   R1.xy = (R1 * vec4(1, -1, 0, 0).xyxx + R1.zwzz).xy;
   R0.w = clamp01(R0.yyyy).w;
   R1.w = (R2.zzzz * R0).w;
@@ -135357,7 +135390,7 @@ export const S_d4471c82d2c8: ShaderParts = {
   R2.w = (R2 * R1).w;
   H0 = (texture2D(TEX1, vec2(R4)));
   R3.w = ((-R3) * R3).w;
-  H1.xyz = (H0.wwww * vec4(0, 0, 0, 0)).xyz;
+  H1.xyz = (H0.wwww * u_engine0).xyz;
   H3.xyz = (v_TEX1 + H4).xyz;
   H0.w = (R2 * directionalLight0Colour).w;
   H3.xyz = (H0 * H3).xyz;
@@ -135375,7 +135408,7 @@ export const S_d4471c82d2c8: ShaderParts = {
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_df8227a60216: ShaderParts = {
+export const S_b02948615ecc: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -135389,12 +135422,15 @@ export const S_df8227a60216: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"directionalLight0LightmapTex"},
     {"kind":"uniform","type":"sampler2D","name":"TEX4","comment":"screenSpaceRefractionTex"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine4"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
@@ -135435,36 +135471,36 @@ export const S_df8227a60216: ShaderParts = {
   R0.w = (vec4(dot(vec3(R0), vec3(R0)))).w;
   R2.xyz = ((R0 * inversesqrt(R0.wwww))).xyz;
   R4.x = clamp01(vec4(dot(vec3(R2), vec3(R1)))).x;
-  R4.y = ((-R2) * vec4(0, 0, 0, 0).zzzz + R1.wwww).y;
-  R1.x = ((-R2) * vec4(0, 0, 0, 0).zzzz + R2.wwww).x;
-  R3.xyz = (R4.yyyy * u_78575769.xywz).xyz;
-  R0.w = ((-R2.zzzz) * vec4(0, 0, 0, 0).zzzz + R4).w;
+  R4.y = ((-R2) * u_engine4.zzzz + R1.wwww).y;
+  R1.x = ((-R2) * u_engine4.zzzz + R2.wwww).x;
+  R3.xyz = (R4.yyyy * refractProject_1.xywz).xyz;
+  R0.w = ((-R2.zzzz) * u_engine4.zzzz + R4).w;
   R0.y = (log2(R4.xxxx)).y;
-  R3.xyz = (R1.xxxx * refractProject.xywz + R3).xyz;
+  R3.xyz = (R1.xxxx * refractProject_0.xywz + R3).xyz;
   R1.x = (texture2D(TEX2, vec2(v_TEX0))).x;
   CC0.x = (texture2D(TEX2, vec2(v_TEX0))).x;
   R0.x = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).x;
   R1.z = mix(vec4(R1), vec4((texture2D(TEX3, vec2(v_TEX0)))), vec4(greaterThan(vec4(lessThan(CC0.xxxx, vec4(0.0))) + vec4(greaterThan(CC0.xxxx, vec4(0.0))), vec4(0.0)))).z;
   R1.w = clamp01(R0.xxxx).w;
-  R2.xyz = (R0.wwww * constantAmbientColour.xywz + R3).xyz;
+  R2.xyz = (R0.wwww * refractProject_2.xywz + R3).xyz;
   H6.xyz = (R0.xxxx * directionalLight0Colour).xyz;
   R2.w = (R0.yyyy * vec4(0, 0, 0, 32)).w;
   R3.z = (exp2(R2.wwww)).z;
-  R2.xyz = (R2 + distortion.xywz).xyz;
+  R2.xyz = (R2 + refractProject_3.xywz).xyz;
   R1.x = (R1 * R1.zzzz).x;
   R1.z = (R2).z;
-  H6.xyz = (R1.xxxx * H6 + vec4(0, 0, 0, 0)).xyz;
+  H6.xyz = (R1.xxxx * H6 + u_engine1).xyz;
   R2.w = (R3.zzzz * R1).w;
   H0 = (texture2D(TEX1, vec2(v_TEX5)));
   H0.xyz = (H0 * H6).xyz;
-  R2.xy = (R2 * vec4(0, 0, 0, 0).wwww).xy;
+  R2.xy = (R2 * u_engine4.wwww).xy;
   R1.x = (R2.wwww * R1).x;
   H5.w = (R1.xxxx * directionalLight0Colour).w;
   R2.xy = ((R2 / R1.zzzz)).xy;
-  R0.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R0.zw = (u_engine4.xxxy).zw;
   R1.w = (R3 * fogColour).w;
   H2.xyz = (H5.wwww * directionalLight0Colour).xyz;
-  H6.xyz = (H0.wwww * vec4(0, 0, 0, 0)).xyz;
+  H6.xyz = (H0.wwww * u_engine0).xyz;
   R1.w = ((-R1) * R1).w;
   R1.w = (R1 * vec4(0, 0, 0, 1.44269)).w;
   H7.xyz = (H2 * u_3dd66fff + H0).xyz;
@@ -135479,7 +135515,7 @@ export const S_df8227a60216: ShaderParts = {
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_55795c8fa219: ShaderParts = {
+export const S_cd25c99ee2f3: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -135493,13 +135529,16 @@ export const S_55795c8fa219: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"directionalLight0ShadowTex"},
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"directionalLight0LightmapTex"},
     {"kind":"uniform","type":"sampler2D","name":"TEX4","comment":"screenSpaceRefractionTex"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
+    {"kind":"uniform","type":"vec4","name":"u_engine4"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
-    {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
-    {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
+    {"kind":"uniform","type":"vec4","name":"u_engine0"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
@@ -135535,16 +135574,16 @@ export const S_55795c8fa219: ShaderParts = {
   R0.w = (vec4(dot(vec3(v_TEX3), vec3(v_TEX3)))).w;
   R1.x = (vec4(dot(vec3(R0), vec3(R0)))).x;
   R1.xyz = ((R0 * inversesqrt(R1.xxxx))).xyz;
-  R1.w = ((-R1.xxxx) * vec4(0, 0, 0, 0).zzzz + R2.xxxx).w;
-  R2.x = ((-R1.yyyy) * vec4(0, 0, 0, 0).zzzz + R2.yyyy).x;
+  R1.w = ((-R1.xxxx) * u_engine4.zzzz + R2.xxxx).w;
+  R2.x = ((-R1.yyyy) * u_engine4.zzzz + R2.yyyy).x;
   R0.xyz = ((v_TEX3 * inversesqrt(R0.wwww))).xyz;
-  R2.xyz = (R2.xxxx * u_78575769.xywz).xyz;
-  R2.w = ((-R1.zzzz) * vec4(0, 0, 0, 0).zzzz + R2).w;
-  R2.xyz = (R1.wwww * refractProject.xywz + R2).xyz;
+  R2.xyz = (R2.xxxx * refractProject_1.xywz).xyz;
+  R2.w = ((-R1.zzzz) * u_engine4.zzzz + R2).w;
+  R2.xyz = (R1.wwww * refractProject_0.xywz + R2).xyz;
   R0.w = (v_TEX6.xxxx).w;
   R0.xyz = (R0 + directionalLight0DirectionWorldSpace).xyz;
   R0.w = (R0 * fogColour).w;
-  R2.xyz = (R2.wwww * constantAmbientColour.xywz + R2).xyz;
+  R2.xyz = (R2.wwww * refractProject_2.xywz + R2).xyz;
   R0.w = ((-R0) * R0).w;
   R2.w = (vec4(dot(vec3(R0), vec3(R0)))).w;
   R0.xyz = ((R0 * inversesqrt(R2.wwww))).xyz;
@@ -135552,8 +135591,8 @@ export const S_55795c8fa219: ShaderParts = {
   R0.x = (texture2D(TEX2, vec2(v_TEX0))).x;
   CC0.x = (texture2D(TEX2, vec2(v_TEX0))).x;
   R0.y = (log2(R0.yyyy)).y;
-  R2.xyz = (R2 + distortion.xywz).xyz;
-  R2.xy = (R2 * vec4(0, 0, 0, 0).wwww).xy;
+  R2.xyz = (R2 + refractProject_3.xywz).xyz;
+  R2.xy = (R2 * u_engine4.wwww).xy;
   R1.w = (R2.zzzz).w;
   R1.z = (vec4(dot(vec3(R1), vec3(directionalLight0DirectionWorldSpace)))).z;
   R2.w = clamp01(R1.zzzz).w;
@@ -135563,14 +135602,14 @@ export const S_55795c8fa219: ShaderParts = {
   R2.x = (R0 * R0.zzzz).x;
   R0.z = (R0.yyyy * vec4(32, 0, 0, 0).xxxx).z;
   R1.zw = (R1).zw;
-  H0.xyz = (R2.xxxx * H3 + vec4(0, 0, 0, 0)).xyz;
+  H0.xyz = (R2.xxxx * H3 + u_engine1).xyz;
   R0.z = (exp2(R0.zzzz)).z;
-  R1.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R1.zw = (u_engine4.xxxy).zw;
   R2.y = (R0.zzzz * R2.wwww).y;
   R1.zw = (R1.xxxy * vec4(1, -1, 0, 0).xxxy + R1).zw;
   H2 = (texture2D(TEX1, vec2(R3)));
-  H5.xyz = (H2.wwww * vec4(0, 0, 0, 0)).xyz;
-  CC0.xyz = (H2.wwww * vec4(0, 0, 0, 0)).xyz;
+  H5.xyz = (H2.wwww * u_engine0).xyz;
+  CC0.xyz = (H2.wwww * u_engine0).xyz;
   R3.w = (R2.yyyy * R2.xxxx).w;
   H0.xyz = (v_TEX1 + H0).xyz;
   H0.xyz = (H2 * H0).xyz;
@@ -135588,7 +135627,7 @@ export const S_55795c8fa219: ShaderParts = {
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_c2bd746c63ce: ShaderParts = {
+export const S_bfef827bdc26: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -135604,14 +135643,17 @@ export const S_c2bd746c63ce: ShaderParts = {
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
     {"kind":"uniform","type":"vec4","name":"zoneBaseInner"},
+    {"kind":"uniform","type":"vec4","name":"u_engine4"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
+    {"kind":"uniform","type":"vec4","name":"u_engine9"},
+    {"kind":"uniform","type":"vec4","name":"u_engine1"},
     {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
-    {"kind":"uniform","type":"vec4","name":"zoneEffectInner"},
-    {"kind":"uniform","type":"vec4","name":"refractProject"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_1"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_0"},
     {"kind":"uniform","type":"vec4","name":"zoneColourTint"},
-    {"kind":"uniform","type":"vec4","name":"zoneBaseAltInner"},
-    {"kind":"uniform","type":"vec4","name":"u_78575769"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_2"},
+    {"kind":"uniform","type":"vec4","name":"refractProject_3"},
     {"kind":"uniform","type":"vec4","name":"u_3dd66fff"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
   ],
@@ -135662,41 +135704,41 @@ export const S_c2bd746c63ce: ShaderParts = {
   R3.z = clamp01(vec4(dot(vec3(R2), vec3(R3)))).z;
   R0.xyz = (R0.xxxx * distortion).xyz;
   H2.xyz = (R1.xxxx * zoneBaseInner + R0).xyz;
-  R3.w = ((-R2.xxxx) * vec4(0, 0, 0, 0).zzzz + R1).w;
+  R3.w = ((-R2.xxxx) * u_engine4.zzzz + R1).w;
   H0.w = (texture2D(TEX1, vec2(v_TEX4))).w;
   H0.xyz = (directionalLight0Colour).xyz;
   R1.zw = (v_TEX4.xxxy).zw;
-  R3.xy = ((-R1.zwzz) * vec4(0, 0, 0, 0).xyxx + vec4(0, 0, 0, 0).xyxx).xy;
+  R3.xy = ((-R1.zwzz) * u_engine9.xyxx + u_engine9.xyxx).xy;
   R2.w = (v_TEX1).w;
   R0.z = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).z;
-  H0.xyz = (R0.zzzz * H0 + vec4(0, 0, 0, 0)).xyz;
+  H0.xyz = (R0.zzzz * H0 + u_engine1).xyz;
   H3.xyz = (texture2D(TEX3, vec2(R3))).xyz;
   H2.xyz = (H3 * constantAmbientColour + H2).xyz;
   R1.w = (R0 * fogColour).w;
   R0.w = (v_TEX2).w;
   H0.xyz = (H0 * H2).xyz;
-  R2.w = ((-R2.yyyy) * vec4(0, 0, 0, 0).zzzz + R2).w;
-  R1.xyz = (R2.wwww * zoneEffectInner.xywz).xyz;
+  R2.w = ((-R2.yyyy) * u_engine4.zzzz + R2).w;
+  R1.xyz = (R2.wwww * refractProject_1.xywz).xyz;
   R3.w = (R3).w;
-  R1.xyz = (R3.wwww * refractProject.xywz + R1).xyz;
-  R3.w = ((-R2.zzzz) * vec4(0, 0, 0, 0).zzzz + R0).w;
+  R1.xyz = (R3.wwww * refractProject_0.xywz + R1).xyz;
+  R3.w = ((-R2.zzzz) * u_engine4.zzzz + R0).w;
   H5.xyz = (H0.wwww * zoneColourTint).xyz;
-  R1.xyz = (R3.wwww * zoneBaseAltInner.xywz + R1).xyz;
+  R1.xyz = (R3.wwww * refractProject_2.xywz + R1).xyz;
   R1.w = ((-R1) * R1).w;
   R0.w = (texture2D(TEX4, vec2(R3))).w;
   R3.x = (log2(R3.zzzz)).x;
   R3.w = (R3.xxxx * vec4(32, 0, 0, 0).xxxx).w;
   R3.x = clamp01(R0.zzzz).x;
-  R1.xyz = (R1 + u_78575769.xywz).xyz;
+  R1.xyz = (R1 + refractProject_3.xywz).xyz;
   R3.y = (exp2(R3.wwww)).y;
   R3.x = (R3.yyyy * R3).x;
   R0.z = (R1).z;
   H6.xyz = (R3.xxxx * directionalLight0Colour).xyz;
   H0.w = (vec4(0, 0, 0, 0)).w;
   H0.xyz = (H6 * u_3dd66fff + H0).xyz;
-  R1.xy = (R1 * vec4(0, 0, 0, 0).wwww).xy;
+  R1.xy = (R1 * u_engine4.wwww).xy;
   R1.w = (R1 * vec4(1.44269, 0, 0, 0).xxxx).w;
-  R3.zw = (vec4(0, 0, 0, 0).xxxy).zw;
+  R3.zw = (u_engine4.xxxy).zw;
   R3.xy = ((R1 / R0.zzzz)).xy;
   R3.xy = (R3 * vec4(1, -1, 0, 0).xyxx + R3.zwzz).xy;
   R3.w = clamp01(abs(R2.yyyy) + vec4(0, 0, -0.5, 0).zzzz).w;
@@ -158093,7 +158135,7 @@ export const S_7f55d7e57bd4: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_354a71d44830: ShaderParts = {
+export const S_fce998a565f0: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -158107,9 +158149,12 @@ export const S_354a71d44830: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"screenSpaceReflectionTex"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"prelitBias"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_1"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
     {"kind":"uniform","type":"vec4","name":"u_81e0e773"},
-    {"kind":"uniform","type":"vec4","name":"reflectProject"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_0"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_2"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
     {"kind":"uniform","type":"vec4","name":"prelitScaleSpecular"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
@@ -158169,7 +158214,7 @@ export const S_354a71d44830: ShaderParts = {
   H5.w = (H2.xxxx * prelitBias.xxxx).w;
   H2.x = (exp2(H5.wwww)).x;
   R2.w = clamp01(vec4(dot(vec3(R2), vec3(R3)))).w;
-  R3.xyz = (R0.wwww * vec4(0, 0, 0, 0).xywz).xyz;
+  R3.xyz = (R0.wwww * reflectProject_1.xywz).xyz;
   H2.y = (log2(H2.yyyy)).y;
   H3.x = (H2.yyyy * prelitBias.yyyy).x;
   R1.w = (R2.zzzz * distortion.zzzz + R1).w;
@@ -158180,11 +158225,11 @@ export const S_354a71d44830: ShaderParts = {
   R2.y = (exp2(R0.xxxx)).y;
   R0.x = clamp01(R2).x;
   R0.z = (R0).z;
-  R3.xyz = (R0.zzzz * reflectProject.xywz + R3).xyz;
-  R3.xyz = (R1.wwww * vec4(0, 0, 0, 0).xywz + R3).xyz;
+  R3.xyz = (R0.zzzz * reflectProject_0.xywz + R3).xyz;
+  R3.xyz = (R1.wwww * reflectProject_2.xywz + R3).xyz;
   H3.w = (H2.zzzz * prelitBias.zzzz).w;
   H2.z = (exp2(H3.wwww)).z;
-  R3.xyz = (R3 + vec4(0, 0, 0, 0).xywz).xyz;
+  R3.xyz = (R3 + reflectProject_3.xywz).xyz;
   H1.w = (H2 * R2.xxxx).w;
   H3.xy = (H3).xy;
   H2.y = (exp2(H3.xxxx)).y;
@@ -158279,7 +158324,7 @@ export const S_6240af57fb48: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_57409dbcb0d4: ShaderParts = {
+export const S_96782cca6656: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -158293,12 +158338,15 @@ export const S_57409dbcb0d4: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"?"},
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"screenSpaceReflectionTex"},
     {"kind":"uniform","type":"vec4","name":"prelitBias"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_1"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
-    {"kind":"uniform","type":"vec4","name":"reflectProject"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_0"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_2"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
     {"kind":"uniform","type":"vec4","name":"prelitScaleSpecular"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_3"},
     {"kind":"uniform","type":"vec4","name":"u_81e0e773"},
     {"kind":"uniform","type":"vec4","name":"SpecularColour"},
     {"kind":"uniform","type":"vec4","name":"u_4d60d566"},
@@ -158352,9 +158400,9 @@ export const S_57409dbcb0d4: ShaderParts = {
   R1.xyz = ((R1 * inversesqrt(R0.wwww))).xyz;
   H1.w = (H0.xxxx * prelitBias.xxxx).w;
   H0.x = (exp2(H1.wwww)).x;
-  R2.xyz = (R3.yyyy * vec4(0, 0, 0, 0).xywz).xyz;
+  R2.xyz = (R3.yyyy * reflectProject_1.xywz).xyz;
   R2.w = (R1.xxxx * distortion.zzzz + R3.xxxx).w;
-  R2.xyz = (R2.wwww * reflectProject.xywz + R2).xyz;
+  R2.xyz = (R2.wwww * reflectProject_0.xywz + R2).xyz;
   R0.w = (R1.zzzz * distortion.zzzz + R3.zzzz).w;
   R3.xyz = ((v_TEX2 * inversesqrt(R1.wwww))).xyz;
   R3.xyz = (R3 + directionalLight0DirectionWorldSpace).xyz;
@@ -158363,7 +158411,7 @@ export const S_57409dbcb0d4: ShaderParts = {
   H0.y = (log2(H0.yyyy)).y;
   R2.w = (vec4(dot(vec3(R3), vec3(R3)))).w;
   R3.xyz = ((R3 * inversesqrt(R2.wwww))).xyz;
-  R2.xyz = (R0.wwww * vec4(0, 0, 0, 0).xywz + R2).xyz;
+  R2.xyz = (R0.wwww * reflectProject_2.xywz + R2).xyz;
   H7.w = (H0.yyyy * prelitBias.yyyy).w;
   H0.y = (exp2(H7.wwww)).y;
   R3.w = (vec4(dot(vec3(R1), vec3(directionalLight0DirectionWorldSpace)))).w;
@@ -158377,7 +158425,7 @@ export const S_57409dbcb0d4: ShaderParts = {
   H0.xyz = (H0 * prelitScaleSpecular + H2).xyz;
   R0.w = ((-R0) * R0).w;
   R1.w = (log2(R1.zzzz)).w;
-  R1.xyz = (R2 + vec4(0, 0, 0, 0).xywz).xyz;
+  R1.xyz = (R2 + reflectProject_3.xywz).xyz;
   R2.x = (R1.wwww * u_81e0e773.xxxx).x;
   R1.z = (R1).z;
   R2.y = (R1.zzzz).y;
@@ -158456,7 +158504,7 @@ export const S_5e8018d31144: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_9a2fbfbc3f78: ShaderParts = {
+export const S_01fb3a59a518: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -158466,7 +158514,10 @@ export const S_9a2fbfbc3f78: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX1","comment":"?"},
     {"kind":"uniform","type":"sampler2D","name":"TEX2","comment":"screenSpaceReflectionTex"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
-    {"kind":"uniform","type":"vec4","name":"reflectProject"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_1"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_0"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_2"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_3"},
     {"kind":"uniform","type":"vec4","name":"u_4d60d566"},
     {"kind":"uniform","type":"vec4","name":"Reflectivity"},
     {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
@@ -158515,11 +158566,11 @@ export const S_9a2fbfbc3f78: ShaderParts = {
   R0.w = (vec4(dot(vec3(R1), vec3(R1)))).w;
   R1.xy = ((R1.xzzw * inversesqrt(R0.wwww))).xy;
   R0.w = (R1.xxxx * distortion.zzzz + R0.xxxx).w;
-  R1.xzw = (R0.yyyy * vec4(0, 0, 0, 0).xyyw).xzw;
-  R2.xyz = (R0.wwww * reflectProject.xywz + R1.xzww).xyz;
+  R1.xzw = (R0.yyyy * reflectProject_1.xyyw).xzw;
+  R2.xyz = (R0.wwww * reflectProject_0.xywz + R1.xzww).xyz;
   R2.w = (R1.yyyy * distortion.zzzz + R0.zzzz).w;
-  R0.xyz = (R2.wwww * vec4(0, 0, 0, 0).xywz + R2).xyz;
-  R0.xyz = (R0 + vec4(0, 0, 0, 0).xywz).xyz;
+  R0.xyz = (R2.wwww * reflectProject_2.xywz + R2).xyz;
+  R0.xyz = (R0 + reflectProject_3.xywz).xyz;
   R0.z = (R0).z;
   R0.xy = ((R0 / R0.zzzz)).xy;
   R0.xy = (R0 * vec4(1, -1, 0.5, 0).xyxx + vec4(1, -1, 0.5, 0).zzzz).xy;
@@ -158597,7 +158648,7 @@ export const S_c17a6660e8fe: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_05b81cf73ca8: ShaderParts = {
+export const S_33168c1467c1: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -158611,10 +158662,13 @@ export const S_05b81cf73ca8: ShaderParts = {
     {"kind":"uniform","type":"vec4","name":"fogColour"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_1"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
-    {"kind":"uniform","type":"vec4","name":"reflectProject"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_0"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_2"},
     {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
     {"kind":"uniform","type":"vec4","name":"u_81e0e773"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_3"},
     {"kind":"uniform","type":"vec4","name":"SpecularColour"},
     {"kind":"uniform","type":"vec4","name":"u_4d60d566"},
     {"kind":"uniform","type":"vec4","name":"Reflectivity"},
@@ -158679,11 +158733,11 @@ export const S_05b81cf73ca8: ShaderParts = {
   R0.x = clamp01(vec4(dot(vec3(R2), vec3(R0)))).x;
   R0.y = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).y;
   R3.w = (R2.xxxx * distortion.zzzz + R3.xxxx).w;
-  R2.xyw = (R3.yyyy * vec4(0, 0, 0, 0)).xyw;
+  R2.xyw = (R3.yyyy * reflectProject_1).xyw;
   H6.xyz = (directionalLight0Colour).xyz;
   R1.w = (R2.zzzz * distortion.zzzz + R3.zzzz).w;
-  R2.xyz = (R3.wwww * reflectProject.xywz + R2.xywz).xyz;
-  R2.xyz = (R1.wwww * vec4(0, 0, 0, 0).xywz + R2).xyz;
+  R2.xyz = (R3.wwww * reflectProject_0.xywz + R2.xywz).xyz;
+  R2.xyz = (R1.wwww * reflectProject_2.xywz + R2).xyz;
   R1.w = (log2(R0.xxxx)).w;
   H6.xyz = (R0.yyyy * H6 + constantAmbientColour).xyz;
   H2.xyz = (R1 + H6).xyz;
@@ -158692,7 +158746,7 @@ export const S_05b81cf73ca8: ShaderParts = {
   R1.w = (R1).w;
   R0.y = (exp2(R1.wwww)).y;
   R1.w = (R0.yyyy * R0.xxxx).w;
-  R0.xyz = (R2 + vec4(0, 0, 0, 0).xywz).xyz;
+  R0.xyz = (R2 + reflectProject_3.xywz).xyz;
   R0.z = (R0).z;
   H3.xyz = (R1.wwww * directionalLight0Colour).xyz;
   H3.xyz = (H3 * SpecularColour).xyz;
@@ -158776,7 +158830,7 @@ export const S_a285b5e0b703: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_fe6e9dc6aed3: ShaderParts = {
+export const S_8c5ddfe43a70: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -158790,8 +158844,11 @@ export const S_fe6e9dc6aed3: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX3","comment":"?"},
     {"kind":"uniform","type":"sampler2D","name":"TEX4","comment":"screenSpaceReflectionTex"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_1"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
-    {"kind":"uniform","type":"vec4","name":"reflectProject"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_0"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_2"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_3"},
     {"kind":"uniform","type":"vec4","name":"u_81e0e773"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
@@ -158846,7 +158903,7 @@ export const S_fe6e9dc6aed3: ShaderParts = {
   R3.x = (vec4(dot(vec3(R0), vec3(R0)))).x;
   R2.xyz = (R1 + directionalLight0DirectionWorldSpace).xyz;
   R1.w = (R1).w;
-  R1.xyz = (R1.wwww * vec4(0, 0, 0, 0).xywz).xyz;
+  R1.xyz = (R1.wwww * reflectProject_1.xywz).xyz;
   R0.xyz = ((R0 * inversesqrt(R3.xxxx))).xyz;
   R3.y = (vec4(dot(vec3(R2), vec3(R2)))).y;
   R3.w = (R0.xxxx * distortion.zzzz + R3).w;
@@ -158854,12 +158911,12 @@ export const S_fe6e9dc6aed3: ShaderParts = {
   R1.w = (vec4(dot(vec3(R0), vec3(directionalLight0DirectionWorldSpace)))).w;
   R2.x = clamp01(vec4(dot(vec3(R0), vec3(R2)))).x;
   R2.w = (R0.zzzz * distortion.zzzz + R2).w;
-  R0.xyz = (R3.wwww * reflectProject.xywz + R1).xyz;
-  R2.yzw = (R2.wwww * vec4(0, 0, 0, 0).xxyw + R0.xxyz).yzw;
+  R0.xyz = (R3.wwww * reflectProject_0.xywz + R1).xyz;
+  R2.yzw = (R2.wwww * reflectProject_2.xxyw + R0.xxyz).yzw;
   R0.z = (texture2D(TEX2, vec2(v_TEX0))).z;
   CC0.z = (texture2D(TEX2, vec2(v_TEX0))).z;
   R0.x = (log2(R2.xxxx)).x;
-  R2.xyz = (R2.yzww + vec4(0, 0, 0, 0).xywz).xyz;
+  R2.xyz = (R2.yzww + reflectProject_3.xywz).xyz;
   R1.x = (R0 * u_81e0e773.xxxx).x;
   R0.y = (exp2(R1.xxxx)).y;
   H2.xyz = (R1.wwww * directionalLight0Colour).xyz;
@@ -158964,7 +159021,7 @@ export const S_ce8942a519ae: ShaderParts = {
   gl_Position = v_HPOS;`,
 };
 
-export const S_079da97dc88d: ShaderParts = {
+export const S_d33b7113b60c: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -158980,8 +159037,11 @@ export const S_079da97dc88d: ShaderParts = {
     {"kind":"uniform","type":"sampler2D","name":"TEX4","comment":"screenSpaceReflectionTex"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0DirectionWorldSpace"},
     {"kind":"uniform","type":"vec4","name":"distortion"},
-    {"kind":"uniform","type":"vec4","name":"reflectProject"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_1"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_0"},
     {"kind":"uniform","type":"vec4","name":"u_81e0e773"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_2"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_3"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
     {"kind":"uniform","type":"vec4","name":"constantAmbientColour"},
     {"kind":"uniform","type":"vec4","name":"fogColour"},
@@ -159045,16 +159105,16 @@ export const S_079da97dc88d: ShaderParts = {
   R0.xyz = (v_TEX4).xyz;
   R1.w = (vec4(dot(vec3(R2), vec3(directionalLight0DirectionWorldSpace)))).w;
   R3.w = (R2.xxxx * distortion.zzzz + R0.xxxx).w;
-  R3.xyz = (R0.yyyy * vec4(0, 0, 0, 0).xywz).xyz;
-  R3.xyz = (R3.wwww * reflectProject.xywz + R3).xyz;
+  R3.xyz = (R0.yyyy * reflectProject_1.xywz).xyz;
+  R3.xyz = (R3.wwww * reflectProject_0.xywz + R3).xyz;
   R0.x = (log2(R2.wwww)).x;
   R2.w = (R0.xxxx * u_81e0e773.xxxx).w;
   R2.x = (R2.zzzz * distortion.zzzz + R0.zzzz).x;
-  R2.xyz = (R2.xxxx * vec4(0, 0, 0, 0).xywz + R3).xyz;
+  R2.xyz = (R2.xxxx * reflectProject_2.xywz + R3).xyz;
   R0.y = (exp2(R2.wwww)).y;
   R0.x = (texture2D(TEX1, vec2(v_TEX0))).x;
   CC0.x = (texture2D(TEX1, vec2(v_TEX0))).x;
-  R2.xyz = (R2 + vec4(0, 0, 0, 0).xywz).xyz;
+  R2.xyz = (R2 + reflectProject_3.xywz).xyz;
   R2.z = (R2).z;
   R0.z = mix(vec4(R0), vec4((texture2D(TEX2, vec2(v_TEX0)))), vec4(greaterThan(vec4(lessThan(CC0.xxxx, vec4(0.0))) + vec4(greaterThan(CC0.xxxx, vec4(0.0))), vec4(0.0)))).z;
   R0.x = (R0 * R0.zzzz).x;
@@ -159083,7 +159143,7 @@ export const S_079da97dc88d: ShaderParts = {
   gl_FragColor = rcsOutput(vec4(H0.rgb, 1.0));`,
 };
 
-export const S_9fd5fa7b3a00: ShaderParts = {
+export const S_5010c1b6c6d9: ShaderParts = {
   decls: [
     {"kind":"varying","type":"vec4","name":"v_TEX0"},
     {"kind":"varying","type":"vec4","name":"v_TEX1"},
@@ -159108,8 +159168,11 @@ export const S_9fd5fa7b3a00: ShaderParts = {
     {"kind":"uniform","type":"vec4","name":"prelitBias"},
     {"kind":"uniform","type":"vec4","name":"directionalLight0Colour"},
     {"kind":"uniform","type":"vec4","name":"prelitScaleSpecular"},
-    {"kind":"uniform","type":"vec4","name":"reflectProject"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_1"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_0"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_2"},
     {"kind":"uniform","type":"vec4","name":"u_81e0e773"},
+    {"kind":"uniform","type":"vec4","name":"reflectProject_3"},
     {"kind":"uniform","type":"vec4","name":"SpecularColour"},
     {"kind":"uniform","type":"vec4","name":"Reflectivity"},
     {"kind":"uniform","type":"float","name":"u_alphaTest"},
@@ -159206,14 +159269,14 @@ export const S_9fd5fa7b3a00: ShaderParts = {
   H0.xyz = (H0 * prelitScaleSpecular + H6).xyz;
   H0.xyz = (H0 * H2).xyz;
   R3.xyz = (texture2D(TEX6, vec2(R3.wwww))).xyz;
-  R1.xyz = (R1.zzzz * vec4(0, 0, 0, 0).xywz).xyz;
-  R1.xyz = (R1.wwww * reflectProject.xywz + R1).xyz;
+  R1.xyz = (R1.zzzz * reflectProject_1.xywz).xyz;
+  R1.xyz = (R1.wwww * reflectProject_0.xywz + R1).xyz;
   R1.w = clamp01(R0.zzzz).w;
   R3.w = (log2(R2.wwww)).w;
-  R1.xyz = (R2.zzzz * vec4(0, 0, 0, 0).xywz + R1).xyz;
+  R1.xyz = (R2.zzzz * reflectProject_2.xywz + R1).xyz;
   R0.z = (R3.wwww * u_81e0e773.xxxx).z;
   R0.z = (exp2(R0.zzzz)).z;
-  R1.xyz = (R1 + vec4(0, 0, 0, 0).xywz).xyz;
+  R1.xyz = (R1 + reflectProject_3.xywz).xyz;
   R2.x = (R0.zzzz * R1.wwww).x;
   R1.w = (R1.zzzz).w;
   R1.xy = ((R1 / R1.wwww)).xy;

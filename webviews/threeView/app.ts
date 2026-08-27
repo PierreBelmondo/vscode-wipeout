@@ -77,6 +77,10 @@ class WorldRenderer {
   private _passEdges: FrontEndEdgePass;
   private _passEdgeScene: RenderPass;
   private _effectComposerEdges: EffectComposer;
+  private _screenSpaceTarget: THREE.WebGLRenderTarget;
+  /** Materials bound to _screenSpaceTarget, so binding runs once per material
+   * rather than re-scanning userData.variant.samplers every frame. */
+  private _screenSpaceBound = new WeakSet<THREE.Material>();
 
   private _world: World;
 
@@ -185,6 +189,25 @@ class WorldRenderer {
     this._passEdgeScene = new RenderPass(this._world.scene, this._world.camera, this._passEdges.idMaterial);
     this._effectComposerEdges.addPass(this._passEdgeScene);
     this._effectComposerEdges.addPass(this._passEdges);
+
+    // Screen-space refraction/reflection target.
+    //
+    // A handful of generated materials (the tunnel refraction shaders,
+    // reflectplane_dc_seawater) sample `screenSpaceRefractionTex` or
+    // `screenSpaceReflectionTex` -- the PS3 engine's own render-to-texture of
+    // the frame so far, which these fragment programs distort and composite
+    // into their own colour. With no target bound they fell back to flat
+    // grey, so the whole distortion effect multiplied a constant: visible
+    // geometry, but never the "melted glass" look the shader computes.
+    //
+    // Sized at half resolution: this is a background distortion source, not
+    // the frame itself, and the fragment programs UV-offset into it before
+    // sampling, so a soft source reads as intended blur rather than aliasing.
+    const dpr2 = window.devicePixelRatio;
+    this._screenSpaceTarget = new THREE.WebGLRenderTarget(
+      Math.max(1, Math.floor((window.innerWidth * dpr2) / 2)),
+      Math.max(1, Math.floor((window.innerHeight * dpr2) / 2))
+    );
   }
 
   get domElement(): HTMLCanvasElement {
@@ -213,6 +236,10 @@ class WorldRenderer {
     const edgeDpr = window.devicePixelRatio;
     this._passEdges.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
     this._effectComposerEdges.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
+    this._screenSpaceTarget.setSize(
+      Math.max(1, Math.floor((width * edgeDpr) / 2)),
+      Math.max(1, Math.floor((height * edgeDpr) / 2))
+    );
   }
 
   readonly bloomMatrials = [
@@ -289,6 +316,8 @@ class WorldRenderer {
       return;
     }
 
+    this._updateScreenSpaceTarget();
+
     if (this._world.settings.bloom) {
       const beforeBloom = (obj: THREE.Object3D) => {
         if (obj instanceof THREE.Mesh) {
@@ -335,6 +364,71 @@ class WorldRenderer {
       this._renderer.setClearColor(this._world.settings.backgroundColor);
       this._renderer.render(this._world.scene, this._world.camera);
     }
+  }
+
+  /**
+   * Fill the screen-space target from the main camera, then bind it wherever
+   * a material actually samples it.
+   *
+   * Rendered EVERY frame from the live camera -- this is meant to approximate
+   * the previous frame's colour buffer, which is what the PS3 engine's own
+   * render-to-texture pass provides. A snapshot taken once at load time would
+   * show a fixed camera angle no matter how the view moves, which is wrong in
+   * a different way than the flat-grey fallback but just as wrong.
+   *
+   * Skipped entirely when nothing in the loaded scene needs it: the
+   * traversal and an extra full-scene render are not free, and most files
+   * (anything without a tunnel or the sea reflection plane) have no consumer.
+   */
+  private _updateScreenSpaceTarget() {
+    let needed = false;
+    const targets: { material: THREE.Material & { uniforms?: Record<string, THREE.IUniform> }; uniform: string }[] = [];
+    for (const material of Object.values(this._world.materials)) {
+      const variant = (material as unknown as { userData?: { variant?: { samplers?: { unit: number; name: string }[] } } })
+        .userData?.variant;
+      const sampler = variant?.samplers?.find(
+        (s) => s.name === "screenSpaceRefractionTex" || s.name === "screenSpaceReflectionTex"
+      );
+      if (!sampler) continue;
+      needed = true;
+      const m = material as THREE.Material & { uniforms?: Record<string, THREE.IUniform> };
+      if (this._screenSpaceBound.has(m)) continue;
+      targets.push({ material: m, uniform: `TEX${sampler.unit}` });
+    }
+    if (!needed) return;
+
+    // Bind once per material: the uniform VALUE is the render target's
+    // texture object, which THREE keeps current across resizes/re-renders on
+    // its own, so there is nothing to refresh here after the first frame.
+    for (const { material, uniform } of targets) {
+      if (material.uniforms?.[uniform]) {
+        material.uniforms[uniform].value = this._screenSpaceTarget.texture;
+        (material as unknown as { uniformsNeedUpdate: boolean }).uniformsNeedUpdate = true;
+      }
+      this._screenSpaceBound.add(material);
+    }
+
+    // Render the scene from the SAME camera into the target. The consuming
+    // materials are excluded via onBeforeRender/onAfterRender toggling their
+    // visibility -- a surface cannot meaningfully refract or reflect an image
+    // of itself, and the flat grey these fell back to was at least not that.
+    const hidden: THREE.Object3D[] = [];
+    this._world.scene.traverse((obj) => {
+      const mesh = obj as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      const mat = mesh.material as THREE.Material;
+      if (this._screenSpaceBound.has(mat) && mesh.visible) {
+        hidden.push(mesh);
+        mesh.visible = false;
+      }
+    });
+
+    const prevTarget = this._renderer.getRenderTarget();
+    this._renderer.setRenderTarget(this._screenSpaceTarget);
+    this._renderer.render(this._world.scene, this._world.camera);
+    this._renderer.setRenderTarget(prevTarget);
+
+    for (const mesh of hidden) mesh.visible = true;
   }
 }
 

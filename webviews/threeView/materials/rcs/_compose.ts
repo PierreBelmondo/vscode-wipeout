@@ -129,6 +129,16 @@ const MATRIX_UNIFORMS = [
   "shadowMatrix",
   "textureSpot0Proj",
   "textureSpot1Proj",
+  // A FRAGMENT-side matrix: the screen-space refraction materials project a
+  // normal-displaced world point back to the screen with it. rcsdump names
+  // its rows `refractProject_0..3` like a VP matrix; the material binds the
+  // scene's view-projection.
+  "refractProject",
+  // Its reflection twin (reflectplane_dc_seawater): the same shape, sampling
+  // screenSpaceReflectionTex. The engine renders that target with a mirrored
+  // camera and this is that camera's view-projection; the viewer binds the
+  // main view's for now, which samples coherently but is not a true mirror.
+  "reflectProject",
 ];
 
 /**

@@ -12,7 +12,7 @@ import { MaterialFactory } from "../_abstract";
 import { Permutation } from "../_raw";
 import { GeneratedRcsMaterial } from "../_generated";
 import { makeVariant, pickVariant, GeneratedVariant } from "../_variant";
-import { S_05b81cf73ca8, S_079da97dc88d, S_1086c4836bf7, S_332d8015e82b, S_354a71d44830, S_45b89c232945, S_57409dbcb0d4, S_5e8018d31144, S_6240af57fb48, S_7f55d7e57bd4, S_9a2fbfbc3f78, S_9fd5fa7b3a00, S_a285b5e0b703, S_c17a6660e8fe, S_ce8942a519ae, S_fe6e9dc6aed3 } from "./_shaders";
+import { S_01fb3a59a518, S_1086c4836bf7, S_33168c1467c1, S_332d8015e82b, S_45b89c232945, S_5010c1b6c6d9, S_5e8018d31144, S_6240af57fb48, S_7f55d7e57bd4, S_8c5ddfe43a70, S_96782cca6656, S_a285b5e0b703, S_c17a6660e8fe, S_ce8942a519ae, S_d33b7113b60c, S_fce998a565f0 } from "./_shaders";
 
 const VARIANTS: GeneratedVariant[] = [
   {
@@ -20,7 +20,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 5,
     backend: "Static",
     vert: S_7f55d7e57bd4,
-    frag: S_354a71d44830,
+    frag: S_fce998a565f0,
     attributes: [{ id: 648525413, reg: 4, name: "lightmapUV" }, { id: 1114772732, reg: 3, name: "Uv1" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }],
     samplers: [{ id: 111640144, unit: 2, name: "?" }, { id: 298536820, unit: 0, name: "DiffuseTexture" }, { id: 934665048, unit: 1, name: "lightmap" }, { id: 3962257346, unit: 3, name: "screenSpaceReflectionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 464, name: "time", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -32,7 +32,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 8,
     backend: "Static",
     vert: S_6240af57fb48,
-    frag: S_57409dbcb0d4,
+    frag: S_96782cca6656,
     attributes: [{ id: 648525413, reg: 4, name: "lightmapUV" }, { id: 1114772732, reg: 3, name: "Uv1" }, { id: 2257551913, reg: 5, name: "SpuVertexColours" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }],
     samplers: [{ id: 111640144, unit: 2, name: "?" }, { id: 298536820, unit: 0, name: "DiffuseTexture" }, { id: 934665048, unit: 1, name: "lightmap" }, { id: 3962257346, unit: 3, name: "screenSpaceReflectionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 464, name: "time", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -44,7 +44,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 2,
     backend: "Static",
     vert: S_5e8018d31144,
-    frag: S_9a2fbfbc3f78,
+    frag: S_01fb3a59a518,
     attributes: [{ id: 1114772732, reg: 3, name: "Uv1" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }],
     samplers: [{ id: 111640144, unit: 1, name: "?" }, { id: 298536820, unit: 0, name: "DiffuseTexture" }, { id: 3962257346, unit: 2, name: "screenSpaceReflectionTex" }],
     bank: [{ slot: 465, name: "time", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -56,7 +56,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 6,
     backend: "Static",
     vert: S_c17a6660e8fe,
-    frag: S_05b81cf73ca8,
+    frag: S_33168c1467c1,
     attributes: [{ id: 1114772732, reg: 3, name: "Uv1" }, { id: 2257551913, reg: 4, name: "SpuVertexColours" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }],
     samplers: [{ id: 111640144, unit: 1, name: "?" }, { id: 298536820, unit: 0, name: "DiffuseTexture" }, { id: 3962257346, unit: 2, name: "screenSpaceReflectionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 464, name: "time", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -80,7 +80,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 4,
     backend: "Static",
     vert: S_a285b5e0b703,
-    frag: S_fe6e9dc6aed3,
+    frag: S_8c5ddfe43a70,
     attributes: [{ id: 1114772732, reg: 3, name: "Uv1" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }],
     samplers: [{ id: 111640144, unit: 3, name: "?" }, { id: 298536820, unit: 0, name: "DiffuseTexture" }, { id: 2615985957, unit: 1, name: "directionalLight0ShadowTex" }, { id: 2770045716, unit: 2, name: "directionalLight0LightmapTex" }, { id: 3962257346, unit: 4, name: "screenSpaceReflectionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 464, name: "time", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -92,7 +92,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 7,
     backend: "Static",
     vert: S_ce8942a519ae,
-    frag: S_079da97dc88d,
+    frag: S_d33b7113b60c,
     attributes: [{ id: 1114772732, reg: 3, name: "Uv1" }, { id: 2257551913, reg: 4, name: "SpuVertexColours" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }],
     samplers: [{ id: 111640144, unit: 3, name: "?" }, { id: 298536820, unit: 0, name: "DiffuseTexture" }, { id: 2615985957, unit: 1, name: "directionalLight0ShadowTex" }, { id: 2770045716, unit: 2, name: "directionalLight0LightmapTex" }, { id: 3962257346, unit: 4, name: "screenSpaceReflectionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 464, name: "time", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],
@@ -104,7 +104,7 @@ const VARIANTS: GeneratedVariant[] = [
     permutation: 11,
     backend: "Static",
     vert: S_1086c4836bf7,
-    frag: S_9fd5fa7b3a00,
+    frag: S_5010c1b6c6d9,
     attributes: [{ id: 648525413, reg: 4, name: "lightmapUV" }, { id: 1114772732, reg: 3, name: "Uv1" }, { id: 3117619978, reg: 0, name: "position" }, { id: 3689280535, reg: 2, name: "tangent" }, { id: 3732576027, reg: 1, name: "normal" }],
     samplers: [{ id: 15054457, unit: 5, name: "zoneTexInnerNearest" }, { id: 111640144, unit: 2, name: "?" }, { id: 298536820, unit: 1, name: "DiffuseTexture" }, { id: 527402403, unit: 6, name: "zoneTexVis" }, { id: 934665048, unit: 0, name: "lightmap" }, { id: 3588227281, unit: 4, name: "zoneTexInner" }, { id: 3962257346, unit: 3, name: "screenSpaceReflectionTex" }],
     bank: [{ slot: 465, name: "eyePositionWorldSpace", rows: 1 }, { slot: 466, name: "positionScale", rows: 1 }, { slot: 467, name: "positionBias", rows: 1 }],

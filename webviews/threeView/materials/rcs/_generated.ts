@@ -1,5 +1,17 @@
 import * as THREE from "three";
 import { BankDefaults, BankLayout, BankValues, BankWindow, buildBank } from "./_bank";
+
+/**
+ * Negates clip-space y. The screen-space refraction/reflection programs turn
+ * clip position into a texture coordinate with `v = 0.5 - 0.5 * ndc.y` -- the
+ * y-flip RSX needs because its render targets have a TOP-LEFT origin. A WebGL
+ * render target's origin is bottom-left, so the same flip mirrors the image
+ * vertically: the tunnel windows showed the scene behind them upside down,
+ * which reads as a reflection of the inside. The program cannot change, but
+ * the matrix it projects through can: pre-multiplying the view-projection by
+ * this makes the engine's flip and GL's origin cancel.
+ */
+const FLIP_CLIP_Y = /*@__PURE__*/ new THREE.Matrix4().makeScale(1, -1, 1);
 import { AttrBinding } from "./_bindings";
 import { EnvKey, EnvSettings } from "@core/formats/rcs/envsettings";
 import { Permutation, RawRcsMaterial } from "./_raw";
@@ -410,6 +422,19 @@ export class GeneratedRcsMaterial extends RawRcsMaterial {
     // column in GLSL, which is what the program accumulates against.
     const vp = this.uniforms.viewProj;
     if (vp) vp.value.copy(viewProj);
+    // The screen-space refraction materials project a normal-displaced world
+    // point back to the screen through `refractProject`, a fragment-side mat4
+    // whose rows were long mislabelled as unrelated uniforms. It is the
+    // scene's view-projection: the engine samples its refraction target at
+    // the same screen position the point would rasterise to.
+    const rp = this.uniforms.refractProject;
+    if (rp) rp.value.copy(viewProj).premultiply(FLIP_CLIP_Y);
+    // reflectProject is the MIRRORED camera's view-projection on the engine;
+    // until the viewer renders a mirrored pass, the main view's matrix keeps
+    // the sample coherent (see-through rather than milky) without being a
+    // true reflection.
+    const fp = this.uniforms.reflectProject;
+    if (fp) fp.value.copy(viewProj).premultiply(FLIP_CLIP_Y);
 
     const eye = camera.getWorldPosition(new THREE.Vector3());
     const eyeUniform = this.uniforms.eyePositionWorldSpace;
