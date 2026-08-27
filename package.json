@@ -236,7 +236,9 @@
     "lint": "eslint src --ext ts",
     "test": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts",
     "test:vexx": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts vexx",
-    "test:gxt": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts gxt"
+    "test:gxt": "NODE_OPTIONS=--expose-gc npx tsx --tsconfig core/tests/tsconfig.json core/tests/index.ts gxt",
+    "test:textures": "npx tsx --tsconfig core/tests/tsconfig.json core/tests/textures.ts verify",
+    "test:textures:gen": "npx tsx --tsconfig core/tests/tsconfig.json core/tests/textures.ts generate"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
