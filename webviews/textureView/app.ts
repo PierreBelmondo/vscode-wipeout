@@ -87,6 +87,14 @@ class Editor {
   }
 
   async decompress(mipmaps: Mipmaps): Promise<Mipmaps> {
+    // The mip's OWN bytes, not the whole file. `mipmap.data` is a Uint8Array
+    // VIEW into the source file's ArrayBuffer, so `.buffer` starts at byte 0
+    // of the file -- the decompressors were fed the header plus the start of
+    // mip 0 for EVERY level. Mip 0 came out shifted by the header (a garbage
+    // bar where its last rows fell off the end), and every level below it
+    // rendered mip 0's raw DXT bytes reinterpreted as blocks.
+    const bytes = (d: Uint8Array | Uint8ClampedArray): ArrayBuffer =>
+      d.buffer.slice(d.byteOffset, d.byteOffset + d.byteLength) as ArrayBuffer;
     const uncompressedMipmaps: Mipmaps = [];
     for (const mipmap of mipmaps) {
       switch (mipmap.type) {
@@ -114,7 +122,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: DXT1.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
+            data: DXT1.decompress(mipmap.width, mipmap.height, bytes(mipmap.data)),
           });
           break;
         case "DXT3":
@@ -122,7 +130,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: DXT3.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
+            data: DXT3.decompress(mipmap.width, mipmap.height, bytes(mipmap.data)),
           });
           break;
         case "DXT5":
@@ -130,7 +138,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: DXT5.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
+            data: DXT5.decompress(mipmap.width, mipmap.height, bytes(mipmap.data)),
           });
           break;
         case "BC7":
@@ -139,7 +147,7 @@ class Editor {
             type: "RGBA",
             width: mipmap.width,
             height: mipmap.height,
-            data: await BC7.decompress(mipmap.width, mipmap.height, mipmap.data.buffer as ArrayBuffer),
+            data: await BC7.decompress(mipmap.width, mipmap.height, bytes(mipmap.data)),
           });
           break;
         default:
