@@ -11,6 +11,7 @@ import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody 
 import { EffectComposer } from "./postprocessing/EffectComposer";
 import { RenderPass } from "./postprocessing/RenderPass";
 import { FrontEndEdgePass } from "./postprocessing/FrontEndEdgePass";
+import { ParaboloidProbes } from "./probes";
 import { DEFAULT_SCREEN_SETTING, ScreenSetting } from "./frontendSkin";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";
 import { TONE_MAPPINGS } from "./renderSettings";
@@ -81,6 +82,8 @@ class WorldRenderer {
   /** Materials bound to _screenSpaceTarget, so binding runs once per material
    * rather than re-scanning userData.variant.samplers every frame. */
   private _screenSpaceBound = new WeakSet<THREE.Material>();
+  /** Environment probes for the paraboloid samplers; see probes.ts. */
+  private _probes: ParaboloidProbes;
 
   private _world: World;
 
@@ -120,6 +123,7 @@ class WorldRenderer {
     // on the final pass to screen, which is exactly where the composer's last
     // pass draws.
     this._renderer.outputEncoding = THREE.sRGBEncoding;
+    this._probes = new ParaboloidProbes(this._renderer);
 
     // ACES rather than Reinhard. Reinhard is `x / (1 + x)`: at exposure 1 it
     // maps a fully lit surface to 0.5 while leaving shadows near where they
@@ -317,6 +321,7 @@ class WorldRenderer {
     }
 
     this._updateScreenSpaceTarget();
+    this._probes.update(this._world.scene, Object.values(this._world.materials));
 
     if (this._world.settings.bloom) {
       const beforeBloom = (obj: THREE.Object3D) => {
