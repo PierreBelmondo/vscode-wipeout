@@ -218,7 +218,17 @@ class AsyncMaterial {
         // hashing the declared names is what joins the two -- there is no
         // positional relationship to exploit.
         const byHash = new Map<number, string>();
-        for (const name of Object.keys(u)) byHash.set(rcsHash(name), name);
+        for (const name of Object.keys(u)) {
+          byHash.set(rcsHash(name), name);
+          // A uniform rcsdump could not name is called after its hash --
+          // `u_78575769` -- and that hash IS the channel id, so the join is
+          // the hex itself, not rcsHash() of the synthetic name. Without this
+          // mt_tunnelrefraction's authored refraction offset (channel
+          // 0x78575769, a Type-0 constant in the model) never reached its
+          // uniform, which stayed at the invented zero.
+          const m = /^u_([0-9a-f]{8})$/.exec(name);
+          if (m) byHash.set(parseInt(m[1], 16) >>> 0, name);
+        }
         const applied: string[] = [];
         for (const [id, value] of this.constants) {
           const name = byHash.get(id);
