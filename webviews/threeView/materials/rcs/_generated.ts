@@ -65,7 +65,14 @@ function sceneLights(scene: THREE.Scene): SceneLights {
       ambient.add(object.color.clone().multiplyScalar(object.intensity));
     } else if (object instanceof THREE.DirectionalLight && !object.name.startsWith(".World") && !sun) {
       sun = object;
-      sunDirection = object.position.clone().normalize().negate();
+      // The direction TOWARD the sun, which is what a Three DirectionalLight's
+      // position already is, and what the engine's programs dot the normal
+      // against (`clamp01(dot(N, directionalLight0DirectionWorldSpace))` is
+      // positive on a sun-facing surface). This used to be negated -- cancelled
+      // on tracks by a second negation in the loader, but not for the default
+      // sun a lightless file (a ship.vex) gets, which therefore lit every ship
+      // from below.
+      sunDirection = object.position.clone().normalize();
     }
   });
   const value: SceneLights = { sun, sunDirection, ambient };
@@ -346,22 +353,15 @@ export class GeneratedRcsMaterial extends RawRcsMaterial {
     }
     const dir = this.uniforms.directionalLight0DirectionWorldSpace;
     if (dir && lights.sunDirection) {
-      // Passed through as sceneLights() returns it -- the file's own
-      // `Lighting.Sun direction`, recovered from Three's light position.
+      // The direction toward the sun, as sceneLights() returns it: on a track
+      // that is the file's own `Lighting.Sun direction` (y up, it lights the
+      // ground), for a lightless file the default sun's position.
       //
-      // NOT a simple sign error, though it looks like one. Rendering N.L on its
-      // own shows a +X wall dark where the lightmap's alpha shows it LIT, which
-      // argues for negating. But vineta_k's sun is (-2.0, 0.8, 1.0), and with
-      // that vector NEITHER sign satisfies both surfaces:
-      //
-      //   as-is:   +X wall shadow, -X wall LIT,    ground LIT
-      //   negated: +X wall LIT,    -X wall shadow, ground shadow
-      //
-      // Negating trades the wall for the entire ground plane, which no daytime
-      // track can want. So the disagreement is real but the fix is not here --
-      // either the sun the shaders should see is not this vector, or the walls
-      // in question are lit by something other than the directional term.
-      // Left as the file states it until that is established.
+      // The "neither sign lights both the walls and the ground" contradiction
+      // this once recorded was not about the sun at all: the packed-normal
+      // decode had its x and z fields swapped, which rotated every wall's
+      // normal while leaving the ground's (0, 1, 0) intact. With the decode
+      // fixed, this sign lights both.
       const d = lights.sunDirection;
       dir.value.set(d.x, d.y, d.z, 0);
     }

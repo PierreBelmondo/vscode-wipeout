@@ -173,13 +173,12 @@ export class World {
       // Exactly what the SHADER computes, or the number is not comparable to
       // what is on screen. Two things were wrong before:
       //
-      //  - the light: sceneLights() hands the shader the NEGATED light
-      //    position, so measuring against the position itself reported the
-      //    opposite sign from the dot the shader actually takes;
+      //  - the light: the shader receives the normalised light POSITION (the
+      //    direction toward the sun), so that is what to dot against;
       //  - the normal: bindModelMatrix now transforms it into world space in
       //    the vertex program, so the raw attribute is in model space and
       //    disagrees with the shader wherever the mesh is rotated.
-      const L = (sun as THREE.DirectionalLight).position.clone().normalize().negate();
+      const L = (sun as THREE.DirectionalLight).position.clone().normalize();
       const nm = new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld);
       const n = new THREE.Vector3();
       let pos = 0;

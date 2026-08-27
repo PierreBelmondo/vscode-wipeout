@@ -508,12 +508,16 @@ function applyEnvSettings(world: World, env: EnvSettings) {
       // slider would scale an already-4x sun, and at 0 it takes every lit
       // surface to black with no ambient left to catch it.
       if (object.intensity === 0) object.intensity = 1;
-      // The file gives the direction the light TRAVELS; Three positions a
-      // directional light at the point it shines from, so the vector is
-      // negated. The shipped values are tiny (1e-5), so normalise rather than
-      // using them as a position directly.
+      // The file's vector points TOWARD the sun -- vineta_k's is (-2, 0.8, 1),
+      // y up, and it lights the ground -- which is also what a Three
+      // DirectionalLight's position means, so it is used as-is. It used to be
+      // negated here on the belief it was the direction the light travels,
+      // and a matching negation in sceneLights() cancelled that for tracks
+      // while leaving the default sun (which has no file vector) inverted.
+      // The shipped values are tiny (1e-5), so normalise rather than using
+      // them as a position directly.
       const len = Math.hypot(sunDir[0], sunDir[1], sunDir[2]) || 1;
-      object.position.set(-sunDir[0] / len, -sunDir[1] / len, -sunDir[2] / len).multiplyScalar(1000);
+      object.position.set(sunDir[0] / len, sunDir[1] / len, sunDir[2] / len).multiplyScalar(1000);
     }
   });
 
