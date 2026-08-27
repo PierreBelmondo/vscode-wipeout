@@ -116,6 +116,11 @@ class AsyncMaterial {
   }
 
   linkMesh(mesh: THREE.Mesh) {
+    // Stamped so a pick can tell a mesh WAITING for its material apart from
+    // one that was never claimed by any AsyncMaterial at all -- the two look
+    // identical on screen (both wear the .default placeholder) but point at
+    // opposite bugs.
+    mesh.userData.rcsPendingMaterial = this.basename;
     this.meshes.push(mesh);
   }
 
@@ -327,8 +332,10 @@ class AsyncMaterial {
       // Debug: show ONLY what a generated shader draws, so a glitch cannot be
       // confused with some other material's. See materials/rcs/index.ts.
       const isGenerated = GENERATED_NAMES.has(this.basename);
+      api.log(`[link] ${this.basename} -> ${this.meshes.length} mesh(es), material.type=${this.material.type}`);
       for (const mesh of this.meshes) {
         mesh.material = this.material;
+        delete mesh.userData.rcsPendingMaterial;
         if (ONLY_GENERATED_MATERIALS && isGenerated) mesh.visible = true;
         // A generated shader dequantises position in the vertex program and
         // multiplies by viewProj alone, with no modelMatrix -- so it has to be
@@ -798,15 +805,27 @@ export class RCSModelLoader extends Loader {
   loadMesh1(world: World, rcsMesh: RcsModelMesh1, rcsMaterial: RcsModelMaterial): THREE.Mesh {
     const geometry = this.loadBO(rcsMesh.vbo, rcsMesh.ibo);
     //geometry.computeVertexNormals();
-    let material = world.materials["_default"];
-    if (rcsMaterial.id in world.materials) material = world.materials[rcsMaterial.id];
+    // Always the placeholder here; linkMesh below hands the mesh to its own
+    // AsyncMaterial, which swaps it when the material finishes. This used to
+    // pre-assign `world.materials[rcsMaterial.id]`, but that map is keyed by
+    // THREE.Material.id -- a per-process counter -- while rcsMaterial.id is
+    // the model's own hash, so a hit meant a Three material some other model
+    // happened to be assigned, not this one's.
+    const material = world.materials["_default"];
     const mesh = new THREE.Mesh(geometry, material);
     // Debug view: start hidden, and only a generated material reveals the mesh.
     // Hiding at attach time instead would leave anything still on the default
     // material -- a material that never finished loading -- visible.
     if (ONLY_GENERATED_MATERIALS) mesh.visible = false;
     for (const asyncMaterial of this.asyncMaterials) {
-      if (asyncMaterial.rcsMaterial.id == rcsMaterial.id) {
+      // Identity, not id. The id is a per-material hash, unique WITHIN a
+      // model, but a .vex scene loads several .rcsmodels through one loader
+      // and their ids collide across files: triakis_c1's ship.rcsmodel and
+      // engineflare.rcsmodel both open with material id 0xb4ae4852. The
+      // engine flares therefore matched the HULL's AsyncMaterial, which had
+      // already finished, so those meshes were never attached and kept the
+      // .default placeholder.
+      if (asyncMaterial.rcsMaterial === rcsMaterial) {
         asyncMaterial.linkMesh(mesh);
         break;
       }
@@ -828,7 +847,8 @@ export class RCSModelLoader extends Loader {
       const mesh = new THREE.Mesh(geometry, material);
       if (ONLY_GENERATED_MATERIALS) mesh.visible = false;
       for (const asyncMaterial of this.asyncMaterials) {
-        if (asyncMaterial.rcsMaterial.id == rcsMaterial.id) {
+        // Identity, not id -- see loadMesh1.
+        if (asyncMaterial.rcsMaterial === rcsMaterial) {
           asyncMaterial.linkMesh(mesh);
           break;
         }
@@ -907,7 +927,8 @@ export class RCSModelLoader extends Loader {
       if (matIdx >= 0 && matIdx < model.materials.length) {
         const ps5Mat = model.materials[matIdx];
         for (const asyncMaterial of this.asyncMaterials) {
-          if (asyncMaterial.rcsMaterial.id === ps5Mat.id) {
+          // Identity, not id -- see loadMesh1.
+          if (asyncMaterial.rcsMaterial === ps5Mat) {
             asyncMaterial.linkMesh(threeMesh);
             break;
           }

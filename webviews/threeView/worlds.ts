@@ -242,6 +242,12 @@ export class World {
         `[picked]   transparent=${m.transparent} opacity=${m.opacity}` +
           ` depthWrite=${m.depthWrite} u_alphaTest=${alphaTest ?? "n/a"}`
       );
+      // A mesh still on the placeholder either waits for a material that never
+      // finished (the stamp names it) or was never claimed by one (no stamp).
+      if (m.name === "" || m.name === "_default" || m.name === ".default") {
+        const pending = mesh.userData?.rcsPendingMaterial;
+        api.log(`[picked]   DEFAULT material: ${pending ? `linked to '${pending}' which never finished` : "never linked to any AsyncMaterial"}`);
+      }
 
       // Which permutation ran, and every colour-valued uniform it reads.
       //
