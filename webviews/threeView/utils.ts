@@ -94,58 +94,69 @@ export function mipmapsToTexture(mipmaps: Mipmaps): THREE.Texture {
 
   mipmaps = generateMissingMipmaps(mipmaps);
 
-  for (const mipmap of mipmaps) {
-    switch (mipmap.type) {
-      case "ARGB": {
-        const data = convertARGBtoRGBA(mipmap.data);
-        const texture = new THREE.DataTexture(data as unknown as Uint8ClampedArray<ArrayBuffer>, mipmap.width, mipmap.height, THREE.RGBAFormat);
-        textures.push(texture);
-        break;
-      }
-      case "RGBA": {
-        const texture = new THREE.DataTexture(mipmap.data as unknown as Uint8Array<ArrayBuffer>, mipmap.width, mipmap.height, THREE.RGBAFormat);
-        textures.push(texture);
-        break;
-      }
-      case "DXT1": {
-        const imd = [mipmap as unknown as ImageData];
-        const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT1_Format);
-        textures.push(texture);
-        break;
-      }
-      case "DXT3": {
-        const imd = [mipmap as unknown as ImageData];
-        const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT3_Format);
-        textures.push(texture);
-        break;
-      }
-      case "DXT5": {
-        const imd = [mipmap as unknown as ImageData];
-        const texture = new THREE.CompressedTexture(imd, mipmap.width, mipmap.height, THREE.RGBA_S3TC_DXT5_Format);
-        textures.push(texture);
-        break;
-      }
-    }
+  // ONE texture carrying the WHOLE chain.
+  //
+  // This used to build a separate texture per mip level and return the first,
+  // so for compressed formats every level past 0 was constructed and thrown
+  // away: the GPU never saw the chain, minFilter stayed at LinearFilter, and
+  // every DXT texture in the scene aliased under minification -- the caustics
+  // and torch projections shimmered as if their mipmaps were corrupt. The
+  // files' chains were fine all along (the golden texture tests decode them
+  // bit-exact); they simply never reached the GPU.
+  const first = mipmaps[0];
+  if (!first) {
+    console.log(`Failed to load mipmaps`, mipmaps);
+    return undefined as unknown as THREE.Texture;
   }
 
-  const texture = textures[0];
-  if (!texture) {
-    console.log(`Failed to load mipmaps`, mipmaps);
-    return texture;
+  let texture: THREE.Texture;
+  switch (first.type) {
+    case "DXT1":
+    case "DXT3":
+    case "DXT5": {
+      const format =
+        first.type === "DXT1"
+          ? THREE.RGBA_S3TC_DXT1_Format
+          : first.type === "DXT3"
+            ? THREE.RGBA_S3TC_DXT3_Format
+            : THREE.RGBA_S3TC_DXT5_Format;
+      const chain = mipmaps.map((m) => ({ data: m.data, width: m.width, height: m.height }));
+      texture = new THREE.CompressedTexture(chain as unknown as ImageData[], first.width, first.height, format);
+      // Mipmap filtering only when the chain runs all the way to 1x1. Three
+      // r149 never sets TEXTURE_MAX_LEVEL, so sampling a PARTIAL chain with a
+      // mipmap filter reads levels that were never uploaded and the texture is
+      // incomplete -- which WebGL renders as black.
+      const last = mipmaps[mipmaps.length - 1];
+      const complete = Math.max(last.width, last.height) === 1;
+      texture.minFilter = complete && mipmaps.length > 1 ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
+      break;
+    }
+    case "ARGB":
+    case "RGBA": {
+      for (const mipmap of mipmaps) {
+        const data = mipmap.type === "ARGB" ? convertARGBtoRGBA(mipmap.data) : mipmap.data;
+        textures.push(new THREE.DataTexture(data as unknown as Uint8ClampedArray<ArrayBuffer>, mipmap.width, mipmap.height, THREE.RGBAFormat));
+      }
+      texture = textures[0];
+      const images = textures.map((t) => t.image);
+      (texture as THREE.DataTexture).mipmaps = images;
+      const lastRgba = mipmaps[mipmaps.length - 1];
+      texture.minFilter =
+        textures.length > 1 && Math.max(lastRgba.width, lastRgba.height) === 1
+          ? THREE.LinearMipmapLinearFilter
+          : THREE.LinearFilter;
+      break;
+    }
+    default:
+      console.log(`Failed to load mipmaps`, mipmaps);
+      return undefined as unknown as THREE.Texture;
   }
 
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.magFilter = THREE.LinearFilter;
-  texture.minFilter = THREE.LinearFilter;
   texture.anisotropy = 16;
   texture.needsUpdate = true;
-
-  if (textures.length > 0 && texture instanceof THREE.DataTexture) {
-    const images = textures.map((texture) => texture.image);
-    texture.mipmaps = images;
-    texture.minFilter = THREE.LinearMipmapLinearFilter;
-  }
 
   return texture;
 }
