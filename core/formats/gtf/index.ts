@@ -194,11 +194,21 @@ export class GTF {
     if (this.mipmaps.length === 0) return;
 
     const faceSize = this.mipmaps.reduce((total, mipmap) => total + mipmap.data.length, 0);
-    if (faceSize === 0 || this.header.data.size < faceSize * 6) return;
+    // Each face's mip chain starts on a 128-byte boundary, so a face whose
+    // mips do not sum to a multiple of 128 is followed by padding. Slicing by
+    // the raw size read every face after the first up to 360 bytes early --
+    // a shifted DXT block stream, which scrolls the face's content sideways a
+    // little more per face. 12_sol_2's sky measures exactly this: faceSize
+    // 2,796,216 = 56 bytes past a boundary, 72 bytes of pad per face, and the
+    // file's data block is 5 x 72 = 360 bytes larger than 6 x faceSize (the
+    // last face needs no pad). Seam error against the GL cube adjacency drops
+    // from 30 to the texture's own noise floor with the stride corrected.
+    const faceStride = Math.ceil(faceSize / 128) * 128;
+    if (faceSize === 0 || this.header.data.size < faceStride * 5 + faceSize) return;
 
     const dataRange = this.header.data;
     for (let face = 0; face < 6; face++) {
-      const base = face * faceSize;
+      const base = face * faceStride;
       let offset = 0;
       const chain: Mipmaps = [];
       for (const mipmap of this.mipmaps) {
