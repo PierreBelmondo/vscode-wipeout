@@ -290,6 +290,56 @@
     "sha256": "cb3a6e2f8df75b2fc1e19ae656d497e75ef3f8e741a4cdd93b3d7d3b7f81eff5"
   },
   {
+    "name": "dds_dxt1_placeholder_mip1",
+    "source": "ps3/NPEA00000/USRDIR/data/materials/place_holder.dds",
+    "mip": 1,
+    "face": null,
+    "type": "DXT1",
+    "width": 256,
+    "height": 256,
+    "sha256": "bec86357633e935abf6d094edf885f3a71d947c7eceff167b9c6d3467b0f0ca0"
+  },
+  {
+    "name": "dds_dxt1_placeholder_mip6",
+    "source": "ps3/NPEA00000/USRDIR/data/materials/place_holder.dds",
+    "mip": 6,
+    "face": null,
+    "type": "DXT1",
+    "width": 8,
+    "height": 8,
+    "sha256": "f6226b3c9d88ba8d27d09385a065f8e91f9d75a8f2ccd8c18c99bf9d181e7137"
+  },
+  {
+    "name": "dds_dxt1_green_win_mip0",
+    "source": "ps3/NPEA00000/USRDIR/data/environments/04_chenghou_project/hd_textures/ad_green_win.dds",
+    "mip": 0,
+    "face": null,
+    "type": "DXT1",
+    "width": 256,
+    "height": 256,
+    "sha256": "80af718bbfe883a561336329b1c402a6667a7bf030b3a97b102375c31557cb50"
+  },
+  {
+    "name": "dds_fp32_impostor_clamp",
+    "source": "ps3/BCES-00005/bahrain/tracks/crowds/impostor_pc_clamp_bank_0.dds",
+    "mip": 0,
+    "face": null,
+    "type": "RGBA",
+    "width": 16,
+    "height": 159,
+    "sha256": "45859e9505327223889bc5f2b382ca61c34953427657a79aa671d69563f0fabc"
+  },
+  {
+    "name": "dds_fp32_impostor_offsets",
+    "source": "ps3/BCES-00005/bahrain/tracks/crowds/impostor_pc_offsets_bank_0.dds",
+    "mip": 0,
+    "face": null,
+    "type": "RGBA",
+    "width": 16,
+    "height": 159,
+    "sha256": "66f20b06539da6e9f582410ed7e80b278b51607728751f2f52764813141dc58f"
+  },
+  {
     "name": "cube_sol2_face0_mip3",
     "source": "ps3/hdf/data/environments/12_sol_2/sky.gtf",
     "mip": 3,

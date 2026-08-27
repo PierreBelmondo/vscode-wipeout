@@ -52,6 +52,16 @@ export const GOLDEN_TEXTURES: GoldenEntry[] = [
     source: "ps3/hdf/data/tex/projector/torch.gtf",
     mip: i,
   })),
+  // DDS: DXT1 with a chain (top level skipped -- 512x512 is a large PNG for
+  // a placeholder), a DXT1 environment texture, and the 32-bit float crowd
+  // impostor banks, which exercise the FourCC-116 path and the float->8-bit
+  // export. (The 16-bit luminance+alpha impostor UV banks are 2048x2048 with
+  // no chain -- too large for a golden -- and stay unpinned.)
+  { name: "dds_dxt1_placeholder_mip1", source: "ps3/NPEA00000/USRDIR/data/materials/place_holder.dds", mip: 1 },
+  { name: "dds_dxt1_placeholder_mip6", source: "ps3/NPEA00000/USRDIR/data/materials/place_holder.dds", mip: 6 },
+  { name: "dds_dxt1_green_win_mip0", source: "ps3/NPEA00000/USRDIR/data/environments/04_chenghou_project/hd_textures/ad_green_win.dds", mip: 0 },
+  { name: "dds_fp32_impostor_clamp", source: "ps3/BCES-00005/bahrain/tracks/crowds/impostor_pc_clamp_bank_0.dds", mip: 0 },
+  { name: "dds_fp32_impostor_offsets", source: "ps3/BCES-00005/bahrain/tracks/crowds/impostor_pc_offsets_bank_0.dds", mip: 0 },
   // Cube with a full mip chain per face: all six faces at mip 3 (256x256).
   // The face stride is 128-byte aligned, so faces 1..5 are exactly what a
   // mis-strided split corrupts -- sol2's sky is the file that caught that bug.

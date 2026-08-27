@@ -20,6 +20,8 @@ import * as fs from "fs";
 import * as path from "path";
 import * as crypto from "crypto";
 import { GTF } from "@core/formats/gtf";
+import { DDS } from "@core/formats/dds";
+import { Mipmaps } from "@core/utils/mipmaps";
 import { GOLDEN_TEXTURES } from "./textures/manifest";
 import { mipToRGBA } from "./textures/rgba";
 import { encodePNG } from "./textures/png";
@@ -40,11 +42,26 @@ type GoldenRecord = {
   sha256: string;
 };
 
+/** Decode a sample by its extension; each format's loader owns its chain. */
+function loadChains(file: string): { mipmaps: Mipmaps; faces: Mipmaps[] } {
+  const buf = fs.readFileSync(file);
+  const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+  switch (path.extname(file).toLowerCase()) {
+    case ".gtf": {
+      const gtf = GTF.load(ab);
+      return { mipmaps: gtf.mipmaps, faces: gtf.faces };
+    }
+    case ".dds":
+      return { mipmaps: DDS.load(ab).mipmaps, faces: [] };
+    default:
+      throw new Error(`no loader for ${file}`);
+  }
+}
+
 function decodeEntry(source: string, mip: number, face: number | null) {
   const file = path.join(config.root, source);
-  const buf = fs.readFileSync(file);
-  const gtf = GTF.load(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer);
-  const chain = face === null ? gtf.mipmaps : gtf.faces[face];
+  const loaded = loadChains(file);
+  const chain = face === null ? loaded.mipmaps : loaded.faces[face];
   if (!chain) throw new Error(`no ${face === null ? "mipmaps" : `face ${face}`} in ${source}`);
   const level = chain[mip];
   if (!level) throw new Error(`no mip ${mip} in ${source} (${chain.length} levels)`);

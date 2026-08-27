@@ -176,8 +176,7 @@ class Editor {
   }
 
   async loadDDS(buffer: ArrayBuffer): Promise<Mipmaps> {
-    const dds = await DDS.load(buffer);
-    return [];
+    return DDS.load(buffer).mipmaps;
   }
 
   async loadFNT(buffer: ArrayBuffer): Promise<Mipmaps> {
