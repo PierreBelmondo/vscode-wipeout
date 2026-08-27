@@ -229,10 +229,16 @@ export class GTF {
     let dataOffset = 0;
     for (let i = 0; i < this.header.mipmaps; i++) {
       const dataLength = width * height * 4;
-      const data = dataRange.getUint8Array(dataOffset, dataOffset + dataLength);
+      // (offset, LENGTH) -- passing `dataOffset + dataLength` here read past
+      // every mip after the first: the 3x1 gradient's second mip came back as
+      // 12 bytes for what should have been a single texel.
+      const data = dataRange.getUint8Array(dataOffset, dataLength);
       this.mipmaps.push({ type: "ARGB", width, height, data });
-      width = Math.floor(width / 2);
-      height = Math.floor(height / 2);
+      // Clamped at 1: a mip chain never reaches a zero dimension. Without the
+      // clamp a 3x1 texture's second level is 1x0 -- an empty image where the
+      // file stores a real 1x1 texel.
+      width = Math.max(1, Math.floor(width / 2));
+      height = Math.max(1, Math.floor(height / 2));
       dataOffset += dataLength;
     }
   }
@@ -248,8 +254,13 @@ export class GTF {
       const dataLength = DXT1.size(width, height);
       const data = dataRange.getUint8Array(dataOffset, dataLength);
       this.mipmaps.push({ type: "DXT1", width, height, data });
-      width = Math.floor(width / 2);
-      height = Math.floor(height / 2);
+      // Clamped at 1, like every DDS-style mip chain: a non-square texture's
+      // short axis reaches 1 first and stays there while the long axis keeps
+      // halving. Without the clamp the tail mips of a 64x128 chain got a zero
+      // (or, in the DXT3/5 loaders below, fractional) dimension, and their
+      // data lengths no longer matched what the file stores.
+      width = Math.max(1, Math.floor(width / 2));
+      height = Math.max(1, Math.floor(height / 2));
       dataOffset += dataLength;
     }
   }
@@ -265,8 +276,8 @@ export class GTF {
       const dataLength = DXT3.size(width, height);
       const data = dataRange.getUint8Array(dataOffset, dataLength);
       this.mipmaps.push({ type: "DXT3", width, height, data });
-      width = width / 2;
-      height = height / 2;
+      width = Math.max(1, Math.floor(width / 2));
+      height = Math.max(1, Math.floor(height / 2));
       dataOffset += dataLength;
     }
   }
@@ -282,8 +293,8 @@ export class GTF {
       const dataLength = DXT5.size(width, height);
       const data = dataRange.getUint8Array(dataOffset, dataLength);
       this.mipmaps.push({ type: "DXT5", width, height, data });
-      width = width / 2;
-      height = height / 2;
+      width = Math.max(1, Math.floor(width / 2));
+      height = Math.max(1, Math.floor(height / 2));
       dataOffset += dataLength;
     }
   }
