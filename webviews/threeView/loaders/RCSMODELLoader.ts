@@ -6,8 +6,8 @@ import { GXT } from "@core/formats/gxt";
 import { GNF } from "@core/formats/gnf";
 import { Loader } from ".";
 import { facesToCubeTexture, mipmapsToTexture } from "../utils";
-import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelPart, RcsModelTexture, RcsModelVBO } from "@core/formats/rcs";
-import { RcsModelPS5, RcsModelPS5Material, RcsModelPS5Texture } from "@core/formats/rcs/rcsmodel_ps5";
+import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelPart, RcsModelVBO } from "@core/formats/rcs";
+import { RcsModelPS5, RcsModelPS5Material } from "@core/formats/rcs/rcsmodel_ps5";
 import { World } from "../worlds";
 import { createMaterial, setEnvSettings, GENERATED_NAMES, ONLY_GENERATED_MATERIALS } from "../materials/rcs";
 import { rcsHash } from "@core/formats/rcs/ids";
@@ -94,7 +94,16 @@ type TextureChannel = {
   texture: THREE.Texture | null;
 };
 
-class AsyncMaterial {
+/**
+ * One material and the meshes that wear it.
+ *
+ * It still owns state -- the channel table, the authored constants, the mesh
+ * list -- because all of that is read at build time. What it no longer owns is
+ * the WAITING: resolve() awaits its own textures and builds, instead of the
+ * loader pushing files in one at a time and each arrival re-checking whether
+ * the set happens to be complete.
+ */
+class RcsMaterial {
   world: World;
   rcsMaterial: RcsModelMaterial | RcsModelPS5Material;
   meshes: THREE.Mesh[] = [];
@@ -111,21 +120,35 @@ class AsyncMaterial {
     return list[list.length - 1];
   }
 
-  require() {
-    api.require(this.rcsMaterial.filename);
+  /**
+   * Load every channel's texture, then build the material.
+   *
+   * A channel that fails is reported and left null -- the same state an empty
+   * slot has -- so one missing .gtf costs that one sampler rather than the
+   * whole material, which is what silently happened before when a texture that
+   * never arrived held finish() hostage forever.
+   */
+  async resolve() {
+    await Promise.all(
+      this.textureChannels.map(async (channel) => {
+        if (channel.filename === "") return;
+        try {
+          channel.texture = await loadTexture(this.world, channel.filename);
+        } catch (e) {
+          api.log(`[tex] ${this.basename}: channel ${channel.filename} failed: ${(e as Error).message}`);
+        }
+      })
+    );
+    this.finish();
   }
 
   linkMesh(mesh: THREE.Mesh) {
     // Stamped so a pick can tell a mesh WAITING for its material apart from
-    // one that was never claimed by any AsyncMaterial at all -- the two look
+    // one that was never claimed by any material at all -- the two look
     // identical on screen (both wear the .default placeholder) but point at
     // opposite bugs.
     mesh.userData.rcsPendingMaterial = this.basename;
     this.meshes.push(mesh);
-  }
-
-  match(filename: string) {
-    return this.rcsMaterial.filename == filename;
   }
 
   registerTexture(id: number, filename: string) {
@@ -143,38 +166,6 @@ class AsyncMaterial {
     this.constants.set(id, value);
     // Still a channel, so later slots keep their real index.
     this.textureChannels.push({ id, filename: "", texture: null });
-  }
-
-  /**
-   * Called once every channel has been registered. A material finishes here
-   * when it is waiting for nothing: either it declares no channels at all, or
-   * every channel it declares is an empty slot. Those never receive a texture,
-   * so import() is never called for them and they would stay without a shader
-   * -- cf_constantcolourglow has two empty channels and nothing else, which
-   * left 19 meshes on the default material.
-   */
-  linked() {
-    const waiting = this.textureChannels.some((channel) => channel.filename != "");
-    if (!waiting) this.finish();
-  }
-
-  async load(buffer: ArrayBuffer) {
-    // Nothing to do at the moment
-  }
-
-  import(texture: THREE.Texture) {
-    let fullyLoaded = true;
-    for (let i = 0; i < this.textureChannels.length; i++) {
-      if (this.textureChannels[i].filename == texture.name) {
-        this.textureChannels[i].texture = texture;
-      }
-      // Empty channels never receive a texture; they must not hold up finish().
-      if (this.textureChannels[i].filename != "" && this.textureChannels[i].texture == null) {
-        fullyLoaded = false;
-      }
-    }
-
-    if (fullyLoaded) this.finish();
   }
 
   finish() {
@@ -390,69 +381,58 @@ class AsyncMaterial {
   }
 }
 
-class AsyncTexture {
-  world: World;
-  rcsTexture: RcsModelTexture | RcsModelPS5Texture;
-  asyncMaterials: AsyncMaterial[] = [];
-  texture?: THREE.Texture;
-
-  constructor(world: World, rcsTexture: RcsModelTexture | RcsModelPS5Texture) {
-    this.world = world;
-    this.rcsTexture = rcsTexture;
+/**
+ * Fetch and decode one texture.
+ *
+ * Straight-line: request, decode, register. There is no pooling here because
+ * api.fetchFile() already shares one request per filename, and no notification
+ * list because the material that needs this texture is the one awaiting the
+ * call -- which is what the AsyncTexture/AsyncMaterial pair existed to arrange.
+ *
+ * Throws if the file is missing or undecodable, so the awaiting material can
+ * report which channel it lost rather than waiting forever for a texture that
+ * is never coming.
+ */
+async function loadTexture(world: World, filename: string): Promise<THREE.Texture> {
+  // ONE decoded texture per filename per world, shared by every material that
+  // names it -- as the old AsyncTexture pool did. This matters beyond the
+  // decode cost: createMaterial() caches by texture uuid, so a shared instance
+  // is what lets the 192 entries of jd_simplespecular on 01_vineta_k resolve
+  // to ONE compiled material. Decoding per channel handed each entry its own
+  // texture, its own cache key, and its own shader build.
+  let pool = texturePools.get(world);
+  if (!pool) {
+    pool = new Map();
+    texturePools.set(world, pool);
   }
+  const cached = pool.get(filename);
+  if (cached) return cached;
+  const promise = decodeTexture(world, filename);
+  // A failure is not cached: the next material to ask retries, and reports.
+  promise.catch(() => pool!.delete(filename));
+  pool.set(filename, promise);
+  return promise;
+}
 
-  require() {
-    api.require(this.rcsTexture.filename);
+/** In-flight and finished textures, keyed by filename, per world. */
+const texturePools = new WeakMap<World, Map<string, Promise<THREE.Texture>>>();
+
+async function decodeTexture(world: World, filename: string): Promise<THREE.Texture> {
+  const buffer = await api.fetchFile(filename);
+  let mipmaps;
+  if (filename.endsWith(".gnf")) {
+    const gnf = await GNF.load(buffer);
+    mipmaps = gnf.mipmaps;
+  } else if (filename.endsWith(".gxt")) {
+    mipmaps = GXT.load(buffer).mipmaps;
+  } else {
+    mipmaps = GTF.load(buffer).mipmaps;
   }
-
-  match(filename: string) {
-    return this.rcsTexture.filename == filename;
-  }
-
-  /**
-   * @param rcsTexture THIS material's own record for the texture, which is not
-   * necessarily the one this AsyncTexture was created from.
-   *
-   * AsyncTextures are pooled by FILENAME, since the same .gtf is shared by many
-   * materials and should only be fetched and decoded once. The channel id,
-   * though, is a hash of the channel NAME, and the same file is bound under
-   * different names by different materials -- vineta_k's aadc_cyan_glow.gtf is
-   * `Texture1` to one material and `diffuseTexture` to lambert. Reading the id
-   * off the pooled record therefore gave every later material the FIRST
-   * material's channel name, so the id never matched what its own shader
-   * sampled and the texture silently failed to bind.
-   */
-  linkAsyncMaterial(asyncMaterial: AsyncMaterial, rcsTexture: RcsModelTexture | RcsModelPS5Texture = this.rcsTexture) {
-    const id = "id" in rcsTexture ? rcsTexture.id : 0;
-    asyncMaterial.registerTexture(id, rcsTexture.filename);
-    this.asyncMaterials.push(asyncMaterial);
-  }
-
-  async load(buffer: ArrayBuffer) {
-    const fn = this.rcsTexture.filename;
-    console.log(`Loading texture ${fn} (${buffer.byteLength} bytes)`);
-    let mipmaps;
-    if (fn.endsWith(".gnf")) {
-      const gnf = await GNF.load(buffer);
-      mipmaps = gnf.mipmaps;
-    } else if (fn.endsWith(".gxt")) {
-      mipmaps = GXT.load(buffer).mipmaps;
-    } else {
-      mipmaps = GTF.load(buffer).mipmaps;
-    }
-    this.texture = mipmapsToTexture(mipmaps);
-    if (!this.texture) {
-      console.warn(`Failed to create texture for ${fn} (${mipmaps.length} mipmaps)`);
-      return;
-    }
-    this.texture.name = fn;
-    console.log(`Texture ${fn} created (${mipmaps.length} mipmaps), notifying ${this.asyncMaterials.length} materials`);
-
-    this.world.textures[this.texture.name] = this.texture;
-    for (const asyncMaterial of this.asyncMaterials) {
-      asyncMaterial.import(this.texture);
-    }
-  }
+  const texture = mipmapsToTexture(mipmaps);
+  if (!texture) throw new Error(`${filename}: no texture from ${mipmaps.length} mipmaps`);
+  texture.name = filename;
+  world.textures[filename] = texture;
+  return texture;
 }
 
 
@@ -542,16 +522,14 @@ function applyEnvSettings(world: World, env: EnvSettings) {
 }
 
 export class RCSModelLoader extends Loader {
-  asyncMaterials: AsyncMaterial[] = [];
-  asyncTextures: AsyncTexture[] = [];
-  asyncTextureLookup: { [filename: string]: number } = {};
-  skyFilename = "";
-  envSettingsFilename = "";
-  private world?: World;
+  materials: RcsMaterial[] = [];
 
   override async loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {
-    this.world = world;
-    world.userdata.filename = filename;
+    // The scene's filename, which is the document that was opened. When this
+    // loader runs as a .vex scene's companion the .vex has already set it, and
+    // overwriting it with the .rcsmodel path renamed the scene under
+    // isFrontEndScene() and everything else that reads it.
+    if (!world.userdata.filename) world.userdata.filename = filename;
     const magic = new DataView(arrayBuffer).getUint32(0, true);
     api.log(`[RCSModelLoader] loading ${filename} (${arrayBuffer.byteLength} bytes, magic=0x${magic.toString(16)})`);
     if (RcsModelPS5.canLoad(arrayBuffer)) {
@@ -559,27 +537,24 @@ export class RCSModelLoader extends Loader {
       api.log(`[RCSModelLoader] PS5/Vita: ${model.shapes.length} shapes, ${model.meshes.length} meshes, ${model.materials.length} materials`);
       this.loadMaterialsPS5(world, model);
       this.loadScenePS5(world, model);
-      for (const asyncMaterial of this.asyncMaterials) {
-        asyncMaterial.linked();
-      }
+      await this.resolveMaterials();
     } else {
       const model = RcsModel.load(arrayBuffer);
       api.log(`[RCSModelLoader] PS3: ${model.objects.length} objects, ${model.materials.length} materials`);
-      // The environment's sky sits beside the model rather than being named by
-      // it, so ask for it directly. The name must stay relative: the editor
-      // resolves a bare name against the document's own directory, while an
-      // absolute path is handed to Uri.parse and never found.
-      this.skyFilename = "sky.gtf";
-      api.require(this.skyFilename);
-      // The environment's own lighting and fog values. Same relative-name rule
-      // as the sky: the editor resolves it against the document's directory.
-      this.envSettingsFilename = "track.envsettings";
-      api.require(this.envSettingsFilename);
       this.loadMaterials(world, model);
       this.loadScene(world, model);
-      for (const asyncMaterial of this.asyncMaterials) {
-        asyncMaterial.linked();
-      }
+      // The environment's sky and its lighting/fog values sit beside the model
+      // rather than being named by it, so ask for them directly. The names must
+      // stay relative: the editor resolves a bare name against the document's
+      // own directory, while an absolute path is handed to Uri.parse and never
+      // found.
+      //
+      // Alongside the materials rather than before them: the settings are
+      // applied to every material built so far AND handed to the material layer
+      // for the ones built later, so neither order is a dependency -- and
+      // running them concurrently keeps a missing .envsettings from delaying
+      // the geometry.
+      await Promise.all([this.loadSky(world, "sky.gtf"), this.loadEnvSettings(world, "track.envsettings"), this.resolveMaterials()]);
     }
 
     // Ambient was 0.6, which is flat and unshadowed: it lifted every surface
@@ -633,68 +608,94 @@ export class RCSModelLoader extends Loader {
     return world;
   }
 
-  override async import(buffer: ArrayBuffer, filename: string) {
-    // Deliver to EVERY waiting consumer, not just the first match. A model
-    // reuses the same .rcsmaterial across many material entries — 01_vineta_k
-    // has 805 entries for only 69 distinct files, with jd_simplespecular alone
-    // used 192 times. Returning after the first match left 736 of them without
-    // their shader, so their meshes kept the default material and the track
-    // surface never appeared. The same holds for textures shared between
-    // materials.
-    if (filename.endsWith(".rcsmaterial")) {
-      for (const asyncMaterial of this.asyncMaterials) {
-        if (asyncMaterial.match(filename)) await asyncMaterial.load(buffer);
-      }
-      return;
-    }
-    if (this.envSettingsFilename && filename === this.envSettingsFilename) {
-      // Plain text, latin1: these are authoring files and carry no BOM.
-      const text = new TextDecoder("latin1").decode(buffer);
-      const env = parseEnvSettings(text);
-      if (this.world) {
-        this.world.envSettings = env;
-        applyEnvSettings(this.world, env);
-        // The Environment folder shows these values, so it can only be built
-        // once they exist.
-        this.world.setupGuiEnvironment();
-        // Built from the materials that exist by now, which is why it hangs off
-        // the settings arriving rather than the model load: materials stream in
-        // asynchronously and the folder would otherwise come up empty.
-        this.world.setupGuiUniforms();
-        // Hand them to the material layer, which applies them to everything
-        // already built AND to everything built later -- materials and this
-        // file load independently, and this one usually arrives last.
-        setEnvSettings(env);
-      }
-      api.log(`[RCSModelLoader] envsettings: ${env.values.size} keys, ambient=${env.get(EnvKey.constantAmbient)}, fog=${env.get(EnvKey.fogColour)}`);
-      return;
-    }
-    if (this.skyFilename && filename === this.skyFilename) {
-      // The sky is a cube map. Sampled as a flat texture it renders black, so
-      // it is built from its six faces and used as the scene background.
-      const gtf = GTF.load(buffer);
+  /**
+   * Build every material once its own textures are in.
+   *
+   * They run concurrently rather than in sequence: each awaits only the files
+   * it needs, so one slow or missing texture delays its own material and
+   * nothing else. A material that throws is reported and skipped -- letting it
+   * escape would abandon every material still queued behind it.
+   */
+  private async resolveMaterials() {
+    await Promise.all(
+      this.materials.map(async (material) => {
+        try {
+          await material.resolve();
+        } catch (e) {
+          api.log(`[mat] ${material.basename} failed: ${(e as Error).message}`);
+        }
+      })
+    );
+  }
+
+  /**
+   * The sky is a cube map. Sampled as a flat texture it renders black, so it is
+   * built from its six faces and used as the scene background.
+   *
+   * The sky belongs to the SCENE, not to a model: a .vex scene loads several
+   * .rcsmodels through their own loaders (a ship and its engineflare), and each
+   * asking for it meant one request per model -- rebuilding the cube on every
+   * later arrival, and on a ship, where no sky sits beside the file, failing
+   * once per model instead of once.
+   */
+  private async loadSky(world: World, filename: string) {
+    if (world.userdata.skyRequested) return;
+    world.userdata.skyRequested = true;
+    try {
+      const gtf = GTF.load(await api.fetchFile(filename));
       const cube = gtf.isCube ? facesToCubeTexture(gtf.faces) : undefined;
-      if (cube && this.world) {
-        this.world.scene.background = cube;
-        api.log(`[RCSModelLoader] sky: ${gtf.faces.length} faces ${gtf.header.width}x${gtf.header.height}`);
-      } else {
+      if (!cube) {
         api.log(`[RCSModelLoader] sky ${filename} is not a usable cube map`);
+        return;
       }
+      world.scene.background = cube;
+      api.log(`[RCSModelLoader] sky: ${gtf.faces.length} faces ${gtf.header.width}x${gtf.header.height}`);
+    } catch (e) {
+      api.log(`[RCSModelLoader] no sky: ${(e as Error).message}`);
+    }
+  }
+
+  /**
+   * The environment's own lighting and fog values.
+   *
+   * Once per scene, for the same reason as the sky: these are properties of the
+   * environment, not of a model, and every .rcsmodel asking for them re-applied
+   * the settings and rebuilt the Environment GUI folder on each later arrival.
+   */
+  private async loadEnvSettings(world: World, filename: string) {
+    if (world.userdata.envSettingsRequested) return;
+    world.userdata.envSettingsRequested = true;
+    let env: EnvSettings;
+    try {
+      // Plain text, latin1: these are authoring files and carry no BOM.
+      const text = new TextDecoder("latin1").decode(await api.fetchFile(filename));
+      env = parseEnvSettings(text);
+    } catch (e) {
+      api.log(`[RCSModelLoader] no envsettings: ${(e as Error).message}`);
       return;
     }
-    if (filename.endsWith(".gtf") || filename.endsWith(".gxt") || filename.endsWith(".gnf")) {
-      for (const asyncTexture of this.asyncTextures) {
-        if (asyncTexture.match(filename)) await asyncTexture.load(buffer);
-      }
-      return;
-    }
+    world.envSettings = env;
+    applyEnvSettings(world, env);
+    // No GUI work here. This runs INSIDE the awaited load, before app.ts has
+    // called world.setupGui(), so world.gui does not exist yet: building the
+    // Environment folder from here threw on `undefined.addFolder`, rejected
+    // the whole load, and -- because the throw was outside the try above --
+    // skipped everything queued behind it, including the companion's
+    // reparenting of geometry under its animated pivots. app.ts builds the
+    // Environment and Shader-uniform folders once the load has finished and
+    // the GUI exists.
+    //
+    // Hand them to the material layer, which applies them to everything already
+    // built AND to everything built later -- materials and this file load
+    // independently, so either can win the race.
+    setEnvSettings(env);
+    api.log(`[RCSModelLoader] envsettings: ${env.values.size} keys, ambient=${env.get(EnvKey.constantAmbient)}, fog=${env.get(EnvKey.fogColour)}`);
   }
 
   private loadMaterials(world: World, rcs: RcsModel) {
     for (const rcsMaterial of rcs.materials) {
-      const asyncMaterial = new AsyncMaterial(world, rcsMaterial);
-      this.asyncMaterials.push(asyncMaterial);
-      //asyncMaterial.require();
+      const material = new RcsMaterial(world, rcsMaterial);
+      this.materials.push(material);
 
       for (const rcsTexture of rcsMaterial.textures) {
         // Slots that hold no file (the empty lightmap placeholder, and the
@@ -710,28 +711,21 @@ export class RCSModelLoader extends Loader {
           // (115.0) -- and dropping them left the shader on declaredUniforms'
           // invented 1.0 for each.
           const colour = (rcsTexture as { colour?: [number, number, number, number] | null }).colour;
-          if (colour) asyncMaterial.registerConstant(rcsTexture.id, colour);
-          else asyncMaterial.registerEmptyChannel(rcsTexture.id);
+          if (colour) material.registerConstant(rcsTexture.id, colour);
+          else material.registerEmptyChannel(rcsTexture.id);
           continue;
         }
-        const asyncTexture = this.loadTexture(world, rcsTexture);
-        // This material's own record, not the pooled one: see linkAsyncMaterial.
-        asyncTexture.linkAsyncMaterial(asyncMaterial, rcsTexture);
+        // THIS material's own record for the texture. The channel id is a hash
+        // of the channel NAME, and the same file is bound under different names
+        // by different materials -- vineta_k's aadc_cyan_glow.gtf is `Texture1`
+        // to one material and `diffuseTexture` to lambert. Reading the id off a
+        // shared record gave every later material the FIRST one's channel name,
+        // so the id never matched what its own shader sampled and the texture
+        // silently failed to bind. Sharing now happens one level down, in
+        // api.fetchFile(), where it costs no identity.
+        material.registerTexture("id" in rcsTexture ? rcsTexture.id : 0, rcsTexture.filename);
       }
     }
-  }
-
-  private loadTexture(world: World, rcsTexture: RcsModelTexture | RcsModelPS5Texture) {
-    const filename = rcsTexture.filename;
-    if (filename in this.asyncTextureLookup) {
-      const index = this.asyncTextureLookup[filename];
-      return this.asyncTextures[index];
-    }
-    const asyncTexture = new AsyncTexture(world, rcsTexture);
-    this.asyncTextures.push(asyncTexture);
-    this.asyncTextureLookup[filename] = this.asyncTextures.length - 1;
-    asyncTexture.require();
-    return asyncTexture;
   }
 
   private loadScene(world: World, rcs: RcsModel) {
@@ -806,7 +800,7 @@ export class RCSModelLoader extends Loader {
     const geometry = this.loadBO(rcsMesh.vbo, rcsMesh.ibo);
     //geometry.computeVertexNormals();
     // Always the placeholder here; linkMesh below hands the mesh to its own
-    // AsyncMaterial, which swaps it when the material finishes. This used to
+    // RcsMaterial, which swaps it when the material finishes. This used to
     // pre-assign `world.materials[rcsMaterial.id]`, but that map is keyed by
     // THREE.Material.id -- a per-process counter -- while rcsMaterial.id is
     // the model's own hash, so a hit meant a Three material some other model
@@ -817,16 +811,16 @@ export class RCSModelLoader extends Loader {
     // Hiding at attach time instead would leave anything still on the default
     // material -- a material that never finished loading -- visible.
     if (ONLY_GENERATED_MATERIALS) mesh.visible = false;
-    for (const asyncMaterial of this.asyncMaterials) {
+    for (const candidate of this.materials) {
       // Identity, not id. The id is a per-material hash, unique WITHIN a
       // model, but a .vex scene loads several .rcsmodels through one loader
       // and their ids collide across files: triakis_c1's ship.rcsmodel and
       // engineflare.rcsmodel both open with material id 0xb4ae4852. The
-      // engine flares therefore matched the HULL's AsyncMaterial, which had
+      // engine flares therefore matched the HULL's material, which had
       // already finished, so those meshes were never attached and kept the
       // .default placeholder.
-      if (asyncMaterial.rcsMaterial === rcsMaterial) {
-        asyncMaterial.linkMesh(mesh);
+      if (candidate.rcsMaterial === rcsMaterial) {
+        candidate.linkMesh(mesh);
         break;
       }
     }
@@ -846,10 +840,10 @@ export class RCSModelLoader extends Loader {
       let material = world.materials["_default"];
       const mesh = new THREE.Mesh(geometry, material);
       if (ONLY_GENERATED_MATERIALS) mesh.visible = false;
-      for (const asyncMaterial of this.asyncMaterials) {
+      for (const candidate of this.materials) {
         // Identity, not id -- see loadMesh1.
-        if (asyncMaterial.rcsMaterial === rcsMaterial) {
-          asyncMaterial.linkMesh(mesh);
+        if (candidate.rcsMaterial === rcsMaterial) {
+          candidate.linkMesh(mesh);
           break;
         }
       }
@@ -865,20 +859,21 @@ export class RCSModelLoader extends Loader {
 
   private loadMaterialsPS5(world: World, model: RcsModelPS5) {
     for (const ps5Mat of model.materials) {
-      const asyncMaterial = new AsyncMaterial(world, ps5Mat);
-      this.asyncMaterials.push(asyncMaterial);
+      const material = new RcsMaterial(world, ps5Mat);
+      this.materials.push(material);
 
       for (const tex of ps5Mat.textures) {
         if (!tex.filename.startsWith("data")) {
           api.log(`[RCSModelLoader] skipping texture (no data prefix): "${tex.filename}" for material "${ps5Mat.name}"`);
           continue;
         }
-        const asyncTexture = this.loadTexture(world, tex);
-        // This material's own record, not the pooled one: see linkAsyncMaterial.
-        asyncTexture.linkAsyncMaterial(asyncMaterial, tex);
+        // A PS5/Vita texture record carries no channel id, so every channel is
+        // registered as 0 and the slot order alone identifies it -- as it has
+        // always been on this path.
+        material.registerTexture(0, tex.filename);
       }
     }
-    api.log(`[RCSModelLoader] ${this.asyncMaterials.length} materials, ${this.asyncTextures.length} textures queued`);
+    api.log(`[RCSModelLoader] ${this.materials.length} materials queued`);
   }
 
   private loadScenePS5(world: World, model: RcsModelPS5) {
@@ -926,10 +921,10 @@ export class RCSModelLoader extends Loader {
       const matIdx = shape.material_index;
       if (matIdx >= 0 && matIdx < model.materials.length) {
         const ps5Mat = model.materials[matIdx];
-        for (const asyncMaterial of this.asyncMaterials) {
+        for (const candidate of this.materials) {
           // Identity, not id -- see loadMesh1.
-          if (asyncMaterial.rcsMaterial === ps5Mat) {
-            asyncMaterial.linkMesh(threeMesh);
+          if (candidate.rcsMaterial === ps5Mat) {
+            candidate.linkMesh(threeMesh);
             break;
           }
         }

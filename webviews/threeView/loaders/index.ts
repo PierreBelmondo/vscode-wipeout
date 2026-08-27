@@ -3,11 +3,16 @@ import { CSS2DObject } from "../renderers/CSS2DRenderer";
 import { World } from "../worlds";
 
 export abstract class Loader {
-  loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {}
+  /**
+   * Async because a loader resolves its own dependencies -- textures, the
+   * companion .rcsmodel, the sky -- and callers build the GUI from the finished
+   * scene, so the promise has to cover the whole load, not just the parse.
+   */
+  async loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string): Promise<unknown> {
+    return undefined;
+  }
 
   loadFromString(world: World, content: string) {}
-
-  async import(buffer: ArrayBuffer, filename: string) {}
 
   protected createControlPoint(name: string): THREE.Object3D {
     const div = document.createElement("div") as HTMLDivElement;

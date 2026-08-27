@@ -7,11 +7,12 @@ import { RCSModelLoader } from "./loaders/RCSMODELLoader";
 import { FELoader } from "./loaders/FELoader";
 import { World } from "./worlds";
 import { api } from "./api";
-import { ThreeViewMessage, ThreeViewMessageImportBody, ThreeViewMessageLoadBody } from "@core/api/rpc";
+import { ThreeViewMessage, ThreeViewMessageLoadBody } from "@core/api/rpc";
 import { EffectComposer } from "./postprocessing/EffectComposer";
 import { RenderPass } from "./postprocessing/RenderPass";
 import { FrontEndEdgePass } from "./postprocessing/FrontEndEdgePass";
 import { ParaboloidProbes } from "./probes";
+import { LoadingLog } from "./loadingLog";
 import { DEFAULT_SCREEN_SETTING, ScreenSetting } from "./frontendSkin";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";
 import { TONE_MAPPINGS } from "./renderSettings";
@@ -491,10 +492,22 @@ class Editor {
       case "model/vnd.wipeout.vexx": {
         const response = await fetch(body.webviewUri);
         const buffer = await response.arrayBuffer();
-        this.loader = new VEXXLoader();
-        this.loader.loadFromBuffer(this.world, buffer, body.uri);
-        if (body.uri.endsWith("ship.vex")) {
-          api.require("locators.vex");
+        const loader = new VEXXLoader();
+        this.loader = loader;
+        // Awaited: the GUI panels below are built FROM the loaded scene -- the
+        // layer list, the track cameras -- so running them against a scene that
+        // is still filling in gives an empty or partial panel.
+        //
+        // But never fatal. Everything past this point puts the scene ON SCREEN,
+        // so a dependency that fails -- or worse, one whose reply never arrives
+        // -- must not stop the viewer from rendering what it already has. A
+        // throw here used to leave it on the loading screen forever.
+        try {
+          await loader.loadFromBuffer(this.world, buffer, body.uri);
+          // A ship keeps its attachment points in a sibling file.
+          if (body.uri.endsWith("ship.vex")) await loader.loadVexx("locators.vex");
+        } catch (e: any) {
+          api.log(`[vexx] load incomplete: ${e.message}`);
         }
         this.world.emitScene();
         this.world.setupGui();
@@ -506,6 +519,11 @@ class Editor {
         this.world.setupGuiBloom();
         this.world.setupGuiRendering();
         this.world.setupGuiDebug();
+        // After the load, not during it: these read world.envSettings and the
+        // built materials, both complete by now, and need world.gui to exist.
+        // Each is a no-op when there is nothing to show.
+        this.world.setupGuiEnvironment();
+        this.world.setupGuiUniforms();
         this.loadWorld();
         break;
       }
@@ -524,7 +542,10 @@ class Editor {
           this.world.setupGuiLayers();
           this.world.setupGuiBackgroundColor();
           this.world.setupGuiRendering();
-        this.world.setupGuiDebug();
+          this.world.setupGuiDebug();
+          // See the .vex branch: built here, once the GUI exists.
+          this.world.setupGuiEnvironment();
+          this.world.setupGuiUniforms();
           this.loadWorld();
         } catch (e: any) {
           api.log(`[rcsmodel] ERROR: ${e.message}\n${e.stack}`);
@@ -540,28 +561,6 @@ class Editor {
         this.loader.loadFromString(this.world, text);
         this.loadWorld();
         break;
-      }
-    }
-  }
-
-  async import(body: ThreeViewMessageImportBody) {
-    api.log(`Importing ${body.uri} (${body.mime})`);
-    const response = await fetch(body.webviewUri);
-    const buffer = await response.arrayBuffer();
-
-    if (this.loader) {
-      await this.loader.import(buffer, body.uri);
-      if (body.uri.endsWith(".vex")) {
-        this.world.emitScene();
-        this.world.setupGui();
-        this.world.setupGuiCamera();
-        this.world.setupGuiButtonExport();
-        this.world.setupGuiLayers();
-        this.world.setupGuiTrackCamera();
-        this.world.setupGuiBackgroundColor();
-        this.world.setupGuiBloom();
-        this.world.setupGuiRendering();
-        this.world.setupGuiDebug();
       }
     }
   }
@@ -654,6 +653,15 @@ export function main() {
 
   const editor = new Editor(app);
 
+  // The overlay goes on the BODY, not on #app. #app is an unstyled block div
+  // with no height, and the renderers' canvases are position:absolute with
+  // width/height:100% -- so they size against the nearest positioned ancestor.
+  // Giving #app `position:relative` to anchor the overlay made it that
+  // ancestor, collapsed both canvases to zero height, and the scene rendered
+  // into nothing. The body is already the containing block they resolve
+  // against, so the overlay shares it and changes no layout.
+  new LoadingLog(document.body);
+
   // Handle messages from the extension
   window.addEventListener("message", async (e) => {
     const msg = e.data as ThreeViewMessage;
@@ -663,7 +671,14 @@ export function main() {
         break;
       }
       case "import": {
-        editor.import(msg.body);
+        // Purely a reply now: whoever called api.require()/fetchFile() for this
+        // file is awaiting it and does its own loading. There is no longer an
+        // untargeted "a file arrived, guess who wanted it" path.
+        if (!api.resolveRequire(msg.body)) api.log(`[import] unexpected ${msg.body.uri}`);
+        break;
+      }
+      case "import.error": {
+        api.rejectRequire(msg.body);
         break;
       }
       case "scene.refresh": {

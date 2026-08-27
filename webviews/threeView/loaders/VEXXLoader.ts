@@ -183,37 +183,34 @@ function hasAnimatedAncestor(object: THREE.Object3D): boolean {
   return false;
 }
 
-class AsyncRcsMesh {
-  world: World;
+/** A VEXX MESH node whose geometry lives in a companion .rcsmodel. */
+type RcsMeshRef = {
   vexxMesh: VexxNodeMesh;
   object: THREE.Object3D;
+};
 
-  constructor(world: World, vexxMesh: VexxNodeMesh, object: THREE.Object3D) {
-    this.world = world;
-    this.vexxMesh = vexxMesh;
-    this.object = object;
-  }
-
-  async load() {
-    const externalId = this.vexxMesh.externalId;
-  }
-}
-
-class AsyncRcsModel {
-  rcsModelLoader = new RCSModelLoader();
-  asyncRcsMeshes: AsyncRcsMesh[] = [];
+/**
+ * The .rcsmodel companion of a .vex scene: it holds the geometry, while the
+ * .vex holds the scene graph that places it.
+ */
+class RcsCompanion {
+  meshRefs: RcsMeshRef[] = [];
   world: World;
 
   constructor(world: World) {
     this.world = world;
   }
 
-  requireAsyncMesh(asyncMesh: AsyncRcsMesh) {
-    this.asyncRcsMeshes.push(asyncMesh);
+  addMeshRef(ref: RcsMeshRef) {
+    this.meshRefs.push(ref);
   }
 
   async load(buffer: ArrayBuffer, filename: string) {
-    this.rcsModelLoader.loadFromBuffer(this.world, buffer, filename);
+    // A loader PER FILE. It accumulates the materials of the model it loads, so
+    // reusing one across a ship and its engineflare re-resolved every ship
+    // material on the flare's pass -- rebuilding shaders and reassigning
+    // mesh.material on meshes that were already finished.
+    await new RCSModelLoader().loadFromBuffer(this.world, buffer, filename);
 
     // Reparent each loaded object under the VEXX MESH node that references it.
     //
@@ -232,8 +229,8 @@ class AsyncRcsModel {
       else byExternalId.set(id, [object]);
     }
 
-    for (const asyncRcsMesh of this.asyncRcsMeshes) {
-      const objects = byExternalId.get(asyncRcsMesh.vexxMesh.externalId);
+    for (const meshRef of this.meshRefs) {
+      const objects = byExternalId.get(meshRef.vexxMesh.externalId);
       if (!objects) continue;
       for (const object of objects) {
         this.world.scene.remove(object);
@@ -252,64 +249,49 @@ class AsyncRcsModel {
         // slider rotates). There the header position is the offset from that
         // pivot and has to stay a local offset, or the mesh swings through a
         // wildly wrong arc.
-        if (!hasAnimatedAncestor(asyncRcsMesh.object)) {
-          asyncRcsMesh.object.updateWorldMatrix(true, false);
-          object.applyMatrix4(new THREE.Matrix4().copy(asyncRcsMesh.object.matrixWorld).invert());
+        if (!hasAnimatedAncestor(meshRef.object)) {
+          meshRef.object.updateWorldMatrix(true, false);
+          object.applyMatrix4(new THREE.Matrix4().copy(meshRef.object.matrixWorld).invert());
         }
 
-        asyncRcsMesh.object.add(object);
+        meshRef.object.add(object);
         // Layers are assigned while the .vex loads, which is before this
         // .rcsmodel arrives — so the geometry would keep layer 0 while the
         // camera only enables the layers the VEXX nodes were put on, and stay
         // invisible. Inherit the layer of the node that owns it.
-        const layers = asyncRcsMesh.object.layers.mask;
+        const layers = meshRef.object.layers.mask;
         object.layers.mask = layers;
         object.traverse((sub) => { sub.layers.mask = layers; });
       }
     }
   }
 
-  async import(buffer: ArrayBuffer, filename: string) {
-    this.rcsModelLoader.import(buffer, filename);
-  }
-}
-
-class AsyncVexxModel {
-  world: World;
-  parent: VEXXLoader;
-
-  constructor(world: World, parent: VEXXLoader) {
-    this.world = world;
-    this.parent = parent;
-  }
-
-  async load(filename: string, buffer: ArrayBuffer, engineflare: boolean = false) {
-    const vexx = Vexx.load(buffer);
-    const object = this.parent.loadNode(this.world, vexx.root);
-    if (engineflare) {
-      this.world.scene.traverse((locator: THREE.Object3D) => {
-        if (locator.name == "engine_flare") {
-          for (const child of object.children) locator.add(child);
-        }
-      });
-    } else {
-      this.world.scene.add(object);
-    }
-    const rcsFilename = filename.replace(".vex", ".rcsmodel");
-    api.require(rcsFilename);
-  }
 }
 
 export class VEXXLoader extends Loader {
-  asyncVexxModel: AsyncVexxModel;
-  asyncRcsModel?: AsyncRcsModel;
-  /** import() gets no world argument, so keep the one we loaded into. */
+  rcsCompanion?: RcsCompanion;
+  /** Kept for the sibling files loaded after the scene itself. */
   private _world?: World;
+  /** Set by the scene walk when an ENGINE_FLARE node needs its geometry. */
+  private _needsEngineFlare = false;
+  private _engineFlareLoaded = false;
 
   override async loadFromBuffer(world: World, arrayBuffer: ArrayBuffer, filename: string) {
     world.userdata.filename = filename;
     this._world = world;
 
+    const vexx = Vexx.load(arrayBuffer);
+    this.loadTextures(world, vexx);
+    // Builds the scene graph, and registers a mesh ref for every MESH node
+    // whose geometry lives in the companion .rcsmodel -- so this has to run
+    // before that companion is loaded below, or there is nothing to reparent
+    // the geometry onto.
+    this.loadScene(world, vexx);
+
+    // Everything the scene needs alongside itself. They are independent of one
+    // another, so they load concurrently; each reports its own failure and none
+    // can leave another waiting.
+    const pending: Promise<void>[] = [this.loadSky(world, "sky.gtf")];
     // The front-end background is drawn as an edge-detected white page rather
     // than as shaded geometry (see FrontEndEdgePass). skin.xml decides both
     // which scenes get that treatment and with what parameters; until it
@@ -317,64 +299,118 @@ export class VEXXLoader extends Loader {
     if (isFrontEndScene(filename)) {
       world.userdata.screenSetting = DEFAULT_SCREEN_SETTING;
       world.settings.frontendEdges = true;
-      api.require(SKIN_XML);
+      pending.push(this.loadSkin(world, SKIN_XML));
     }
+    if (this.rcsCompanion) pending.push(this.loadRcsCompanion(filename.replace(".vex", ".rcsmodel")));
+    await Promise.all(pending);
 
-    this.asyncVexxModel = new AsyncVexxModel(world, this);
-    const vexx = Vexx.load(arrayBuffer);
-    this.loadTextures(world, vexx);
-    this.loadScene(world, vexx);
-
-    // An environment keeps its sky beside the scene rather than naming it, so
-    // ask for it directly. The name stays relative: the editor resolves a bare
-    // name against the document's own directory.
-    api.require("sky.gtf");
+    await this.loadPendingEngineFlare();
 
     return world;
   }
 
-  override async import(buffer: ArrayBuffer, filename: string) {
-    if (filename.replace(/\\/g, "/").toLowerCase().endsWith("skin.xml")) {
-      const skin = new TextDecoder().decode(buffer);
-      const world = this._world;
-      if (world) {
-        world.userdata.screenSetting = parseScreenSetting(skin, "Main Menu");
-        world.settings.frontendEdges = isFrontEndScene(world.userdata.filename ?? "", skin);
-      }
+  /**
+   * Load engineflare.vex, if an ENGINE_FLARE node has asked for it.
+   *
+   * Separate from the scene load because the node that asks is not always in
+   * the file being loaded: on the HD ships the `engine_flare` locator lives in
+   * locators.vex, a sibling loaded after ship.vex returns. Running this only at
+   * the end of loadFromBuffer therefore checked the flag before anything had
+   * set it, and the flames never loaded -- so every .vex load calls this once
+   * it has finished, and the flag makes sure the file is fetched only once.
+   */
+  async loadPendingEngineFlare() {
+    if (!this._needsEngineFlare || this._engineFlareLoaded) return;
+    this._engineFlareLoaded = true;
+    await this.loadVexx("engineflare.vex", true);
+  }
+
+  /**
+   * A sibling .vex, loaded into the scene this loader already built.
+   *
+   * It gets its OWN companion. A ship loads several .vex files -- the hull, its
+   * locators, engineflare -- and each names its own .rcsmodel; sharing one
+   * companion put the flare's mesh refs into the hull's, which had already
+   * loaded and reparented, so the flare geometry arrived with nothing waiting
+   * for it. Material ids collide across those files too (ship.rcsmodel and
+   * engineflare.rcsmodel both open with 0xb4ae4852), so keeping a loader per
+   * file is what stops one .vex's materials being matched against another's.
+   */
+  async loadVexx(filename: string, engineflare = false) {
+    const world = this._world;
+    if (!world) return;
+    const outer = this.rcsCompanion;
+    this.rcsCompanion = undefined;
+    let object: THREE.Object3D;
+    try {
+      const vexx = Vexx.load(await api.fetchFile(filename));
+      // Registers this file's MESH nodes against the fresh companion above.
+      object = this.loadNode(world, vexx.root);
+    } catch (e) {
+      api.log(`[vexx] ${filename} failed: ${(e as Error).message}`);
+      this.rcsCompanion = outer;
       return;
     }
-    if (filename.replace(/\\/g, "/").toLowerCase().endsWith("sky.gtf")) {
-      this.loadSky(buffer);
-      return;
-    }
-    if (this.asyncRcsModel === undefined) {
-      console.error("Unexpected file: " + filename);
-      return;
-    }
-    if (filename.endsWith(".vex")) {
-      if (filename.endsWith("engineflare.vex")) {
-        this.asyncVexxModel.load(filename, buffer, true);
-      } else {
-        this.asyncVexxModel.load(filename, buffer);
-      }
-    } else if (filename.endsWith(".rcsmodel")) {
-      this.asyncRcsModel.load(buffer, filename);
+    if (engineflare) {
+      world.scene.traverse((locator: THREE.Object3D) => {
+        if (locator.name == "engine_flare") {
+          for (const child of object.children) locator.add(child);
+        }
+      });
     } else {
-      this.asyncRcsModel.import(buffer, filename);
+      world.scene.add(object);
+    }
+    // This file's own companion geometry, exactly as the scene has.
+    if (this.rcsCompanion) await this.loadRcsCompanion(filename.replace(".vex", ".rcsmodel"));
+    this.rcsCompanion = outer;
+
+    // This file may itself carry the ENGINE_FLARE node -- locators.vex does on
+    // the HD ships. Guarded against recursion by the loaded flag, which is set
+    // before engineflare.vex is fetched.
+    await this.loadPendingEngineFlare();
+  }
+
+  /** The .rcsmodel holding the geometry for this scene's MESH nodes. */
+  private async loadRcsCompanion(filename: string) {
+    const world = this._world;
+    if (!world) return;
+    if (!this.rcsCompanion) this.rcsCompanion = new RcsCompanion(world);
+    try {
+      await this.rcsCompanion.load(await api.fetchFile(filename), filename);
+    } catch (e) {
+      api.log(`[rcsmodel] ${filename} failed: ${(e as Error).message}`);
+    }
+  }
+
+  /** The front-end's screen settings. */
+  private async loadSkin(world: World, filename: string) {
+    try {
+      const skin = new TextDecoder().decode(await api.fetchFile(filename));
+      world.userdata.screenSetting = parseScreenSetting(skin, "Main Menu");
+      world.settings.frontendEdges = isFrontEndScene(world.userdata.filename ?? "", skin);
+    } catch (e) {
+      api.log(`[skin] ${filename} failed, keeping defaults: ${(e as Error).message}`);
     }
   }
 
   /**
    * The environment sky is a cube map. Sampled as a flat texture it renders
    * black, so it is rebuilt from its six faces and used as the background.
+   *
+   * Once per scene: the companion .rcsmodel asks for the sky too, so without
+   * this a ship requested it twice -- and on a ship, where no sky sits beside
+   * the file, that is two failures rather than one.
    */
-  private loadSky(buffer: ArrayBuffer) {
-    const world = this._world;
-    if (!world) {
-      api.log(`[sky] arrived but no world`);
+  private async loadSky(world: World, filename: string) {
+    if (world.userdata.skyRequested) return;
+    world.userdata.skyRequested = true;
+    let gtf;
+    try {
+      gtf = GTF.load(await api.fetchFile(filename));
+    } catch (e) {
+      api.log(`[sky] ${filename} unavailable: ${(e as Error).message}`);
       return;
     }
-    const gtf = GTF.load(buffer);
     api.log(`[sky] loaded: isCube=${gtf.isCube} faces=${gtf.faces.length} ${gtf.header.width}x${gtf.header.height} ${gtf.header.formatName} mips=${gtf.mipmaps.length}`);
     if (!gtf.isCube) {
       api.log(`[VEXXLoader] sky.gtf is not a cube map`);
@@ -389,14 +425,17 @@ export class VEXXLoader extends Loader {
     api.log(`[sky] background set`);
   }
 
+  /**
+   * Note that this MESH node's geometry lives in the companion .rcsmodel.
+   *
+   * Only records the reference: the companion is loaded once the whole scene
+   * has been walked, so it finds every ref waiting for it. Requesting the file
+   * here instead -- as this did -- raced the walk, and the reparenting ran
+   * against whichever refs happened to exist when the bytes arrived.
+   */
   require(world: World, object3d: THREE.Object3D, node: VexxNodeMesh) {
-    if (this.asyncRcsModel === undefined) {
-      this.asyncRcsModel = new AsyncRcsModel(world);
-      const filename = world.userdata.filename.replace(".vex", ".rcsmodel");
-      api.require(filename);
-    }
-    const asyncMesh = new AsyncRcsMesh(world, node, object3d);
-    this.asyncRcsModel.requireAsyncMesh(asyncMesh);
+    if (this.rcsCompanion === undefined) this.rcsCompanion = new RcsCompanion(world);
+    this.rcsCompanion.addMeshRef({ vexxMesh: node, object: object3d });
   }
 
   private loadTextures(world: World, vexx: Vexx) {
@@ -508,7 +547,10 @@ export class VEXXLoader extends Loader {
         break;
       case "ENGINE_FLARE": // TODO
         object = this.loadControlPointMatrix(world, node as VexxNodeEngineFlare);
-        api.require("engineflare.vex");
+        // Loaded after the walk, not here: a ship has several flare nodes and
+        // the file is the same one for all of them. It also has to attach to
+        // the `engine_flare` locators, which only exist once the walk is done.
+        this._needsEngineFlare = true;
         layer = "Ship engine flare";
         break;
       case "EXIT_GLOW": // TODO

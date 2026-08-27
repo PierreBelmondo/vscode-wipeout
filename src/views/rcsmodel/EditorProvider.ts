@@ -70,15 +70,29 @@ export class RcsModelEditorProvider implements vscode.CustomReadonlyEditorProvid
         case "require": {
           const filename = e.filename as string;
           console.log(`Document requires external dependency: ${filename}`);
-          const uri = await this.resolveUriCaseInsensitive(document, filename);
-          console.log(`Resolved to: ${uri.fsPath}`);
-          const webviewUri = webviewPanel.webview.asWebviewUri(uri);
-          const body = {
-            mime: "application/binary",
-            uri: filename,
-            webviewUri: webviewUri.toString(),
-          } as ThreeViewMessageImportBody;
-          this.postMessage(webviewPanel, "import", body);
+          // EXACTLY one reply, always -- a correlated require is awaited in the
+          // webview, so any path that returns without answering hangs the load
+          // behind it. Resolution also falls back to the literal segment, so a
+          // name that matched nothing still yields a URI: stat it rather than
+          // letting the webview discover the failure as an untraceable fetch
+          // error.
+          try {
+            const uri = await this.resolveUriCaseInsensitive(document, filename);
+            console.log(`Resolved to: ${uri.fsPath}`);
+            await vscode.workspace.fs.stat(uri);
+            const body = {
+              mime: "application/binary",
+              uri: filename,
+              webviewUri: webviewPanel.webview.asWebviewUri(uri).toString(),
+              id: e.id,
+            } as ThreeViewMessageImportBody;
+            this.postMessage(webviewPanel, "import", body);
+          } catch (err) {
+            console.log(`Document requires missing dependency: ${filename} (${err})`);
+            if (e.id !== undefined) {
+              this.postMessage(webviewPanel, "import.error", { uri: filename, reason: "file not found", id: e.id });
+            }
+          }
           break;
         }
         case "scene":

@@ -70,34 +70,36 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
             this.postMessage(webviewPanel, "load", body);
           }
           break;
-        case "require":
-          let filename = e.filename as string;
-          let uri = this.resolveUri(document, filename);
+        case "require": {
+          const filename = e.filename as string;
+          // EXACTLY one reply, always. A correlated require is awaited in the
+          // webview, so a path that returns without answering -- a throw from
+          // Uri.parse on a malformed name, an undefined document root -- leaves
+          // the caller waiting forever, and the whole load hangs behind it.
           try {
-            await vscode.workspace.fs.stat(uri);
-            console.log(`Document requires external dependency: ${filename}`);
-          } catch {
-            // Case-insensitive fallback: first try filename-only, then full path walk
-            let resolved = await this.resolveUriCaseInsensitive(uri);
-            if (!resolved) {
-              resolved = await this.resolvePathCaseInsensitive(document.root, filename);
-            }
-            if (resolved) {
-              uri = resolved;
-              console.log(`Document requires external dependency (case-insensitive): ${uri.fsPath}`);
-            } else {
-              console.log(`Document requires missing dependency: ${filename} ${uri}`);
+            const uri = await this.resolveRequire(document, filename);
+            if (!uri) {
+              console.log(`Document requires missing dependency: ${filename}`);
+              if (e.id !== undefined) {
+                this.postMessage(webviewPanel, "import.error", { uri: filename, reason: "file not found", id: e.id });
+              }
               break;
             }
+            const body = {
+              mime: "application/binary",
+              uri: filename,
+              webviewUri: webviewPanel.webview.asWebviewUri(uri).toString(),
+              id: e.id,
+            } as ThreeViewMessageImportBody;
+            this.postMessage(webviewPanel, "import", body);
+          } catch (err) {
+            console.log(`Document failed to resolve ${filename}: ${err}`);
+            if (e.id !== undefined) {
+              this.postMessage(webviewPanel, "import.error", { uri: filename, reason: String(err), id: e.id });
+            }
           }
-          const webviewUri = webviewPanel.webview.asWebviewUri(uri);
-          const body = {
-            mime: "application/binary",
-            uri: filename,
-            webviewUri: webviewUri.toString(),
-          } as ThreeViewMessageImportBody;
-          this.postMessage(webviewPanel, "import", body);
           break;
+        }
         case "log":
           console.log(e.message);
           break;
@@ -165,6 +167,25 @@ export class VexxEditorProvider implements vscode.CustomReadonlyEditorProvider<V
     const filename = path.basename(document.uri.path) + ".gltf";
     const uri = vscode.Uri.joinPath(document.uri, "..", filename);
     vscode.workspace.fs.writeFile(uri, array);
+  }
+
+  /**
+   * The file a `require` names, or null if it is not on disk.
+   *
+   * Tries the literal path first, then the two case-insensitive fallbacks --
+   * the file names inside these models do not always match the case on disk.
+   */
+  private async resolveRequire(document: VexxDocument, filename: string): Promise<vscode.Uri | null> {
+    const uri = this.resolveUri(document, filename);
+    try {
+      await vscode.workspace.fs.stat(uri);
+      console.log(`Document requires external dependency: ${filename}`);
+      return uri;
+    } catch {}
+    const byName = await this.resolveUriCaseInsensitive(uri);
+    const resolved = byName ?? (await this.resolvePathCaseInsensitive(document.root, filename));
+    if (resolved) console.log(`Document requires external dependency (case-insensitive): ${resolved.fsPath}`);
+    return resolved;
   }
 
   private resolveUri(document: VexxDocument, filename: string) {
