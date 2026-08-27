@@ -982,7 +982,26 @@ export class World {
     this._airbrakes.push(airbrake);
   }
 
-  addAction(name, action: THREE.AnimationAction, mixer: THREE.AnimationMixer) {
+  /**
+   * Animations that start stopped. The loader plays every clip it builds;
+   * these are held at their first keyframe instead and left to the
+   * Animations folder (or "All") to start.
+   *
+   * `EF_` is the effect rigs -- engine flares, exhaust, and the like -- which
+   * loop constantly and get in the way when the point is to look at the model.
+   */
+  static readonly STOPPED_BY_DEFAULT = ["EF_"];
+
+  addAction(name: string, action: THREE.AnimationAction, mixer: THREE.AnimationMixer) {
+    // Case-insensitive: the rigs are hand-named by artists, and the same prefix
+    // turns up as EF_, ef_ and Ef_ across files.
+    const lower = name.toLowerCase();
+    if (World.STOPPED_BY_DEFAULT.some((prefix) => lower.startsWith(prefix.toLowerCase()))) {
+      // The loader has already snapped the mixer to frame 0, so stopping here
+      // leaves the pose there. Done before the Animations folder is built, so
+      // its toggle -- initialised from isRunning() -- reads "off" truthfully.
+      action.stop();
+    }
     const a = { name, mixer, action };
     this._actions.push(a);
   }
