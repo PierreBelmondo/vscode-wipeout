@@ -42,6 +42,9 @@ const _viewProjectionMatrix = new THREE.Matrix4();
 const _a = new THREE.Vector3();
 const _b = new THREE.Vector3();
 
+/** Frames between rebuilds of the cached label list; see _labelsIn. */
+const LABEL_REFRESH_FRAMES = 120;
+
 type CSS2DRendererParameters = {
   element?: HTMLDivElement;
 };
@@ -71,8 +74,16 @@ export class CSS2DRenderer {
     return new THREE.Vector2(this._width, this._height);
   }
 
+  /**
+   * Draw the labels. Call this AFTER the WebGL pass of the same frame.
+   *
+   * This does not update the scene's world matrices. The stock renderer did,
+   * and that is a full pass over every object in the graph -- the same pass
+   * WebGLRenderer.render() has just made for the same frame, so on a track
+   * it doubled the per-frame matrix work for a handful of labels. The camera
+   * is still refreshed: it is one object, and may sit outside the scene.
+   */
   render(scene: THREE.Scene, camera: THREE.Camera) {
-    if (scene.matrixAutoUpdate === true) scene.updateMatrixWorld();
     if (camera.parent === null && camera.matrixAutoUpdate === true)
       camera.updateMatrixWorld();
 
@@ -83,8 +94,37 @@ export class CSS2DRenderer {
       _viewMatrix
     );
 
-    this.renderObject(scene, scene, camera);
-    this.zOrder(scene);
+    const labels = this._labelsIn(scene);
+    for (const label of labels) this.renderObject(label, scene, camera);
+    this.zOrder(labels);
+  }
+
+  private _labelScene?: THREE.Scene;
+  private _labels: THREE.Object3D[] = [];
+  private _labelsAge = 0;
+
+  /**
+   * The scene's CSS2DObjects, found by one traversal and then reused.
+   *
+   * The stock renderer walked the ENTIRE graph twice per frame -- once
+   * recursing from the root to find and place labels, once more flattening it
+   * to sort them -- to reach the few dozen objects that are labels at all.
+   * The scene graph is static once loaded, so the list is rebuilt only for a
+   * new scene, with a periodic rebuild as the backstop for anything added
+   * later; a label added between rebuilds appears within two seconds.
+   */
+  private _labelsIn(scene: THREE.Scene): THREE.Object3D[] {
+    if (scene !== this._labelScene || this._labelsAge++ % LABEL_REFRESH_FRAMES === 0) {
+      this._labelScene = scene;
+      this._labels = this.filterAndFlatten(scene);
+      this._labelsAge = 1;
+    }
+    return this._labels;
+  }
+
+  /** Force the label list to be found again on the next render. */
+  invalidate() {
+    this._labelScene = undefined;
   }
 
   setSize(width, height) {
@@ -154,10 +194,8 @@ export class CSS2DRenderer {
       };
       this.cache.objects.set(object, objectData);
     }
-
-    for (let i = 0, l = object.children.length; i < l; i++) {
-      this.renderObject(object.children[i], scene, camera);
-    }
+    // No recursion: render() hands this every label directly from the cached
+    // flat list, so descending into children here would visit the graph again.
   }
 
   getDistanceToSquared(object1, object2) {
@@ -176,8 +214,8 @@ export class CSS2DRenderer {
     return result;
   }
 
-  zOrder(scene: THREE.Scene) {
-    const sorted = this.filterAndFlatten(scene).sort((a, b) => {
+  zOrder(labels: THREE.Object3D[]) {
+    const sorted = labels.slice().sort((a, b) => {
       if (a.renderOrder !== b.renderOrder) {
         return b.renderOrder - a.renderOrder;
       }

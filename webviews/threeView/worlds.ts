@@ -119,9 +119,68 @@ export class World {
     if (this.onUpdate) this.onUpdate();
   }
 
+  /**
+   * Send the scene outline to the editor.
+   *
+   * NOT scene.toJSON(). That serialises every geometry -- each vertex attribute
+   * as a JSON array of numbers, and the generated materials alias their
+   * streams as extra `a_vN` attributes, so a track's position buffer went out
+   * several times over -- plus a base64 PNG of every uncompressed texture.
+   * For a track that is hundreds of megabytes of JSON, built here, copied
+   * across the bridge, and then RETAINED by the extension host as
+   * `document.scene` for as long as the file is open: the single largest
+   * memory cost of opening a track, for a tree view that reads none of it.
+   *
+   * The outline (src/sceneGraph.ts) reads exactly: the object tree's uuid,
+   * type, name, children, userData.format/type and material uuid; each
+   * material's uuid, name, type, map, specularMap and texture-valued
+   * uniforms; each texture's uuid, name and type. That is all this emits.
+   */
   emitScene() {
-    const scene = this.scene.toJSON();
-    api.scene(scene);
+    const materials = new Map<string, THREE.Material>();
+    const textures = new Map<string, THREE.Texture>();
+    const texture = (t: unknown) => {
+      if (!(t instanceof THREE.Texture)) return undefined;
+      textures.set(t.uuid, t);
+      return t.uuid;
+    };
+    const walk = (object: THREE.Object3D): Record<string, unknown> => {
+      const node: Record<string, unknown> = { uuid: object.uuid, type: object.type, name: object.name };
+      const ud = object.userData;
+      if (ud && (ud.format !== undefined || ud.type !== undefined)) node.userData = { format: ud.format, type: ud.type };
+      const material = (object as THREE.Mesh).material;
+      if (material instanceof THREE.Material) {
+        materials.set(material.uuid, material);
+        node.material = material.uuid;
+      } else if (Array.isArray(material)) {
+        for (const m of material) materials.set(m.uuid, m);
+        node.material = material.map((m) => m.uuid);
+      }
+      if (object.children.length) node.children = object.children.map(walk);
+      return node;
+    };
+    const object = walk(this.scene);
+
+    const materialJson = [...materials.values()].map((m) => {
+      const json: Record<string, unknown> = { uuid: m.uuid, name: m.name, type: m.type };
+      const slots = m as unknown as { map?: unknown; specularMap?: unknown; uniforms?: Record<string, { value: unknown }> };
+      const map = texture(slots.map);
+      if (map) json.map = map;
+      const specularMap = texture(slots.specularMap);
+      if (specularMap) json.specularMap = specularMap;
+      if (slots.uniforms) {
+        const uniforms: Record<string, { value: string }> = {};
+        for (const [name, u] of Object.entries(slots.uniforms)) {
+          const uuid = texture(u?.value);
+          if (uuid) uniforms[name] = { value: uuid };
+        }
+        if (Object.keys(uniforms).length) json.uniforms = uniforms;
+      }
+      return json;
+    });
+    const textureJson = [...textures.values()].map((t) => ({ uuid: t.uuid, name: t.name, type: t.type }));
+
+    api.scene({ object, materials: materialJson, textures: textureJson });
   }
 
   emitSelected(object: THREE.Object3D<THREE.Event>) {

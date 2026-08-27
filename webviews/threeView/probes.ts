@@ -32,21 +32,30 @@ import * as THREE from "three";
 type Consumer = { unit: number; name: string };
 
 type Probe = {
-  cube: THREE.WebGLCubeRenderTarget;
-  camera: THREE.CubeCamera;
+  /** The converted hemisphere map the materials sample. All a probe keeps. */
   target: THREE.WebGLRenderTarget;
-  convert: THREE.ShaderMaterial;
-  /** Meshes whose material consumes this probe; hidden while it renders. */
-  meshes: THREE.Mesh[];
-  /** Frames since the cube was last rendered. */
-  age: number;
+  /** Every material bound to this probe. */
+  members: Set<THREE.Material>;
+  /** Whether the cube has been rendered since the probe was (re)queued. */
+  rendered: boolean;
 };
 
 const CUBE_SIZE = 256;
 const TARGET_W = 512;
 const TARGET_H = 256;
-/** Re-render the cube every N frames: the scene fills in asynchronously. */
-const REFRESH_FRAMES = 60;
+/**
+ * Probes are shared between materials whose consumer meshes are centred in
+ * the same cell of this many cells across the scene's largest extent.
+ *
+ * A probe is the environment seen from one point. Every material on a ship's
+ * hull computes the same point, and on a track a material's centre -- the
+ * centroid of its meshes, wherever they are on the course -- is already a
+ * rough stand-in for the engine's per-object probes, so materials centred
+ * near each other gain nothing from separate cubes. One CubeCamera is six
+ * full scene renders; 88 generated materials sample a probe, and giving each
+ * its own meant dozens of those per frame on a track.
+ */
+const CELLS_ACROSS = 8;
 
 const CONVERT_VERT = `
 varying vec2 vUv;
@@ -76,7 +85,6 @@ void main() {
 
 export class ParaboloidProbes {
   private readonly _renderer: THREE.WebGLRenderer;
-  private readonly _probes = new Map<THREE.Material, Probe>();
   private readonly _scene = new THREE.Scene();
   private readonly _camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   private readonly _quad: THREE.Mesh;
@@ -96,24 +104,86 @@ export class ParaboloidProbes {
     this._scene.add(this._quad);
   }
 
-  /** Bind every consuming material to a probe and keep the probes fresh. */
+  /** Probes by spatial cell; see CELLS_ACROSS. */
+  private readonly _byCell = new Map<string, Probe>();
+  /** The cell size, from the scene's extent; fixed on first use. */
+  private _cell = 0;
+  /** Materials already bound, so a frame does no work for them. */
+  private readonly _bound = new Set<THREE.Material>();
+
+  /**
+   * Bind every consuming material to a probe, and render ONE unrendered
+   * probe per call.
+   *
+   * Once, not on a timer. The old version re-rendered every probe every 60
+   * frames because the scene used to fill in asynchronously after the first
+   * frame; the load is awaited now, so the scene is complete before this is
+   * first called, and re-rendering only repeated the same six full-scene
+   * draws per probe forever -- all probes on the same frame, since they were
+   * created together, which is what made the viewer stall once a second.
+   *
+   * One per call spreads the start-up cost over as many frames as there are
+   * probes instead of drawing them all on the first. Animated objects are
+   * therefore frozen in reflections at their load-time pose; refresh() redraws
+   * everything on demand.
+   */
   update(scene: THREE.Scene, materials: THREE.Material[]) {
     for (const material of materials) {
+      if (this._bound.has(material)) continue;
       const consumers = this._consumers(material);
       if (!consumers.length) continue;
-      let probe = this._probes.get(material);
-      if (!probe) {
-        probe = this._create();
-        this._probes.set(material, probe);
-        const uniforms = (material as THREE.ShaderMaterial).uniforms;
-        for (const c of consumers) {
-          const u = uniforms?.[`TEX${c.unit}`];
-          if (u) u.value = probe.target.texture;
-        }
-        (material as THREE.ShaderMaterial).uniformsNeedUpdate = true;
+      this._bound.add(material);
+
+      const centre = this._centreOf(scene, material);
+      const probe = this._probeAt(scene, centre);
+      probe.members.add(material);
+      const uniforms = (material as THREE.ShaderMaterial).uniforms;
+      for (const c of consumers) {
+        const u = uniforms?.[`TEX${c.unit}`];
+        if (u) u.value = probe.target.texture;
       }
-      if (probe.age++ % REFRESH_FRAMES === 0) this._render(scene, material, probe);
+      (material as THREE.ShaderMaterial).uniformsNeedUpdate = true;
     }
+
+    for (const probe of this._byCell.values()) {
+      if (probe.rendered) continue;
+      this._render(scene, probe);
+      probe.rendered = true;
+      break;
+    }
+  }
+
+  /** Queue every probe to be drawn again, one per frame. */
+  refresh() {
+    for (const probe of this._byCell.values()) probe.rendered = false;
+  }
+
+  /** The centre of the meshes wearing this material, or null if there are none. */
+  private _centreOf(scene: THREE.Scene, material: THREE.Material): THREE.Vector3 | null {
+    const box = new THREE.Box3();
+    scene.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (mesh.isMesh && mesh.material === material) box.expandByObject(mesh);
+    });
+    return box.isEmpty() ? null : box.getCenter(new THREE.Vector3());
+  }
+
+  /** The probe for this point, sharing one with anything else in its cell. */
+  private _probeAt(scene: THREE.Scene, centre: THREE.Vector3 | null): Probe {
+    if (this._cell === 0) {
+      const bounds = new THREE.Box3().setFromObject(scene);
+      const size = bounds.isEmpty() ? 1 : Math.max(...bounds.getSize(new THREE.Vector3()).toArray());
+      this._cell = Math.max(size / CELLS_ACROSS, 1e-3);
+    }
+    // A material with no meshes has no position; it shares the origin's probe.
+    const c = centre ?? new THREE.Vector3();
+    const key = [c.x, c.y, c.z].map((v) => Math.floor(v / this._cell)).join(",");
+    let probe = this._byCell.get(key);
+    if (!probe) {
+      probe = this._create();
+      this._byCell.set(key, probe);
+    }
+    return probe;
   }
 
   private _consumers(material: THREE.Material): Consumer[] {
@@ -121,53 +191,73 @@ export class ParaboloidProbes {
     return (variant?.samplers ?? []).filter((s) => s.name === "paraboloidReflectionTex" || s.name === "paraboloidIblTex");
   }
 
+  /**
+   * ONE cube target, camera and conversion material, shared by every probe.
+   *
+   * Only one probe renders per frame, and the cube is read back into the
+   * probe's own 2D target in the same call -- so nothing is lost by drawing
+   * every probe through the same scratch cube. Each probe used to own one:
+   * six 256x256 faces plus depth, ~1.5 MB of GPU memory apiece, for a texture
+   * that was only ever read once, immediately, by its own conversion pass.
+   */
+  private _cube?: THREE.WebGLCubeRenderTarget;
+  private _cubeCamera?: THREE.CubeCamera;
+  private _convert?: THREE.ShaderMaterial;
+
+  private _scratch() {
+    if (!this._cube) {
+      this._cube = new THREE.WebGLCubeRenderTarget(CUBE_SIZE, {
+        generateMipmaps: false,
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+      });
+      this._cubeCamera = new THREE.CubeCamera(0.1, 1e5, this._cube);
+      this._convert = new THREE.ShaderMaterial({
+        uniforms: { env: { value: this._cube.texture }, uScale: { value: this.uScale }, vScale: { value: this.vScale } },
+        vertexShader: CONVERT_VERT,
+        fragmentShader: CONVERT_FRAG,
+        depthTest: false,
+        depthWrite: false,
+      });
+    }
+    return { camera: this._cubeCamera!, convert: this._convert! };
+  }
+
   private _create(): Probe {
-    const cube = new THREE.WebGLCubeRenderTarget(CUBE_SIZE, {
-      generateMipmaps: false,
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-    });
-    const camera = new THREE.CubeCamera(0.1, 1e5, cube);
     const target = new THREE.WebGLRenderTarget(TARGET_W, TARGET_H, {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       wrapS: THREE.ClampToEdgeWrapping,
       wrapT: THREE.ClampToEdgeWrapping,
     });
-    const convert = new THREE.ShaderMaterial({
-      uniforms: { env: { value: cube.texture }, uScale: { value: this.uScale }, vScale: { value: this.vScale } },
-      vertexShader: CONVERT_VERT,
-      fragmentShader: CONVERT_FRAG,
-      depthTest: false,
-      depthWrite: false,
-    });
-    return { cube, camera, target, convert, meshes: [], age: 0 };
+    return { target, members: new Set(), rendered: false };
   }
 
-  private _render(scene: THREE.Scene, material: THREE.Material, probe: Probe) {
+  private _render(scene: THREE.Scene, probe: Probe) {
+    const { camera, convert } = this._scratch();
     // The probe sits at the centre of the meshes that consume it -- for the
     // water, the water plane; for a ship, the ship -- so what it sees is what
     // the surface would reflect. Those meshes are hidden while it renders: a
     // surface cannot reflect itself.
-    probe.meshes.length = 0;
+    const meshes: THREE.Mesh[] = [];
     const box = new THREE.Box3();
     scene.traverse((o) => {
       const mesh = o as THREE.Mesh;
-      if (!mesh.isMesh || mesh.material !== material) return;
-      probe.meshes.push(mesh);
+      if (!mesh.isMesh || !probe.members.has(mesh.material as THREE.Material)) return;
+      meshes.push(mesh);
       box.expandByObject(mesh);
     });
     if (box.isEmpty()) return;
-    box.getCenter(probe.camera.position);
+    box.getCenter(camera.position);
 
-    const hidden = probe.meshes.filter((m) => m.visible);
+    const hidden = meshes.filter((m) => m.visible);
     for (const m of hidden) m.visible = false;
-    probe.camera.update(this._renderer, scene);
+    camera.update(this._renderer, scene);
     for (const m of hidden) m.visible = true;
 
-    probe.convert.uniforms.uScale.value = this.uScale;
-    probe.convert.uniforms.vScale.value = this.vScale;
-    this._quad.material = probe.convert;
+    convert.uniforms.uScale.value = this.uScale;
+    convert.uniforms.vScale.value = this.vScale;
+    this._quad.material = convert;
     const prev = this._renderer.getRenderTarget();
     this._renderer.setRenderTarget(probe.target);
     this._renderer.render(this._scene, this._camera);

@@ -72,13 +72,10 @@ const params = {
 class WorldRenderer {
   private _renderer: THREE.WebGLRenderer;
   private _passScene: RenderPass;
-  private _passBloom: UnrealBloomPass;
-  private _passFinal: ShaderPass;
-  private _effectComposerBloom: EffectComposer;
-  private _effectComposerFinal: EffectComposer;
-  private _passEdges: FrontEndEdgePass;
-  private _passEdgeScene: RenderPass;
-  private _effectComposerEdges: EffectComposer;
+  /** The bloom chain, built on first use. See _bloomChain(). */
+  private _bloom?: { pass: UnrealBloomPass; final: ShaderPass; composer: EffectComposer; composerFinal: EffectComposer };
+  /** The front-end edge chain, built on first use. See _edgeChain(). */
+  private _edges?: { pass: FrontEndEdgePass; scenePass: RenderPass; composer: EffectComposer };
   private _screenSpaceTarget: THREE.WebGLRenderTarget;
   /** Materials bound to _screenSpaceTarget, so binding runs once per material
    * rather than re-scanning userData.variant.samplers every frame. */
@@ -136,64 +133,13 @@ class WorldRenderer {
 
     this._passScene = new RenderPass(this._world.scene, this._world.camera);
 
-    this._passBloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-    this._passBloom.threshold = params.bloomThreshold;
-    this._passBloom.strength = params.bloomStrength;
-    this._passBloom.radius = params.bloomRadius;
-
-    this._effectComposerBloom = new EffectComposer(this._renderer);
-    this._effectComposerBloom.renderToScreen = false;
-    this._effectComposerBloom.addPass(this._passScene);
-    this._effectComposerBloom.addPass(this._passBloom);
-
-    this._passFinal = new ShaderPass(
-      new THREE.ShaderMaterial({
-        uniforms: {
-          baseTexture: { value: null },
-          bloomTexture: { value: this._effectComposerBloom.renderTarget2.texture },
-        },
-        vertexShader,
-        fragmentShader,
-        // Filled in by render(), which knows the current renderer state.
-        defines: {},
-      }),
-      "baseTexture"
-    );
-    this._passFinal.needsSwap = true;
-
-    this._effectComposerFinal = new EffectComposer(this._renderer);
-    this._effectComposerFinal.addPass(this._passScene);
-    this._effectComposerFinal.addPass(this._passFinal);
-
-    // Front-end edge look: needs a depth attachment the edge detector can read.
-    // The detector differences face IDs, so the buffer must hold them verbatim:
-    // nearest filtering (linear would blend neighbouring IDs into false edges)
-    // and no tone mapping (Reinhard would compress them together).
-    //
-    // Size it in device pixels: EffectComposer forces _pixelRatio to 1 when it
-    // is handed a target, so a CSS-sized buffer would be resampled up to the
-    // canvas and blend IDs across every triangle edge.
-    const dpr = window.devicePixelRatio;
-    const edgeW = Math.floor(window.innerWidth * dpr);
-    const edgeH = Math.floor(window.innerHeight * dpr);
-    const edgeTarget = new THREE.WebGLRenderTarget(edgeW, edgeH, {
-      minFilter: THREE.NearestFilter,
-      magFilter: THREE.NearestFilter,
-    });
-    // 24-bit depth. UnsignedShortType (16-bit) is not enough for this scene:
-    // surfaces that sit close together resolve to the same depth value, so the
-    // winner flips as the camera moves and face IDs bleed into each other.
-    edgeTarget.depthTexture = new THREE.DepthTexture(edgeW, edgeH);
-    edgeTarget.depthTexture.type = THREE.UnsignedInt248Type;
-    edgeTarget.depthTexture.format = THREE.DepthStencilFormat;
-    this._effectComposerEdges = new EffectComposer(this._renderer, edgeTarget);
-    this._passEdges = new FrontEndEdgePass(this._world.camera, edgeW, edgeH);
-    // Its own RenderPass: _passScene is shared with the other two composers, and
-    // this one draws flat face IDs through scene.overrideMaterial rather than
-    // the scene's real materials.
-    this._passEdgeScene = new RenderPass(this._world.scene, this._world.camera, this._passEdges.idMaterial);
-    this._effectComposerEdges.addPass(this._passEdgeScene);
-    this._effectComposerEdges.addPass(this._passEdges);
+    // The bloom and edge chains are NOT built here. Each owns full-resolution
+    // render targets -- two per EffectComposer, plus the bloom pass's mip
+    // chain and the edge buffer with its depth texture -- and at device pixel
+    // ratio 2 on a large display that is several hundred megabytes of GPU
+    // memory, allocated whether or not the toolbox ever switches bloom on or
+    // the file is a front-end scene. They are created the first frame that
+    // needs them; see _bloomChain() and _edgeChain().
 
     // Screen-space refraction/reflection target.
     //
@@ -219,13 +165,88 @@ class WorldRenderer {
     return this._renderer.domElement;
   }
 
+  /** The bloom chain, created on the first frame that renders with bloom on. */
+  private _bloomChain() {
+    if (this._bloom) return this._bloom;
+    const pass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+    pass.threshold = params.bloomThreshold;
+    pass.strength = params.bloomStrength;
+    pass.radius = params.bloomRadius;
+
+    const composer = new EffectComposer(this._renderer);
+    composer.renderToScreen = false;
+    composer.addPass(this._passScene);
+    composer.addPass(pass);
+
+    const final = new ShaderPass(
+      new THREE.ShaderMaterial({
+        uniforms: {
+          baseTexture: { value: null },
+          bloomTexture: { value: composer.renderTarget2.texture },
+        },
+        vertexShader,
+        fragmentShader,
+        // Filled in by render(), which knows the current renderer state.
+        defines: {},
+      }),
+      "baseTexture"
+    );
+    final.needsSwap = true;
+
+    const composerFinal = new EffectComposer(this._renderer);
+    composerFinal.addPass(this._passScene);
+    composerFinal.addPass(final);
+
+    this._bloom = { pass, final, composer, composerFinal };
+    return this._bloom;
+  }
+
+  /** The front-end edge chain, created on the first frame that needs it. */
+  private _edgeChain() {
+    if (this._edges) return this._edges;
+    // Front-end edge look: needs a depth attachment the edge detector can read.
+    // The detector differences face IDs, so the buffer must hold them verbatim:
+    // nearest filtering (linear would blend neighbouring IDs into false edges)
+    // and no tone mapping (Reinhard would compress them together).
+    //
+    // Size it in device pixels: EffectComposer forces _pixelRatio to 1 when it
+    // is handed a target, so a CSS-sized buffer would be resampled up to the
+    // canvas and blend IDs across every triangle edge.
+    const dpr = window.devicePixelRatio;
+    const edgeW = Math.floor(window.innerWidth * dpr);
+    const edgeH = Math.floor(window.innerHeight * dpr);
+    const edgeTarget = new THREE.WebGLRenderTarget(edgeW, edgeH, {
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
+    });
+    // 24-bit depth. UnsignedShortType (16-bit) is not enough for this scene:
+    // surfaces that sit close together resolve to the same depth value, so the
+    // winner flips as the camera moves and face IDs bleed into each other.
+    edgeTarget.depthTexture = new THREE.DepthTexture(edgeW, edgeH);
+    edgeTarget.depthTexture.type = THREE.UnsignedInt248Type;
+    edgeTarget.depthTexture.format = THREE.DepthStencilFormat;
+    const composer = new EffectComposer(this._renderer, edgeTarget);
+    const pass = new FrontEndEdgePass(this._world.camera, edgeW, edgeH);
+    // Its own RenderPass: _passScene is shared with the bloom composers, and
+    // this one draws flat face IDs through scene.overrideMaterial rather than
+    // the scene's real materials.
+    const scenePass = new RenderPass(this._world.scene, this._world.camera, pass.idMaterial);
+    composer.addPass(scenePass);
+    composer.addPass(pass);
+
+    this._edges = { pass, scenePass, composer };
+    return this._edges;
+  }
+
   set world(world: World) {
     this._world = world;
     this._passScene.scene = world.scene;
     this._passScene.camera = world.camera;
-    this._passEdgeScene.scene = world.scene;
-    this._passEdgeScene.camera = world.camera;
-    this._passEdges.setCamera(world.camera);
+    if (this._edges) {
+      this._edges.scenePass.scene = world.scene;
+      this._edges.scenePass.camera = world.camera;
+      this._edges.pass.setCamera(world.camera);
+    }
   }
 
   get world(): World {
@@ -234,13 +255,19 @@ class WorldRenderer {
 
   setSize(width: number, height: number) {
     this._passScene.setSize(width, height);
-    this._passBloom.setSize(width, height);
-    this._passFinal.setSize(width, height);
-    this._effectComposerBloom.setSize(width, height);
-    this._effectComposerFinal.setSize(width, height);
+    // A chain not built yet takes the window size when it is; one that exists
+    // follows the resize.
+    if (this._bloom) {
+      this._bloom.pass.setSize(width, height);
+      this._bloom.final.setSize(width, height);
+      this._bloom.composer.setSize(width, height);
+      this._bloom.composerFinal.setSize(width, height);
+    }
     const edgeDpr = window.devicePixelRatio;
-    this._passEdges.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
-    this._effectComposerEdges.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
+    if (this._edges) {
+      this._edges.pass.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
+      this._edges.composer.setSize(Math.floor(width * edgeDpr), Math.floor(height * edgeDpr));
+    }
     this._screenSpaceTarget.setSize(
       Math.max(1, Math.floor((width * edgeDpr) / 2)),
       Math.max(1, Math.floor((height * edgeDpr) / 2))
@@ -269,20 +296,6 @@ class WorldRenderer {
     this._renderer.toneMappingExposure = exposure;
     this._renderer.outputEncoding = settings.srgbOutput === false ? THREE.LinearEncoding : THREE.sRGBEncoding;
 
-    // Keep the composite's defines in step with the renderer. TONE_MAPPING
-    // tracks whether Three emitted its `toneMapping()` wrapper at all -- it
-    // omits it for NoToneMapping, and calling a function that was never
-    // declared fails to link.
-    const material = this._passFinal.material as THREE.ShaderMaterial;
-    const wanted: { [name: string]: string } = {};
-    if (settings.bloomGrading !== false) wanted["BLOOM_GRADING"] = "";
-    if (this._renderer.toneMapping !== THREE.NoToneMapping) wanted["TONE_MAPPING"] = "";
-    const names = ["BLOOM_GRADING", "TONE_MAPPING"];
-    if (names.some((name) => (name in material.defines) !== (name in wanted))) {
-      material.defines = wanted;
-      material.needsUpdate = true;
-    }
-
     // The generated RCS materials are RAW ShaderMaterials, so Three injects
     // none of its colour-management chunks into them: they write the shading
     // maths's own LINEAR result straight to the target. Everything else in the
@@ -297,7 +310,8 @@ class WorldRenderer {
       // Drive the detector from the <Main> values skin.xml carries for this
       // screen; VEXXLoader parks them on userdata when it loads the file.
       const setting: ScreenSetting = this._world.userdata.screenSetting ?? DEFAULT_SCREEN_SETTING;
-      this._passEdges.setScreenSetting(setting.edgeLevel, setting.fillLevel, setting.edgeWidth);
+      const edges = this._edgeChain();
+      edges.pass.setScreenSetting(setting.edgeLevel, setting.fillLevel, setting.edgeWidth);
 
       // Face IDs must reach the detector unmodified: no tone mapping, and no
       // texture sampling (the white texture's mip chain is not uniformly white,
@@ -314,7 +328,7 @@ class WorldRenderer {
       this._world.scene.background = null;
       this._renderer.setClearColor(0xffffff);
 
-      this._effectComposerEdges.render();
+      edges.composer.render();
 
       this._world.scene.background = background;
       this._renderer.toneMapping = toneMapping;
@@ -358,14 +372,30 @@ class WorldRenderer {
         }
       };
 
+      const bloom = this._bloomChain();
+
+      // Keep the composite's defines in step with the renderer. TONE_MAPPING
+      // tracks whether Three emitted its `toneMapping()` wrapper at all -- it
+      // omits it for NoToneMapping, and calling a function that was never
+      // declared fails to link.
+      const material = bloom.final.material as THREE.ShaderMaterial;
+      const wanted: { [name: string]: string } = {};
+      if (settings.bloomGrading !== false) wanted["BLOOM_GRADING"] = "";
+      if (this._renderer.toneMapping !== THREE.NoToneMapping) wanted["TONE_MAPPING"] = "";
+      const names = ["BLOOM_GRADING", "TONE_MAPPING"];
+      if (names.some((name) => (name in material.defines) !== (name in wanted))) {
+        material.defines = wanted;
+        material.needsUpdate = true;
+      }
+
       // TODO: stop traversing the mesh twice and use uniform or something
       this._world.scene.traverse(beforeBloom);
       this._renderer.setClearColor(0x000000);
-      this._effectComposerBloom.render();
+      bloom.composer.render();
       this._world.scene.traverse(afterBloom);
 
       this._renderer.setClearColor(this._world.settings.backgroundColor);
-      this._effectComposerFinal.render();
+      bloom.composerFinal.render();
     } else {
       this._renderer.setClearColor(this._world.settings.backgroundColor);
       this._renderer.render(this._world.scene, this._world.camera);
@@ -415,19 +445,23 @@ class WorldRenderer {
     }
 
     // Render the scene from the SAME camera into the target. The consuming
-    // materials are excluded via onBeforeRender/onAfterRender toggling their
-    // visibility -- a surface cannot meaningfully refract or reflect an image
-    // of itself, and the flat grey these fell back to was at least not that.
-    const hidden: THREE.Object3D[] = [];
-    this._world.scene.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if (!mesh.isMesh) return;
-      const mat = mesh.material as THREE.Material;
-      if (this._screenSpaceBound.has(mat) && mesh.visible) {
-        hidden.push(mesh);
-        mesh.visible = false;
-      }
-    });
+    // meshes are hidden for it -- a surface cannot meaningfully refract or
+    // reflect an image of itself, and the flat grey these fell back to was at
+    // least not that.
+    //
+    // The consumer list is rebuilt only when a material is newly bound (all
+    // of them on the first frame, since the load is awaited) rather than by
+    // traversing the whole scene every frame: the materials never change
+    // after load, so neither does the set of meshes wearing them.
+    if (targets.length || !this._screenSpaceConsumers) {
+      this._screenSpaceConsumers = [];
+      this._world.scene.traverse((obj) => {
+        const mesh = obj as THREE.Mesh;
+        if (mesh.isMesh && this._screenSpaceBound.has(mesh.material as THREE.Material)) this._screenSpaceConsumers!.push(mesh);
+      });
+    }
+    const hidden = this._screenSpaceConsumers.filter((mesh) => mesh.visible);
+    for (const mesh of hidden) mesh.visible = false;
 
     const prevTarget = this._renderer.getRenderTarget();
     this._renderer.setRenderTarget(this._screenSpaceTarget);
@@ -436,6 +470,9 @@ class WorldRenderer {
 
     for (const mesh of hidden) mesh.visible = true;
   }
+
+  /** Meshes wearing a screen-space consumer material; see _updateScreenSpaceTarget. */
+  private _screenSpaceConsumers?: THREE.Mesh[];
 }
 
 class Editor {

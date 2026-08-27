@@ -199,7 +199,14 @@ export class GeneratedRcsMaterial extends RawRcsMaterial {
       // The mesh's own transform stays in the graph (that is where matrixWorld
       // comes from) and the loader does not neutralise it; the dequantisation
       // uniforms stay at identity so Three's transform is not applied twice.
-      mesh.updateWorldMatrix(true, false);
+      //
+      // matrixWorld is already current here: every path into onBeforeRender
+      // is a renderer.render() -- the main pass, the screen-space pass, the
+      // probe cube faces, the bloom composers -- and each begins with
+      // scene.updateMatrixWorld() over the whole graph. This used to call
+      // mesh.updateWorldMatrix(true, false) as well, which re-multiplies the
+      // mesh's entire ancestor chain: once per mesh, per pass, per frame, for
+      // a result that had just been computed.
 
       // The mesh's world matrix. A composed program gets its placement from
       // Three's own `modelMatrix` built-in, so this is here for the Phong
