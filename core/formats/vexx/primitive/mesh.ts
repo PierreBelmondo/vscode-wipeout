@@ -18,6 +18,10 @@ export type MeshData = {
   normalMeta:    GUComponentMeta | null;
   uvs:           Int8Array | Int16Array | Float32Array | null;
   uvMeta:        GUComponentMeta | null;
+  // Per-vertex colour, decoded to RGBA float32 in 0..1. The PSP bakes its
+  // lighting here -- 92.8% of chunks carry one -- so this is the shade the
+  // hardware actually drew, not a term to recompute.
+  colors:        Float32Array | null;
   indices:       Uint16Array;
 };
 
@@ -35,6 +39,8 @@ export type RawVertexData = {
   // Native typed array matching uvMeta.type, 2 components — raw, not normalized.
   uvs:       Int8Array | Int16Array | Float32Array | null;
   uvMeta:    GUComponentMeta | null;
+  // RGBA float32 in 0..1, already unpacked from the GU's 4444/8888 formats.
+  colors:    Float32Array | null;
   // 1 = valid vertex, 0 = strip-restart / degenerate.
   valid:     Uint8Array;
   // Actual number of valid vertices (popcount of `valid`).
@@ -72,6 +78,8 @@ export function packMeshData(
     :  uvMeta.type === GU_TYPE_INT16 ? new Int16Array(validTotal * 2)
     :                                   new Float32Array(validTotal * 2))
     : null;
+  const hasColors = !!(s1.colors ?? s2?.colors);
+  const colors    = hasColors ? new Float32Array(validTotal * 4) : null;
   const indices   = new Uint16Array(maxTris * 3);
 
   let vOut   = 0;  // next output vertex slot
@@ -86,6 +94,7 @@ export function packMeshData(
       const srcPos = sec.positions;
       const srcNor = sec.normals;
       const srcUv  = sec.uvs;
+      const srcCol = sec.colors;
       const valid  = sec.valid;
       const n      = valid.length;
 
@@ -108,6 +117,21 @@ export function packMeshData(
           const srcU = i * 2, dstU = vOut * 2;
           uvs[dstU]     = srcUv[srcU];
           uvs[dstU + 1] = srcUv[srcU + 1];
+        }
+
+        if (colors) {
+          const dstC = vOut * 4;
+          if (srcCol) {
+            const srcC = i * 4;
+            colors[dstC]     = srcCol[srcC];
+            colors[dstC + 1] = srcCol[srcC + 1];
+            colors[dstC + 2] = srcCol[srcC + 2];
+            colors[dstC + 3] = srcCol[srcC + 3];
+          } else {
+            // One section coloured and the other not: white leaves the texture
+            // unchanged where the file gives no shade.
+            colors[dstC] = colors[dstC + 1] = colors[dstC + 2] = colors[dstC + 3] = 1;
+          }
         }
 
         const idx = vOut++;
@@ -144,6 +168,7 @@ export function packMeshData(
     normalMeta: hasNormals ? normalMeta : null,
     uvs:        hasUvs    ? uvs!.subarray(0, vOut * 2)    as typeof uvs    : null,
     uvMeta:     hasUvs    ? uvMeta  : null,
+    colors:     colors ? colors.subarray(0, vOut * 4) as Float32Array : null,
     indices:    indices.subarray(0, iCount) as Uint16Array,
   };
 }

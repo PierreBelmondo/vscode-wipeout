@@ -44,6 +44,12 @@ function meshDataToGeometry(geo: MeshData): THREE.BufferGeometry {
       geometry.setAttribute("uv", new THREE.Float32BufferAttribute(geo.uvs as Float32Array, itemSize));
     }
   }
+  if (geo.colors) {
+    // The PSP's baked lighting. Three multiplies this into the material colour
+    // when `vertexColors` is set, which is what the GE's texture function does
+    // with it -- see MeshVexxPSPMaterial.
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(geo.colors, 4));
+  }
   geometry.setIndex(Array.from(geo.indices));
   return geometry;
 }
@@ -116,7 +122,7 @@ function chunkRenderFlags(rs: VexxRenderState, materialFlags: number): number {
   return flags;
 }
 
-function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean, envMap?: THREE.Texture, hasNormals = false, alphaRef?: number): THREE.Material {
+function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean, envMap?: THREE.Texture, hasNormals = false, alphaRef?: number, hasColors = false): THREE.Material {
   const isAdd   = !!(renderFlags & 0x0200);
   const isBlend = !!(renderFlags & 0x0100);
   const isGlow  = !!(renderFlags & 0x0080);
@@ -181,7 +187,7 @@ function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean
   // flatShading:true so Three.js derives face normals; geometry with normals uses
   // flatShading:false so the per-vertex normals from the file are respected.
   if (isV4) {
-    return new MeshVexxPSPMaterial(map, hasNormals, alphaRef);
+    return new MeshVexxPSPMaterial(map, hasNormals, alphaRef, hasColors);
   }
   return new THREE.MeshPhongMaterial({ map, alphaTest: 0.5, side: THREE.DoubleSide });
 }
@@ -906,9 +912,11 @@ export class VEXXLoader extends Loader {
       // did not paint fully transparent, which a fixed 0.5 was eating into.
       const alphaRef = rs?.alphaTest ? rs.alphaRef : undefined;
       const hasNormals = geo.normals !== null;
+      // The chunk's baked vertex lighting, when it has one.
+      const hasColors = geo.colors !== null;
       // Include hasNormals in the cache key: geometry with and without normals
       // needs different flatShading settings and must not share a material.
-      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}`;
+      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${hasColors ? ":C" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}`;
       let material = world.materials["_default"];
       if (matKey in world.materials) {
         material = world.materials[matKey];
@@ -922,7 +930,7 @@ export class VEXXLoader extends Loader {
           material = new MeshSkyMaterial(map);
           material.name = "SkyMaterial_" + textureId;
         } else {
-          material = makeMeshMaterial(map, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals, alphaRef);
+          material = makeMeshMaterial(map, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals, alphaRef, hasColors);
           material.name = `VexxMaterial_${textureId}_0x${renderFlags.toString(16)}`;
         }
         world.materials[matKey] = material;

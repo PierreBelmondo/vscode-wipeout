@@ -304,6 +304,7 @@ class StrideView {
       uvMeta = { type: GU_TYPE_FLOAT32, itemSize: 2, normalized: false };
     }
 
-    return { positions, normals, normalMeta, uvs, uvMeta, valid, validCount };
+    // v3 predates the PSP GU vertex formats and carries no per-vertex colour.
+    return { positions, normals, normalMeta, uvs, uvMeta, colors: null, valid, validCount };
   }
 }

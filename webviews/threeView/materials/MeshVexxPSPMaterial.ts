@@ -24,9 +24,14 @@ export class MeshVexxPSPMaterial extends THREE.MeshPhongMaterial {
    *                   still drops fully transparent texels, while Three's
    *                   `alpha < alphaTest` would keep them at exactly 0.
    */
-  constructor(map: THREE.Texture, hasNormals = false, alphaRef?: number) {
+  constructor(map: THREE.Texture, hasNormals = false, alphaRef?: number, hasColors = false) {
     super({
       map,
+      // The PSP's baked lighting, when the chunk carries it. Three multiplies
+      // it into the material colour, matching what the GE's texture function
+      // does with the vertex colour. Must track the geometry: a material with
+      // vertexColors set draws black on geometry that has no colour attribute.
+      vertexColors: hasColors,
       alphaTest: alphaRef === undefined ? 0.5 : Math.max(1 / 255, Math.min(1, (alphaRef * 2) / 255)),
       flatShading: !hasNormals,
       side: THREE.DoubleSide,

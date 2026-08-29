@@ -325,7 +325,43 @@ class StrideView {
       }
     }
 
-    return { positions, normals, normalMeta, uvs, uvMeta, valid, validCount };
+    // ── Vertex colours ─────────────────────────────────────────────────────
+    // The PSP bakes its lighting into these: 92.8% of chunks carry one, and
+    // the engine turns GE lighting OFF per object (Gu_DisableState(1) in
+    // FUN_00080304), so for much of the scene this IS the shading -- not a
+    // term to recompute. Two formats appear in the corpus, GU 4444 (48,484
+    // chunks) and 8888 (37,945); the other GU colour types never occur.
+    let colors: Float32Array | null = null;
+    const cs = info.color.size;
+    if (cs > 0) {
+      const co = info.color.offset;
+      colors = new Float32Array(n * 4);
+      if (info.color.type === 7) {
+        // 8888: one byte per channel, R at the low address.
+        for (let i = 0; i < n; i++) {
+          const base = i * strideSize + co, c = i * 4;
+          colors[c]     = range.getUint8(base) / 255;
+          colors[c + 1] = range.getUint8(base + 1) / 255;
+          colors[c + 2] = range.getUint8(base + 2) / 255;
+          colors[c + 3] = range.getUint8(base + 3) / 255;
+        }
+      } else if (info.color.type === 6) {
+        // 4444: packed u16, 4 bits per channel, R in the low nibble.
+        for (let i = 0; i < n; i++) {
+          const v = range.getUint16(i * strideSize + co), c = i * 4;
+          colors[c]     = (v & 0xf) / 15;
+          colors[c + 1] = ((v >> 4) & 0xf) / 15;
+          colors[c + 2] = ((v >> 8) & 0xf) / 15;
+          colors[c + 3] = ((v >> 12) & 0xf) / 15;
+        }
+      } else {
+        // 5650 and 5551 do not occur in this corpus; leave the chunk unshaded
+        // rather than decode a format nothing exercises.
+        colors = null;
+      }
+    }
+
+    return { positions, normals, normalMeta, uvs, uvMeta, colors, valid, validCount };
   }
 }
 
