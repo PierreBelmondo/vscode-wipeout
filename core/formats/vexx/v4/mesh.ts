@@ -327,10 +327,11 @@ class StrideView {
 
     // ── Vertex colours ─────────────────────────────────────────────────────
     // The PSP bakes its lighting into these: 92.8% of chunks carry one, and
-    // the engine turns GE lighting OFF per object (Gu_DisableState(1) in
-    // FUN_00080304), so for much of the scene this IS the shading -- not a
-    // term to recompute. Two formats appear in the corpus, GU 4444 (48,484
-    // chunks) and 8888 (37,945); the other GU colour types never occur.
+    // the engine toggles GE lighting per object (Gu_EnableState/DisableState
+    // with GU.States.LIGHTING in FUN_000696b4, gated on the vtxdef word's
+    // 0x60 bits), so for much of the scene this IS the shading -- not a term
+    // to recompute. Two formats appear in the corpus, GU 4444 (48,484 chunks)
+    // and 8888 (37,945); the other GU colour types never occur.
     let colors: Float32Array | null = null;
     const cs = info.color.size;
     if (cs > 0) {
@@ -381,6 +382,10 @@ export type VexxRenderState = {
   alphaTest: boolean;
   /** GE alpha-test reference, 0x00 or 0x7f; 0 when alphaTest is false. */
   alphaRef: number;
+  /** GU_CULL_FACE. False means the chunk is drawn two-sided. */
+  cullFace: boolean;
+  /** GE shade model: flat on opaque geometry, gouraud on blended. */
+  shadeModel: "flat" | "gouraud";
   /** The raw words, for the dump and for the bits still undecoded. */
   raw: { flags: number; flags2: number };
 };
@@ -401,8 +406,16 @@ export type VexxRenderState = {
  */
 function decodeRenderState(flags: number, flags2: number): VexxRenderState {
   const raw = { flags, flags2 };
+  // GU_CULL_FACE is enabled unless bit 5 says otherwise -- 14,626 chunks ask to
+  // be drawn two-sided, the rest single-sided.
+  const cullFace = (flags & 0x20) === 0;
+  // The GE shades opaque geometry FLAT and only blended geometry gouraud:
+  // Material_ApplyRenderState calls Gu_ShadeModel(0) on the opaque path and
+  // Gu_ShadeModel(1) on both blend paths. 84,471 of 93,121 chunks are flat.
+  const shadeModel: "flat" | "gouraud" = flags2 & 0x10 || flags & 0x700 ? "gouraud" : "flat";
+  const base = { cullFace, shadeModel, raw };
   // The +3 byte's bit 4 selects its own blend path before anything else.
-  if (flags2 & 0x10) return { blend: "alpha", alphaTest: false, alphaRef: 0, raw };
+  if (flags2 & 0x10) return { blend: "alpha", alphaTest: false, alphaRef: 0, ...base };
   if (flags & 0x700) {
     // Bit 8 is alpha blend and bit 9 additive, matching the artists' own
     // `_BLEND.tga` / `_ADD.tga` suffixes and `VexxNodeMeshMaterial.renderFlags`
@@ -410,13 +423,13 @@ function decodeRenderState(flags: number, flags2: number): VexxRenderState {
     // lists in Material_ApplyRenderState read the other way round -- bit 8 takes
     // the (0,2,3) path and bit 9 the (0,2,10) one -- so one of the two is
     // mislabelled; the filenames are the stronger evidence and win here.
-    if (flags & 0x100) return { blend: "alpha", alphaTest: false, alphaRef: 0, raw };
-    if (flags & 0x200) return { blend: "additive", alphaTest: false, alphaRef: 0, raw };
-    return { blend: "none", alphaTest: false, alphaRef: 0, raw };
+    if (flags & 0x100) return { blend: "alpha", alphaTest: false, alphaRef: 0, ...base };
+    if (flags & 0x200) return { blend: "additive", alphaTest: false, alphaRef: 0, ...base };
+    return { blend: "none", alphaTest: false, alphaRef: 0, ...base };
   }
   // Alpha test: bit 7 picks the reference the engine passes to Gu_AlphaFunc.
-  if (flags & 0x800) return { blend: "none", alphaTest: true, alphaRef: flags & 0x80 ? 0x00 : 0x7f, raw };
-  return { blend: "none", alphaTest: false, alphaRef: 0, raw };
+  if (flags & 0x800) return { blend: "none", alphaTest: true, alphaRef: flags & 0x80 ? 0x00 : 0x7f, ...base };
+  return { blend: "none", alphaTest: false, alphaRef: 0, ...base };
 }
 
 class VexxNodeMeshChunkHeader {

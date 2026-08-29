@@ -24,7 +24,7 @@ export class MeshVexxPSPMaterial extends THREE.MeshPhongMaterial {
    *                   still drops fully transparent texels, while Three's
    *                   `alpha < alphaTest` would keep them at exactly 0.
    */
-  constructor(map: THREE.Texture, hasNormals = false, alphaRef?: number, hasColors = false) {
+  constructor(map: THREE.Texture, hasNormals = false, alphaRef?: number, hasColors = false, state?: { cullFace: boolean; shadeModel: "flat" | "gouraud" }) {
     super({
       map,
       // The PSP's baked lighting, when the chunk carries it. Three multiplies
@@ -33,8 +33,14 @@ export class MeshVexxPSPMaterial extends THREE.MeshPhongMaterial {
       // vertexColors set draws black on geometry that has no colour attribute.
       vertexColors: hasColors,
       alphaTest: alphaRef === undefined ? 0.5 : Math.max(1 / 255, Math.min(1, (alphaRef * 2) / 255)),
-      flatShading: !hasNormals,
-      side: THREE.DoubleSide,
+      // The GE shades opaque geometry FLAT and only blended geometry gouraud,
+      // so a chunk that says "flat" gets it even when the file supplies
+      // per-vertex normals. Without a normal attribute flatShading is forced
+      // anyway -- Three then derives face normals and the mesh is not black.
+      flatShading: state ? state.shadeModel === "flat" || !hasNormals : !hasNormals,
+      // GU_CULL_FACE, from the chunk. 78,495 of 93,121 chunks are single-sided;
+      // drawing those two-sided lets back faces show through.
+      side: state && state.cullFace ? THREE.FrontSide : THREE.DoubleSide,
     });
 
     this.onBeforeCompile = (shader) => {
