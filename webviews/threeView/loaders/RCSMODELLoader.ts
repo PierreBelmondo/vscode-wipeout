@@ -494,7 +494,20 @@ function applyEnvSettings(world: World, env: EnvSettings) {
       // would fight the Directional slider, which sets the same field: the
       // slider would scale an already-4x sun, and at 0 it takes every lit
       // surface to black with no ambient left to catch it.
-      if (object.intensity === 0) object.intensity = 1;
+      //
+      // The slider's value, explicitly -- not whatever the light arrived
+      // with. On a .vex scene the sun is the file's own DIRECTIONAL_LIGHT
+      // node, built with the node's rgba.w as its intensity: 05_ubermall
+      // authors (2, 2, 2, 2), so the light came here at 2.0, kept it, and
+      // syncLights() multiplied the envsettings colour by it -- the shaders
+      // received (8, 7, 5) for a file that says (4, 3.5, 2.5). Two files'
+      // sun values stacked. The envsettings colour is the sun; the node's
+      // value is the Maya light it was exported from.
+      const slider = world.settings.directionalIntensity;
+      object.intensity = typeof slider === "number" && slider > 0 ? slider : 1;
+      // This is `Lighting.Physical Sun direction`; see EnvKey.sunDirection for
+      // why not `Sun direction`, which is what the sentence below was written
+      // against (the two nearly coincide on vineta_k).
       // The file's vector points TOWARD the sun -- vineta_k's is (-2, 0.8, 1),
       // y up, and it lights the ground -- which is also what a Three
       // DirectionalLight's position means, so it is used as-is. It used to be
