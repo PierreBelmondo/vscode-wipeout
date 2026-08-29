@@ -30,8 +30,16 @@ export namespace GE {
    * `stride` is the row pitch in BYTES, so a 4bpp image passes half its width.
    * The dimensions need not divide evenly: a partial trailing block is possible,
    * so the copy is clipped rather than assuming they do.
+   *
+   * A row narrower than one block is returned untouched. The GE only swizzles
+   * once a row spans a whole block, and running the block walk anyway would
+   * read 16 bytes per row out of a buffer whose rows are shorter than that,
+   * scrambling the image -- at stride 4 it changes 28 of every 32 bytes. This
+   * is the guard the per-format copies in .mip, VEXX v4 and BLOB spell as
+   * `width > blockSize`.
    */
   export function unswizzle(src: Uint8Array, stride: number, height: number): Uint8Array {
+    if (stride <= SWIZZLE_BLOCK_WIDTH) return src.slice(0, stride * height);
     const out = new Uint8Array(stride * height);
     const blocksX = Math.ceil(stride / SWIZZLE_BLOCK_WIDTH);
     const blocksY = Math.ceil(height / SWIZZLE_BLOCK_HEIGHT);

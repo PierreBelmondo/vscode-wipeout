@@ -1,4 +1,5 @@
 import { BufferRange } from "@core/utils/range";
+import { GE } from "@core/utils/pspge";
 import type { Mipmaps } from "@core/utils/mipmaps";
 import { VexxNode } from "../node";
 import { Vexx4NodeType } from "./type";
@@ -65,23 +66,31 @@ export class VexxNodeBlob extends VexxNode {
       const memsize = (memwidth * h * this.bpp) / 8;
       const pixelRange = range.slice(pixelOffset, pixelOffset + memsize);
 
-      const blockReal = Math.min(w, blockSize);
       const size = w * h;
-      const rgba = new Uint8ClampedArray(size * 4);
-      const blocks = size / blockReal;
+      // A row is padded out to blockSize pixels in memory, so a mip narrower
+      // than one block still costs a whole block per row.
+      const memWidthPx = Math.max(w, blockSize);
+      const rowBytes = (memWidthPx * this.bpp) / 8;
 
-      for (let i = 0; i < blocks; i++) {
-        const blockOffset = (i * blockSize * this.bpp) / 8;
-        const indices = pixelRange.slice(blockOffset, blockOffset + (blockReal * this.bpp) / 8);
-        for (let j = 0; j < blockReal; j++) {
+      // Unswizzle the INDICES, before the palette turns them into pixels --
+      // the shared GE.unswizzle, which leaves a row narrower than one block
+      // untouched (the `w > blockReal` guard this replaces). BLOB carries no
+      // swizzle flag of its own: its pixels are always stored swizzled.
+      let indexBytes = pixelRange.getUint8Array(0, rowBytes * h);
+      indexBytes = GE.unswizzle(indexBytes, rowBytes, h);
+
+      const rgba = new Uint8ClampedArray(size * 4);
+      for (let y = 0; y < h; y++) {
+        const rowOffset = y * rowBytes;
+        for (let x = 0; x < w; x++) {
           let index: number;
           if (this.bpp === 4) {
-            index = indices.getUint8(j >>> 1);
-            index = j % 2 === 0 ? index & 0x0f : index >>> 4;
+            index = indexBytes[rowOffset + (x >>> 1)];
+            index = x % 2 === 0 ? index & 0x0f : index >>> 4;
           } else {
-            index = indices.getUint8(j);
+            index = indexBytes[rowOffset + x];
           }
-          const pixel = j + i * blockReal;
+          const pixel = x + y * w;
           rgba[pixel * 4 + 0] = paletteRange.getUint8(index * 4 + 0);
           rgba[pixel * 4 + 1] = paletteRange.getUint8(index * 4 + 1);
           rgba[pixel * 4 + 2] = paletteRange.getUint8(index * 4 + 2);
@@ -89,33 +98,7 @@ export class VexxNodeBlob extends VexxNode {
         }
       }
 
-      // PSP swizzle unscramble (same as VexxNodeTexture)
-      if (w > blockReal) {
-        const ch = 8;
-        const cw = blockSize;
-        const cs = ch * cw;
-        const tmp = new Uint8ClampedArray(size * 4);
-        for (let ci = 0; ci < size / cs; ci++) {
-          const chunk = rgba.slice(cs * 4 * ci, cs * 4 * (ci + 1));
-          for (let l = 0; l < ch; l++) {
-            let k = 0;
-            k += (ci % (w / cw)) * cw;
-            k += Math.floor(ci / (w / cw)) * ch * w;
-            k += l * w;
-            for (let c = 0; c < cw; c++) {
-              const idx = c + k;
-              const src = c + l * cw;
-              tmp[idx * 4 + 0] = chunk[src * 4 + 0];
-              tmp[idx * 4 + 1] = chunk[src * 4 + 1];
-              tmp[idx * 4 + 2] = chunk[src * 4 + 2];
-              tmp[idx * 4 + 3] = chunk[src * 4 + 3];
-            }
-          }
-        }
-        this.mipmaps.push({ type: "RGBA", width: w, height: h, data: tmp });
-      } else {
-        this.mipmaps.push({ type: "RGBA", width: w, height: h, data: rgba });
-      }
+      this.mipmaps.push({ type: "RGBA", width: w, height: h, data: rgba });
 
       pixelOffset += memsize;
       w = Math.max(1, w >>> 1);

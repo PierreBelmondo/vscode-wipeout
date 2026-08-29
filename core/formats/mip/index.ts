@@ -1,5 +1,6 @@
 import { BufferRange } from "@core/utils/range";
 import { Mipmaps } from "@core/utils/mipmaps";
+import { GE } from "@core/utils/pspge";
 
 class MIPHeader {
   range = new BufferRange();
@@ -80,55 +81,34 @@ export class MIP {
 
   loadMipmap(range: BufferRange, width: number, height: number, blockSize: number, bpp: number) {
     const size = width * height;
+    const rowBytes = (width * bpp) / 8;
+
+    // Unswizzle the INDICES, before the palette turns them into pixels: the GE
+    // swizzle is a byte-level layout of the stored texels, so undoing it after
+    // expansion means restating the same block walk in pixel units. This is
+    // the shared GE.unswizzle, which returns a row narrower than one block
+    // untouched -- the `width > blockSize` guard it replaces.
+    let indexBytes = range.getUint8Array(0, rowBytes * height);
+    if (this.header.swizzle) indexBytes = GE.unswizzle(indexBytes, rowBytes, height);
+
     const rgba = new Uint8ClampedArray(size * 4);
-
-    const blocks = (width * height) / blockSize;
-
-    for (let i = 0; i < blocks; i++) {
-      const blockOffset = (i * blockSize * bpp) / 8;
-      const indices = range.slice(blockOffset, blockOffset + (blockSize * bpp) / 8);
-      for (let j = 0; j < blockSize; j++) {
+    for (let y = 0; y < height; y++) {
+      const rowOffset = y * rowBytes;
+      for (let x = 0; x < width; x++) {
         let index = 0;
         if (bpp == 4) {
-          index = indices.getUint8(j >>> 1);
-          index = j % 2 == 0 ? index & 0b1111 : index >>> 4;
+          index = indexBytes[rowOffset + (x >>> 1)];
+          index = x % 2 == 0 ? index & 0b1111 : index >>> 4;
         } else {
-          index = indices.getUint8(j);
+          index = indexBytes[rowOffset + x];
         }
-        const pixel = j + i * blockSize;
+        const pixel = x + y * width;
         rgba[pixel * 4 + 0] = this.cmapRange.getUint8(index * 4 + 0);
         rgba[pixel * 4 + 1] = this.cmapRange.getUint8(index * 4 + 1);
         rgba[pixel * 4 + 2] = this.cmapRange.getUint8(index * 4 + 2);
-        rgba[pixel * 4 + 3] = 0xFF//this.cmapRange.getUint8(index + 4 + 3);
+        // Opaque, deliberately: the CLUT's own alpha is not read here.
+        rgba[pixel * 4 + 3] = 0xFF;
       }
-    }
-
-    // http://homebrew.pixelbath.com/wiki/PSP_texture_swizzling
-    if (this.header.swizzle && width > blockSize) {
-      const ch = 8;
-      const cw = this.cmapRange.size == 64 ? 32 : 16;
-      const cs = ch * cw;
-
-      const tmp = new Uint8ClampedArray(size * 4);
-      for (let ci = 0; ci < size / cs; ci++) {
-        const chunk = rgba.slice(cs * 4 * ci, cs * 4 * (ci + 1));
-        for (let l = 0; l < ch; l++) {
-          let k = 0;
-          k += (ci % (width / cw)) * cw;
-          k += Math.floor(ci / (width / cw)) * ch * width;
-          k += l * width;
-          for (let c = 0; c < cw; c++) {
-            const i = c + k;
-            const j = c + l * cw;
-            tmp[i * 4 + 0] = chunk[j * 4 + 0];
-            tmp[i * 4 + 1] = chunk[j * 4 + 1];
-            tmp[i * 4 + 2] = chunk[j * 4 + 2];
-            tmp[i * 4 + 3] = chunk[j * 4 + 3];
-          }
-        }
-      }
-      this.mipmaps.push({ type: "RGBA", width, height, data: tmp });
-      return;
     }
 
     this.mipmaps.push({ type: "RGBA", width, height, data: rgba });

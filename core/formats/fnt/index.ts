@@ -1,5 +1,6 @@
 import { Mipmap } from "@core/utils/mipmaps";
 import { BufferRange } from "@core/utils/range";
+import { GE } from "@core/utils/pspge";
 
 // PSP/PS2 files are little-endian, PS3 is big-endian.
 // Raw file bytes are always 01 46 4E 54; first byte 0x01 = LE, 0x54 ('T') = BE.
@@ -71,29 +72,6 @@ class FNTHeader {
   }
 }
 
-// PSP swizzle unswizzle for 4bpp (Gray4) data.
-// http://homebrew.pixelbath.com/wiki/PSP_texture_swizzling
-// Data is stored in 16-byte-wide x 8-row tiles.
-function unswizzleGray4(swizzled: Uint8Array, width: number): Uint8Array {
-  const blockW = 16; // bytes
-  const blockH = 8;  // rows
-  const rowStride = width >> 1; // bytes per row
-  const blocksPerRow = rowStride / blockW;
-  const output = new Uint8Array(swizzled.length);
-
-  for (let b = 0; b < swizzled.length / (blockW * blockH); b++) {
-    const blockCol = b % blocksPerRow;
-    const blockRow = (b / blocksPerRow) | 0;
-    for (let row = 0; row < blockH; row++) {
-      const srcOff = b * blockW * blockH + row * blockW;
-      const dstOff = (blockRow * blockH + row) * rowStride + blockCol * blockW;
-      output.set(swizzled.subarray(srcOff, srcOff + blockW), dstOff);
-    }
-  }
-
-  return output;
-}
-
 export class FNT {
   range = new BufferRange();
   header = new FNTHeader();
@@ -147,8 +125,10 @@ export class FNT {
       const imgDataSize = (width * height) / 2;
       let data = ret.range.getUint8Array(imgDataOff, imgDataSize);
 
+      // 4bpp packs two pixels per byte, so the row stride the GE swizzles in
+      // is half the pixel width.
       if (swizzle) {
-        data = unswizzleGray4(data, width);
+        data = GE.unswizzle(data, width >> 1, height);
       }
 
       ret.mipmap = { type: "Gray4", width, height, data };
