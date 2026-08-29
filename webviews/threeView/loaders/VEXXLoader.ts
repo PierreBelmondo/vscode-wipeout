@@ -916,7 +916,7 @@ export class VEXXLoader extends Loader {
       const hasColors = geo.colors !== null;
       // Include hasNormals in the cache key: geometry with and without normals
       // needs different flatShading settings and must not share a material.
-      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${hasColors ? ":C" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}${rs ? `:${rs.cullFace ? "c" : "-"}${rs.shadeModel[0]}${rs.clampU ? "U" : ""}${rs.clampV ? "V" : ""}` : ""}`;
+      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${hasColors ? ":C" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}${rs ? `:${rs.cullFace ? "c" : "-"}${rs.depthWrite ? "w" : "-"}${rs.clampU ? "U" : ""}${rs.clampV ? "V" : ""}` : ""}`;
       let material = world.materials["_default"];
       if (matKey in world.materials) {
         material = world.materials[matKey];

@@ -389,8 +389,8 @@ export type VexxRenderState = {
   /** GU_TEXWRAP per axis: false = REPEAT, true = CLAMP. */
   clampU: boolean;
   clampV: boolean;
-  /** GE shade model: flat on opaque geometry, gouraud on blended. */
-  shadeModel: "flat" | "gouraud";
+  /** GE depth-write mask (ZMSK): opaque geometry writes depth, blended does not. */
+  depthWrite: boolean;
   /** The raw words, for the dump and for the bits still undecoded. */
   raw: { flags: number; flags2: number };
 };
@@ -420,20 +420,24 @@ function decodeRenderState(flags: number, flags2: number): VexxRenderState {
   // while every CLAMP combination stays inside +/-128.
   const clampU = (flags & 0x4) !== 0;
   const clampV = (flags & 0x8) !== 0;
-  // The GE shades opaque geometry FLAT and only blended geometry gouraud:
-  // Material_ApplyRenderState calls Gu_ShadeModel(0) on the opaque path and
-  // Gu_ShadeModel(1) on both blend paths. 84,471 of 93,121 chunks are flat.
-  const shadeModel: "flat" | "gouraud" = flags2 & 0x10 || flags & 0x700 ? "gouraud" : "flat";
-  const base = { cullFace, clampU, clampV, shadeModel, raw };
+  // Depth writes (GE cmd 0xE7, ZMSK): Material_ApplyRenderState calls
+  // Gu_DepthMask(0) on the opaque path and Gu_DepthMask(1) -- writes OFF -- on
+  // both blend paths. An earlier reading of this call as "shade model" was
+  // wrong; the real SHADEMODE command (0x50) is never touched per material.
+  const depthWrite = !(flags2 & 0x10 || flags & 0x700);
+  const base = { cullFace, clampU, clampV, depthWrite, raw };
   // The +3 byte's bit 4 selects its own blend path before anything else.
   if (flags2 & 0x10) return { blend: "alpha", alphaTest: false, alphaRef: 0, ...base };
   if (flags & 0x700) {
-    // Bit 8 is alpha blend and bit 9 additive, matching the artists' own
-    // `_BLEND.tga` / `_ADD.tga` suffixes and `VexxNodeMeshMaterial.renderFlags`
-    // below, which was decoded from those names independently. The GE argument
-    // lists in Material_ApplyRenderState read the other way round -- bit 8 takes
-    // the (0,2,3) path and bit 9 the (0,2,10) one -- so one of the two is
-    // mislabelled; the filenames are the stronger evidence and win here.
+    // Bit 8 is alpha blend and bit 9 additive. Hardware and filenames AGREE
+    // once the GE command numbers are read right: the real blend is cmd 0xDF
+    // (sceGuBlendFunc), and bit 8 emits (ADD, SRC_ALPHA, 1-SRC_ALPHA) while
+    // bit 9 emits (ADD, SRC_ALPHA, FIX 0xffffff) -- SRC_ALPHA/ONE, exactly
+    // Three's AdditiveBlending. (An earlier note here claimed the disassembly
+    // read the other way round; that reading had mistaken the COLOR_TEST
+    // commands 0xD8-0xDA for the blend.) The additive path also enables
+    // GU_COLOR_TEST discarding RGB==0 texels, which is a no-op visually --
+    // black contributes nothing to an additive blend -- and is not mirrored.
     if (flags & 0x100) return { blend: "alpha", alphaTest: false, alphaRef: 0, ...base };
     if (flags & 0x200) return { blend: "additive", alphaTest: false, alphaRef: 0, ...base };
     return { blend: "none", alphaTest: false, alphaRef: 0, ...base };
