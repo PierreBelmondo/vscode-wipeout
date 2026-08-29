@@ -7,8 +7,12 @@ export function generateMissingMipmaps(mipmaps: Mipmaps) {
   let last = mipmaps[mipmaps.length - 1];
   if (last.type == "RGBA") {
     while (last.width >= 2 || last.height >= 2) {
-      const width = Math.floor(last.width / 2);
-      const height = Math.floor(last.height / 2);
+      // Clamp at 1: a non-square texture's short axis reaches 1 first and stays
+      // there while the long axis keeps halving. Without the clamp a 128x64
+      // sheet ends on a 1x0 level with a zero-length buffer, which leaves the
+      // mip chain incomplete -- WebGL then samples the whole texture as black.
+      const width = Math.max(1, Math.floor(last.width / 2));
+      const height = Math.max(1, Math.floor(last.height / 2));
       const data = new Uint8ClampedArray(height * width * 4);
       for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
