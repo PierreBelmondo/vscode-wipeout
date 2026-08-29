@@ -4,6 +4,10 @@ import { Vexx4NodeType } from "./type";
 
 // Reverse engineering progress: 10%
 // Only frameDuration (1/60 s) confirmed; 9 of 10 fields remain unknown (u32×3, f32×4, u16×2).
+//
+// The engine's Camera importer takes its one tunable, "LoopEnd", from the node
+// header's named property list rather than from these body bytes; the same
+// mechanism drives GRID_CAMERA (see grid_camera.ts) and ANIM_TRANSFORM.
 export class VexxNodeCamera extends VexxNode {
   properties = {
     unknown1: 0,

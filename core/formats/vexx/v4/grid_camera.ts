@@ -25,6 +25,13 @@ import { Vexx4NodeType } from "./type";
 // unknown0/1/2 are constant but purpose unclear (possibly flags/grid dimensions).
 // unknown3 purpose unclear (possibly track length hash or render distance).
 // Analysed 180 samples across PSP Pure (v4), PSP Pulse (v6), PS2 Pulse (v6), PS3 HD (v6).
+//
+// Note: the fields below are NOT the ones the engine configures the camera from.
+// GridCamera_ImportNode (PSP Pure boot.bin @ 0x68740) reads "GridPosition",
+// "Relative", "Delay" and "BlendStart" out of the node header's named property
+// list (see `VexxNodeHeader.properties`), defaulting each when absent -- and in
+// this corpus GRID_CAMERA nodes carry no properties at all, so every one of them
+// runs on the defaults. What the 48 body bytes below are for is still open.
 export class VexxNodeGridCamera extends VexxNode {
   unknown0 = 1;
   unknown1 = 32;

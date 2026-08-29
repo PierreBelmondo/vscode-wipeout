@@ -4,16 +4,49 @@ import { Vexx3NodeType } from "./v3/type";
 import { Vexx4NodeType as Vexx4NodeType } from "./v4/type";
 import { Vexx6NodeType } from "./v6/type";
 
+/**
+ * How a property's value is stored, from the tag byte at the head of its entry.
+ *
+ * The importers read the value straight through a typed pointer, so the tag is
+ * what tells a `1.0` float apart from an integer `1`.
+ */
+export enum VexxPropertyType {
+  INT = 0,
+  FLOAT = 1,
+  STRING = 2,
+}
+
+/**
+ * One named property attached to a node.
+ *
+ * The engine's node importers do not read their parameters from fixed offsets
+ * in the node body -- they look them up by name in this list. `GridCamera_ImportNode`
+ * (PSP Pure boot.bin @ 0x68740), for example, does a case-insensitive search for
+ * "GridPosition", "Relative", "Delay" and "BlendStart" in turn, and falls back to
+ * a hardcoded default for each one it does not find.
+ */
+export type VexxProperty = {
+  name: string;
+  type: VexxPropertyType;
+  /** INT and FLOAT values. A STRING property leaves this 0. */
+  value: number;
+  /** STRING values. Empty for INT and FLOAT. */
+  text: string;
+};
+
 export class VexxNodeHeader {
   range = new BufferRange();
 
   type: Vexx4NodeType | Vexx6NodeType | number;
   headerLength = 16;
-  _unknown1 = 0;
+  /** Offset of the property list, which is also where the name ends. */
+  propertiesOffset = 0;
   dataLength = 0;
   childrenCount = 0;
   name = "";
-  _unknown2 = 0;
+  /** Bytes the property list occupies, terminator included; 0 when there is none. */
+  propertiesLength = 0;
+  properties: VexxProperty[] = [];
 
   constructor(type = Vexx4NodeType.WORLD) {
     this.type = type;
@@ -27,27 +60,72 @@ export class VexxNodeHeader {
     return range.slice(this.size, this.size + this.dataLength);
   }
 
+  /** A property by name, matched case-insensitively as the engine does. */
+  property(name: string): VexxProperty | undefined {
+    const wanted = name.toLowerCase();
+    return this.properties.find((p) => p.name.toLowerCase() === wanted);
+  }
+
+  /**
+   * Walk the node's named property list.
+   *
+   * Layout of one entry, mirroring the search loop the importers run:
+   *
+   *   +0x00 u8   value type (`VexxPropertyType`)
+   *   +0x01 u8   offset of the value within the entry
+   *   +0x02 u16  entry stride; 0 terminates the list
+   *   +0x04 ..   NUL-terminated name, padded out to the value offset
+   *   +valueOffset .. the value, running to the end of the entry
+   */
+  private static loadProperties(range: BufferRange, offset: number): VexxProperty[] {
+    const properties: VexxProperty[] = [];
+    while (offset + 4 <= range.size) {
+      const stride = range.getUint16(offset + 2);
+      if (stride === 0) break;
+      const type = range.getUint8(offset) as VexxPropertyType;
+      const valueOffset = range.getUint8(offset + 1);
+      if (valueOffset < 4 || valueOffset > stride || offset + stride > range.size) break;
+      const name = range.slice(offset + 4, offset + valueOffset).getString();
+      const value = range.slice(offset + valueOffset, offset + stride);
+      properties.push({
+        name,
+        type,
+        value: type === VexxPropertyType.FLOAT ? value.getFloat32(0) : type === VexxPropertyType.INT ? value.getUint32(0) : 0,
+        text: type === VexxPropertyType.STRING ? value.getString() : "",
+      });
+      offset += stride;
+    }
+    return properties;
+  }
+
   static load(range: BufferRange) {
     const ret = new VexxNodeHeader();
     ret.type = range.getUint32(0);
     ret.headerLength = range.getUint16(4);
-    ret._unknown1 = range.getUint16(6);
+    ret.propertiesOffset = range.getUint16(6);
     ret.dataLength = range.getUint32(8);
     ret.childrenCount = range.getUint16(12);
-    ret._unknown2 = range.getUint16(14);
+    ret.propertiesLength = range.getUint16(14);
     ret.range = range.slice(0, ret.headerLength);
-    ret.name = ret.range.slice(16, ret._unknown1).getString();
+    ret.name = ret.range.slice(16, ret.propertiesOffset).getString();
+    if (ret.propertiesLength > 0) ret.properties = VexxNodeHeader.loadProperties(ret.range, ret.propertiesOffset);
     return ret;
   }
 
   dump(): any {
-    return {
+    const ret = {
       type: this.type,
       name: this.name,
       headerLength: this.headerLength,
       dataLength: this.dataLength,
       childrenCount: this.childrenCount,
-    };
+    } as any;
+    if (this.properties.length > 0) {
+      ret["properties"] = Object.fromEntries(
+        this.properties.map((p) => [p.name, p.type === VexxPropertyType.STRING ? p.text : p.value])
+      );
+    }
+    return ret;
   }
 }
 

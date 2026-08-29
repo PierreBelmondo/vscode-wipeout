@@ -4,9 +4,9 @@ import { sync as globSync } from "glob";
 import { Command } from "commander";
 
 import { BufferRange } from "@core/utils/range";
-import { instrumentCoverage, reportCoverage } from "./coverage";
+import { instrumentCoverage, reportCoverage, findGaps } from "./coverage";
 import { Vexx } from "@core/formats/vexx";
-import { VexxNode, VexxNodeMatrix } from "@core/formats/vexx/node";
+import { VexxNode, VexxNodeMatrix, VexxPropertyType } from "@core/formats/vexx/node";
 import { VexxNodeMesh } from "@core/formats/vexx/v4/mesh";
 import { Vexx3NodeMesh } from "@core/formats/vexx/v3/mesh";
 import { VexxNodeTexture } from "@core/formats/vexx/v4/texture";
@@ -151,6 +151,13 @@ function dumpNodeDetail(out: Output, node: VexxNode) {
     const raw = node.bodyRange.getUint8Array(0, Math.min(node.header.dataLength, 64));
     out.log(`raw[0..${Math.min(node.header.dataLength, 64)}]: ${buf2hex(raw.buffer as ArrayBuffer)}`);
     if (node.header.dataLength > 64) { out.log(`  ... (${node.header.dataLength - 64} more bytes)`); }
+  }
+  if (node.header.properties.length > 0) {
+    out.log("properties:");
+    for (const p of node.header.properties) {
+      const value = p.type === VexxPropertyType.STRING ? JSON.stringify(p.text) : p.type === VexxPropertyType.INT ? String(p.value) : p.value.toString();
+      out.log(`  ${p.name} = ${value} (${VexxPropertyType[p.type].toLowerCase()})`);
+    }
   }
   if (node.parseErrors.length > 0) {
     for (const e of node.parseErrors) out.log(`  PARSE ERROR: ${e}`);
@@ -588,7 +595,8 @@ function renderTree(
     const connector = isLast ? "└─" : "├─";
     const typeTag = `[${node.typeName}]`;
     const loc = `@0x${node.range.begin.toString(16)}`;
-    console.log(`${prefix}${connector} ${typeTag} ${node.name} ${loc} (data:${node.header.dataLength})`);
+    const props = node.header.properties.length > 0 ? ` +${node.header.properties.length}prop` : "";
+    console.log(`${prefix}${connector} ${typeTag} ${node.name} ${loc} (data:${node.header.dataLength})${props}`);
   }
 
   if (matches) {
@@ -1198,7 +1206,8 @@ program
   .command("coverage <files...>")
   .description("Report how many bytes of each .vex the parser actually interprets")
   .option("--per-type", "Break the unread bytes down by the node type they fall in")
-  .action((files: string[], opts: { perType?: boolean }) => {
+  .option("--json", "Emit one JSON line per file, for aggregating across a corpus")
+  .action((files: string[], opts: { perType?: boolean; json?: boolean }) => {
     for (const file of files) {
       const abs = path.resolve(file);
       const buffer = fs.readFileSync(abs);
@@ -1216,11 +1225,31 @@ program
       };
       walk(vexx.root);
 
-      console.log(path.basename(abs));
-      console.log(`  nodes       : ${nodes} (${types.size} distinct types)`);
-      const { gaps } = reportCoverage(hits, buffer);
+      // Vertex decoding is lazy: Vexx.load parses chunk headers but never
+      // touches the stride payload. Without forcing it, every mesh body counts
+      // as unread and MESH swamps the report with bytes the parser understands
+      // perfectly well -- it reads 23% of a track rather than the real 94%.
+      const forceDecode = (node: any) => {
+        for (const chunk of node.chunks ?? []) {
+          try { chunk.strides?.toRawVertexData(); } catch { /* parse errors are reported elsewhere */ }
+          try { chunk.strides2?.toRawVertexData(); } catch { /* idem */ }
+        }
+        for (const child of node.children ?? []) forceDecode(child);
+      };
+      forceDecode(vexx.root);
 
-      if (opts.perType) {
+      let read = 0;
+      for (let i = 0; i < hits.length; i++) if (hits[i]) read++;
+
+      if (!opts.json) {
+        console.log(path.basename(abs));
+        console.log(`  nodes       : ${nodes} (${types.size} distinct types)`);
+      }
+      const { gaps } = opts.json
+        ? { gaps: findGaps(hits, buffer) }
+        : reportCoverage(hits, buffer);
+
+      if (opts.perType || opts.json) {
         // Attribute each gap to the node whose range contains it. A node's
         // range covers its own header and data, so the innermost containing
         // node is the one that failed to read those bytes.
@@ -1235,7 +1264,7 @@ program
         };
         collect(vexx.root);
 
-        const perType = new Map<string, { bytes: number; nodes: Set<string> }>();
+        const perType = new Map<string, { bytes: number; zero: number; nodes: Set<string> }>();
         for (const gap of gaps) {
           let best: { name: string; begin: number; end: number } | null = null;
           for (const owner of owners) {
@@ -1244,19 +1273,45 @@ program
             if (!best || owner.end - owner.begin < best.end - best.begin) best = owner;
           }
           const key = best ? best.name : "(outside any node)";
-          const entry = perType.get(key) ?? { bytes: 0, nodes: new Set<string>() };
+          const entry = perType.get(key) ?? { bytes: 0, zero: 0, nodes: new Set<string>() };
           entry.bytes += gap.length;
+          if (gap.zero) entry.zero += gap.length;
           if (best) entry.nodes.add(`${best.begin}`);
           perType.set(key, entry);
         }
 
-        console.log(`  unread bytes by node type:`);
-        const rows = [...perType.entries()].sort((a, b) => b[1].bytes - a[1].bytes);
-        for (const [name, entry] of rows.slice(0, 20)) {
-          console.log(`    ${name.padEnd(26)} ${String(entry.bytes).padStart(9)} bytes  in ${entry.nodes.size} node(s)`);
+        if (opts.json) {
+          // Bytes each type owns outright, so unread can be reported as a share
+          // of the type's own footprint. Ranking by absolute bytes only tells
+          // you which type is common; this tells you which is undecoded.
+          const owned = new Map<string, number>();
+          for (const owner of owners) {
+            let inner = 0;
+            for (const other of owners) {
+              if (other === owner) continue;
+              if (other.begin >= owner.begin && other.end <= owner.end && other.end - other.begin < owner.end - owner.begin) {
+                inner += other.end - other.begin;
+              }
+            }
+            owned.set(owner.name, (owned.get(owner.name) ?? 0) + Math.max(0, owner.end - owner.begin - inner));
+          }
+          console.log(
+            JSON.stringify({
+              file, size: hits.length, read,
+              counts: Object.fromEntries(types),
+              owned: Object.fromEntries(owned),
+              perType: Object.fromEntries([...perType].map(([k, v]) => [k, { bytes: v.bytes, zero: v.zero, nodes: v.nodes.size }])),
+            })
+          );
+        } else {
+          console.log(`  unread bytes by node type:`);
+          const rows = [...perType.entries()].sort((a, b) => b[1].bytes - a[1].bytes);
+          for (const [name, entry] of rows.slice(0, 20)) {
+            console.log(`    ${name.padEnd(26)} ${String(entry.bytes).padStart(9)} bytes  in ${entry.nodes.size} node(s)`);
+          }
         }
       }
-      console.log();
+      if (!opts.json) console.log();
     }
   });
 
