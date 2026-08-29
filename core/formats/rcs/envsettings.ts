@@ -43,7 +43,18 @@ export const EnvKey = {
   altFogDensity: ["Fog.Alternate Fog Density"],
   constantAmbient: ["Lighting.Constant ambient color", "Lighting.Ambient color"],
   sunColour: ["Lighting.Sun color"],
-  sunDirection: ["Lighting.Sun direction"],
+  // `Physical Sun direction`, NOT `Sun direction`. The files carry both, and
+  // on vineta_k they nearly coincide -- (-1.8, 0.2, 1) vs (-2, 0.8, 1) -- which
+  // is how the wrong one went unnoticed: every sun-direction check had been
+  // made there. On 05_ubermall they are opposite in x and z, and the inflatable
+  // panda head that faces oncoming ships rendered with its face black and the
+  // back of its head lit. Correlating each lightmapped vertex's baked
+  // luminance with N.L for both keys settles which one the bake used:
+  //   12_sol_2   0.58 vs 0.27    03_track  0.29 vs 0.18
+  //   ubermall   0.16 vs 0.05    anulpha   0.19 vs 0.08   (Physical vs Sun)
+  // with the positive sign in every case, and the panda's face lit. `Sun
+  // direction` stays as the fallback for a file that lacks the physical key.
+  sunDirection: ["Lighting.Physical Sun direction", "Lighting.Sun direction"],
   sunSpecularScale: ["Lighting.Sun specular scale"],
   prelitAmbientScale: ["Lighting.Prelit ambient colour scale", "Lighting.Prelit ambient scale"],
   // Named `bias` by the files themselves -- it is added, not an exponent.

@@ -623,7 +623,7 @@ export class World {
     // Through EnvKey, not raw strings: the files come in two generations and
     // half the tracks spell these keys the older way, which a literal misses.
     show("Sun colour", fmt(env.get(EnvKey.sunColour)));
-    show("Sun direction", fmt(env.get(EnvKey.sunDirection), 6));
+    show("Physical sun direction", fmt(env.get(EnvKey.sunDirection), 6));
     show("Ambient", fmt(env.get(EnvKey.constantAmbient)));
     show("Fog colour", fmt(env.get(EnvKey.fogColour)));
     show("Fog density", fmt(env.get(EnvKey.fogDensity), 5));

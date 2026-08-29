@@ -373,8 +373,9 @@ export class GeneratedRcsMaterial extends RawRcsMaterial {
     const dir = this.uniforms.directionalLight0DirectionWorldSpace;
     if (dir && lights.sunDirection) {
       // The direction toward the sun, as sceneLights() returns it: on a track
-      // that is the file's own `Lighting.Sun direction` (y up, it lights the
-      // ground), for a lightless file the default sun's position.
+      // that is the file's `Lighting.Physical Sun direction` (y up, it lights
+      // the ground; see EnvKey.sunDirection for why not `Sun direction`), for
+      // a lightless file the default sun's position.
       //
       // The "neither sign lights both the walls and the ground" contradiction
       // this once recorded was not about the sun at all: the packed-normal
