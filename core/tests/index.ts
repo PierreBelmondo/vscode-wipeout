@@ -3,6 +3,7 @@ import { listFiles, relPath } from "./helper";
 import { config } from "./config";
 import vexxTest from "./vexx.test";
 import gxtTest from "./gxt.test";
+import pobTest from "./pob.test";
 
 declare const gc: (() => void) | undefined;
 
@@ -13,7 +14,7 @@ if (typeof gc !== "function") {
 
 const root = config.root;
 const suiteFilter = process.argv[2]?.toLowerCase();
-const allTests = [vexxTest, gxtTest];
+const allTests = [vexxTest, gxtTest, pobTest];
 const tests = suiteFilter ? allTests.filter(t => t.name.toLowerCase() === suiteFilter) : allTests;
 
 const testJobs = tests.map(test => ({

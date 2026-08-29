@@ -137,6 +137,16 @@
         "priority": "default"
       },
       {
+        "viewType": "wipeout.view.pob",
+        "displayName": "Particle System",
+        "selector": [
+          {
+            "filenamePattern": "*.{pob,POB}"
+          }
+        ],
+        "priority": "default"
+      },
+      {
         "viewType": "wipeout.view.gnf",
         "displayName": "GNF Texture",
         "selector": [

@@ -22,6 +22,7 @@ export type ThreeDocumentMessage =
 export type ThreeViewMessageLoadBody =
   | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.vexx" }
   | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.rcsmodel" }
+  | { uri: string; webviewUri: string; mime: "model/vnd.wipeout.pob" }
   | { uri: string; webviewUri: string; mime: "application/xml+wipeout" };
 
 export type ThreeViewMessageImportBody =
