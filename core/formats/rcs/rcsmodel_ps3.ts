@@ -688,6 +688,22 @@ export class RcsModelMaterialUnknown {
   }
 }
 
+/**
+ * How the engine draws a material instance: the render state the .rcsmodel
+ * stores beside the texture channels and constants. Per INSTANCE -- the same
+ * .rcsmaterial appears opaque in one entry and alpha-tested in another.
+ */
+export type RcsRenderState = {
+  /** Discard below the alpha threshold (crowd sprites, fences). */
+  alphaTest: boolean;
+  /** "alpha" = source-over, "additive" = added to the frame, "none" = opaque. */
+  blend: "none" | "alpha" | "additive";
+  /** Drawn in the sorted transparent pass rather than the main one. */
+  sortedPass: boolean;
+  /** The raw words, for the pick log and for anything not decoded yet. */
+  raw: { flags: number; blend: [number, number, number, number]; pass: number };
+};
+
 export class RcsModelMaterial {
   range = new BufferRange();
 
@@ -696,15 +712,72 @@ export class RcsModelMaterial {
   textures_count = 0;
   textures_offset = 0;
   unknown_offset = 0;
+  /**
+   * Render state, three words at +0x10 / +0x14 / +0x18 of the 64-byte record.
+   *
+   * Decoded by surveying every material entry in the shipped tracks and ships
+   * (14,465 entries) and grouping them by these words: the groups come out
+   * semantically clean, which is the evidence for what each field means.
+   *
+   *   flags (+0x10) bit 1   alpha test. Set on exactly the cutouts --
+   *                         nr_crowd_bustle, fence_alpha,
+   *                         jd_alphalambert_alphatest -- and on nothing opaque.
+   *                 bit 7   set on cf_tree, jd_alphalambert, lambert_alpha_02,
+   *                         uv_anim_diffuse_alpha -- foliage and alpha
+   *                         lamberts, with no KIL in any of their fragment
+   *                         programs (none exists in the whole corpus), so
+   *                         their cutout has to be state: alpha-to-coverage,
+   *                         most likely. Treated as alpha test here, the
+   *                         nearest thing the viewer can draw.
+   *                 bit 0   set on 127 materials, three quarters of them
+   *                         transparency-related but also on hundreds of
+   *                         opaque-looking lambert entries. NOT decoded: read
+   *                         as "blend", it would put big opaque geometry into
+   *                         the sorted pass with no depth write.
+   *   blend (+0x14) 4 bytes  [03 03 02 03] on all 295 opaque materials;
+   *                         [01 00 xx xx] on every additive one (flame_test,
+   *                         emissive_bloom, *_additive, shields, plasma,
+   *                         cf_add_point); [03 03 01 00] on the glass_texture
+   *                         family (alpha blend, no depth write). The third
+   *                         and fourth bytes are depth/cull state and are not
+   *                         decoded further here.
+   *   pass  (+0x18) byte 0   04 = main pass; 01 = sorted transparent pass,
+   *                         which is how nitro_perspex_new, glassalpha,
+   *                         etched_glass, cf_waterfall and clouds blend while
+   *                         carrying the default blend bytes.
+   *
+   * The viewer used to keep hand lists of which materials blend or cut out.
+   * They were wrong in both directions: mr_shopwin_reflecttranspemis has
+   * "transp" in its name and a transparency texture, and the file draws it
+   * OPAQUE (the alpha masks reflection/emissive, not coverage).
+   */
+  flags = 0;
+  blendWords: [number, number, number, number] = [0, 0, 0, 0];
+  pass = 0;
 
   textures: RcsModelTexture[] = [];
   unknown: RcsModelMaterialUnknown = new RcsModelMaterialUnknown();
+
+  get renderState(): RcsRenderState {
+    const [b0] = this.blendWords;
+    const blend: RcsRenderState["blend"] = b0 === 0x01 ? "additive" : this.pass === 0x01 || this.blendWords[2] === 0x01 || b0 === 0x02 ? "alpha" : "none";
+    return {
+      alphaTest: (this.flags & 0x02) !== 0 || (this.flags & 0x80) !== 0,
+      blend,
+      sortedPass: this.pass === 0x01,
+      raw: { flags: this.flags, blend: this.blendWords, pass: this.pass },
+    };
+  }
 
   static load(range: BufferRange): RcsModelMaterial {
     const ret = new RcsModelMaterial();
     ret.range = range.slice(0, 64);
     ret.id = ret.range.getUint32(0);
     ret.offset_filename = ret.range.getUint32(4);
+    ret.flags = ret.range.getUint32(16);
+    const blend = ret.range.getUint32(20);
+    ret.blendWords = [blend & 0xff, (blend >>> 8) & 0xff, (blend >>> 16) & 0xff, (blend >>> 24) & 0xff];
+    ret.pass = ret.range.getUint32(24) & 0xff;
     ret.textures_count = ret.range.getUint32(48);
     ret.textures_offset = ret.range.getUint32(52);
     ret.unknown_offset = ret.range.getUint32(56);

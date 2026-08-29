@@ -5,6 +5,7 @@ import { Loader } from "./loaders";
 import { VEXXLoader } from "./loaders/VEXXLoader";
 import { RCSModelLoader } from "./loaders/RCSMODELLoader";
 import { FELoader } from "./loaders/FELoader";
+import { POBLoader } from "./loaders/POBLoader";
 import { World } from "./worlds";
 import { api } from "./api";
 import { ThreeViewMessage, ThreeViewMessageLoadBody } from "@core/api/rpc";
@@ -13,6 +14,7 @@ import { RenderPass } from "./postprocessing/RenderPass";
 import { FrontEndEdgePass } from "./postprocessing/FrontEndEdgePass";
 import { ParaboloidProbes } from "./probes";
 import { LoadingLog } from "./loadingLog";
+import { RCS_ENCODE_OUTPUT } from "./materials/rcs/_compose";
 import { DEFAULT_SCREEN_SETTING, ScreenSetting } from "./frontendSkin";
 import { UnrealBloomPass } from "./postprocessing/UnrealBloomPass";
 import { TONE_MAPPINGS } from "./renderSettings";
@@ -335,10 +337,18 @@ class WorldRenderer {
       return;
     }
 
+    // Render-to-texture passes take LINEAR colour from the generated materials;
+    // see RCS_ENCODE_OUTPUT. The probe cube and the refraction target are
+    // sampled as linear by the shaders that read them.
+    RCS_ENCODE_OUTPUT.value = 0;
     this._updateScreenSpaceTarget();
     this._probes.update(this._world.scene, Object.values(this._world.materials));
 
     if (this._world.settings.bloom) {
+      // The composite pass encodes for the screen itself (BLOOM_GRADING), so
+      // the scene pass into the composer stays linear -- unless grading is
+      // off, in which case nothing downstream encodes and the materials must.
+      RCS_ENCODE_OUTPUT.value = settings.bloomGrading === false ? 1 : 0;
       const beforeBloom = (obj: THREE.Object3D) => {
         if (obj instanceof THREE.Mesh) {
           if (obj.material instanceof THREE.ShaderMaterial) {
@@ -397,6 +407,8 @@ class WorldRenderer {
       this._renderer.setClearColor(this._world.settings.backgroundColor);
       bloom.composerFinal.render();
     } else {
+      // Straight to the screen: this is the one draw that must encode.
+      RCS_ENCODE_OUTPUT.value = 1;
       this._renderer.setClearColor(this._world.settings.backgroundColor);
       this._renderer.render(this._world.scene, this._world.camera);
     }
@@ -587,6 +599,25 @@ class Editor {
         } catch (e: any) {
           api.log(`[rcsmodel] ERROR: ${e.message}\n${e.stack}`);
           console.error("[rcsmodel] load error:", e);
+        }
+        break;
+      }
+      case "model/vnd.wipeout.pob": {
+        try {
+          const response = await fetch(body.webviewUri);
+          const buffer = await response.arrayBuffer();
+          this.loader = new POBLoader();
+          await this.loader.loadFromBuffer(this.world, buffer, body.uri);
+          this.world.emitScene();
+          this.world.setupGui();
+          this.world.setupGuiCamera();
+          this.world.setupGuiLayers();
+          this.world.setupGuiBackgroundColor();
+          this.world.setupGuiRendering();
+          this.world.setupGuiDebug();
+          this.loadWorld();
+        } catch (e: any) {
+          api.log(`[pob] ERROR: ${e.message}\n${e.stack}`);
         }
         break;
       }

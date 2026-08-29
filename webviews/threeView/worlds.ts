@@ -299,6 +299,14 @@ export class World {
       const alphaTest = m.uniforms?.u_alphaTest?.value;
       api.log(
         `[picked]   transparent=${m.transparent} opacity=${m.opacity}` +
+        // The file's own render state, so a blend/cutout question is settled
+        // by what the model says rather than by the material's name.
+        ((): string => {
+          const rs = (m.userData as { renderState?: { alphaTest: boolean; blend: string; sortedPass: boolean; raw: { flags: number; blend: number[]; pass: number } } }).renderState;
+          if (!rs) return " file=(no render state)";
+          const raw = rs.raw;
+          return ` file: blend=${rs.blend} alphaTest=${rs.alphaTest} sortedPass=${rs.sortedPass} [flags=0x${raw.flags.toString(16)} w14=${raw.blend.map((b) => b.toString(16).padStart(2, "0")).join(" ")} pass=0x${raw.pass.toString(16)}]`;
+        })() +
           ` depthWrite=${m.depthWrite} u_alphaTest=${alphaTest ?? "n/a"}`
       );
       // A mesh still on the placeholder either waits for a material that never

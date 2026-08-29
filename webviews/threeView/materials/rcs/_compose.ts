@@ -263,7 +263,26 @@ const COMMON_HEAD = [
  * linear values into an sRGB target and come out far too dark -- 0.5 displaying
  * as 0.21. rcsdump emits the CALL; this supplies the function.
  */
+/**
+ * Whether rcsOutput() applies the sRGB encode: 1 for the draw that goes to the
+ * screen, 0 for every render-to-texture pass.
+ *
+ * ONE object, shared by every generated material's uniforms, so flipping the
+ * value here switches all of them at once; Three reads `.value` at draw time.
+ *
+ * The encode exists because the screen is sRGB and a raw ShaderMaterial gets
+ * none of Three's colour management. A render TARGET is not the screen: the
+ * probe cube, the screen-space refraction target and the bloom composer's
+ * buffers are linear, and the shaders that sample them treat what they read
+ * as linear. With the encode always on, those targets held sRGB-encoded
+ * colour -- 0.5 stored as 0.73 -- so every reflection and refraction came
+ * back too bright and flattened, which read as "only reflection" on glass and
+ * as milky refraction in the tunnels.
+ */
+export const RCS_ENCODE_OUTPUT: THREE.IUniform<number> = { value: 1 };
+
 const RCS_OUTPUT = [
+  "uniform float rcsEncodeOutput;",
   "vec4 rcsOutput(vec4 v) {",
   "  // max(): these transcribed RSX programs genuinely produce negative",
   "  // colour -- they multiply by unclamped dot products -- and pow() of a",
@@ -272,7 +291,10 @@ const RCS_OUTPUT = [
   "  vec3 c = max(v.rgb, vec3(0.0));",
   "  vec3 lo = c * 12.92;",
   "  vec3 hi = pow(c, vec3(0.41666)) * 1.055 - 0.055;",
-  "  return vec4(mix(hi, lo, vec3(lessThanEqual(c, vec3(0.0031308)))), v.a);",
+  "  vec3 srgb = mix(hi, lo, vec3(lessThanEqual(c, vec3(0.0031308))));",
+  "  // Linear into a render target, encoded only for the screen; see",
+  "  // RCS_ENCODE_OUTPUT.",
+  "  return vec4(mix(c, srgb, rcsEncodeOutput), v.a);",
   "}",
 ].join("\n");
 

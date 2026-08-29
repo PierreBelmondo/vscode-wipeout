@@ -8,6 +8,7 @@ import { Loader } from ".";
 import { facesToCubeTexture, mipmapsToTexture } from "../utils";
 import { RcsModel, RcsModelIBO, RcsModelMaterial, RcsModelMesh1, RcsModelMesh5, RcsModelObject, RcsModelPart, RcsModelVBO } from "@core/formats/rcs";
 import { RcsModelPS5, RcsModelPS5Material } from "@core/formats/rcs/rcsmodel_ps5";
+import type { RcsRenderState } from "@core/formats/rcs/rcsmodel_ps3";
 import { World } from "../worlds";
 import { createMaterial, setEnvSettings, GENERATED_NAMES, ONLY_GENERATED_MATERIALS } from "../materials/rcs";
 import { rcsHash } from "@core/formats/rcs/ids";
@@ -198,7 +199,11 @@ class RcsMaterial {
         for (const id of [...streams]) if (!s.has(id)) streams.delete(id);
       }
     }
-    this.material = createMaterial(this.basename, textures, channelIds, streams);
+    // The file's own render state for THIS instance -- blend mode, alpha test,
+    // pass -- when the format carries one (PS3 does; the PS5/Vita record has
+    // not been decoded for it, and those fall back to the name lists).
+    const renderState = (this.rcsMaterial as { renderState?: RcsRenderState }).renderState;
+    this.material = createMaterial(this.basename, textures, channelIds, streams, renderState);
 
     // The authored shader constants, by uniform NAME. The channel id is the
     // hash of that name -- the same hash the shader's uniform table carries --

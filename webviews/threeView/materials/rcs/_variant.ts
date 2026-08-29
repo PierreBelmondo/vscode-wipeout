@@ -56,6 +56,9 @@ const CUTOUT_MATERIALS = new Set<string>([
  * glow, scaled by globalAlphaScaler -- and the surface is meant to read as
  * tinted glass, not painted hull.
  */
+import type { RcsRenderState } from "@core/formats/rcs/rcsmodel_ps3";
+import { RCS_ENCODE_OUTPUT } from "./_compose";
+
 type BlendMode = "alpha" | "additive";
 const BLEND_MATERIALS = new Map<string, BlendMode>([
   ["nitro_perspex_new.rcsmaterial", "alpha"],
@@ -579,9 +582,23 @@ export function makeVariant(
   const vertSrc = PHONG_OVERRIDE
     ? phongVertex(variant.vert, phongRegs(variant.attributes))
     : composeVertex(variant.vert, { position: positionReg });
+  // Blend / cutout state. From the FILE when the model carries it -- the PS3
+  // .rcsmodel stores it per material instance (see RcsModelMaterial.renderState
+  // in core) -- and only otherwise from the name lists below, which predate
+  // that decode and remain as the fallback for the PS5/Vita record. The lists
+  // were wrong in both directions: mr_shopwin_reflecttranspemis is "transp" by
+  // name and opaque by file; cf_cheap_crowd is listed as a cutout and the file
+  // draws it plain.
+  const rs = pendingRenderState;
+  const writesAlpha = rs ? rs.alphaTest : CUTOUT_MATERIALS.has(variant.material);
+  const blendMode: BlendMode | undefined = rs
+    ? rs.blend === "none" ? undefined : rs.blend
+    : BLEND_MATERIALS.get(variant.material);
+  const blends = blendMode !== undefined;
+
   const fragSrc = PHONG_OVERRIDE
     ? phongFragment(diffuseUnit(variant.samplers))
-    : composeFragment(variant.frag, BLEND_MATERIALS.has(variant.material));
+    : composeFragment(variant.frag, blends);
   Object.assign(uniforms, declaredUniforms(vertSrc, uniforms));
   Object.assign(uniforms, declaredUniforms(fragSrc, uniforms));
   // Engine-injected constants this material is known to need; see
@@ -616,13 +633,16 @@ export function makeVariant(
   // So the default is opaque, and a material that genuinely cuts out is listed
   // here. Being wrong now means a sprite draws as a solid quad -- visible, and
   // obviously wrong -- instead of geometry silently disappearing.
-  const writesAlpha = CUTOUT_MATERIALS.has(variant.material);
-  const blendMode = BLEND_MATERIALS.get(variant.material);
-  const blends = blendMode !== undefined;
+  //
+  // (writesAlpha / blendMode / blends are decided above, before the fragment
+  // program is composed, because the composer needs `blends` to decide whether
+  // to pass the program's own alpha through.)
   // The shader does the discard itself -- Three's alphaTest only sets a
   // #define whose chunk a raw ShaderMaterial never includes -- so the threshold
   // is passed as a uniform. Zero disables it for materials that blend.
   uniforms.u_alphaTest = { value: writesAlpha ? 0.5 : 0.0 };
+  // The SHARED encode switch, not a copy: app.ts flips its value per pass.
+  uniforms.rcsEncodeOutput = RCS_ENCODE_OUTPUT;
 
   // The shaders were composed above (see vertSrc/fragSrc); PHONG_OVERRIDE in
   // _compose.ts swaps in the bisect there. Everything else -- channels, ids,
@@ -668,5 +688,29 @@ export function makeVariant(
   // often a uniform this variant reads and nothing sets, and naming the
   // permutation is what makes the shader findable in generated/_shaders.ts.
   built.userData.variant = variant;
+  built.userData.renderState = rs;
   return built;
+}
+
+/** The file's render state for the material being built; see withRenderState. */
+let pendingRenderState: RcsRenderState | undefined;
+
+/**
+ * Run `build` with the file's render state visible to makeVariant.
+ *
+ * createMaterial() knows the state (it comes with the model's material
+ * record) and makeVariant() applies it, but between them sit the generated
+ * factories -- 447 files whose `makeById(channels, streams)` would all need a
+ * new parameter. The build is synchronous, so a module-level slot scoped to
+ * the call is a safe way to hand it across; it is restored on the way out
+ * even if the build throws.
+ */
+export function withRenderState<T>(state: RcsRenderState | undefined, build: () => T): T {
+  const previous = pendingRenderState;
+  pendingRenderState = state;
+  try {
+    return build();
+  } finally {
+    pendingRenderState = previous;
+  }
 }

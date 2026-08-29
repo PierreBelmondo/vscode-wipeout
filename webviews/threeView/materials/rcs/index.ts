@@ -1257,10 +1257,24 @@ export const DRIVEN_UNIFORMS = new Set<string>([
   "fogColour",
 ]);
 
-export function createMaterial(name: string, textures: THREE.Texture[], channelIds?: number[], streams?: Set<number>) {
+import { withRenderState } from "./_variant";
+import type { RcsRenderState } from "@core/formats/rcs/rcsmodel_ps3";
+
+export function createMaterial(
+  name: string,
+  textures: THREE.Texture[],
+  channelIds?: number[],
+  streams?: Set<number>,
+  renderState?: RcsRenderState
+) {
   const factory = FACTORIES_BY_HASH.get(rcsHash(name));
 
-  const key = `${name}|${textures.map((t) => (t ? t.uuid : "-")).join(",")}|${(channelIds ?? []).join(",")}|${streams ? [...streams].sort().join(",") : ""}`;
+  // The render state is part of the key: it is per INSTANCE in the file, and
+  // the same .rcsmaterial is drawn opaque by one entry and alpha-tested by the
+  // next. Sharing one Three material between them would give both the state
+  // of whichever was built first.
+  const rs = renderState ? `${renderState.alphaTest ? "t" : "-"}${renderState.blend}${renderState.sortedPass ? "s" : "-"}` : "";
+  const key = `${name}|${textures.map((t) => (t ? t.uuid : "-")).join(",")}|${(channelIds ?? []).join(",")}|${streams ? [...streams].sort().join(",") : ""}|${rs}`;
   const cached = materialCache.get(key);
   if (cached) return cached;
 
@@ -1276,14 +1290,16 @@ export function createMaterial(name: string, textures: THREE.Texture[], channelI
     }
     let material: THREE.Material | null = null;
     try {
+      // withRenderState hands the file's state to makeVariant without changing
+      // the signature of the 447 generated factories that sit between them.
       if (factory.makeById && channelIds) {
         const byId = new Map<number, THREE.Texture>();
         for (let i = 0; i < textures.length; i++) {
           if (textures[i]) byId.set(channelIds[i], textures[i]);
         }
-        material = factory.makeById(byId, streams);
+        material = withRenderState(renderState, () => factory.makeById!(byId, streams));
       } else {
-        material = factory.make(textures);
+        material = withRenderState(renderState, () => factory.make(textures));
       }
     } catch (e) {
       // Report and fall back -- do NOT rethrow.
