@@ -230,6 +230,10 @@ export class ParaboloidProbes {
       wrapS: THREE.ClampToEdgeWrapping,
       wrapT: THREE.ClampToEdgeWrapping,
     });
+    // Named, so the pick log can tell a bound probe from the flat fallback:
+    // it prints a sampler's texture NAME, and an unnamed render target read
+    // as "(fallback)" even when the probe was bound and rendering.
+    target.texture.name = `paraboloidProbe#${this._byCell.size + 1}`;
     return { target, members: new Set(), rendered: false };
   }
 
