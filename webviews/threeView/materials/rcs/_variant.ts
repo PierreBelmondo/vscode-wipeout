@@ -290,6 +290,23 @@ export function pickVariant(
   // SpuVertexColours, the per-vertex baked colour -- so a variant is only fully
   // satisfiable when the mesh can feed its attributes too. Without this the
   // choice between them came down to file order.
+  //
+  // SpuVertexColours is never in the file, and that is a known, ACCEPTED
+  // limitation. It is per-vertex lighting the SPUs compute at runtime -- HDR,
+  // exponent-encoded (the vertex programs decode it as rgb * 2^(a*k - bias))
+  // and ADDED into the diffuse before the material colour. 425 of 447
+  // materials carry such a permutation, and 1008 of those 1178 permutations
+  // keep the RSX sun term as well, so it is an additive fill on top of the
+  // sun. Its formula lives in SPU code, not in any RSX program, so nothing on
+  // disk can reproduce it; the viewer always falls back to the non-SPU
+  // permutation. Visible consequence: a dynamically-lit prop with no lightmap
+  // (05_ubermall's inflatable panda, material martin_inflatable2) renders
+  // black on its shadow side -- the fragment programs' diffuse uses the
+  // UNCLAMPED N.L (930 of the corpus's 1520 sun dot-products are unclamped;
+  // rcsdump shows no _sat on those DP3s), so past the terminator the sun term
+  // goes negative and cancels the ambient. In-game the SPU fill covers that.
+  // Inventing a stand-in was considered and rejected: it would be a guess
+  // presented as the engine's lighting.
   const feeds = (v: GeneratedVariant) =>
     !streams || v.attributes.every((a) => a.name === "?" || streams.has(a.id));
 
