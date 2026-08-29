@@ -116,7 +116,7 @@ function chunkRenderFlags(rs: VexxRenderState, materialFlags: number): number {
   return flags;
 }
 
-function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean, envMap?: THREE.Texture, hasNormals = false): THREE.Material {
+function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean, envMap?: THREE.Texture, hasNormals = false, alphaRef?: number): THREE.Material {
   const isAdd   = !!(renderFlags & 0x0200);
   const isBlend = !!(renderFlags & 0x0100);
   const isGlow  = !!(renderFlags & 0x0080);
@@ -181,7 +181,7 @@ function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean
   // flatShading:true so Three.js derives face normals; geometry with normals uses
   // flatShading:false so the per-vertex normals from the file are respected.
   if (isV4) {
-    return new MeshVexxPSPMaterial(map, hasNormals);
+    return new MeshVexxPSPMaterial(map, hasNormals, alphaRef);
   }
   return new THREE.MeshPhongMaterial({ map, alphaTest: 0.5, side: THREE.DoubleSide });
 }
@@ -901,10 +901,14 @@ export class VEXXLoader extends Loader {
       // has no such word.
       const rs = chunkHeader.renderState;
       const renderFlags = rs ? chunkRenderFlags(rs, vexxMat.renderFlags) : vexxMat.renderFlags;
+      // The chunk's own alpha-test reference. The file uses 0x00 and 0x7f, and
+      // 0x00 is the common one -- a cutout that keeps every texel the artist
+      // did not paint fully transparent, which a fixed 0.5 was eating into.
+      const alphaRef = rs?.alphaTest ? rs.alphaRef : undefined;
       const hasNormals = geo.normals !== null;
       // Include hasNormals in the cache key: geometry with and without normals
       // needs different flatShading settings and must not share a material.
-      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}`;
+      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}`;
       let material = world.materials["_default"];
       if (matKey in world.materials) {
         material = world.materials[matKey];
@@ -918,7 +922,7 @@ export class VEXXLoader extends Loader {
           material = new MeshSkyMaterial(map);
           material.name = "SkyMaterial_" + textureId;
         } else {
-          material = makeMeshMaterial(map, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals);
+          material = makeMeshMaterial(map, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals, alphaRef);
           material.name = `VexxMaterial_${textureId}_0x${renderFlags.toString(16)}`;
         }
         world.materials[matKey] = material;

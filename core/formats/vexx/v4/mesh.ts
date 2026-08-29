@@ -352,9 +352,16 @@ export type VexxRenderState = {
 /**
  * Read the render state out of a chunk header's flag words.
  *
- * Mirrors the engine's branch order exactly. Bits 12/13/15 are set on most
- * chunks and are NOT decoded: `Material_ApplyRenderState` never tests them, so
- * whatever they drive happens elsewhere and guessing would be invention.
+ * Mirrors the engine's branch order exactly.
+ *
+ * The chunk word is a superset of `VexxNodeMeshMaterial.renderFlags`: across
+ * 93,121 chunks the two differ on only six bits, and bits 13 (shinemap) and 15
+ * agree with the material's 100% of the time -- they are copies, already
+ * handled through renderFlags. Bit 12 is set on 90,123 of them and is NOT
+ * decoded: `Material_ApplyRenderState` never tests it, and it sorts no cleaner
+ * by node type, primitive, texture or blend class, so a meaning would be
+ * invention. The engine's `p3 & 0x10` blend path is never taken by any chunk in
+ * the corpus.
  */
 function decodeRenderState(flags: number, flags2: number): VexxRenderState {
   const raw = { flags, flags2 };
