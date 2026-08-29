@@ -8,6 +8,19 @@ import { Vexx4NodeType } from "./type";
 // The engine's Camera importer takes its one tunable, "LoopEnd", from the node
 // header's named property list rather than from these body bytes; the same
 // mechanism drives GRID_CAMERA (see grid_camera.ts) and ANIM_TRANSFORM.
+//
+// The body is 48 bytes, not the 36 read below -- bytes 36..47 are always zero
+// (2,410 of 2,411 CAMERA nodes across the PSP/PS2/PS3 corpus; one 80-byte
+// outlier carries small packed u16 pairs there, not a second float triple).
+// unknown1/2/3 and frameDuration are constant across the whole corpus except
+// unknown3, which is {34, 50}; unknown5/6/7 are the only fields with real
+// per-node variation (271-583 distinct values), track-space magnitude on all
+// three axes -- structurally the same slot as GRID_CAMERA's confirmed
+// targetX/Y/Z, though not verified against the importer itself, since it was
+// never located (only GridCamera's was, in boot.bin). unknown8 sits in
+// GRID_CAMERA's aspectRatio slot and takes values from the same small set
+// (~1.5, 2.0, 0.5). Only one target triple exists in the body: not a
+// near/far pair.
 export class VexxNodeCamera extends VexxNode {
   properties = {
     unknown1: 0,
