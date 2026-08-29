@@ -170,8 +170,10 @@ class VexxNodeMeshLinkChunk {
 //
 //   bit  0 (0x0001) — standard base flag; set on almost all opaque materials
 //   bit  1 (0x0002) — blending active; always set together with bit 8 or bit 9
-//   bit  2 (0x0004) — purpose unclear; present on skybox and some GLOW+BLEND materials
-//   bit  3 (0x0008) — purpose unclear; present on skybox, "dark" unlit track, fade-in mats
+//   bit  2 (0x0004) — texture wrap U: CLAMP (see VexxRenderState.clampU). The
+//                     "present on skybox" note below is why: a skycube face
+//                     must clamp or its edge seam repeats.
+//   bit  3 (0x0008) — texture wrap V: CLAMP (see VexxRenderState.clampV)
 //   bit  4 (0x0010) — animated / dynamic; set on scrolling UV (sea), flickering glow,
 //                     and particle boost effects
 //   bit  7 (0x0080) — GLOW / emissive  (confirmed: all *_GLOW.tga use this bit)
@@ -384,6 +386,9 @@ export type VexxRenderState = {
   alphaRef: number;
   /** GU_CULL_FACE. False means the chunk is drawn two-sided. */
   cullFace: boolean;
+  /** GU_TEXWRAP per axis: false = REPEAT, true = CLAMP. */
+  clampU: boolean;
+  clampV: boolean;
   /** GE shade model: flat on opaque geometry, gouraud on blended. */
   shadeModel: "flat" | "gouraud";
   /** The raw words, for the dump and for the bits still undecoded. */
@@ -409,11 +414,17 @@ function decodeRenderState(flags: number, flags2: number): VexxRenderState {
   // GU_CULL_FACE is enabled unless bit 5 says otherwise -- 14,626 chunks ask to
   // be drawn two-sided, the rest single-sided.
   const cullFace = (flags & 0x20) === 0;
+  // GU_TEXWRAP (GE cmd 0xC7): Material_ApplyRenderState's very first call is
+  // Gu_TexWrap((flags & 4) != 0, (flags & 8) != 0). Corroborated by the UVs --
+  // REPEAT/REPEAT chunks run far outside [0,1] (raw values into the millions)
+  // while every CLAMP combination stays inside +/-128.
+  const clampU = (flags & 0x4) !== 0;
+  const clampV = (flags & 0x8) !== 0;
   // The GE shades opaque geometry FLAT and only blended geometry gouraud:
   // Material_ApplyRenderState calls Gu_ShadeModel(0) on the opaque path and
   // Gu_ShadeModel(1) on both blend paths. 84,471 of 93,121 chunks are flat.
   const shadeModel: "flat" | "gouraud" = flags2 & 0x10 || flags & 0x700 ? "gouraud" : "flat";
-  const base = { cullFace, shadeModel, raw };
+  const base = { cullFace, clampU, clampV, shadeModel, raw };
   // The +3 byte's bit 4 selects its own blend path before anything else.
   if (flags2 & 0x10) return { blend: "alpha", alphaTest: false, alphaRef: 0, ...base };
   if (flags & 0x700) {

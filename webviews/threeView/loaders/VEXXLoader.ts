@@ -916,7 +916,7 @@ export class VEXXLoader extends Loader {
       const hasColors = geo.colors !== null;
       // Include hasNormals in the cache key: geometry with and without normals
       // needs different flatShading settings and must not share a material.
-      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${hasColors ? ":C" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}${rs ? `:${rs.cullFace ? "c" : "-"}${rs.shadeModel[0]}` : ""}`;
+      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${hasColors ? ":C" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}${rs ? `:${rs.cullFace ? "c" : "-"}${rs.shadeModel[0]}${rs.clampU ? "U" : ""}${rs.clampV ? "V" : ""}` : ""}`;
       let material = world.materials["_default"];
       if (matKey in world.materials) {
         material = world.materials[matKey];
@@ -930,7 +930,20 @@ export class VEXXLoader extends Loader {
           material = new MeshSkyMaterial(map);
           material.name = "SkyMaterial_" + textureId;
         } else {
-          material = makeMeshMaterial(map, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals, alphaRef, hasColors, rs);
+          // GU_TEXWRAP is per chunk but wrap is a TEXTURE property in Three, so
+          // a texture drawn with two different modes needs its own clone. Only
+          // 64 of 6,802 texture uses (0.9%) actually differ, so the clone is
+          // rare; sharing one texture would give both chunks whichever mode was
+          // set last.
+          const wantsClamp = rs ? rs.clampU || rs.clampV : false;
+          let wrapped = map;
+          if (wantsClamp) {
+            wrapped = map.clone();
+            wrapped.wrapS = rs!.clampU ? THREE.ClampToEdgeWrapping : THREE.RepeatWrapping;
+            wrapped.wrapT = rs!.clampV ? THREE.ClampToEdgeWrapping : THREE.RepeatWrapping;
+            wrapped.needsUpdate = true;
+          }
+          material = makeMeshMaterial(wrapped, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals, alphaRef, hasColors, rs);
           material.name = `VexxMaterial_${textureId}_0x${renderFlags.toString(16)}`;
         }
         world.materials[matKey] = material;
