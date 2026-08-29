@@ -59,7 +59,7 @@ import { VexxNodeCollision } from "@core/formats/vexx/v4/collision";
 import { VexxNodeEngineFire } from "@core/formats/vexx/v4/engine_fire";
 import { VexxNodeEngineFlare } from "@core/formats/vexx/v4/engine_flare";
 import { VexxNodeLodGroup } from "@core/formats/vexx/v4/lod_group";
-import { VexxNodeMesh } from "@core/formats/vexx/v4/mesh";
+import { VexxNodeMesh, type VexxRenderState } from "@core/formats/vexx/v4/mesh";
 import { Vexx3NodeMesh } from "@core/formats/vexx/v3/mesh";
 import { VexxNodeSea } from "@core/formats/vexx/v4/sea";
 import { VexxNodeSeaReflect } from "@core/formats/vexx/v4/sea_reflect";
@@ -99,6 +99,23 @@ import { VexxNodeWingTip } from "@core/formats/vexx/v6/wingtip";
 // All transparent/emissive materials are rendered unlit (MeshBasicMaterial)
 // because they are particle/FX layers that must ignore scene lighting.
 // Opaque geometry (no blend bits) uses MeshVexxPSPMaterial (Phong + PSP alpha fix).
+/**
+ * The renderFlags makeMeshMaterial expects, with the blend/alpha-test bits
+ * taken from the chunk's own state.
+ *
+ * Only those bits are replaced: GLOW (0x80) and SHINE (0x2000) select which
+ * material class to build and are the material record's to give, while blend
+ * and cutout are per chunk. Keeping one flag word means makeMeshMaterial and
+ * the material cache key are unchanged.
+ */
+function chunkRenderFlags(rs: VexxRenderState, materialFlags: number): number {
+  let flags = materialFlags & ~0x0b00;
+  if (rs.blend === "additive") flags |= 0x0200;
+  else if (rs.blend === "alpha") flags |= 0x0100;
+  if (rs.alphaTest) flags |= 0x0800;
+  return flags;
+}
+
 function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean, envMap?: THREE.Texture, hasNormals = false): THREE.Material {
   const isAdd   = !!(renderFlags & 0x0200);
   const isBlend = !!(renderFlags & 0x0100);
@@ -875,7 +892,15 @@ export class VEXXLoader extends Loader {
       const chunkHeader = chunk.header;
       const vexxMat = node.materials[chunkHeader.id];
       const textureId = vexxMat.textureId;
-      const renderFlags = vexxMat.renderFlags;
+      // The CHUNK's own flags, not the material's, when the format carries
+      // them: the GE reads the chunk word (see VexxNodeMeshChunkHeader.signature
+      // and Material_ApplyRenderState in boot.bin), and the two disagree on
+      // 19,382 of 93,187 chunks -- a material marked merely "glow" is drawn
+      // alpha-tested by half its chunks and plain by the other half. The
+      // material's renderFlags stays the fallback for v3, whose chunk header
+      // has no such word.
+      const rs = chunkHeader.renderState;
+      const renderFlags = rs ? chunkRenderFlags(rs, vexxMat.renderFlags) : vexxMat.renderFlags;
       const hasNormals = geo.normals !== null;
       // Include hasNormals in the cache key: geometry with and without normals
       // needs different flatShading settings and must not share a material.

@@ -329,12 +329,68 @@ class StrideView {
   }
 }
 
+/**
+ * How the GE draws one mesh chunk, decoded from its `signature` word.
+ *
+ * `Material_ApplyRenderState` (PSP Pure boot.bin @ 0x62cb0) takes the chunk's
+ * u16 at +0 and the u8 at +3 and emits GE commands from them -- there is no
+ * shader on this hardware, so these bits ARE the material. The branch order
+ * below is the engine's own: the +3 byte's bit 4 wins, then the 0x700 group,
+ * then alpha test.
+ */
+export type VexxRenderState = {
+  /** "none" = opaque, "alpha" = source-over, "additive" = added to the frame. */
+  blend: "none" | "alpha" | "additive";
+  /** Discard below `alphaRef` (glows, foliage, grilles). */
+  alphaTest: boolean;
+  /** GE alpha-test reference, 0x00 or 0x7f; 0 when alphaTest is false. */
+  alphaRef: number;
+  /** The raw words, for the dump and for the bits still undecoded. */
+  raw: { flags: number; flags2: number };
+};
+
+/**
+ * Read the render state out of a chunk header's flag words.
+ *
+ * Mirrors the engine's branch order exactly. Bits 12/13/15 are set on most
+ * chunks and are NOT decoded: `Material_ApplyRenderState` never tests them, so
+ * whatever they drive happens elsewhere and guessing would be invention.
+ */
+function decodeRenderState(flags: number, flags2: number): VexxRenderState {
+  const raw = { flags, flags2 };
+  // The +3 byte's bit 4 selects its own blend path before anything else.
+  if (flags2 & 0x10) return { blend: "alpha", alphaTest: false, alphaRef: 0, raw };
+  if (flags & 0x700) {
+    // Bit 8 is alpha blend and bit 9 additive, matching the artists' own
+    // `_BLEND.tga` / `_ADD.tga` suffixes and `VexxNodeMeshMaterial.renderFlags`
+    // below, which was decoded from those names independently. The GE argument
+    // lists in Material_ApplyRenderState read the other way round -- bit 8 takes
+    // the (0,2,3) path and bit 9 the (0,2,10) one -- so one of the two is
+    // mislabelled; the filenames are the stronger evidence and win here.
+    if (flags & 0x100) return { blend: "alpha", alphaTest: false, alphaRef: 0, raw };
+    if (flags & 0x200) return { blend: "additive", alphaTest: false, alphaRef: 0, raw };
+    return { blend: "none", alphaTest: false, alphaRef: 0, raw };
+  }
+  // Alpha test: bit 7 picks the reference the engine passes to Gu_AlphaFunc.
+  if (flags & 0x800) return { blend: "none", alphaTest: true, alphaRef: flags & 0x80 ? 0x00 : 0x7f, raw };
+  return { blend: "none", alphaTest: false, alphaRef: 0, raw };
+}
+
 class VexxNodeMeshChunkHeader {
   range = new BufferRange();
   version = 4;
 
+  /**
+   * Render state, not a signature.
+   *
+   * `FUN_0006adac` hands this word straight to `Material_ApplyRenderState` as
+   * its blend/alpha-test bitfield. Every bit that function tests is populated
+   * across the corpus, and bits 6, 10 and 14 -- the ones it never reads -- are
+   * the only ones never set.
+   */
   signature = 0;
   id = 0;
+  /** The second flag byte, passed as `Material_ApplyRenderState`'s param_3. */
   _unknown1 = 0;
   strideCount1 = 0;
   strideCount2 = 0;
@@ -364,6 +420,11 @@ class VexxNodeMeshChunkHeader {
 
   get size() {
     return this.range.size;
+  }
+
+  /** How the GE draws this chunk; see `decodeRenderState`. */
+  get renderState(): VexxRenderState {
+    return decodeRenderState(this.signature, this._unknown1);
   }
 
   // PSP GU v4 (Pure) uses 4-byte aligned vertex strides.
