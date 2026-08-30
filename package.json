@@ -10,7 +10,7 @@
   "version": "0.0.11",
   "publisher": "PierreBelmondo",
   "engines": {
-    "vscode": "^1.133.0"
+    "vscode": "^1.74.0"
   },
   "categories": [
     "Other"
@@ -256,7 +256,7 @@
     "@types/node": "^18.19.0",
     "@types/pako": "^2.0.4",
     "@types/three": "^0.149.0",
-    "@types/vscode": "^1.134.0",
+    "@types/vscode": "~1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vscode/test-electron": "^2.5.2",

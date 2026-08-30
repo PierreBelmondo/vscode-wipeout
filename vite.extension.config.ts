@@ -31,6 +31,12 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  // SSR mode externalizes npm dependencies by default, emitting a bare
+  // require() for them. The VSIX excludes node_modules, so any such require
+  // fails at runtime on the user's machine -- bundle runtime deps instead.
+  ssr: {
+    noExternal: ["pako"],
+  },
   resolve: {
     alias: {
       "@compat": path.resolve(__dirname, "compat/node"),
