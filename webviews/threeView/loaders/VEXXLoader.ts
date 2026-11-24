@@ -693,6 +693,16 @@ export class VEXXLoader extends Loader {
         break;
       case "SPEEDUP_PAD":
         object = this.loadMesh(world, node as VexxNodeSpeedupPad);
+        {
+          // A speed pad's local +Z is its boost direction (543/549 pads align
+          // with the racing line); show it as an arrow above the plate.
+          const box = new THREE.Box3().setFromObject(object);
+          const centre = box.isEmpty() ? new THREE.Vector3() : box.getCenter(new THREE.Vector3());
+          centre.y += 1;
+          const arrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), centre, 8, 0x00ff66, 3, 2);
+          arrow.name = `.BoostDirection_${node.name}`;
+          object.add(arrow);
+        }
         layer = "Pads";
         break;
       case "START_POSITION":
