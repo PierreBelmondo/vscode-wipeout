@@ -53,19 +53,20 @@ export type WoTrackPoint = {
    */
   forward: vec4;
 
-  // ── tail (partially decoded) ─────────────────────────────────────────────────
+  // ── tail ─────────────────────────────────────────────────────────────────────
 
+  /** +0x40 Global loop parameter in [0,1): orders points around the circuit. */
+  t: number;
   /**
-   * Slowly increasing parameter along the lane (cumulative, ~0.001/step).
-   * Possibly a normalised arc-length fraction or a curvature accumulator.
+   * +0x44..+0x50 Clearance box around the line, in the point's own frame:
+   * left edge = pos - right*clearLeft, right edge = pos + right*clearRight,
+   * upper edge = pos + down*clearUp (negative = above), lower = pos + down*clearDown.
+   * Width clearLeft+clearRight is 40 or 30 on most points (280 at Sinucit's fork).
    */
-  param: number;
-  /** Left-side metric (wall distance or edge coordinate — exact meaning TBD). */
-  leftMetric: number;
-  /** Right-side metric (wall distance or edge coordinate — exact meaning TBD). */
-  rightMetric: number;
-  _unknown0: number; // +76 (small negative float)
-  _unknown1: number; // +80 (small positive float ~7)
+  clearLeft: number;
+  clearRight: number;
+  clearUp: number;
+  clearDown: number;
   /** Remaining tail bytes after +84 — 28 bytes for PSP/PS2, 12 bytes for PSVita. */
   _tailMeta: ArrayBuffer;
 };
@@ -143,7 +144,7 @@ export class WoTrackLaneGraph {
 
 /**
  * PSP / PS2 track point — 112 bytes.
- * Tail: param(f32) leftMetric(f32) rightMetric(f32) unk0(f32) unk1(f32) tailMeta(28 bytes)
+ * Tail: t(f32) clearLeft/Right/Up/Down(f32×4) tailMeta(28 bytes)
  */
 export class WoTrackPointV4 implements WoTrackPoint {
   range = new BufferRange();
@@ -151,11 +152,11 @@ export class WoTrackPointV4 implements WoTrackPoint {
   right: vec4 = [0, 0, 0, 0];
   down: vec4 = [0, 0, 0, 0];
   forward: vec4 = [0, 0, 0, 0];
-  param = 0;
-  leftMetric = 0;
-  rightMetric = 0;
-  _unknown0 = 0;
-  _unknown1 = 0;
+  t = 0;
+  clearLeft = 0;
+  clearRight = 0;
+  clearUp = 0;
+  clearDown = 0;
   _tailMeta = new ArrayBuffer(0);
 
   static readonly STRIDE = 112;
@@ -167,11 +168,11 @@ export class WoTrackPointV4 implements WoTrackPoint {
     ret.forward = range.getFloat32Array(16, 4) as unknown as vec4;
     ret.down = range.getFloat32Array(32, 4) as unknown as vec4;
     ret.right = range.getFloat32Array(48, 4) as unknown as vec4;
-    ret.param = range.getFloat32(64);
-    ret.leftMetric = range.getFloat32(68);
-    ret.rightMetric = range.getFloat32(72);
-    ret._unknown0 = range.getFloat32(76);
-    ret._unknown1 = range.getFloat32(80);
+    ret.t = range.getFloat32(64);
+    ret.clearLeft = range.getFloat32(68);
+    ret.clearRight = range.getFloat32(72);
+    ret.clearUp = range.getFloat32(76);
+    ret.clearDown = range.getFloat32(80);
     ret._tailMeta = range.getArrayBuffer(84, 28);
     return ret;
   }
@@ -191,11 +192,11 @@ export class WoTrackPointV6 implements WoTrackPoint {
   right: vec4 = [0, 0, 0, 0];
   down: vec4 = [0, 0, 0, 0];
   forward: vec4 = [0, 0, 0, 0];
-  param = 0;
-  leftMetric = 0;
-  rightMetric = 0;
-  _unknown0 = 0;
-  _unknown1 = 0;
+  t = 0;
+  clearLeft = 0;
+  clearRight = 0;
+  clearUp = 0;
+  clearDown = 0;
   _tailMeta = new ArrayBuffer(0);
 
   static readonly STRIDE = 96;
@@ -207,11 +208,11 @@ export class WoTrackPointV6 implements WoTrackPoint {
     ret.forward = range.getFloat32Array(16, 4) as unknown as vec4;
     ret.down = range.getFloat32Array(32, 4) as unknown as vec4;
     ret.right = range.getFloat32Array(48, 4) as unknown as vec4;
-    ret.param = range.getFloat32(64);
-    ret.leftMetric = range.getFloat32(68);
-    ret.rightMetric = range.getFloat32(72);
-    ret._unknown0 = range.getFloat32(76);
-    ret._unknown1 = range.getFloat32(80);
+    ret.t = range.getFloat32(64);
+    ret.clearLeft = range.getFloat32(68);
+    ret.clearRight = range.getFloat32(72);
+    ret.clearUp = range.getFloat32(76);
+    ret.clearDown = range.getFloat32(80);
     ret._tailMeta = range.getArrayBuffer(84, 12);
     return ret;
   }
@@ -278,8 +279,8 @@ export class WoTrackPointTable {
 // Reverse engineering progress: 60%
 // sectionCount, lanes (pointCount + scale + graph indices), laneGraph adjacency table,
 // position/right/down/forward per point: all decoded.
-// param (arc-length accumulator?), leftMetric/rightMetric (exact meaning TBD),
-// _unknown0/_unknown1 (small floats per point), _unknown (48-byte header region +16..+63),
+// t (loop parameter), clearance box (left/right/up/down),
+// _unknown (48-byte header region +16..+63),
 // and _tailMeta (28-byte PSP/PS2 / 12-byte PSVita tail) not yet decoded.
 export class VexxNodeWoTrack extends VexxNode {
   /** Number of named SECTIONS (course segments). */

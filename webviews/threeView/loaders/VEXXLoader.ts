@@ -1258,6 +1258,24 @@ export class VEXXLoader extends Loader {
     line.name = `${node.name}.circuit`;
     group.add(line);
 
+    // Clearance box: four rails offset along each point's right/down axes.
+    const rails: [string, number, (p: typeof pts[number]) => number[]][] = [
+      ["left",  0xff8000, (p) => [0, 1, 2].map(k => p.position[k] - p.right[k] * p.clearLeft)],
+      ["right", 0xff8000, (p) => [0, 1, 2].map(k => p.position[k] + p.right[k] * p.clearRight)],
+      ["up",    0xffff00, (p) => [0, 1, 2].map(k => p.position[k] + p.down[k] * p.clearUp)],
+      ["down",  0xffff00, (p) => [0, 1, 2].map(k => p.position[k] + p.down[k] * p.clearDown)],
+    ];
+    for (const [name, color, edge] of rails) {
+      const v: number[] = [];
+      for (const p of pts) v.push(...edge(p));
+      v.push(...edge(pts[0]));
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(v, 3));
+      const rail = new THREE.Line(g, new THREE.LineBasicMaterial({ color }));
+      rail.name = `${node.name}.clearance.${name}`;
+      group.add(rail);
+    }
+
     return group;
   }
 
