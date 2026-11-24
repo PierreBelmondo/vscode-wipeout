@@ -1156,13 +1156,12 @@ export class World {
     const up    = new THREE.Vector3(-pt.down[0],   -pt.down[1],   -pt.down[2]);
     const pos   = new THREE.Vector3(pt.position[0], pt.position[1], pt.position[2]);
 
-    // Yaw 90° left: camera looks along -right.
-    // Basis: X=cam-right (-fwd), Y=cam-up, Z=cam-back (+right) so -Z = -right = look direction.
+    // Chase camera: look along forward. Basis X=right, Y=up, Z=back (-forward).
     const m = new THREE.Matrix4();
-    m.makeBasis(fwd, up, right.clone().negate());
+    m.makeBasis(right, up, fwd.clone().negate());
 
-    // Position: above and to the right side of the track, offset along +right.
-    const camPos = pos.clone().addScaledVector(up, 5).addScaledVector(right, 10);
+    // Position: behind and above the track point.
+    const camPos = pos.clone().addScaledVector(up, 5).addScaledVector(fwd, -15);
     m.setPosition(camPos);
 
     this.camera.matrix.copy(m);

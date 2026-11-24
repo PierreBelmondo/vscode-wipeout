@@ -37,8 +37,8 @@ export type WoTrackPoint = {
   /** World-space center position (xyz, w=0). */
   position: vec4;
   /**
-   * Right direction vector (unit, xyz, w=0).
-   * Points in the cross-track direction (left-to-right from the driver's view).
+   * Side direction vector (unit, xyz, w=0) at +0x30.
+   * Cross-track direction; left edge = position - right * clearance.
    */
   right: vec4;
   /**
@@ -48,8 +48,8 @@ export type WoTrackPoint = {
    */
   down: vec4;
   /**
-   * Forward direction vector (unit, xyz, w=0).
-   * Direction of travel for this lane.
+   * Forward direction vector (unit, xyz, w=0) at +0x10.
+   * Direction of travel; matches the point-to-point tangent (|dot| ~ 1).
    */
   forward: vec4;
 
@@ -164,9 +164,9 @@ export class WoTrackPointV4 implements WoTrackPoint {
     const ret = new WoTrackPointV4();
     ret.range = range.slice(0, WoTrackPointV4.STRIDE);
     ret.position = range.getFloat32Array(0, 4) as unknown as vec4;
-    ret.right = range.getFloat32Array(16, 4) as unknown as vec4;
+    ret.forward = range.getFloat32Array(16, 4) as unknown as vec4;
     ret.down = range.getFloat32Array(32, 4) as unknown as vec4;
-    ret.forward = range.getFloat32Array(48, 4) as unknown as vec4;
+    ret.right = range.getFloat32Array(48, 4) as unknown as vec4;
     ret.param = range.getFloat32(64);
     ret.leftMetric = range.getFloat32(68);
     ret.rightMetric = range.getFloat32(72);
@@ -204,9 +204,9 @@ export class WoTrackPointV6 implements WoTrackPoint {
     const ret = new WoTrackPointV6();
     ret.range = range.slice(0, WoTrackPointV6.STRIDE);
     ret.position = range.getFloat32Array(0, 4) as unknown as vec4;
-    ret.right = range.getFloat32Array(16, 4) as unknown as vec4;
+    ret.forward = range.getFloat32Array(16, 4) as unknown as vec4;
     ret.down = range.getFloat32Array(32, 4) as unknown as vec4;
-    ret.forward = range.getFloat32Array(48, 4) as unknown as vec4;
+    ret.right = range.getFloat32Array(48, 4) as unknown as vec4;
     ret.param = range.getFloat32(64);
     ret.leftMetric = range.getFloat32(68);
     ret.rightMetric = range.getFloat32(72);

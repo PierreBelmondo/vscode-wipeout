@@ -47,5 +47,18 @@ export function checkWoTrack(vexx: Vexx, failures: string[]): void {
         }
       }
     }
+
+    // forward must follow the polyline tangent (catches forward/right mix-ups)
+    const pts = track.points;
+    let dotSum = 0;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const t = [0, 1, 2].map((k) => pts[i + 1].position[k] - pts[i - 1].position[k]);
+      const len = Math.hypot(t[0], t[1], t[2]) || 1;
+      dotSum += Math.abs(t[0] * pts[i].forward[0] + t[1] * pts[i].forward[1] + t[2] * pts[i].forward[2]) / len;
+    }
+    const meanDot = dotSum / Math.max(1, pts.length - 2);
+    if (pts.length > 2 && meanDot < 0.9) {
+      failures.push(`${node.path}: forward not aligned with track tangent (mean |dot| ${meanDot.toFixed(3)})`);
+    }
   });
 }
