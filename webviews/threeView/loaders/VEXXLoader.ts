@@ -861,10 +861,20 @@ export class VEXXLoader extends Loader {
     }
 
     if (animTracks.length > 0) {
-      const duration = Math.max(...animTracks.map(t => t.times[t.times.length - 1] ?? 0));
+      // Playback per the engine's loader: key times are absolute frames; the
+      // clip loops every LoopEnd frames, and without LoopEnd it plays once
+      // (6000 s, no wraparound). The engine matches the name case-insensitively
+      // (boot.bin 0xd7f38), so Chenghou's "loopEnd" loops too.
+      const loopEnd = node.header.property("LoopEnd")?.value;
+      const lastKey = Math.max(...animTracks.map(t => t.times[t.times.length - 1] ?? 0));
+      const duration = loopEnd ? loopEnd / FPS : lastKey;
       const clip = new THREE.AnimationClip(group.name, duration, animTracks);
       const mixer = new THREE.AnimationMixer(group);
       const action = mixer.clipAction(clip);
+      if (!loopEnd) {
+        action.setLoop(THREE.LoopOnce, 1);
+        action.clampWhenFinished = true;
+      }
       action.play();
       mixer.update(0);  // snap to first keyframe immediately
       world.addAction(group.name, action, mixer);
