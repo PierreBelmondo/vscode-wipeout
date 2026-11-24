@@ -33,8 +33,11 @@ export class MeshCausticMaterial extends THREE.MeshBasicMaterial {
   private _shaderRef: { uniforms: Record<string, THREE.IUniform> } | null = null;
   private _surfaceY = 0;
 
-  /** Seconds per caustic frame (16 frames @ ~8 FPS). */
-  private static readonly FRAME_DURATION = 1 / 8;
+  /**
+   * Seconds per caustic frame. The engine picks frame (clock*30) & 0xF:
+   * 16 frames at 30 fps, wrapping every 0.533 s.
+   */
+  private static readonly FRAME_DURATION = 1 / 30;
 
   constructor(causticMaps: THREE.Texture[]) {
     const firstMap = causticMaps[0].clone();
@@ -87,16 +90,15 @@ export class MeshCausticMaterial extends THREE.MeshBasicMaterial {
 
       shader.fragmentShader = shader.fragmentShader.replace(
         "#include <map_fragment>",
-        `#include <map_fragment>
+        `// The engine samples these with a level parameter of 100.0, i.e. a LOD
+        // bias of 0.5*log2(100) = +3.32 levels (about 10x blurrier).
+        diffuseColor *= texture2D( map, vUv, 3.32 );
         // PSP alpha (0-128 → 0-1) as caustic mask, keep full gradient
         float causticMask = min(1.0, diffuseColor.a * 2.0);
-        // Gentle high-pass: dim the flat base, keep the bright lines
-        causticMask = smoothstep(0.3, 1.0, causticMask);
+        // The frames are white with the pattern in alpha, drawn additively
+        // (SRC_ALPHA, ONE): no tint.
         float finalAlpha = causticMask * vCausticAtten * causticIntensity;
-        // Tint: turquoise
-        vec3 deepTurq = vec3(0.2, 0.5, 0.9);
-        vec3 brightTurq = vec3(0.5, 0.75, 1.0);
-        diffuseColor.rgb = mix(deepTurq, brightTurq, causticMask);
+        diffuseColor.rgb = vec3(1.0);
         diffuseColor.a = finalAlpha;`
       );
 

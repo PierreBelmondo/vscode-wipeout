@@ -576,8 +576,9 @@ export class VEXXLoader extends Loader {
         this._needsEngineFlare = true;
         layer = "Ship engine flare";
         break;
-      case "EXIT_GLOW": // TODO
-        object = this.loadNodeGeneric(world, node);
+      case "EXIT_GLOW":
+        object = this.loadMesh(world, node as VexxNodeMesh);
+        layer = "Exit glow";
         break;
       case "CAGE_COLLISION":
         object = this.loadCollision(world, node as VexxNodeCollision);
@@ -642,6 +643,17 @@ export class VEXXLoader extends Loader {
         break;
       case "SEA":
         object = this.loadMesh(world, node as VexxNodeSea);
+        // The game draws the water surface additively over an opaque seabed
+        // through its render path; the block flags still say opaque.
+        object.traverse((o) => {
+          const mats = (o as THREE.Mesh).material;
+          for (const m of Array.isArray(mats) ? mats : mats ? [mats] : []) {
+            if (!(m instanceof MeshVexxSeaMaterial)) continue;
+            m.blending = THREE.AdditiveBlending;
+            m.transparent = true;
+            m.depthWrite = false;
+          }
+        });
         layer = "Sea";
         break;
       case "SEAWEED":
