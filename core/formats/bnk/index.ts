@@ -183,19 +183,19 @@ export class BnkWave {
 
   // +0x00: u32 — internal pitch/id value (SCREAM-internal identifier, possibly a hash or note encoding)
   // +0x04: u32 — unknown/reserved (always 0 in observed files)
-  // +0x08: u8  — unknown (always 0)
-  // +0x09: u8  — loop mode (0 = no loop, non-zero = loop)
-  // +0x0a: u8  — volume  (0–255, 255 = max)
-  // +0x0b: u8  — pan     (0–255, 128 = center)
-  // +0x0c: u32 — SPU RAM buffer size hint (low 16 bits) | channel count/flags (high 16 bits)
+  // +0x08: u8  — loop marker per wipeout-pure-re (0..7 seen; does not track '~' names)
+  // +0x09: u8  — unknown (mostly 0)
+  // +0x0a: u16 — ADSR1 (PS1/PSP SPU envelope word; low byte always 0xff)
+  // +0x0c: u16 — ADSR2 (SPU envelope word)
+  // +0x0e: u16 — voice select (0 / 0x40 / 0x41; 0x4x clusters on loops)
   // +0x10: u32 — byte offset of audio data within the bank's data section (spu_addr at runtime)
   // +0x14: u32 — size of audio data in bytes (PS-ADPCM: must be multiple of 0x10)
 
   pitch_id = 0;
-  loop_mode = 0;
-  volume = 0;
-  pan = 0;
-  spu_buffer_size = 0;
+  loop_marker = 0;
+  adsr1 = 0;
+  adsr2 = 0;
+  voice_select = 0;
   spu_addr = 0;
   data_size = 0;
 
@@ -204,19 +204,18 @@ export class BnkWave {
   static load(range: BufferRange): BnkWave {
     const ret = new BnkWave();
     ret.range = range.slice(0, BnkWave.SIZE);
-    ret.pitch_id        = ret.range.getUint32(0x00);
-    // +0x04: reserved
-    ret.loop_mode       = ret.range.getUint8(0x09);
-    ret.volume          = ret.range.getUint8(0x0a);
-    ret.pan             = ret.range.getUint8(0x0b);
-    ret.spu_buffer_size = ret.range.getUint32(0x0c);
-    ret.spu_addr        = ret.range.getUint32(0x10);
-    ret.data_size       = ret.range.getUint32(0x14);
+    ret.pitch_id     = ret.range.getUint32(0x00);
+    ret.loop_marker  = ret.range.getUint8(0x08);
+    ret.adsr1        = ret.range.getUint16(0x0a);
+    ret.adsr2        = ret.range.getUint16(0x0c);
+    ret.voice_select = ret.range.getUint16(0x0e);
+    ret.spu_addr     = ret.range.getUint32(0x10);
+    ret.data_size    = ret.range.getUint32(0x14);
     return ret;
   }
 
   get isLoop(): boolean {
-    return this.loop_mode !== 0;
+    return this.loop_marker !== 0;
   }
 
   /** Byte offset of this wave's audio data within the bank's data section.
@@ -239,6 +238,7 @@ export class BnkSound {
 
   id = 0;
   flags = 0;
+  n_grains = 0;            // low byte of flags: number of grains this sound owns
   grain_table_offset = 0;  // byte offset into Table2 for this sound's grain chain
 
   static readonly SIZE = 0x0c;
@@ -248,35 +248,27 @@ export class BnkSound {
     ret.range = range.slice(0, BnkSound.SIZE);
     ret.id    = ret.range.getUint32(0x00);
     ret.flags = ret.range.getUint32(0x04);
+    ret.n_grains = ret.range.getUint8(0x04);
     ret.grain_table_offset = ret.range.getUint16(0x08);
     return ret;
   }
 }
 
-// Table4: name entry (0x6c bytes, one per n_sounds entry)
-// First entry is the bank-level entry (bank name + global sound ID list).
-// Layout:
-//   +0x00 (8 bytes)  : null-terminated bank/sound name (padded)
-//   +0x08 (4 bytes)  : entry-level info / count / id
-//   +0x0c (4 bytes)  : reserved
-//   +0x10 onwards    : additional name continuation / id lists
-// NOTE: Name strings can span across the 0x6c-byte slot boundaries — the table4
-//       region is essentially a flat variable-length string table with fixed-size
-//       entries interleaved. Parse by searching for null-terminated strings.
+// Table4: name struct, then the name directory.
+//   +0x00 (8 bytes)  : bank name (e.g. "WEAPONS")
+//   +0x08 (u32)      : next_block — byte offset of the directory (0x98)
+//   +0x18 (u16×0x40) : remap table
+// Directory: 20-byte slots from next_block to the end of the SBlk; empty slots
+// are zero. Each slot is [name(16, NUL-padded)][sound index(u32)]; a '~' name
+// prefix marks a looped sound.
 export class BnkNameEntry {
-  range = new BufferRange();
-
   name = "";
-  info = 0;   // first u32 after the name (section id, sound count, or similar)
+  soundIndex = 0;
 
-  static readonly SIZE = 0x6c;
+  static readonly SIZE = 0x14;
 
-  static load(range: BufferRange): BnkNameEntry {
-    const ret = new BnkNameEntry();
-    ret.range = range.slice(0, BnkNameEntry.SIZE);
-    ret.name = ret.range.slice(0, 8).getString();
-    ret.info = ret.range.getUint32(0x08);
-    return ret;
+  get isLoop(): boolean {
+    return this.name.startsWith("~");
   }
 }
 
@@ -287,6 +279,8 @@ export class Bnk {
   sblk   = new BnkSBlk();
 
   sounds: BnkSound[] = [];
+  bankName = "";
+  names: BnkNameEntry[] = [];
   // Waves indexed sequentially (for export); also accessible by table3 byte offset via waveAtOffset()
   waves: BnkWave[] = [];
   // Grains are inlined per-sound; access via grainAt()
@@ -305,6 +299,20 @@ export class Bnk {
     const t1 = ret.sblk.table1Range;
     for (let i = 0; i < ret.sblk.n_sounds; i++) {
       ret.sounds.push(BnkSound.load(t1.slice(i * BnkSound.SIZE)));
+    }
+
+    // Load the name directory (Table4), v3 only
+    if (ret.sblk.version === 0x03 && ret.sblk.table4_offset) {
+      const t4 = ret.sblk.table4Range;
+      ret.bankName = t4.slice(0, 8).getString();
+      const dir = t4.getUint32(0x08);
+      for (let o = dir; o + BnkNameEntry.SIZE <= t4.size; o += BnkNameEntry.SIZE) {
+        if (t4.getUint8(o) === 0) continue;
+        const e = new BnkNameEntry();
+        e.name = t4.slice(o, o + 16).getString();
+        e.soundIndex = t4.getUint32(o + 16);
+        if (e.soundIndex < ret.sblk.n_sounds) ret.names.push(e);
+      }
     }
 
     // Load waves (Table3) by scanning grain table for all type=0x01 offsets.
@@ -366,6 +374,21 @@ export class Bnk {
   waveIndexForGrain(grain: BnkGrain): number {
     if (!grain.isWave) return -1;
     return this._waveOffsetToIdx.get(grain.wave_offset) ?? -1;
+  }
+
+  /** Name of each wave, taken from the first named sound that plays it. */
+  waveNames(): (string | undefined)[] {
+    const out: (string | undefined)[] = new Array(this.waves.length);
+    for (const e of this.names) {
+      let n = 0;
+      const sound = this.sounds[e.soundIndex];
+      for (let k = 0; k < sound.n_grains; k++) {
+        const i = this.waveIndexForGrain(this.grainAt(sound.grain_table_offset + k * BnkGrain.SIZE));
+        if (i < 0 || out[i] !== undefined) continue;
+        out[i] = e.name + (n++ ? `_${n}` : "");
+      }
+    }
+    return out;
   }
 
   /** Get the audio data range for a wave */

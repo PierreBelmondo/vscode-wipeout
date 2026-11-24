@@ -61,9 +61,11 @@ export class BnkUnpackCommandProvider {
               await vscode.workspace.fs.createDirectory(outDir);
 
               const increment = Math.round(100.0 / bnk.waves.length);
+              const names = bnk.waveNames();
               for (let i = 0; i < bnk.waves.length; i++) {
                 const wave = bnk.waves[i];
-                const name = `wave_${String(i).padStart(3, "0")}`;
+                const label = names[i]?.replace(/^~(.*)/, "$1_loop");
+                const name = `wave_${String(i).padStart(3, "0")}${label ? "_" + label : ""}`;
                 progress.report({ increment, message: `${name}.vag` });
                 await BnkUnpackCommandProvider.exportWave(outDir, name, wave, bnk);
               }
