@@ -821,7 +821,7 @@ export class VEXXLoader extends Loader {
       const times = node.track1.keys.map(k => k / FPS);
       const posTrack = new THREE.VectorKeyframeTrack(".position", times, node.track1.values, THREE.InterpolateLinear);
       animTracks.push(posTrack);
-    } else if (node.has_position) {
+    } else if ('scaleCount' in node ? node.scaleCount : node.has_position) {
       group.position.set(node.x, node.y, node.z);
     }
 
@@ -853,6 +853,11 @@ export class VEXXLoader extends Loader {
       }
       const rotTrack = new THREE.QuaternionKeyframeTrack(".quaternion", times, quatValues, THREE.InterpolateLinear);
       animTracks.push(rotTrack);
+    }
+
+    if ("track3" in node && node.track3 && node.track3.keys.length > 0) {
+      const times = node.track3.keys.map(k => k / FPS);
+      animTracks.push(new THREE.VectorKeyframeTrack(".scale", times, node.track3.values, THREE.InterpolateLinear));
     }
 
     if (animTracks.length > 0) {

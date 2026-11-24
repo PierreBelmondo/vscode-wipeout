@@ -30,7 +30,7 @@ export class VexxNodeAnimTransform extends VexxNode {
   reserved = 0;         // 0x00
   count1 = 0;           // 0x02  track1 (position) keyframe count
   count2 = 0;           // 0x04  track2 (rotation) keyframe count
-  has_position = 0;     // 0x06
+  scaleCount = 0;       // 0x06  track3 (scale) keyframe count
   track1_end = 0;       // 0x08  also where track2's keys start
   track1_start = 0;     // 0x0c  always 0x50, i.e. right after this header
 
@@ -47,12 +47,14 @@ export class VexxNodeAnimTransform extends VexxNode {
   track1_values = 0;    // 0x2c  byte offset of track1's values
   _unknown30 = 0;       // 0x30
   keyframeFormat = 0;   // 0x34  see VEXX_KEYFRAME_FLOAT32
-  data_end = 0;         // 0x38  byte offset just past the last value
+  track3_keys = 0;      // 0x38  byte offset of track3's keys (u16 frames)
   frameDuration = 0.0;  // 0x3c  always 1/60
-  _unknown40 = 0;       // 0x40  usually data_end + 2
+  track3_values = 0;    // 0x40  byte offset of track3's values (u16x3, 8.8 fixed)
 
   track1?: VexxKeyframeTrack;
   track2?: VexxKeyframeTrack;
+  /** Scale keyframes, xyz per key (1.0 = unscaled). int16 encoding only. */
+  track3?: VexxKeyframeTrack;
 
   /**
    * The header runs to 0x50 — where track1_start always points. Its last three
@@ -71,18 +73,18 @@ export class VexxNodeAnimTransform extends VexxNode {
     this.reserved      = header.getUint16(0x00);
     this.count1        = header.getUint16(0x02);
     this.count2        = header.getUint16(0x04);
-    this.has_position  = header.getUint16(0x06);
+    this.scaleCount    = header.getUint16(0x06);
     this.track1_end    = header.getUint32(0x08);
     this.track1_start  = header.getUint32(0x0c);
     this.track2_values = header.getUint32(0x1c);
     this.track1_values = header.getUint32(0x2c);
     this._unknown30    = header.getUint32(0x30);
     this.keyframeFormat = header.getUint32(0x34);
-    this.data_end      = header.getUint32(0x38);
+    this.track3_keys   = header.getUint32(0x38);
     this.frameDuration = header.getFloat32(0x3c);
-    this._unknown40    = header.getUint32(0x40);
+    this.track3_values = header.getUint32(0x40);
 
-    if (this.has_position) {
+    if (this.scaleCount) {
       // 0x400000 marks an axis as unset, so the field keeps its default.
       if (header.getUint32(0x10) != POSITION_UNSET) this.x = header.getFloat32(0x10);
       if (header.getUint32(0x14) != POSITION_UNSET) this.y = header.getFloat32(0x14);
@@ -135,10 +137,22 @@ export class VexxNodeAnimTransform extends VexxNode {
           this.track2.values.push(values.getFloat32(i * 4));
         }
       } else {
-        // int16 x3, normalised by 32768.
+        // int16 x3 quaternion vector part, normalised by 32767 (encoder clamps to it).
         for (let i = 0; i < this.count2 * 3; i++) {
-          this.track2.values.push(values.getInt16(i * 2) / 32768.0);
+          this.track2.values.push(values.getInt16(i * 2) / 32767.0);
         }
+      }
+    }
+  
+    if (this.scaleCount && this.keyframeFormat != VEXX_KEYFRAME_FLOAT32) {
+      this.track3 = new VexxKeyframeTrack();
+      const keys = range.slice(this.track3_keys);
+      for (let i = 0; i < this.scaleCount; i++) {
+        this.track3.keys.push(keys.getUint16(2 * i));
+      }
+      const values = range.slice(this.track3_values);
+      for (let i = 0; i < this.scaleCount * 3; i++) {
+        this.track3.values.push(values.getUint16(i * 2) / 256);
       }
     }
   }

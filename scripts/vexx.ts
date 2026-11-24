@@ -457,10 +457,10 @@ function dumpAnimTransform(out: Output, node: VexxNodeAnimTransform) {
   out.kv("reserved", node.reserved);
   out.kv("count1", node.count1);
   out.kv("count2", node.count2);
-  out.kv("has_position", node.has_position);
+  out.kv("scaleCount", node.scaleCount);
   out.kv("track1_end", node.track1_end);
   out.kv("track1_start", node.track1_start);
-  if (node.has_position) {
+  if (node.scaleCount) {
     out.kv("pos", `(${node.x.toFixed(3)}, ${node.y.toFixed(3)}, ${node.z.toFixed(3)})`);
     out.kv("scale", `(${node.sx.toFixed(1)}, ${node.sy.toFixed(1)}, ${node.sz.toFixed(1)})`);
   }
@@ -968,10 +968,10 @@ program
         const parentDesc = node.parent ? `${node.parent.typeName} "${node.parent.name}"` : "none";
         const childTypes = node.children.map((c) => c.typeName).join(", ");
         console.log(`\n=== ${node.name} (${file})  parent: ${parentDesc}  children: [${childTypes}] ===`);
-        console.log(`  reserved=${node.reserved}  count1=${node.count1}  count2=${node.count2}  has_position=${node.has_position}`);
+        console.log(`  reserved=${node.reserved}  count1=${node.count1}  count2=${node.count2}  scaleCount=${node.scaleCount}`);
         console.log(`  track1_end=0x${node.track1_end.toString(16)}  track1_start=0x${node.track1_start.toString(16)}`);
         console.log(`  nodeHeaderSize=${node.header.size}  bodySize=${node.bodyRange.size}`);
-        if (node.has_position) {
+        if (node.scaleCount) {
           console.log(`  position: (${node.x}, ${node.y}, ${node.z})`);
           const body = new DataView(node.bodyRange.buffer);
           const sx = body.getFloat32(32, true);

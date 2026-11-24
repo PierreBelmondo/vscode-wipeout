@@ -33,10 +33,10 @@ function dumpAnimTransform(node: VexxNodeAnimTransform, file: string) {
   const parentDesc = node.parent ? `${node.parent.typeName} "${node.parent.name}"` : "none";
   const childTypes = node.children.map(c => c.typeName).join(", ");
   console.log(`\n=== ${node.name} (${file})  parent: ${parentDesc}  children: [${childTypes}] ===`);
-  console.log(`  unk1=${node.unk1}  count1=${node.count1}  count2=${node.count2}  has_position=${node.has_position}`);
+  console.log(`  unk1=${node.unk1}  count1=${node.count1}  count2=${node.count2}  scaleCount=${node.scaleCount}`);
   console.log(`  track1_end=0x${node.track1_end.toString(16)}  track1_start=0x${node.track1_start.toString(16)}`);
   console.log(`  nodeHeaderSize=${node.header.size}  bodySize=${node.bodyRange.size}`);
-  if (node.has_position) {
+  if (node.scaleCount) {
     console.log(`  position: (${node.x}, ${node.y}, ${node.z})`);
     // Decode the 20 mystery bytes after XYZ in the position block (body[28..48])
     const body = new DataView(node.bodyRange.buffer);
