@@ -185,24 +185,26 @@ class VexxNodeMeshLinkChunk {
 //   bit 10 (0x0400) — blending explicitly disabled (still no depth write)
 //   bit 11 (0x0800) — alpha test / keyed transparency
 //                     (confirmed: all *_KEY.tga — ship wrecks, railings, fences)
-//   bit 13 (0x2000) — specular / shinemap pass
-//                     (confirmed: all *_shinemap.tga — shiny metal, trophies, weapons)
+//   bit 13 (0x2000) — per-draw texture rebind key, NOT the shinemap marker:
+//                     set on 409 non-shine Pure materials (sky faces, plain
+//                     metal) and missing on 27 shinemaps. See renderFlags2.
 //
 //   Common flag combinations with confirmed meanings:
 //     0x0001  opaque textured                    (27%)
 //     0x000d  skybox face         bits 0+2+3     (23%)
 //     0x0801  alpha test          bits 0+11      (14%)
 //     0x0212  additive blend      bits 1+4+9     ( 9%)
-//     0x2001  shinemap pass       bits 0+13      ( 6%)
+//     0x2001  texture rebind      bits 0+13      ( 6%)
 //     0x0081  static glow         bits 0+7       ( 4%)
 //     0x0091  animated glow       bits 0+4+7     ( 3%)
 //     0x0202  additive blend      bits 1+9       ( 1%)
 //     0x0292  additive + glow     bits 1+4+7+9   ( 2%)
 //     0x0186  alpha blend + glow  bits 1+2+7+8   ( 0.4%)
 //
-// bytes  2-3  renderFlags2  uint16  secondary flags; 94.8% = 0x0000, 4.9% = 0x0002.
-//                           Observed only on shinemap materials (renderFlags bit 13).
-//                           Possible meaning: second UV set, or shinemap blend weight.
+// bytes  2-3  renderFlags2  uint16  low byte: texture count. 2 = diffuse + env map,
+//                           i.e. a shinemap (570/570 "*shine*" materials on PSP
+//                           Pure, nothing else). High-byte values (0x1100, 0x0900,
+//                           0x0D00) on ~120 other materials are undecoded.
 //
 // bytes  4-7  textureId     uint32  index into the VEXX texture table (bytes 6-7 always 0).
 //

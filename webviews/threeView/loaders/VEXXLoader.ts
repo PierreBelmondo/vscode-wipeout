@@ -122,11 +122,15 @@ function chunkRenderFlags(rs: VexxRenderState, materialFlags: number): number {
   return flags;
 }
 
-function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean, envMap?: THREE.Texture, hasNormals = false, alphaRef?: number, hasColors = false, state?: VexxRenderState): THREE.Material {
+function makeMeshMaterial(map: THREE.Texture, renderFlags: number, isV4: boolean, envMap?: THREE.Texture, hasNormals = false, alphaRef?: number, hasColors = false, state?: VexxRenderState, textureCount = 0): THREE.Material {
   const isAdd   = !!(renderFlags & 0x0200);
   const isBlend = !!(renderFlags & 0x0100);
   const isGlow  = !!(renderFlags & 0x0080);
-  const isShine = !!(renderFlags & 0x2000);
+  // A material with two textures (diffuse + env map) is a shinemap: on PSP
+  // Pure that is exactly the 570 "*shine*" materials. Bit 0x2000 is only a
+  // texture-rebind key and also sits on sky faces and plain metal. Other
+  // versions keep the old bit until their material word is checked.
+  const isShine = isV4 ? textureCount === 2 : !!(renderFlags & 0x2000);
 
   if (isAdd) {
     // Additive blend — weapons, shields, boost, lasers
@@ -953,7 +957,7 @@ export class VEXXLoader extends Loader {
       const hasColors = geo.colors !== null;
       // Include hasNormals in the cache key: geometry with and without normals
       // needs different flatShading settings and must not share a material.
-      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}${hasColors ? ":C" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}${rs ? `:${rs.cullFace ? "c" : "-"}${rs.depthWrite ? "w" : "-"}${rs.clampU ? "U" : ""}${rs.clampV ? "V" : ""}` : ""}`;
+      const matKey = `${node.typeName}:${textureId}:${renderFlags}:t${vexxMat.renderFlags2}${hasNormals ? ":N" : ""}${hasColors ? ":C" : ""}${alphaRef !== undefined ? `:a${alphaRef}` : ""}${rs ? `:${rs.cullFace ? "c" : "-"}${rs.depthWrite ? "w" : "-"}${rs.clampU ? "U" : ""}${rs.clampV ? "V" : ""}` : ""}`;
       let material = world.materials["_default"];
       if (matKey in world.materials) {
         material = world.materials[matKey];
@@ -980,7 +984,7 @@ export class VEXXLoader extends Loader {
             wrapped.wrapT = rs!.clampV ? THREE.ClampToEdgeWrapping : THREE.RepeatWrapping;
             wrapped.needsUpdate = true;
           }
-          material = makeMeshMaterial(wrapped, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals, alphaRef, hasColors, rs);
+          material = makeMeshMaterial(wrapped, renderFlags, node.typeInfo.version <= 4, world.userdata.envMap, hasNormals, alphaRef, hasColors, rs, vexxMat.renderFlags2);
           material.name = `VexxMaterial_${textureId}_0x${renderFlags.toString(16)}`;
         }
         world.materials[matKey] = material;
@@ -1036,7 +1040,7 @@ export class VEXXLoader extends Loader {
       const textureId = vexxMat.textureId;
       const renderFlags = vexxMat.renderFlags;
       const hasNormals = geo.normals !== null;
-      const matKey = `${node.typeName}:${textureId}:${renderFlags}${hasNormals ? ":N" : ""}`;
+      const matKey = `${node.typeName}:${textureId}:${renderFlags}:t${vexxMat.renderFlags2}${hasNormals ? ":N" : ""}`;
       let material = world.materials["_default"];
       if (matKey in world.materials) {
         material = world.materials[matKey];
@@ -1045,7 +1049,7 @@ export class VEXXLoader extends Loader {
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.needsUpdate = true;
-        material = makeMeshMaterial(map, renderFlags, true, world.userdata.envMap, hasNormals);
+        material = makeMeshMaterial(map, renderFlags, true, world.userdata.envMap, hasNormals, undefined, false, undefined, vexxMat.renderFlags2);
         material.name = `VexxMaterial_${textureId}_0x${renderFlags.toString(16)}`;
         world.materials[matKey] = material;
       }
