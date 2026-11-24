@@ -1062,8 +1062,19 @@ export class VEXXLoader extends Loader {
   }
 
   private loadCamera(world: World, node: VexxNodeCamera): THREE.Object3D {
-    const camera = new THREE.PerspectiveCamera(45, 1.33, 32, 34);
+    // Frustum ends at the aim point, which lies on the camera's -Z axis.
+    const p = node.properties;
+    const camera = new THREE.PerspectiveCamera(45, 1.33, 1, 34);
+    if (p.fov > 0) camera.fov = THREE.MathUtils.radToDeg(p.fov);
     camera.name = node.name;
+    camera.userData.target = new THREE.Vector3(p.targetX, p.targetY, p.targetZ);
+    const parent = node.parent as unknown as { matrix?: ArrayLike<number> } | null;
+    if (parent?.matrix) {
+      const m = parent.matrix;
+      const dist = camera.userData.target.distanceTo(new THREE.Vector3(m[12], m[13], m[14]));
+      if (dist > camera.near) camera.far = dist;
+    }
+    camera.updateProjectionMatrix();
 
     const helper = new THREE.CameraHelper(camera);
     helper.matrix = new THREE.Matrix4();
