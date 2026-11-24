@@ -169,7 +169,8 @@ class VexxNodeMeshLinkChunk {
 // bytes  0-1  renderFlags   uint16  bitmask — confirmed bit meanings:
 //
 //   bit  0 (0x0001) — standard base flag; set on almost all opaque materials
-//   bit  1 (0x0002) — blending active; always set together with bit 8 or bit 9
+//   bit  1 (0x0002) — chain-B list membership, not a blend bit (it merely
+//                     co-occurs with bits 8/9 on track/env geometry)
 //   bit  2 (0x0004) — texture wrap U: CLAMP (see VexxRenderState.clampU). The
 //                     "present on skybox" note below is why: a skycube face
 //                     must clamp or its edge seam repeats.
@@ -179,8 +180,9 @@ class VexxNodeMeshLinkChunk {
 //   bit  7 (0x0080) — GLOW / emissive  (confirmed: all *_GLOW.tga use this bit)
 //   bit  8 (0x0100) — alpha blend  src=SRC_ALPHA  dst=1-SRC_ALPHA
 //                     (confirmed: *_BLEND.tga and HUD overlay materials)
-//   bit  9 (0x0200) — additive blend  src=1  dst=1
+//   bit  9 (0x0200) — additive blend  src=SRC_ALPHA  dst=FIX 0xFFFFFF (= ONE)
 //                     (confirmed: all *_ADD.tga — weapons, shields, boost)
+//   bit 10 (0x0400) — blending explicitly disabled (still no depth write)
 //   bit 11 (0x0800) — alpha test / keyed transparency
 //                     (confirmed: all *_KEY.tga — ship wrecks, railings, fences)
 //   bit 13 (0x2000) — specular / shinemap pass
